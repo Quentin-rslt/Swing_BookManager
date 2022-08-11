@@ -1,7 +1,9 @@
 package Forms;
 
 import javax.swing.*;
-import java.awt.event.*;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import java.sql.*;
 
 public class MainWindow extends JDialog {
     private JPanel contentPane;
@@ -30,13 +32,77 @@ public class MainWindow extends JDialog {
     private JButton AddBookBtn;
     private JButton FiltersBookBtn;
     private JButton CancelFiltersBtn;
-    private JButton buttonOK;
-    private JButton buttonCancel;
+
+    DefaultTableModel tableModel = new DefaultTableModel();
 
     public MainWindow() {
         setContentPane(contentPane);
         setModal(true);
+        connectionDB();
+        loadDB();
+    }
 
+    public void connectionDB(){
+        Statement statement = null;
+        Connection connection = null;
+        try {
+            Class.forName("org.sqlite.JDBC");
+            connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
+            statement = connection.createStatement();
+
+            String sql = "CREATE TABLE IF NOT EXISTS BookManager" +
+                    "(Title TEXT, " +
+                    " Auhtor TEXT, " +
+                    " Image TEXT, " +
+                    " NumberOP INT, " +
+                    " NotePerso INT, " +
+                    " NoteBabelio INT, " +
+                    " LastReading DATE, " +
+                    " FirstReading DATE, " +
+                    " ReleaseYear INT, " +
+                    " Summary TEXT)";
+
+            statement.executeUpdate(sql);
+            System.out.println("Table created successfully");
+            connection.close();
+            statement.close();
+        } catch ( Exception e ) {
+            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+            System.exit(0);
+        }
+    }
+
+    public void loadDB(){
+        Statement statement = null;
+        Connection connection = null;
+        try {
+            Class.forName("org.sqlite.JDBC");
+            connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
+            statement = connection.createStatement();
+            System.out.println("Table connexion successfully");
+
+            ResultSet rs = statement.executeQuery( "SELECT * FROM BookManager;" );
+
+            while ( rs.next() ) {
+                String title = rs.getString("Title");
+                String author = rs.getString("Auhtor");
+
+                String[ ] columnName = { "Titre","Auteur"};
+                Object[ ] data = {title, ""+author};
+
+                tableModel.setColumnIdentifiers(columnName);
+                tableModel.addRow(data);
+                tableModel.fireTableDataChanged();
+            }
+            BookTableList.setModel(tableModel);
+
+            rs.close();
+            connection.close();
+            statement.close();
+        } catch ( Exception e ) {
+            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+            System.exit(0);
+        }
     }
 
     public static void main(String[] args) {
