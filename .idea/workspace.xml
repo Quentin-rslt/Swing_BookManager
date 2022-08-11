@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5ede3cbf-f5c9-462f-8dc0-7982017c2136" name="Changes" comment="Change class main">
+    <list default="true" id="5ede3cbf-f5c9-462f-8dc0-7982017c2136" name="Changes" comment="Add BDD to project, with connexion and data recovery on the BookTableList">
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Forms/MainWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Forms/MainWindow.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Sources/MainWindow.form" beforeDir="false" afterPath="$PROJECT_DIR$/src/Sources/MainWindow.form" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -88,7 +86,14 @@
       <option name="project" value="LOCAL" />
       <updated>1660120850416</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Add BDD to project, with connexion and data recovery on the BookTableList">
+      <created>1660223890584</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1660223890584</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -105,6 +110,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Change value gitignore" />
     <MESSAGE value="Change class main" />
-    <option name="LAST_COMMIT_MESSAGE" value="Change class main" />
+    <MESSAGE value="Add BDD to project, with connexion and data recovery on the BookTableList" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add BDD to project, with connexion and data recovery on the BookTableList" />
   </component>
 </project>
