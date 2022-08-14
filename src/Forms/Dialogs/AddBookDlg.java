@@ -25,7 +25,6 @@ public class AddBookDlg extends JDialog {
     private JTextField BookAuthorTextField;
     private JLabel AuthorLabel;
     private JLabel ReleaseYearLabel;
-    private JSpinner BookReleaseYearSpin;
     private JLabel PersonalNoteLabel;
     private JSpinner BookPersonalNoteSpin;
     private JLabel ReadingDateLabel;
@@ -39,8 +38,8 @@ public class AddBookDlg extends JDialog {
     private JLabel SummaryLabel;
     private JTextPane BookSummaryTextPane;
     private JCheckBox AlreadyReadChecbox;
-    private JPanel BookReadPanel;
-    private JSpinner BookReadSpin;
+    private JSpinner BookReleaseYearSpin;
+    private JSpinner BookDateReadSpin;
     private String m_author;
     private String m_title;
 
@@ -49,12 +48,24 @@ public class AddBookDlg extends JDialog {
         FillBookCombobox();
         setModal(true);
 
+        SpinnerModel BookPersonalNotelSM = new SpinnerNumberModel(5, 0, 5, 1);//Set a default and max value for spinner Note
+        SpinnerModel BookNoteBbblSM = new SpinnerNumberModel(5, 0, 5, 1);
+        BookPersonalNoteSpin.setModel(BookPersonalNotelSM);
+        BookNoteBblSpin.setModel(BookNoteBbblSM);
+
+        Date dateRelease = new Date();
         Date date = new Date();
+
         SpinnerDateModel BookReadDateSpinDate = new SpinnerDateModel(date,null,null,Calendar.YEAR);//Create a spinner date, to correctly select a date
-        BookReadSpin = new JSpinner(BookReadDateSpinDate);
-        JSpinner.DateEditor ded = new JSpinner.DateEditor(BookReadSpin,"yyyy/MM/dd");//set the display of the JSpinner
-        BookReadSpin.setEditor(ded);
-        BookReadPanel.add(BookReadSpin);//add the JSpinner to our Panel
+        SpinnerDateModel BookReleaseDateSpinModel = new SpinnerDateModel(dateRelease,null,null,Calendar.YEAR);//Create a spinner date, to correctly select a date
+
+        BookReleaseYearSpin.setModel(BookReleaseDateSpinModel);
+        JSpinner.DateEditor Year = new JSpinner.DateEditor(BookReleaseYearSpin,"yyyy");//set the display of the JSpinner of release date
+        BookReleaseYearSpin.setEditor(Year);
+
+        BookDateReadSpin.setModel(BookReadDateSpinDate);
+        JSpinner.DateEditor ded = new JSpinner.DateEditor(BookDateReadSpin,"yyyy/MM/dd");//set the display of the JSpinner reading book date
+        BookDateReadSpin.setEditor(ded);
 
         AlreadyReadChecbox.addActionListener(new ActionListener() {
             @Override
@@ -89,10 +100,10 @@ public class AddBookDlg extends JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(BookUnknownReadDateChecbox.isSelected()==true){//Hide the possibility to add a reading date when we don't know when you read it
-                    BookReadSpin.setEnabled(false);
+                    BookDateReadSpin.setEnabled(false);
                 }
                 else{
-                    BookReadSpin.setEnabled(true);
+                    BookDateReadSpin.setEnabled(true);
                 }
             }
         });
