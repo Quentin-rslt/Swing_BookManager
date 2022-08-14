@@ -40,32 +40,17 @@ public class AddBookDlg extends JDialog {
     private JCheckBox AlreadyReadChecbox;
     private JSpinner BookReleaseYearSpin;
     private JSpinner BookDateReadSpin;
+
     private String m_author;
     private String m_title;
+    private String m_URL;
+    private boolean m_isValide = false;//Useful for determinate if the input are good
 
     public AddBookDlg() {
         setContentPane(contentPane);
-        FillBookCombobox();
+        fillBookCombobox();
         setModal(true);
-
-        SpinnerModel BookPersonalNotelSM = new SpinnerNumberModel(5, 0, 5, 1);//Set a default and max value for spinner Note
-        SpinnerModel BookNoteBbblSM = new SpinnerNumberModel(5, 0, 5, 1);
-        BookPersonalNoteSpin.setModel(BookPersonalNotelSM);
-        BookNoteBblSpin.setModel(BookNoteBbblSM);
-
-        Date dateRelease = new Date();
-        Date date = new Date();
-
-        SpinnerDateModel BookReadDateSpinDate = new SpinnerDateModel(date,null,null,Calendar.YEAR);//Create a spinner date, to correctly select a date
-        SpinnerDateModel BookReleaseDateSpinModel = new SpinnerDateModel(dateRelease,null,null,Calendar.YEAR);//Create a spinner date, to correctly select a date
-
-        BookReleaseYearSpin.setModel(BookReleaseDateSpinModel);
-        JSpinner.DateEditor Year = new JSpinner.DateEditor(BookReleaseYearSpin,"yyyy");//set the display of the JSpinner of release date
-        BookReleaseYearSpin.setEditor(Year);
-
-        BookDateReadSpin.setModel(BookReadDateSpinDate);
-        JSpinner.DateEditor ded = new JSpinner.DateEditor(BookDateReadSpin,"yyyy/MM/dd");//set the display of the JSpinner reading book date
-        BookDateReadSpin.setEditor(ded);
+        initComponents();
 
         AlreadyReadChecbox.addActionListener(new ActionListener() {
             @Override
@@ -80,6 +65,8 @@ public class AddBookDlg extends JDialog {
                     BookSummaryTextPane.setEnabled(false);
                     BookReleaseYearSpin.setEnabled(false);
                     BookBrowseBtn.setEnabled(false);
+                    PreviewPhotoPanel.updateUI();
+                    PreviewPhotoPanel.removeAll();
                 }
                 else{
                     ExitingBookComboBox.setEnabled(false);
@@ -110,7 +97,7 @@ public class AddBookDlg extends JDialog {
         });
         ExitingBookComboBox.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {//set the title and the author, retrieved by the ComboBox
+            public void actionPerformed(ActionEvent evt) {//set the title and the author, retrieved by the ComboBox
                 String row = ExitingBookComboBox.getSelectedItem().toString();//get the item that we chose
                 String author = "";
                 m_title = "";
@@ -121,7 +108,57 @@ public class AddBookDlg extends JDialog {
                 } while (row.charAt(i+1)!= '-');
                 author = row.replace(m_title, "");//We recover only the end of the line to keep only the author
                 m_author = author.substring(3 , author.length());
-                AddImageToPanel(m_title, m_author);//add the image of the book, with the author and the title recovered on the combobox, in our panel
+                try{
+                    Class.forName("org.sqlite.JDBC");
+                    Connection connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
+                    Statement statement = connection.createStatement();
+                    ResultSet ImageQry = statement.executeQuery("SELECT Image FROM BookManager WHERE Title='"+m_title+"' AND Author='"+m_author+ "'");//Retrieved from the bdd the URL of the book image
+                                                                                                                                                    // in parameters the title and the author enter in parameters of this function
+                    addImageToPanel(ImageQry.getString(1));//add the image of the book, with the author and the title recovered on the combobox, in our panel
+                } catch ( Exception e ) {
+                    System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+                    System.exit(0);
+                }
+
+            }
+        });
+        CancelBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {//Quit dlg without taking into account the input
+                m_isValide = false;
+                setVisible(false);
+                dispose();
+            }
+        });
+        ValidateBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(AlreadyReadChecbox.isSelected()==true){
+                    m_isValide=true;
+                    setVisible(false);
+                    dispose();
+                }
+                else if(getNewBookAuthor()!="" && getNewBookAuthor()!="" && getNewBookReleaseYear()!="" && getNewBookPersonalNote()!="" &&
+                        getNewBookBBLNote()!="" && getNewBookSummary()!="" && getURL()!=""){//Verif if the input are good to quit the dlg and recovered the data for bdd
+                    m_isValide=true;
+                    setVisible(false);
+                    dispose();
+                }
+                else{
+                    JFrame jFrame = new JFrame();
+                    JOptionPane.showMessageDialog(jFrame, "Veuillez remplir tous les champs !");
+                }
+            }
+        });
+        BookBrowseBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser jf= new JFileChooser();
+                if (JFileChooser.APPROVE_OPTION == jf.showOpenDialog(PreviewPhotoPanel)){ //Opens the file panel to select an image
+                    String path = jf.getSelectedFile().getPath();//Sélection image
+                    setURL(path);
+                    addImageToPanel(path);
+                }
             }
         });
     }
@@ -156,7 +193,14 @@ public class AddBookDlg extends JDialog {
     public boolean isDateUnknown(){
         return BookUnknownReadDateChecbox.isSelected();
     }
-    public void FillBookCombobox(){
+    public boolean isValide(){
+        return m_isValide;
+    }
+    public String getURL(){
+        return m_URL;
+    }
+
+    public void fillBookCombobox(){
         try {
             Class.forName("org.sqlite.JDBC");
             Connection connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
@@ -171,29 +215,39 @@ public class AddBookDlg extends JDialog {
             System.exit(0);
         }
     }
-    public void AddImageToPanel(String title, String author){//
-        try {
-            Class.forName("org.sqlite.JDBC");
-            Connection connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
-            Statement statement = connection.createStatement();
-            ResultSet ImageQry = statement.executeQuery("SELECT Image FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");//Retrieved from the bdd the URL of the book image,
-                                                                                                                                            // in parameters the title and the author enter in parameters of this function
+    public void addImageToPanel(String path){//Apply to our panel an image with path
+        Image img = Toolkit.getDefaultToolkit().getImage(path);
+        img=img.getScaledInstance(200, 300, Image.SCALE_DEFAULT);
+        ImageIcon icon = new ImageIcon(img);
+        JLabel imgLabel = new JLabel();
+        imgLabel.setIcon(icon);
 
-            Image img = Toolkit.getDefaultToolkit().getImage(ImageQry.getString(1));
-            img=img.getScaledInstance(200, 300, Image.SCALE_DEFAULT);
-            ImageIcon icon = new ImageIcon(img);
-            JLabel imgLabel = new JLabel();
-            imgLabel.setDisabledIcon(icon);
-            imgLabel.setIcon(icon);
+        PreviewPhotoPanel.updateUI();//reload the panel
+        PreviewPhotoPanel.removeAll();
+        PreviewPhotoPanel.add(imgLabel);
+    }
+    public void initComponents(){
+        SpinnerModel BookPersonalNotelSM = new SpinnerNumberModel(5, 0, 5, 1);//Set a default and max value for spinner Note
+        SpinnerModel BookNoteBbblSM = new SpinnerNumberModel(5, 0, 5, 1);
+        BookPersonalNoteSpin.setModel(BookPersonalNotelSM);
+        BookNoteBblSpin.setModel(BookNoteBbblSM);
 
-            PreviewPhotoPanel.updateUI();//reload the panel
-            PreviewPhotoPanel.removeAll();
-            PreviewPhotoPanel.add(imgLabel);
+        Date dateRelease = new Date();
+        Date date = new Date();
 
-        } catch ( Exception e ) {
-            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-            System.exit(0);
-        }
+        SpinnerDateModel BookReadDateSpinDate = new SpinnerDateModel(date,null,null, Calendar.YEAR);//Create a spinner date, to correctly select a date
+        SpinnerDateModel BookReleaseDateSpinModel = new SpinnerDateModel(dateRelease,null,null,Calendar.YEAR);//Create a spinner date, to correctly select a date
+
+        BookReleaseYearSpin.setModel(BookReleaseDateSpinModel);
+        JSpinner.DateEditor Year = new JSpinner.DateEditor(BookReleaseYearSpin,"yyyy");//set the display of the JSpinner of release date
+        BookReleaseYearSpin.setEditor(Year);
+
+        BookDateReadSpin.setModel(BookReadDateSpinDate);
+        JSpinner.DateEditor ded = new JSpinner.DateEditor(BookDateReadSpin,"yyyy/MM/dd");//set the display of the JSpinner reading book date
+        BookDateReadSpin.setEditor(ded);
+    }
+    public void setURL(String url){
+        m_URL= url;
     }
 
     public static void main(String[] args) {
