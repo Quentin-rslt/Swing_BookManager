@@ -134,7 +134,7 @@ public class MainWindow extends JDialog {
         AddBookBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 AddBookDlg diag = new AddBookDlg();
-                diag.setSize(750,500);
+                diag.setSize(800,500);
                 diag.setVisible(true);
 
             }
