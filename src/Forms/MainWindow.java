@@ -1,14 +1,21 @@
 package Forms;
 
+import Forms.Dialogs.AddBookDlg;
 import com.formdev.flatlaf.FlatDarkLaf;
 
 import javax.swing.*;
-import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.sql.*;
+
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 
 public class MainWindow extends JDialog {
     private JPanel contentPane;
@@ -38,11 +45,12 @@ public class MainWindow extends JDialog {
     private JButton CancelFiltersBtn;
     private JLabel CountReadingLabel;
     private JToolBar Menubar;
+    private JLabel ReleaseYearLAbel;
     private JTable m_bookListTable;
     private JScrollPane m_pane;
     private DefaultTableModel m_tableModel = new DefaultTableModel();
-    private Statement statement = null;
-    private Connection connection = null;
+    private Statement m_statement = null;
+    private Connection m_connection = null;
 
     public MainWindow() {
         setContentPane(contentPane);
@@ -61,47 +69,51 @@ public class MainWindow extends JDialog {
                     //Fill in the data on the app
                     try {
                         Class.forName("org.sqlite.JDBC");
-                        connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
-                        statement = connection.createStatement();
+                        m_connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
+                        m_statement = m_connection.createStatement();
 
                         //Title label
-                        ResultSet titleQry = statement.executeQuery("SELECT Title FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
+                        ResultSet titleQry = m_statement.executeQuery("SELECT Title FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
                         TitleLabel.setText(titleQry.getString(1));
 
                         //Author label
-                        ResultSet authorQry = statement.executeQuery("SELECT Author FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
+                        ResultSet authorQry = m_statement.executeQuery("SELECT Author FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
                         AuthorLabel.setText("Auteur : "+authorQry.getString(1));
 
-                        //Number of page label
-                        ResultSet NumberOPQry = statement.executeQuery("SELECT NumberOP FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
+                        //Release year label
+                        ResultSet NumberOPQry = m_statement.executeQuery("SELECT NumberOP FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
                         NumberPageLabel.setText("Nombre de page : "+NumberOPQry.getString(1));
 
-                        //Number of page label
-                        ResultSet CountReadingQry = statement.executeQuery("SELECT COUNT(*) FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
+                        //Number of reading label
+                        ResultSet ReleaseYearQry = m_statement.executeQuery("SELECT ReleaseYear FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
+                        ReleaseYearLAbel.setText("Année de sortie : "+ReleaseYearQry.getString(1));
+
+                        //Number of reading label
+                        ResultSet CountReadingQry = m_statement.executeQuery("SELECT COUNT(*) FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
                         CountReadingLabel.setText("Nombre de lecture : "+CountReadingQry.getString(1));
 
                         //Note on babelio
-                        ResultSet NoteBBQry = statement.executeQuery("SELECT NoteBabelio FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
+                        ResultSet NoteBBQry = m_statement.executeQuery("SELECT NoteBabelio FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
                         NoteLabel.setText("Note : "+NoteBBQry.getString(1));
 
                         //Summary
-                        ResultSet SummaryQry = statement.executeQuery("SELECT Summary FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
+                        ResultSet SummaryQry = m_statement.executeQuery("SELECT Summary FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
                         BookSummary.setText(SummaryQry.getString(1));
 
                         //Personal note
-                        ResultSet NotePersoQry = statement.executeQuery("SELECT NotePerso FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
-                        PersonalNoteLabel.setText("Note personelle : "+NotePersoQry.getString(1));
+                        ResultSet NotePersoQry = m_statement.executeQuery("SELECT NotePerso FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
+                        PersonalNoteLabel.setText("Ma note : "+NotePersoQry.getString(1));
 
                         //First reading
-                        ResultSet FirstReadQry = statement.executeQuery("SELECT DateReading FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'ORDER BY DateReading ASC LIMIT 1");
+                        ResultSet FirstReadQry = m_statement.executeQuery("SELECT DateReading FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'ORDER BY DateReading ASC LIMIT 1");
                         FirstReadingLabel.setText("Première lecture : "+FirstReadQry.getString(1));
 
                         //Last reading
-                        ResultSet LastReadQry = statement.executeQuery("SELECT DateReading FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'ORDER BY DateReading DESC LIMIT 1");
+                        ResultSet LastReadQry = m_statement.executeQuery("SELECT DateReading FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'ORDER BY DateReading DESC LIMIT 1");
                         LastReadingLabel.setText("Dernière lecture : "+FirstReadQry.getString(1));
 
                         //Image
-                        ResultSet ImageQry = statement.executeQuery("SELECT Image FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
+                        ResultSet ImageQry = m_statement.executeQuery("SELECT Image FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
 
                         Image img = Toolkit.getDefaultToolkit().getImage(ImageQry.getString(1));
                         img=img.getScaledInstance(200, 300, Image.SCALE_DEFAULT);
@@ -119,12 +131,21 @@ public class MainWindow extends JDialog {
                 }
             });
         }
+        AddBookBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                AddBookDlg diag = new AddBookDlg();
+                diag.setSize(750,500);
+                diag.setVisible(true);
+
+            }
+        });
     }
+
     public void connectionDB(){
         try {
             Class.forName("org.sqlite.JDBC");
-            connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
-            statement = connection.createStatement();
+            m_connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
+            m_statement = m_connection.createStatement();
 
             String sql = "CREATE TABLE IF NOT EXISTS BookManager" +
                     "(Title TEXT, " +
@@ -137,10 +158,10 @@ public class MainWindow extends JDialog {
                     " ReleaseYear INT, " +
                     " Summary TEXT)";
 
-            statement.executeUpdate(sql);
+            m_statement.executeUpdate(sql);
             System.out.println("Table created successfully");
-            connection.close();
-            statement.close();
+            m_connection.close();
+            m_statement.close();
         } catch ( Exception e ) {
             System.err.println( e.getClass().getName() + ": " + e.getMessage() );
             System.exit(0);
@@ -149,11 +170,11 @@ public class MainWindow extends JDialog {
     public void loadDB(){
         try {
             Class.forName("org.sqlite.JDBC");
-            connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
-            statement = connection.createStatement();
+            m_connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
+            m_statement = m_connection.createStatement();
             System.out.println("Table connexion successfully");
 
-            ResultSet rs = statement.executeQuery("SELECT * FROM BookManager GROUP BY Title, Author;");
+            ResultSet rs = m_statement.executeQuery("SELECT * FROM BookManager GROUP BY Title, Author;");
 
             while (rs.next()) {
                 String title = rs.getString("Title");
@@ -176,8 +197,8 @@ public class MainWindow extends JDialog {
             }
 
             rs.close();
-            connection.close();
-            statement.close();
+            m_connection.close();
+            m_statement.close();
         } catch ( Exception e ) {
             System.err.println( e.getClass().getName() + ": " + e.getMessage() );
             System.exit(0);

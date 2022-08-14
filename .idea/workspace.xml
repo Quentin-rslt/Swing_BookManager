@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5ede3cbf-f5c9-462f-8dc0-7982017c2136" name="Changes" comment="Add : &#10;- Display of all the information of the book when we click on it: Author, Title, Image etc...&#10;- Change of app size and panel">
-      <change afterPath="$PROJECT_DIR$/src/Forms/Dialogs/AddBookDlg.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Sources/Dialogs/AddBookDlg.form" afterDir="false" />
+    <list default="true" id="5ede3cbf-f5c9-462f-8dc0-7982017c2136" name="Changes" comment="- Change DataBase with the merger of LastRadeing and FirstReading into just DateReading. &#10;- Creation of the addBookDlg class&#10;- Change the look and feel">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Forms/Dialogs/AddBookDlg.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Forms/Dialogs/AddBookDlg.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Forms/MainWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Forms/MainWindow.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Sources/Dialogs/AddBookDlg.form" beforeDir="false" afterPath="$PROJECT_DIR$/src/Sources/Dialogs/AddBookDlg.form" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Sources/MainWindow.form" beforeDir="false" afterPath="$PROJECT_DIR$/src/Sources/MainWindow.form" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -115,7 +115,14 @@
       <option name="project" value="LOCAL" />
       <updated>1660374004139</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="- Change DataBase with the merger of LastRadeing and FirstReading into just DateReading. &#10;- Creation of the addBookDlg class&#10;- Change the look and feel">
+      <created>1660475910683</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1660475910683</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -135,6 +142,7 @@
     <MESSAGE value="Add BDD to project, with connexion and data recovery on the BookTableList" />
     <MESSAGE value="Change value on gitignore" />
     <MESSAGE value="Add : &#10;- Display of all the information of the book when we click on it: Author, Title, Image etc...&#10;- Change of app size and panel" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add : &#10;- Display of all the information of the book when we click on it: Author, Title, Image etc...&#10;- Change of app size and panel" />
+    <MESSAGE value="- Change DataBase with the merger of LastRadeing and FirstReading into just DateReading. &#10;- Creation of the addBookDlg class&#10;- Change the look and feel" />
+    <option name="LAST_COMMIT_MESSAGE" value="- Change DataBase with the merger of LastRadeing and FirstReading into just DateReading. &#10;- Creation of the addBookDlg class&#10;- Change the look and feel" />
   </component>
 </project>
