@@ -101,6 +101,7 @@ public class AddBookDlg extends JDialog {
             public void actionPerformed(ActionEvent e) {
                 if(BookUnknownReadDateChecbox.isSelected()==true){//Hide the possibility to add a reading date when we don't know when you read it
                     BookDateReadSpin.setEnabled(false);
+                    System.out.println(BookPersonalNoteSpin.getValue().toString());
                 }
                 else{
                     BookDateReadSpin.setEnabled(true);
@@ -131,7 +132,30 @@ public class AddBookDlg extends JDialog {
     public String getAuthor(){
         return m_author;
     }
-
+    public String getNewBookTitle(){//Get the new book title from JtextField
+        return BookNameTextField.getText();
+    }
+    public String getNewBookAuthor(){
+        return BookAuthorTextField.getText();
+    }
+    public String getNewBookReleaseYear(){
+        return BookReleaseYearSpin.getValue().toString();
+    }
+    public String getNewBookPersonalNote(){
+        return BookPersonalNoteSpin.getValue().toString();
+    }
+    public String getNewBookBBLNote(){
+        return BookNoteBblSpin.getValue().toString();
+    }
+    public String getNewBookSummary(){
+        return BookSummaryTextPane.getText();
+    }
+    public String getNewBookDateReading(){
+        return BookDateReadSpin.getValue().toString();
+    }
+    public boolean isDateUnknown(){
+        return BookUnknownReadDateChecbox.isSelected();
+    }
     public void FillBookCombobox(){
         try {
             Class.forName("org.sqlite.JDBC");
