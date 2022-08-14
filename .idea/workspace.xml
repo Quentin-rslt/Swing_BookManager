@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5ede3cbf-f5c9-462f-8dc0-7982017c2136" name="Changes" comment="- Setting up the AddBookDlg interface&#10;- Add release year to mainWindow (previously forgotten)">
+    <list default="true" id="5ede3cbf-f5c9-462f-8dc0-7982017c2136" name="Changes" comment="- Retrieving data from the AddBookDlg database with the fillbookcombobox, and the image that appears &#10;- Change of spinner for the reading date&#10;- Setting up checkbox roles (hiding some boxes for some cases)">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Forms/Dialogs/AddBookDlg.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Forms/Dialogs/AddBookDlg.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Forms/MainWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Forms/MainWindow.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Sources/Dialogs/AddBookDlg.form" beforeDir="false" afterPath="$PROJECT_DIR$/src/Sources/Dialogs/AddBookDlg.form" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -121,7 +120,14 @@
       <option name="project" value="LOCAL" />
       <updated>1660475910683</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="- Retrieving data from the AddBookDlg database with the fillbookcombobox, and the image that appears &#10;- Change of spinner for the reading date&#10;- Setting up checkbox roles (hiding some boxes for some cases)">
+      <created>1660502852518</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1660502852518</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -142,6 +148,7 @@
     <MESSAGE value="Change value on gitignore" />
     <MESSAGE value="Add : &#10;- Display of all the information of the book when we click on it: Author, Title, Image etc...&#10;- Change of app size and panel" />
     <MESSAGE value="- Change DataBase with the merger of LastRadeing and FirstReading into just DateReading. &#10;- Creation of the addBookDlg class&#10;- Change the look and feel" />
-    <option name="LAST_COMMIT_MESSAGE" value="- Change DataBase with the merger of LastRadeing and FirstReading into just DateReading. &#10;- Creation of the addBookDlg class&#10;- Change the look and feel" />
+    <MESSAGE value="- Retrieving data from the AddBookDlg database with the fillbookcombobox, and the image that appears &#10;- Change of spinner for the reading date&#10;- Setting up checkbox roles (hiding some boxes for some cases)" />
+    <option name="LAST_COMMIT_MESSAGE" value="- Retrieving data from the AddBookDlg database with the fillbookcombobox, and the image that appears &#10;- Change of spinner for the reading date&#10;- Setting up checkbox roles (hiding some boxes for some cases)" />
   </component>
 </project>

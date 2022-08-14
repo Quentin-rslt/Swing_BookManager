@@ -57,13 +57,13 @@ public class MainWindow extends JDialog {
         setModal(true);
         connectionDB();
         loadDB();
-        if(m_bookListTable != null){
+        if(m_bookListTable != null){//Vérif if the table is not empty
             m_bookListTable.addMouseListener(new MouseAdapter() {
                 @Override
-                public void mouseClicked(MouseEvent evt) {
+                public void mouseClicked(MouseEvent evt) {//set main UI when we clicked on an element of the array, retrieved from the db
                     super.mouseClicked(evt);
                     int row = m_bookListTable.rowAtPoint(evt.getPoint());
-                    String title  = m_bookListTable.getValueAt(row, 0).toString();
+                    String title  = m_bookListTable.getValueAt(row, 0).toString(); //get the value of the column of the table
                     String author  = m_bookListTable.getValueAt(row, 1).toString();
 
                     //Fill in the data on the app
@@ -116,13 +116,12 @@ public class MainWindow extends JDialog {
                         ResultSet ImageQry = m_statement.executeQuery("SELECT Image FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
 
                         Image img = Toolkit.getDefaultToolkit().getImage(ImageQry.getString(1));
-                        img=img.getScaledInstance(200, 300, Image.SCALE_DEFAULT);
+                        img=img.getScaledInstance(200, 300, Image.SCALE_DEFAULT);//set size of image
                         ImageIcon icon = new ImageIcon(img);
                         JLabel imgLabel = new JLabel();
-                        imgLabel.setDisabledIcon(icon);
                         imgLabel.setIcon(icon);
 
-                        BookPhotoPanel.removeAll();
+                        BookPhotoPanel.removeAll();//clean the panel before to add an image
                         BookPhotoPanel.add(imgLabel);
                     } catch ( Exception e ) {
                         System.err.println( e.getClass().getName() + ": " + e.getMessage() );
@@ -131,7 +130,7 @@ public class MainWindow extends JDialog {
                 }
             });
         }
-        AddBookBtn.addActionListener(new ActionListener() {
+        AddBookBtn.addActionListener(new ActionListener() {//open the dlg for add a reading
             public void actionPerformed(ActionEvent e) {
                 AddBookDlg diag = new AddBookDlg();
                 diag.setSize(800,500);
@@ -144,7 +143,7 @@ public class MainWindow extends JDialog {
     public void connectionDB(){
         try {
             Class.forName("org.sqlite.JDBC");
-            m_connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
+            m_connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");//Create connection between the app et the BDD
             m_statement = m_connection.createStatement();
 
             String sql = "CREATE TABLE IF NOT EXISTS BookManager" +
@@ -158,7 +157,7 @@ public class MainWindow extends JDialog {
                     " ReleaseYear INT, " +
                     " Summary TEXT)";
 
-            m_statement.executeUpdate(sql);
+            m_statement.executeUpdate(sql);//Create the BDD
             System.out.println("Table created successfully");
             m_connection.close();
             m_statement.close();
@@ -170,30 +169,31 @@ public class MainWindow extends JDialog {
     public void loadDB(){
         try {
             Class.forName("org.sqlite.JDBC");
-            m_connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
+            m_connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");//Connection to BBDD
             m_statement = m_connection.createStatement();
             System.out.println("Table connexion successfully");
 
-            ResultSet rs = m_statement.executeQuery("SELECT * FROM BookManager GROUP BY Title, Author;");
+            ResultSet rs = m_statement.executeQuery("SELECT * FROM BookManager GROUP BY Title, Author;");//Execute a Query to retrieve all the values from the database by grouping the duplicates
+                                                                                                            // (with their name and author)
 
-            while (rs.next()) {
-                String title = rs.getString("Title");
-                String author = rs.getString("Author");
+            while (rs.next()) {//Fill in the table of the list of Book
+                String title = rs.getString("Title");//Retrieve the title
+                String author = rs.getString("Author");//Retrieve the author
 
                 String[ ] header = {"Titre","Auteur"};
                 Object[] data = {title, ""+author};
 
-                m_tableModel.setColumnIdentifiers(header);
-                m_tableModel.addRow(data);
+                m_tableModel.setColumnIdentifiers(header);//Create the header
+                m_tableModel.addRow(data);//add to tablemodel the data
 
-                m_bookListTable = new JTable(m_tableModel){
+                m_bookListTable = new JTable(m_tableModel){//Create a Jtable with the tablemodel not editable
                     public boolean isCellEditable(int rowIndex, int colIndex) {
                         return false; //Disallow the editing of any cell
                     }
                 };
                 m_bookListTable.setFocusable(false);
-                m_pane = new JScrollPane(m_bookListTable);
-                BookListPanel.add(m_pane);
+                m_pane = new JScrollPane(m_bookListTable);//Create a scrollpane with the Jtable for the error that did not display the header
+                BookListPanel.add(m_pane);//add the scrolpane to our Jpanel
             }
 
             rs.close();

@@ -41,6 +41,8 @@ public class AddBookDlg extends JDialog {
     private JCheckBox AlreadyReadChecbox;
     private JPanel BookReadPanel;
     private JSpinner BookReadSpin;
+    private String m_author;
+    private String m_title;
 
     public AddBookDlg() {
         setContentPane(contentPane);
@@ -48,15 +50,15 @@ public class AddBookDlg extends JDialog {
         setModal(true);
 
         Date date = new Date();
-        SpinnerDateModel BookReadDateSpinDate = new SpinnerDateModel(date,null,null,Calendar.YEAR);
+        SpinnerDateModel BookReadDateSpinDate = new SpinnerDateModel(date,null,null,Calendar.YEAR);//Create a spinner date, to correctly select a date
         BookReadSpin = new JSpinner(BookReadDateSpinDate);
-        JSpinner.DateEditor ded = new JSpinner.DateEditor(BookReadSpin,"yyyy/MM/dd");
+        JSpinner.DateEditor ded = new JSpinner.DateEditor(BookReadSpin,"yyyy/MM/dd");//set the display of the JSpinner
         BookReadSpin.setEditor(ded);
-        BookReadPanel.add(BookReadSpin);
+        BookReadPanel.add(BookReadSpin);//add the JSpinner to our Panel
 
         AlreadyReadChecbox.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {//If we have already entered the book in the database, hide the way to create a reading, just add a reading date
                 if(AlreadyReadChecbox.isSelected()==true){
                     ExitingBookComboBox.setEnabled(true);
                     BookNameTextField.setEnabled(false);
@@ -86,7 +88,7 @@ public class AddBookDlg extends JDialog {
         BookUnknownReadDateChecbox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(BookUnknownReadDateChecbox.isSelected()==true){
+                if(BookUnknownReadDateChecbox.isSelected()==true){//Hide the possibility to add a reading date when we don't know when you read it
                     BookReadSpin.setEnabled(false);
                 }
                 else{
@@ -96,21 +98,29 @@ public class AddBookDlg extends JDialog {
         });
         ExitingBookComboBox.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                String row = ExitingBookComboBox.getSelectedItem().toString();
+            public void actionPerformed(ActionEvent e) {//set the title and the author, retrieved by the ComboBox
+                String row = ExitingBookComboBox.getSelectedItem().toString();//get the item that we chose
                 String author = "";
-                String title = "";
+                m_title = "";
                 int i = 0;
-                do {
-                    title += row.charAt(i);
+                do {//As long as the character in the string is not '-', we add to our title variable the letter
+                    m_title += row.charAt(i);//at the end we have juste the title
                     i++;
                 } while (row.charAt(i+1)!= '-');
-                author = row.replace(title, "");
-                String RealAuthor = author.substring(3 , author.length());
-                AddImageToPanel(title, RealAuthor);
+                author = row.replace(m_title, "");//We recover only the end of the line to keep only the author
+                m_author = author.substring(3 , author.length());
+                AddImageToPanel(m_title, m_author);//add the image of the book, with the author and the title recovered on the combobox, in our panel
             }
         });
     }
+
+    public String getTitle(){
+        return m_title;
+    }
+    public String getAuthor(){
+        return m_author;
+    }
+
     public void FillBookCombobox(){
         try {
             Class.forName("org.sqlite.JDBC");
@@ -119,19 +129,20 @@ public class AddBookDlg extends JDialog {
 
             ResultSet rs = statement.executeQuery("SELECT Title, Author FROM BookManager GROUP BY Title, Author ORDER BY Title ASC;");
             while (rs.next()) {
-                ExitingBookComboBox.addItem(rs.getString(1)+ " - " + rs.getString(2));
+                ExitingBookComboBox.addItem(rs.getString(1)+ " - " + rs.getString(2));//Filled the combobox with the data Recovered from the database
             }
         } catch ( Exception e ) {
             System.err.println( e.getClass().getName() + ": " + e.getMessage() );
             System.exit(0);
         }
     }
-    public void AddImageToPanel(String title, String author){
+    public void AddImageToPanel(String title, String author){//
         try {
             Class.forName("org.sqlite.JDBC");
             Connection connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
             Statement statement = connection.createStatement();
-            ResultSet ImageQry = statement.executeQuery("SELECT Image FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
+            ResultSet ImageQry = statement.executeQuery("SELECT Image FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");//Retrieved from the bdd the URL of the book image,
+                                                                                                                                            // in parameters the title and the author enter in parameters of this function
 
             Image img = Toolkit.getDefaultToolkit().getImage(ImageQry.getString(1));
             img=img.getScaledInstance(200, 300, Image.SCALE_DEFAULT);
@@ -140,7 +151,7 @@ public class AddBookDlg extends JDialog {
             imgLabel.setDisabledIcon(icon);
             imgLabel.setIcon(icon);
 
-            PreviewPhotoPanel.updateUI();
+            PreviewPhotoPanel.updateUI();//reload the panel
             PreviewPhotoPanel.removeAll();
             PreviewPhotoPanel.add(imgLabel);
 
