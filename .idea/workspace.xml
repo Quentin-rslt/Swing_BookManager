@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5ede3cbf-f5c9-462f-8dc0-7982017c2136" name="Changes" comment="Change value on gitignore">
+    <list default="true" id="5ede3cbf-f5c9-462f-8dc0-7982017c2136" name="Changes" comment="Add : &#10;- Display of all the information of the book when we click on it: Author, Title, Image etc...&#10;- Change of app size and panel">
+      <change afterPath="$PROJECT_DIR$/src/Forms/Dialogs/AddBookDlg.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Sources/Dialogs/AddBookDlg.form" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Forms/MainWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Forms/MainWindow.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Sources/MainWindow.form" beforeDir="false" afterPath="$PROJECT_DIR$/src/Sources/MainWindow.form" afterDir="false" />
@@ -10,6 +12,9 @@
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CodeInsightWorkspaceSettings">
+    <option name="optimizeImportsOnTheFly" value="true" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -37,14 +42,16 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "UI_DESIGNER_EDITOR_MODE.UIDesignerToolWindowManager.SHOW": "true",
     "jdk.selected.JAVA_MODULE": "openjdk-18",
-    "last_opened_file_path": "C:/Program Files/Java/jre1.8.0_341/lib/ext/sqlite-jdbc-3.36.0.3.jar",
+    "last_opened_file_path": "C:/Users/quent/Documents/LookAndFeel/V3/syntheticaAluOxide.jar",
     "project.structure.last.edited": "Libraries",
     "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2"
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "preferences.pluginManager"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\quent\IdeaProjects\BookManager\src\Sources\Dialogs" />
       <recent name="C:\Users\quent\IdeaProjects\BookManager\src\Sources" />
     </key>
   </component>
@@ -101,7 +108,14 @@
       <option name="project" value="LOCAL" />
       <updated>1660223959426</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Add : &#10;- Display of all the information of the book when we click on it: Author, Title, Image etc...&#10;- Change of app size and panel">
+      <created>1660374004139</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1660374004139</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -120,6 +134,7 @@
     <MESSAGE value="Change class main" />
     <MESSAGE value="Add BDD to project, with connexion and data recovery on the BookTableList" />
     <MESSAGE value="Change value on gitignore" />
-    <option name="LAST_COMMIT_MESSAGE" value="Change value on gitignore" />
+    <MESSAGE value="Add : &#10;- Display of all the information of the book when we click on it: Author, Title, Image etc...&#10;- Change of app size and panel" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add : &#10;- Display of all the information of the book when we click on it: Author, Title, Image etc...&#10;- Change of app size and panel" />
   </component>
 </project>

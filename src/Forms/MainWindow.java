@@ -1,14 +1,13 @@
 package Forms;
 
-import javax.imageio.ImageIO;
+import com.formdev.flatlaf.FlatDarkLaf;
+
 import javax.swing.*;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.sql.*;
 
 public class MainWindow extends JDialog {
@@ -21,7 +20,7 @@ public class MainWindow extends JDialog {
     private JPanel LeftPanelWest;
     private JPanel BookPhotoPanel;
     private JPanel BookExtractPanel;
-    private JButton ReadExtractBtn;
+    private JButton ManageReadingsBtn;
     private JLabel TitleLabel;
     private JPanel LeftPanelCenter;
     private JPanel BookInfoGlobalPanel;
@@ -38,6 +37,7 @@ public class MainWindow extends JDialog {
     private JButton FiltersBookBtn;
     private JButton CancelFiltersBtn;
     private JLabel CountReadingLabel;
+    private JToolBar Menubar;
     private JTable m_bookListTable;
     private JScrollPane m_pane;
     private DefaultTableModel m_tableModel = new DefaultTableModel();
@@ -93,11 +93,11 @@ public class MainWindow extends JDialog {
                         PersonalNoteLabel.setText("Note personelle : "+NotePersoQry.getString(1));
 
                         //First reading
-                        ResultSet FirstReadQry = statement.executeQuery("SELECT FirstReading FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
+                        ResultSet FirstReadQry = statement.executeQuery("SELECT DateReading FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'ORDER BY DateReading ASC LIMIT 1");
                         FirstReadingLabel.setText("Première lecture : "+FirstReadQry.getString(1));
 
                         //Last reading
-                        ResultSet LastReadQry = statement.executeQuery("SELECT LastReading FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
+                        ResultSet LastReadQry = statement.executeQuery("SELECT DateReading FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'ORDER BY DateReading DESC LIMIT 1");
                         LastReadingLabel.setText("Dernière lecture : "+FirstReadQry.getString(1));
 
                         //Image
@@ -133,8 +133,7 @@ public class MainWindow extends JDialog {
                     " NumberOP INT, " +
                     " NotePerso INT, " +
                     " NoteBabelio INT, " +
-                    " LastReading DATE, " +
-                    " FirstReading DATE, " +
+                    " DateReading DATE, " +
                     " ReleaseYear INT, " +
                     " Summary TEXT)";
 
@@ -187,8 +186,14 @@ public class MainWindow extends JDialog {
 
 
     public static void main(String[] args) {
+        try {
+            UIManager.setLookAndFeel(new FlatDarkLaf());
+
+        }catch( Exception ex ) {
+            System.err.println( "Failed to initialize LaF" );
+        }
         MainWindow dialog = new MainWindow();
-        dialog.setSize(1000,500);
+        dialog.setSize(1000,550);
         dialog.setVisible(true);
         System.exit(0);
     }
