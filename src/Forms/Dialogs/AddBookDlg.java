@@ -40,11 +40,15 @@ public class AddBookDlg extends JDialog {
     private JCheckBox AlreadyReadChecbox;
     private JSpinner BookReleaseYearSpin;
     private JSpinner BookDateReadSpin;
+    private JSpinner BookNumberOPSpin;
+    private JLabel NumberOPLabel;
 
     private String m_author;
     private String m_title;
     private String m_URL;
     private boolean m_isValide = false;//Useful for determinate if the input are good
+    Connection m_connection;
+    Statement m_statement;
 
     public AddBookDlg() {
         setContentPane(contentPane);
@@ -60,6 +64,7 @@ public class AddBookDlg extends JDialog {
                     BookNameTextField.setEnabled(false);
                     BookAuthorTextField.setEnabled(false);
                     BookReleaseYearSpin.setEnabled(false);
+                    BookNumberOPSpin.setEnabled(false);
                     BookPersonalNoteSpin.setEnabled(false);
                     BookNoteBblSpin.setEnabled(false);
                     BookSummaryTextPane.setEnabled(false);
@@ -73,6 +78,7 @@ public class AddBookDlg extends JDialog {
                     BookNameTextField.setEnabled(true);
                     BookAuthorTextField.setEnabled(true);
                     BookReleaseYearSpin.setEnabled(true);
+                    BookNumberOPSpin.setEnabled(true);
                     BookPersonalNoteSpin.setEnabled(true);
                     BookNoteBblSpin.setEnabled(true);
                     BookSummaryTextPane.setEnabled(true);
@@ -110,11 +116,14 @@ public class AddBookDlg extends JDialog {
                 m_author = author.substring(3 , author.length());
                 try{
                     Class.forName("org.sqlite.JDBC");
-                    Connection connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
-                    Statement statement = connection.createStatement();
-                    ResultSet ImageQry = statement.executeQuery("SELECT Image FROM BookManager WHERE Title='"+m_title+"' AND Author='"+m_author+ "'");//Retrieved from the bdd the URL of the book image
+                    m_connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
+                    m_statement = m_connection.createStatement();
+                    ResultSet ImageQry = m_statement.executeQuery("SELECT Image FROM BookManager WHERE Title='"+m_title+"' AND Author='"+m_author+ "'");//Retrieved from the bdd the URL of the book image
                                                                                                                                                     // in parameters the title and the author enter in parameters of this function
                     addImageToPanel(ImageQry.getString(1));//add the image of the book, with the author and the title recovered on the combobox, in our panel
+
+                    m_connection.close();
+                    m_statement.close();
                 } catch ( Exception e ) {
                     System.err.println( e.getClass().getName() + ": " + e.getMessage() );
                     System.exit(0);
@@ -133,13 +142,12 @@ public class AddBookDlg extends JDialog {
         ValidateBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(AlreadyReadChecbox.isSelected()==true){
+                if(AlreadyReadChecbox.isSelected()){
                     m_isValide=true;
                     setVisible(false);
                     dispose();
                 }
-                else if(getNewBookAuthor()!="" && getNewBookAuthor()!="" && getNewBookReleaseYear()!="" && getNewBookPersonalNote()!="" &&
-                        getNewBookBBLNote()!="" && getNewBookSummary()!="" && getURL()!=""){//Verif if the input are good to quit the dlg and recovered the data for bdd
+                else if(!AlreadyReadChecbox.isSelected() && getNewBookAuthor()!="" && getNewBookAuthor()!="" && getNewBookSummary()!="" && getURL()!=""){//Verif if the input are good to quit the dlg and recovered the data for bdd
                     m_isValide=true;
                     setVisible(false);
                     dispose();
@@ -175,14 +183,17 @@ public class AddBookDlg extends JDialog {
     public String getNewBookAuthor(){
         return BookAuthorTextField.getText();
     }
+    public int getNewBookNumberOP(){
+        return Integer.parseInt(BookNumberOPSpin.getValue().toString());
+    }
     public String getNewBookReleaseYear(){
         return BookReleaseYearSpin.getValue().toString();
     }
-    public String getNewBookPersonalNote(){
-        return BookPersonalNoteSpin.getValue().toString();
+    public int getNewBookPersonalNote(){
+        return Integer.parseInt(BookPersonalNoteSpin.getValue().toString());
     }
-    public String getNewBookBBLNote(){
-        return BookNoteBblSpin.getValue().toString();
+    public int getNewBookBBLNote(){
+        return Integer.parseInt(BookNoteBblSpin.getValue().toString());
     }
     public String getNewBookSummary(){
         return BookSummaryTextPane.getText();
@@ -199,17 +210,26 @@ public class AddBookDlg extends JDialog {
     public String getURL(){
         return m_URL;
     }
+    public boolean getIsAlreadyRead(){
+        return AlreadyReadChecbox.isSelected();
+    }
+    public JComboBox getExitingBookComboBox(){
+        return ExitingBookComboBox;
+    }
 
     public void fillBookCombobox(){
         try {
             Class.forName("org.sqlite.JDBC");
-            Connection connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
-            Statement statement = connection.createStatement();
+            m_connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
+            m_statement = m_connection.createStatement();
 
-            ResultSet rs = statement.executeQuery("SELECT Title, Author FROM BookManager GROUP BY Title, Author ORDER BY Title ASC;");
+            ResultSet rs = m_statement.executeQuery("SELECT Title, Author FROM BookManager GROUP BY Title, Author ORDER BY Title ASC;");
             while (rs.next()) {
                 ExitingBookComboBox.addItem(rs.getString(1)+ " - " + rs.getString(2));//Filled the combobox with the data Recovered from the database
             }
+            m_connection.close();
+            m_statement.close();
+            rs.close();
         } catch ( Exception e ) {
             System.err.println( e.getClass().getName() + ": " + e.getMessage() );
             System.exit(0);
