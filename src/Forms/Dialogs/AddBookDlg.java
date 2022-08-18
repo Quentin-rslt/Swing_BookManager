@@ -62,34 +62,10 @@ public class AddBookDlg extends JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {//If we have already entered the book in the database, hide the way to create a reading, just add a reading date
                 if(AlreadyReadChecbox.isSelected()){
-                    ExitingBookComboBox.setEnabled(true);
-                    BookNameTextField.setEnabled(false);
-                    BookAuthorTextField.setEnabled(false);
-                    BookReleaseYearSpin.setEnabled(false);
-                    BookNumberOPSpin.setEnabled(false);
-                    BookPersonalNoteSpin.setEnabled(false);
-                    BookNoteBblSpin.setEnabled(false);
-                    BookSummaryTextPane.setEnabled(false);
-                    BookReleaseYearSpin.setEnabled(false);
-                    BookBrowseBtn.setEnabled(false);
-                    ExitingBookComboBox.setSelectedIndex(0);
-                    PreviewPhotoPanel.updateUI();
-                    PreviewPhotoPanel.removeAll();
+                    initComponents(false);
                 }
                 else{
-                    ExitingBookComboBox.setEnabled(false);
-                    BookNameTextField.setEnabled(true);
-                    BookAuthorTextField.setEnabled(true);
-                    BookReleaseYearSpin.setEnabled(true);
-                    BookNumberOPSpin.setEnabled(true);
-                    BookPersonalNoteSpin.setEnabled(true);
-                    BookNoteBblSpin.setEnabled(true);
-                    BookSummaryTextPane.setEnabled(true);
-                    BookReleaseYearSpin.setEnabled(true);
-                    BookBrowseBtn.setEnabled(true);
-                    ExitingBookComboBox.setSelectedIndex(0);
-                    PreviewPhotoPanel.updateUI();
-                    PreviewPhotoPanel.removeAll();
+                    initComponents(true);
                 }
             }
         });
@@ -98,7 +74,6 @@ public class AddBookDlg extends JDialog {
             public void actionPerformed(ActionEvent e) {
                 if(BookUnknownReadDateChecbox.isSelected()){//Hide the possibility to add a reading date when we don't know when you read it
                     BookDateReadSpin.setEnabled(false);
-                    System.out.println(BookReleaseYearSpin);
                 }
                 else{
                     BookDateReadSpin.setEnabled(true);
@@ -156,7 +131,7 @@ public class AddBookDlg extends JDialog {
                         ResultSet qry = m_statement.executeQuery(sql);
 
                         boolean bookFind =false;
-                        while (qry.next() && bookFind==false){//
+                        while (qry.next() && !bookFind){//
                             if (!BookUnknownReadDateChecbox.isSelected() && Objects.equals(qry.getString(3), getNewBookDateReading())){//
                                 JFrame jFrame = new JFrame();
                                 JOptionPane.showMessageDialog(jFrame, "La date de lecture existe déjà !");
@@ -165,7 +140,7 @@ public class AddBookDlg extends JDialog {
                             else
                                 bookFind = false;
                         }
-                        if (bookFind==false){//If a book has not been found in the database when leaving the loop, then the book typed is valid
+                        if (!bookFind){//If a book has not been found in the database when leaving the loop, then the book typed is valid
                             m_isValide=true;
                             setVisible(false);
                             dispose();
@@ -328,6 +303,8 @@ public class AddBookDlg extends JDialog {
         BookDateReadSpin.setModel(BookReadDateSpinDate);
         JSpinner.DateEditor ded = new JSpinner.DateEditor(BookDateReadSpin,"yyyy/MM/dd");//set the display of the JSpinner reading book date
         BookDateReadSpin.setEditor(ded);
+    }
+    public void initComponents(boolean bool){
     }
     public void setURL(String url){
         m_URL= url;
