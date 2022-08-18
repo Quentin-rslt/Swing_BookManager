@@ -63,6 +63,7 @@ public class MainWindow extends JDialog {
                 @Override
                 public void mouseClicked(MouseEvent evt) {//set main UI when we clicked on an element of the array, retrieved from the db
                     super.mouseClicked(evt);
+                    ManageReadingsBtn.setEnabled(true);
                     int row = m_bookListTable.rowAtPoint(evt.getPoint());
                     m_title = m_bookListTable.getValueAt(row, 0).toString(); //get the value of the column of the table
                     m_author = m_bookListTable.getValueAt(row, 1).toString();
@@ -184,7 +185,7 @@ public class MainWindow extends JDialog {
                                 pstmt.setString(4, rs.getString(4));
                                 pstmt.setString(5, rs.getString(5));
                                 pstmt.setString(6, rs.getString(6));
-                                pstmt.setString(7, rs.getString(7));
+                                pstmt.setString(7, diag.getNewBookDateReading());
                                 pstmt.setString(8, rs.getString(8));
                                 pstmt.setString(9, rs.getString(9));
                                 pstmt.executeUpdate();//Insert the new Book
@@ -218,8 +219,11 @@ public class MainWindow extends JDialog {
             public void actionPerformed(ActionEvent e) {
                 ManageReadingDlg diag = new ManageReadingDlg(m_title, m_author);
                 diag.setTitle("Gérer les lectures");
-                diag.setSize(500,500);
+                diag.setSize(500,300);
                 diag.setVisible(true);
+                if(diag.isValid()){
+                    loadDB();
+                }
             }
         });
     }

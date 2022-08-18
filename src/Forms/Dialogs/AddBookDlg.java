@@ -305,12 +305,4 @@ public class AddBookDlg extends JDialog {
     public void setURL(String url){
         m_URL= url;
     }
-
-    public static void main(String[] args) {
-        AddBookDlg dialog = new AddBookDlg();
-        dialog.setTitle("Ajouter une lecture");
-        dialog.setSize(800,500);
-        dialog.setVisible(true);
-        System.exit(0);
-    }
 }

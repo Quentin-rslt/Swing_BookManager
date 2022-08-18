@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5ede3cbf-f5c9-462f-8dc0-7982017c2136" name="Changes" comment="Can add a new reading if the book already exist">
-      <change afterPath="$PROJECT_DIR$/src/Forms/Dialogs/ManageReadingDlg.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Sources/Dialogs/ManageReadingDlg.form" afterDir="false" />
+    <list default="true" id="5ede3cbf-f5c9-462f-8dc0-7982017c2136" name="Changes" comment="Add file ManageReadingDlg to see all the readings of a book and manage them&#10;Interface set up&#10;Book reading list completed and functional">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Forms/Dialogs/AddBookDlg.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Forms/Dialogs/AddBookDlg.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Forms/Dialogs/ManageReadingDlg.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Forms/Dialogs/ManageReadingDlg.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Forms/MainWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Forms/MainWindow.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Sources/Dialogs/AddBookDlg.form" beforeDir="false" afterPath="$PROJECT_DIR$/src/Sources/Dialogs/AddBookDlg.form" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Sources/Dialogs/ManageReadingDlg.form" beforeDir="false" afterPath="$PROJECT_DIR$/src/Sources/Dialogs/ManageReadingDlg.form" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Sources/MainWindow.form" beforeDir="false" afterPath="$PROJECT_DIR$/src/Sources/MainWindow.form" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -193,7 +193,14 @@
       <option name="project" value="LOCAL" />
       <updated>1660814222770</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="Add file ManageReadingDlg to see all the readings of a book and manage them&#10;Interface set up&#10;Book reading list completed and functional">
+      <created>1660815920329</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1660815920329</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -224,6 +231,7 @@
     <MESSAGE value="Add a first item in Combobox in AddBookDlg, for fix som bug&#10;Can't add a new reading, if the book already exist" />
     <MESSAGE value="Comment the code&#10;Fix bug with dateReading in AddBookDlg" />
     <MESSAGE value="Can add a new reading if the book already exist" />
-    <option name="LAST_COMMIT_MESSAGE" value="Can add a new reading if the book already exist" />
+    <MESSAGE value="Add file ManageReadingDlg to see all the readings of a book and manage them&#10;Interface set up&#10;Book reading list completed and functional" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add file ManageReadingDlg to see all the readings of a book and manage them&#10;Interface set up&#10;Book reading list completed and functional" />
   </component>
 </project>
