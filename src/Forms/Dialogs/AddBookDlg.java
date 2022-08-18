@@ -61,7 +61,7 @@ public class AddBookDlg extends JDialog {
         AlreadyReadChecbox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {//If we have already entered the book in the database, hide the way to create a reading, just add a reading date
-                if(AlreadyReadChecbox.isSelected()==true){
+                if(AlreadyReadChecbox.isSelected()){
                     ExitingBookComboBox.setEnabled(true);
                     BookNameTextField.setEnabled(false);
                     BookAuthorTextField.setEnabled(false);
@@ -72,6 +72,7 @@ public class AddBookDlg extends JDialog {
                     BookSummaryTextPane.setEnabled(false);
                     BookReleaseYearSpin.setEnabled(false);
                     BookBrowseBtn.setEnabled(false);
+                    ExitingBookComboBox.setSelectedIndex(0);
                     PreviewPhotoPanel.updateUI();
                     PreviewPhotoPanel.removeAll();
                 }
@@ -86,6 +87,7 @@ public class AddBookDlg extends JDialog {
                     BookSummaryTextPane.setEnabled(true);
                     BookReleaseYearSpin.setEnabled(true);
                     BookBrowseBtn.setEnabled(true);
+                    ExitingBookComboBox.setSelectedIndex(0);
                     PreviewPhotoPanel.updateUI();
                     PreviewPhotoPanel.removeAll();
                 }
@@ -94,7 +96,7 @@ public class AddBookDlg extends JDialog {
         BookUnknownReadDateChecbox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(BookUnknownReadDateChecbox.isSelected()==true){//Hide the possibility to add a reading date when we don't know when you read it
+                if(BookUnknownReadDateChecbox.isSelected()){//Hide the possibility to add a reading date when we don't know when you read it
                     BookDateReadSpin.setEnabled(false);
                     System.out.println(BookReleaseYearSpin);
                 }
@@ -106,29 +108,31 @@ public class AddBookDlg extends JDialog {
         ExitingBookComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {//set the title and the author, retrieved by the ComboBox
-                String row = Objects.requireNonNull(ExitingBookComboBox.getSelectedItem()).toString();//get the item that we chose
-                String author = "";
-                m_title = "";
-                int i = 0;
-                do {//As long as the character in the string is not '-', we add to our title variable the letter
-                    m_title += row.charAt(i);//at the end we have juste the title
-                    i++;
-                } while (row.charAt(i+1)!= '-');
-                author = row.replace(m_title, "");//We recover only the end of the line to keep only the author
-                m_author = author.substring(3 , author.length());
-                try{
-                    Class.forName("org.sqlite.JDBC");
-                    m_connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
-                    m_statement = m_connection.createStatement();
-                    ResultSet ImageQry = m_statement.executeQuery("SELECT Image FROM BookManager WHERE Title='"+m_title+"' AND Author='"+m_author+ "'");//Retrieved from the bdd the URL of the book image
-                                                                                                                                                    // in parameters the title and the author enter in parameters of this function
-                    addImageToPanel(ImageQry.getString(1));//add the image of the book, with the author and the title recovered on the combobox, in our panel
+                if(ExitingBookComboBox.getSelectedItem() != ""){
+                    String row = Objects.requireNonNull(ExitingBookComboBox.getSelectedItem()).toString();//get the item that we chose
+                    String author = "";
+                    m_title = "";
+                    int i = 0;
+                    do {//As long as the character in the string is not '-', we add to our title variable the letter
+                        m_title += row.charAt(i);//at the end we have juste the title
+                        i++;
+                    } while (row.charAt(i+1)!= '-');
+                    author = row.replace(m_title, "");//We recover only the end of the line to keep only the author
+                    m_author = author.substring(3 , author.length());
+                    try{
+                        Class.forName("org.sqlite.JDBC");
+                        m_connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
+                        m_statement = m_connection.createStatement();
+                        ResultSet ImageQry = m_statement.executeQuery("SELECT Image FROM BookManager WHERE Title='"+m_title+"' AND Author='"+m_author+ "'");//Retrieved from the bdd the URL of the book image
+                        // in parameters the title and the author enter in parameters of this function
+                        addImageToPanel(ImageQry.getString(1));//add the image of the book, with the author and the title recovered on the combobox, in our panel
 
-                    m_connection.close();
-                    m_statement.close();
-                } catch ( Exception e ) {
-                    System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-                    System.exit(0);
+                        m_connection.close();
+                        m_statement.close();
+                    } catch ( Exception e ) {
+                        System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+                        System.exit(0);
+                    }
                 }
             }
         });
@@ -142,16 +146,44 @@ public class AddBookDlg extends JDialog {
         });
         ValidateBtn.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                if(AlreadyReadChecbox.isSelected()){
+            public void actionPerformed(ActionEvent evt) {
+                if(AlreadyReadChecbox.isSelected() && getExitingBookComboBox().getSelectedItem()!=""){
                     m_isValide=true;
                     setVisible(false);
                     dispose();
                 }
+                else if(AlreadyReadChecbox.isSelected() && getExitingBookComboBox().getSelectedItem()==""){//Verif if we select a book in combobox
+                    JFrame jFrame = new JFrame();
+                    JOptionPane.showMessageDialog(jFrame, "Veuillez sélectionner un livre ! ");
+                }
                 else if(!AlreadyReadChecbox.isSelected() && !Objects.equals(getNewBookAuthor(), "") && !Objects.equals(getNewBookAuthor(), "") && !Objects.equals(getNewBookSummary(), "") && !Objects.equals(getURL(), "")){//Verif if the input are good to quit the dlg and recovered the data for bdd
-                    m_isValide=true;
-                    setVisible(false);
-                    dispose();
+                    try{//Can't
+                        Class.forName("org.sqlite.JDBC");
+                        m_connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
+                        m_statement = m_connection.createStatement();
+                        ResultSet bookQry = m_statement.executeQuery("SELECT Title, Author FROM BookManager GROUP BY Title, Author ORDER BY Title ASC;");
+
+                        boolean verif =false;
+                        while (bookQry.next() && verif==false){
+                            if (Objects.equals(bookQry.getString(1), getNewBookTitle()) && Objects.equals(bookQry.getString(2), getNewBookAuthor())){
+                                JFrame jFrame = new JFrame();
+                                JOptionPane.showMessageDialog(jFrame, "Le livre existe déjà !");
+                                verif = true;
+                            }
+                            else
+                                verif = false;
+                        }
+                        if (verif==false){
+                            m_isValide=true;
+                            setVisible(false);
+                            dispose();
+                        }
+                        m_connection.close();
+                        m_statement.close();
+                    } catch ( Exception e ) {
+                        System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+                        System.exit(0);
+                    }
                 }
                 else{
                     JFrame jFrame = new JFrame();
@@ -224,6 +256,7 @@ public class AddBookDlg extends JDialog {
     }
 
     public void fillBookCombobox(){
+        ExitingBookComboBox.addItem("");
         try {
             Class.forName("org.sqlite.JDBC");
             m_connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");

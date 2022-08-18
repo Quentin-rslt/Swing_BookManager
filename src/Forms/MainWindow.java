@@ -189,9 +189,9 @@ public class MainWindow extends JDialog {
                                 pstmt.setString(1, diag.getTitle());
                                 pstmt.setString(2, diag.getAuthor());
                                 pstmt.setString(3, rs.getString(3));
-                                pstmt.setInt(4, rs.getInt(4));
-                                pstmt.setInt(5, rs.getInt(5));
-                                pstmt.setInt(6, rs.getInt(6));
+                                pstmt.setString(4, rs.getString(4));
+                                pstmt.setString(5, rs.getString(5));
+                                pstmt.setString(6, rs.getString(6));
                                 pstmt.setString(7, "Inconnu");
                                 pstmt.setString(8, rs.getString(8));
                                 pstmt.setString(9, rs.getString(9));
