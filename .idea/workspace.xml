@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5ede3cbf-f5c9-462f-8dc0-7982017c2136" name="Changes" comment="Create again getter for AddBookDlg&#10;Set some bug in AddBookDlg&#10;Change addImageToPanel function, only a path in parameters&#10;The code of button &quot;Valider&quot; and &quot;Annuler&quot; are implemented">
+    <list default="true" id="5ede3cbf-f5c9-462f-8dc0-7982017c2136" name="Changes" comment="We can add a reading now&#10;Change the method of the connection in BDD with a method">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Forms/Dialogs/AddBookDlg.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Forms/Dialogs/AddBookDlg.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Forms/MainWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Forms/MainWindow.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Sources/Dialogs/AddBookDlg.form" beforeDir="false" afterPath="$PROJECT_DIR$/src/Sources/Dialogs/AddBookDlg.form" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -156,7 +155,14 @@
       <option name="project" value="LOCAL" />
       <updated>1660517316785</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="We can add a reading now&#10;Change the method of the connection in BDD with a method">
+      <created>1660563629276</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1660563629276</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -182,6 +188,7 @@
     <MESSAGE value="Set all spinner value with default and max value&#10;Set all spinner date with a spinnerDateModel" />
     <MESSAGE value="Create all getter in AddBookDlg" />
     <MESSAGE value="Create again getter for AddBookDlg&#10;Set some bug in AddBookDlg&#10;Change addImageToPanel function, only a path in parameters&#10;The code of button &quot;Valider&quot; and &quot;Annuler&quot; are implemented" />
-    <option name="LAST_COMMIT_MESSAGE" value="Create again getter for AddBookDlg&#10;Set some bug in AddBookDlg&#10;Change addImageToPanel function, only a path in parameters&#10;The code of button &quot;Valider&quot; and &quot;Annuler&quot; are implemented" />
+    <MESSAGE value="We can add a reading now&#10;Change the method of the connection in BDD with a method" />
+    <option name="LAST_COMMIT_MESSAGE" value="We can add a reading now&#10;Change the method of the connection in BDD with a method" />
   </component>
 </project>

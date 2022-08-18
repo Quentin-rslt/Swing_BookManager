@@ -8,8 +8,10 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
 
 public class AddBookDlg extends JDialog {
     private JPanel contentPane;
@@ -94,7 +96,7 @@ public class AddBookDlg extends JDialog {
             public void actionPerformed(ActionEvent e) {
                 if(BookUnknownReadDateChecbox.isSelected()==true){//Hide the possibility to add a reading date when we don't know when you read it
                     BookDateReadSpin.setEnabled(false);
-                    System.out.println(BookPersonalNoteSpin.getValue().toString());
+                    System.out.println(BookReleaseYearSpin);
                 }
                 else{
                     BookDateReadSpin.setEnabled(true);
@@ -104,7 +106,7 @@ public class AddBookDlg extends JDialog {
         ExitingBookComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {//set the title and the author, retrieved by the ComboBox
-                String row = ExitingBookComboBox.getSelectedItem().toString();//get the item that we chose
+                String row = Objects.requireNonNull(ExitingBookComboBox.getSelectedItem()).toString();//get the item that we chose
                 String author = "";
                 m_title = "";
                 int i = 0;
@@ -128,7 +130,6 @@ public class AddBookDlg extends JDialog {
                     System.err.println( e.getClass().getName() + ": " + e.getMessage() );
                     System.exit(0);
                 }
-
             }
         });
         CancelBtn.addActionListener(new ActionListener() {
@@ -147,7 +148,7 @@ public class AddBookDlg extends JDialog {
                     setVisible(false);
                     dispose();
                 }
-                else if(!AlreadyReadChecbox.isSelected() && getNewBookAuthor()!="" && getNewBookAuthor()!="" && getNewBookSummary()!="" && getURL()!=""){//Verif if the input are good to quit the dlg and recovered the data for bdd
+                else if(!AlreadyReadChecbox.isSelected() && !Objects.equals(getNewBookAuthor(), "") && !Objects.equals(getNewBookAuthor(), "") && !Objects.equals(getNewBookSummary(), "") && !Objects.equals(getURL(), "")){//Verif if the input are good to quit the dlg and recovered the data for bdd
                     m_isValide=true;
                     setVisible(false);
                     dispose();
@@ -183,23 +184,28 @@ public class AddBookDlg extends JDialog {
     public String getNewBookAuthor(){
         return BookAuthorTextField.getText();
     }
-    public int getNewBookNumberOP(){
-        return Integer.parseInt(BookNumberOPSpin.getValue().toString());
+    public String getNewBookNumberOP(){
+        return BookNumberOPSpin.getValue().toString();
     }
     public String getNewBookReleaseYear(){
-        return BookReleaseYearSpin.getValue().toString();
+        SimpleDateFormat formater = new SimpleDateFormat("yyyy");//set the date format returned to have just the year release
+        String spinnerValue = formater.format(BookReleaseYearSpin.getValue());
+
+        return spinnerValue;
     }
-    public int getNewBookPersonalNote(){
-        return Integer.parseInt(BookPersonalNoteSpin.getValue().toString());
+    public String getNewBookPersonalNote(){
+        return BookPersonalNoteSpin.getValue().toString();
     }
-    public int getNewBookBBLNote(){
-        return Integer.parseInt(BookNoteBblSpin.getValue().toString());
+    public String getNewBookBBLNote(){
+        return BookNoteBblSpin.getValue().toString();
     }
     public String getNewBookSummary(){
         return BookSummaryTextPane.getText();
     }
     public String getNewBookDateReading(){
-        return BookDateReadSpin.getValue().toString();
+        SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd");//set the date format returned to have the day, month and year
+        String spinnerValue = formater.format(BookReleaseYearSpin.getValue());
+        return spinnerValue;
     }
     public boolean isDateUnknown(){
         return BookUnknownReadDateChecbox.isSelected();
@@ -247,15 +253,15 @@ public class AddBookDlg extends JDialog {
         PreviewPhotoPanel.add(imgLabel);
     }
     public void initComponents(){
-        SpinnerModel BookPersonalNotelSM = new SpinnerNumberModel(5, 0, 5, 1);//Set a default and max value for spinner Note
-        SpinnerModel BookNoteBbblSM = new SpinnerNumberModel(5, 0, 5, 1);
+        SpinnerModel BookPersonalNotelSM = new SpinnerNumberModel(5, 0, 5, 0.5);//Set a default and max value for spinner Note
+        SpinnerModel BookNoteBbblSM = new SpinnerNumberModel(5, 0, 5, 0.01);
         BookPersonalNoteSpin.setModel(BookPersonalNotelSM);
         BookNoteBblSpin.setModel(BookNoteBbblSM);
 
         Date dateRelease = new Date();
         Date date = new Date();
 
-        SpinnerDateModel BookReadDateSpinDate = new SpinnerDateModel(date,null,null, Calendar.YEAR);//Create a spinner date, to correctly select a date
+        SpinnerDateModel BookReadDateSpinDate = new SpinnerDateModel(date, null,null, Calendar.YEAR);//Create a spinner date, to correctly select a date
         SpinnerDateModel BookReleaseDateSpinModel = new SpinnerDateModel(dateRelease,null,null,Calendar.YEAR);//Create a spinner date, to correctly select a date
 
         BookReleaseYearSpin.setModel(BookReleaseDateSpinModel);
