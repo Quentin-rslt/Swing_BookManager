@@ -1,6 +1,7 @@
 package Forms;
 
 import Forms.Dialogs.AddBookDlg;
+import Forms.Dialogs.ManageReadingDlg;
 import com.formdev.flatlaf.FlatDarkLaf;
 
 import javax.swing.*;
@@ -48,6 +49,9 @@ public class MainWindow extends JDialog {
     private DefaultTableModel m_tableModel = new DefaultTableModel();
     private Statement m_statement = null;
     private Connection m_connection = null;
+    private String m_title = "";
+    private String m_author = "";
+
 
     public MainWindow() {
         setContentPane(contentPane);
@@ -60,8 +64,8 @@ public class MainWindow extends JDialog {
                 public void mouseClicked(MouseEvent evt) {//set main UI when we clicked on an element of the array, retrieved from the db
                     super.mouseClicked(evt);
                     int row = m_bookListTable.rowAtPoint(evt.getPoint());
-                    String title  = m_bookListTable.getValueAt(row, 0).toString(); //get the value of the column of the table
-                    String author  = m_bookListTable.getValueAt(row, 1).toString();
+                    m_title = m_bookListTable.getValueAt(row, 0).toString(); //get the value of the column of the table
+                    m_author = m_bookListTable.getValueAt(row, 1).toString();
 
                     //Fill in the data on the app
                     try(Connection conn = connect()) {
@@ -69,47 +73,47 @@ public class MainWindow extends JDialog {
                         m_statement = conn.createStatement();
 
                         //Title label
-                        ResultSet titleQry = m_statement.executeQuery("SELECT Title FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
+                        ResultSet titleQry = m_statement.executeQuery("SELECT Title FROM BookManager WHERE Title='"+m_title+"' AND Author='"+m_author+ "'");
                         TitleLabel.setText(titleQry.getString(1));
 
                         //Author label
-                        ResultSet authorQry = m_statement.executeQuery("SELECT Author FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
+                        ResultSet authorQry = m_statement.executeQuery("SELECT Author FROM BookManager WHERE Title='"+m_title+"' AND Author='"+m_author+ "'");
                         AuthorLabel.setText("Auteur : "+authorQry.getString(1));
 
                         //Release year label
-                        ResultSet NumberOPQry = m_statement.executeQuery("SELECT NumberOP FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
+                        ResultSet NumberOPQry = m_statement.executeQuery("SELECT NumberOP FROM BookManager WHERE Title='"+m_title+"' AND Author='"+m_author+ "'");
                         NumberPageLabel.setText("Nombre de page : "+NumberOPQry.getString(1));
 
                         //Number of reading label
-                        ResultSet ReleaseYearQry = m_statement.executeQuery("SELECT ReleaseYear FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
+                        ResultSet ReleaseYearQry = m_statement.executeQuery("SELECT ReleaseYear FROM BookManager WHERE Title='"+m_title+"' AND Author='"+m_author+ "'");
                         ReleaseYearLAbel.setText("Année de sortie : "+ReleaseYearQry.getString(1));
 
                         //Number of reading label
-                        ResultSet CountReadingQry = m_statement.executeQuery("SELECT COUNT(*) FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
+                        ResultSet CountReadingQry = m_statement.executeQuery("SELECT COUNT(*) FROM BookManager WHERE Title='"+m_title+"' AND Author='"+m_author+ "'");
                         CountReadingLabel.setText("Nombre de lecture : "+CountReadingQry.getString(1));
 
                         //Note on babelio
-                        ResultSet NoteBBQry = m_statement.executeQuery("SELECT NoteBabelio FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
+                        ResultSet NoteBBQry = m_statement.executeQuery("SELECT NoteBabelio FROM BookManager WHERE Title='"+m_title+"' AND Author='"+m_author+ "'");
                         NoteLabel.setText("Note : "+NoteBBQry.getString(1));
 
                         //Summary
-                        ResultSet SummaryQry = m_statement.executeQuery("SELECT Summary FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
+                        ResultSet SummaryQry = m_statement.executeQuery("SELECT Summary FROM BookManager WHERE Title='"+m_title+"' AND Author='"+m_author+ "'");
                         BookSummary.setText(SummaryQry.getString(1));
 
                         //Personal note
-                        ResultSet NotePersoQry = m_statement.executeQuery("SELECT NotePerso FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
+                        ResultSet NotePersoQry = m_statement.executeQuery("SELECT NotePerso FROM BookManager WHERE Title='"+m_title+"' AND Author='"+m_author+ "'");
                         PersonalNoteLabel.setText("Ma note : "+NotePersoQry.getString(1));
 
                         //First reading
-                        ResultSet FirstReadQry = m_statement.executeQuery("SELECT DateReading FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'ORDER BY DateReading ASC LIMIT 1");
+                        ResultSet FirstReadQry = m_statement.executeQuery("SELECT DateReading FROM BookManager WHERE Title='"+m_title+"' AND Author='"+m_author+ "'ORDER BY DateReading ASC LIMIT 1");
                         FirstReadingLabel.setText("Première lecture : "+FirstReadQry.getString(1));
 
                         //Last reading
-                        ResultSet LastReadQry = m_statement.executeQuery("SELECT DateReading FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'ORDER BY DateReading DESC LIMIT 1");
+                        ResultSet LastReadQry = m_statement.executeQuery("SELECT DateReading FROM BookManager WHERE Title='"+m_title+"' AND Author='"+m_author+ "'ORDER BY DateReading DESC LIMIT 1");
                         LastReadingLabel.setText("Dernière lecture : "+FirstReadQry.getString(1));
 
                         //Image
-                        ResultSet ImageQry = m_statement.executeQuery("SELECT Image FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
+                        ResultSet ImageQry = m_statement.executeQuery("SELECT Image FROM BookManager WHERE Title='"+m_title+"' AND Author='"+m_author+ "'");
 
                         Image img = Toolkit.getDefaultToolkit().getImage(ImageQry.getString(1));
                         img=img.getScaledInstance(200, 300, Image.SCALE_DEFAULT);//set size of image
@@ -209,6 +213,15 @@ public class MainWindow extends JDialog {
                 }
             }
         });
+        ManageReadingsBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ManageReadingDlg diag = new ManageReadingDlg(m_title, m_author);
+                diag.setTitle("Gérer les lectures");
+                diag.setSize(500,500);
+                diag.setVisible(true);
+            }
+        });
     }
     private Connection connect() {
         // SQLite connection string
@@ -260,7 +273,7 @@ public class MainWindow extends JDialog {
                 String author = rs.getString("Author");//Retrieve the author
 
                 String[ ] header = {"Titre","Auteur"};
-                Object[] data = {title, ""+author};
+                Object[] data = {title, author};
 
                 m_tableModel.setColumnIdentifiers(header);//Create the header
                 m_tableModel.addRow(data);//add to tablemodel the data

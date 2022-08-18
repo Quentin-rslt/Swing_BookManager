@@ -49,8 +49,8 @@ public class AddBookDlg extends JDialog {
     private String m_title;
     private String m_URL;
     private boolean m_isValide = false;//Useful for determinate if the input are good
-    Connection m_connection;
-    Statement m_statement;
+    private Connection m_connection;
+    private Statement m_statement;
 
     public AddBookDlg() {
         setContentPane(contentPane);
