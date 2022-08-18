@@ -20,6 +20,7 @@ public class ManageReadingDlg extends JDialog {
     private String m_author = "";
     private String m_dateReading = "";
     private JPopupMenu m_popup;
+    private boolean m_isEmpty = false;
 
     public ManageReadingDlg(String title, String author) {
         setContentPane(contentPane);
@@ -37,6 +38,10 @@ public class ManageReadingDlg extends JDialog {
         CancelBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if(m_bookListTable.getRowCount()>0)
+                    setIsEmpty(false);
+                else
+                    setIsEmpty(true);
                 setVisible(false);
                 dispose();
             }
@@ -92,12 +97,18 @@ public class ManageReadingDlg extends JDialog {
     public String getDateReading() {
         return m_dateReading;
     }
+    public boolean isEmpty() {
+        return m_isEmpty;
+    }
 
     public void setAuthor(String m_author) {
         this.m_author = m_author;
     }
     public void setTitle(String m_title) {
         this.m_title = m_title;
+    }
+    public void setIsEmpty(boolean m_isEmpty) {
+        this.m_isEmpty = m_isEmpty;
     }
     public void setDateReading(String m_dateReading) {
         this.m_dateReading = m_dateReading;

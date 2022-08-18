@@ -148,8 +148,8 @@ public class AddBookDlg extends JDialog {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 String sql = "SELECT Title, Author, DateReading FROM BookManager";
-                if(AlreadyReadChecbox.isSelected() && getExitingBookComboBox().getSelectedItem()!=""){
-                    try {//Can add a new reading if the book exists at the same reading date
+                if(AlreadyReadChecbox.isSelected() && getExitingBookComboBox().getSelectedItem()!=""){//Can add a new reading if the book exists at the same reading date
+                    try {
                         Class.forName("org.sqlite.JDBC");
                         m_connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
                         m_statement = m_connection.createStatement();
@@ -159,7 +159,7 @@ public class AddBookDlg extends JDialog {
                         while (qry.next() && bookFind==false){//
                             if (!BookUnknownReadDateChecbox.isSelected() && Objects.equals(qry.getString(3), getNewBookDateReading())){//
                                 JFrame jFrame = new JFrame();
-                                JOptionPane.showMessageDialog(jFrame, "La date de lecture éxiste déjà !");
+                                JOptionPane.showMessageDialog(jFrame, "La date de lecture existe déjà !");
                                 bookFind = true;//
                             }
                             else
@@ -170,7 +170,6 @@ public class AddBookDlg extends JDialog {
                             setVisible(false);
                             dispose();
                         }
-
                     }catch (Exception e){
                         System.err.println( e.getClass().getName() + ": " + e.getMessage() );
                         System.exit(0);
@@ -180,7 +179,7 @@ public class AddBookDlg extends JDialog {
                     JFrame jFrame = new JFrame();
                     JOptionPane.showMessageDialog(jFrame, "Veuillez sélectionner un livre ! ");
                 }
-                else if(!AlreadyReadChecbox.isSelected() && !Objects.equals(getNewBookAuthor(), "") && !Objects.equals(getNewBookAuthor(), "") && !Objects.equals(getNewBookSummary(), "") && !Objects.equals(getURL(), "")){//Verif if the input are good to quit the dlg and recovered the data for bdd
+                else if(!AlreadyReadChecbox.isSelected() && !Objects.equals(getNewBookAuthor(), "") && !Objects.equals(getNewBookTitle(), "") && !Objects.equals(getNewBookSummary(), "") && !Objects.equals(getURL(), "")){//Verif if the input are good to quit the dlg and recovered the data for bdd
                     try{//Can add a new reading if the book already exist
                         Class.forName("org.sqlite.JDBC");
                         m_connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
@@ -208,6 +207,10 @@ public class AddBookDlg extends JDialog {
                         System.err.println( e.getClass().getName() + ": " + e.getMessage() );
                         System.exit(0);
                     }
+                }
+                else if(Objects.equals(getNewBookAuthor(), getNewBookTitle())){
+                    JFrame jFrame = new JFrame();
+                    JOptionPane.showMessageDialog(jFrame, "Le nom de l'auteur et le titre d'un livre ne peut pas être identique ! ");
                 }
                 else{
                     JFrame jFrame = new JFrame();

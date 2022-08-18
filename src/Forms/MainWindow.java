@@ -56,6 +56,7 @@ public class MainWindow extends JDialog {
     public MainWindow() {
         setContentPane(contentPane);
         setModal(true);
+        initComponents();
         connectionDB();
         loadDB();
         if(m_bookListTable != null){//Vérif if the table is not empty
@@ -67,70 +68,8 @@ public class MainWindow extends JDialog {
                     int row = m_bookListTable.rowAtPoint(evt.getPoint());
                     m_title = m_bookListTable.getValueAt(row, 0).toString(); //get the value of the column of the table
                     m_author = m_bookListTable.getValueAt(row, 1).toString();
-
                     //Fill in the data on the app
-                    try(Connection conn = connect()) {
-                        Class.forName("org.sqlite.JDBC");
-                        m_statement = conn.createStatement();
-
-                        //Title label
-                        ResultSet titleQry = m_statement.executeQuery("SELECT Title FROM BookManager WHERE Title='"+m_title+"' AND Author='"+m_author+ "'");
-                        TitleLabel.setText(titleQry.getString(1));
-
-                        //Author label
-                        ResultSet authorQry = m_statement.executeQuery("SELECT Author FROM BookManager WHERE Title='"+m_title+"' AND Author='"+m_author+ "'");
-                        AuthorLabel.setText("Auteur : "+authorQry.getString(1));
-
-                        //Release year label
-                        ResultSet NumberOPQry = m_statement.executeQuery("SELECT NumberOP FROM BookManager WHERE Title='"+m_title+"' AND Author='"+m_author+ "'");
-                        NumberPageLabel.setText("Nombre de page : "+NumberOPQry.getString(1));
-
-                        //Number of reading label
-                        ResultSet ReleaseYearQry = m_statement.executeQuery("SELECT ReleaseYear FROM BookManager WHERE Title='"+m_title+"' AND Author='"+m_author+ "'");
-                        ReleaseYearLAbel.setText("Année de sortie : "+ReleaseYearQry.getString(1));
-
-                        //Number of reading label
-                        ResultSet CountReadingQry = m_statement.executeQuery("SELECT COUNT(*) FROM BookManager WHERE Title='"+m_title+"' AND Author='"+m_author+ "'");
-                        CountReadingLabel.setText("Nombre de lecture : "+CountReadingQry.getString(1));
-
-                        //Note on babelio
-                        ResultSet NoteBBQry = m_statement.executeQuery("SELECT NoteBabelio FROM BookManager WHERE Title='"+m_title+"' AND Author='"+m_author+ "'");
-                        NoteLabel.setText("Note : "+NoteBBQry.getString(1));
-
-                        //Summary
-                        ResultSet SummaryQry = m_statement.executeQuery("SELECT Summary FROM BookManager WHERE Title='"+m_title+"' AND Author='"+m_author+ "'");
-                        BookSummary.setText(SummaryQry.getString(1));
-
-                        //Personal note
-                        ResultSet NotePersoQry = m_statement.executeQuery("SELECT NotePerso FROM BookManager WHERE Title='"+m_title+"' AND Author='"+m_author+ "'");
-                        PersonalNoteLabel.setText("Ma note : "+NotePersoQry.getString(1));
-
-                        //First reading
-                        ResultSet FirstReadQry = m_statement.executeQuery("SELECT DateReading FROM BookManager WHERE Title='"+m_title+"' AND Author='"+m_author+ "'ORDER BY DateReading ASC LIMIT 1");
-                        FirstReadingLabel.setText("Première lecture : "+FirstReadQry.getString(1));
-
-                        //Last reading
-                        ResultSet LastReadQry = m_statement.executeQuery("SELECT DateReading FROM BookManager WHERE Title='"+m_title+"' AND Author='"+m_author+ "'ORDER BY DateReading DESC LIMIT 1");
-                        LastReadingLabel.setText("Dernière lecture : "+FirstReadQry.getString(1));
-
-                        //Image
-                        ResultSet ImageQry = m_statement.executeQuery("SELECT Image FROM BookManager WHERE Title='"+m_title+"' AND Author='"+m_author+ "'");
-
-                        Image img = Toolkit.getDefaultToolkit().getImage(ImageQry.getString(1));
-                        img=img.getScaledInstance(200, 300, Image.SCALE_DEFAULT);//set size of image
-                        ImageIcon icon = new ImageIcon(img);
-                        JLabel imgLabel = new JLabel();
-                        imgLabel.setIcon(icon);
-
-                        BookPhotoPanel.removeAll();//clean the panel before to add an image
-                        BookPhotoPanel.add(imgLabel);
-
-                        conn.close();
-                        m_statement.close();
-                    } catch ( Exception e ) {
-                        System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-                        System.exit(0);
-                    }
+                    loadComponents(m_title, m_author);
                 }
             });
         }
@@ -160,6 +99,7 @@ public class MainWindow extends JDialog {
                                 pstmt.setString(8, diag.getNewBookReleaseYear());
                                 pstmt.setString(9, diag.getNewBookSummary());
                                 pstmt.executeUpdate();//Insert the new Book
+                                loadComponents(diag.getNewBookTitle(), diag.getNewBookAuthor());
                                 loadDB();
                             }
                             else {
@@ -173,6 +113,7 @@ public class MainWindow extends JDialog {
                                 pstmt.setString(8, diag.getNewBookReleaseYear());
                                 pstmt.setString(9, diag.getNewBookSummary());
                                 pstmt.executeUpdate();//Insert the new Boo
+                                loadComponents(diag.getNewBookTitle(), diag.getNewBookAuthor());
                                 loadDB();
                             }
                         }
@@ -189,6 +130,7 @@ public class MainWindow extends JDialog {
                                 pstmt.setString(8, rs.getString(8));
                                 pstmt.setString(9, rs.getString(9));
                                 pstmt.executeUpdate();//Insert the new Book
+                                loadComponents(diag.getTitle(), diag.getAuthor());
                                 loadDB();
                             }
                             else {
@@ -202,6 +144,7 @@ public class MainWindow extends JDialog {
                                 pstmt.setString(8, rs.getString(8));
                                 pstmt.setString(9, rs.getString(9));
                                 pstmt.executeUpdate();//Insert the new Book
+                                loadComponents(diag.getTitle(), diag.getAuthor());
                                 loadDB();
                             }
                             rs.close();
@@ -222,6 +165,8 @@ public class MainWindow extends JDialog {
                 diag.setSize(500,300);
                 diag.setVisible(true);
                 loadDB();
+                if(diag.isEmpty())
+                    initComponents();
             }
         });
     }
@@ -263,6 +208,7 @@ public class MainWindow extends JDialog {
         }
     }
     public void loadDB(){
+        contentPane.updateUI();
         m_tableModel.setRowCount(0);
         try(Connection conn = this.connect()){
             m_statement = conn.createStatement();
@@ -297,6 +243,84 @@ public class MainWindow extends JDialog {
             System.err.println( e.getClass().getName() + ": " + e.getMessage() );
             System.exit(0);
         }
+    }
+    public void loadComponents(String title, String author){
+        try(Connection conn = connect()) {
+            Class.forName("org.sqlite.JDBC");
+            m_statement = conn.createStatement();
+
+            //Title label
+            ResultSet titleQry = m_statement.executeQuery("SELECT Title FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
+            TitleLabel.setText(titleQry.getString(1));
+
+            //Author label
+            ResultSet authorQry = m_statement.executeQuery("SELECT Author FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
+            AuthorLabel.setText("Auteur : "+authorQry.getString(1));
+
+            //Release year label
+            ResultSet NumberOPQry = m_statement.executeQuery("SELECT NumberOP FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
+            NumberPageLabel.setText("Nombre de page : "+NumberOPQry.getString(1));
+
+            //Number of reading label
+            ResultSet ReleaseYearQry = m_statement.executeQuery("SELECT ReleaseYear FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
+            ReleaseYearLAbel.setText("Année de sortie : "+ReleaseYearQry.getString(1));
+
+            //Number of reading label
+            ResultSet CountReadingQry = m_statement.executeQuery("SELECT COUNT(*) FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
+            CountReadingLabel.setText("Nombre de lecture : "+CountReadingQry.getString(1));
+
+            //Note on babelio
+            ResultSet NoteBBQry = m_statement.executeQuery("SELECT NoteBabelio FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
+            NoteLabel.setText("Note : "+NoteBBQry.getString(1));
+
+            //Summary
+            ResultSet SummaryQry = m_statement.executeQuery("SELECT Summary FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
+            BookSummary.setText(SummaryQry.getString(1));
+
+            //Personal note
+            ResultSet NotePersoQry = m_statement.executeQuery("SELECT NotePerso FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
+            PersonalNoteLabel.setText("Ma note : "+NotePersoQry.getString(1));
+
+            //First reading
+            ResultSet FirstReadQry = m_statement.executeQuery("SELECT DateReading FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'ORDER BY DateReading ASC LIMIT 1");
+            FirstReadingLabel.setText("Première lecture : "+FirstReadQry.getString(1));
+
+            //Last reading
+            ResultSet LastReadQry = m_statement.executeQuery("SELECT DateReading FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'ORDER BY DateReading DESC LIMIT 1");
+            LastReadingLabel.setText("Dernière lecture : "+FirstReadQry.getString(1));
+
+            //Image
+            ResultSet ImageQry = m_statement.executeQuery("SELECT Image FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
+
+            Image img = Toolkit.getDefaultToolkit().getImage(ImageQry.getString(1));
+            img=img.getScaledInstance(200, 300, Image.SCALE_DEFAULT);//set size of image
+            ImageIcon icon = new ImageIcon(img);
+            JLabel imgLabel = new JLabel();
+            imgLabel.setIcon(icon);
+
+            BookPhotoPanel.removeAll();//clean the panel before to add an image
+            BookPhotoPanel.add(imgLabel);
+
+            conn.close();
+            m_statement.close();
+        } catch ( Exception e ) {
+            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+            System.exit(0);
+        }
+    }
+    public void initComponents(){
+        TitleLabel.setText("Titre livre");
+        AuthorLabel.setText("Auteur :");
+        ReleaseYearLAbel.setText("Année de sortie :");
+        NumberPageLabel.setText("Nombre de page :");
+        CountReadingLabel.setText("Nombre de lecture :");
+        NoteLabel.setText("Note :");
+        PersonalNoteLabel.setText("Ma note :");
+        FirstReadingLabel.setText("Première lecture :");
+        LastReadingLabel.setText("Dernière lecture :");
+        BookSummary.setText("");
+        BookPhotoPanel.removeAll();
+        contentPane.updateUI();
     }
 
     public static void main(String[] args) {
