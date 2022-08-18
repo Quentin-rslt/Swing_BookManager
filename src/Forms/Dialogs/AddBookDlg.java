@@ -157,7 +157,7 @@ public class AddBookDlg extends JDialog {
                     JOptionPane.showMessageDialog(jFrame, "Veuillez sélectionner un livre ! ");
                 }
                 else if(!AlreadyReadChecbox.isSelected() && !Objects.equals(getNewBookAuthor(), "") && !Objects.equals(getNewBookAuthor(), "") && !Objects.equals(getNewBookSummary(), "") && !Objects.equals(getURL(), "")){//Verif if the input are good to quit the dlg and recovered the data for bdd
-                    try{//Can't add a new reading if the book already exist
+                    try{//Can add a new reading if the book already exist
                         Class.forName("org.sqlite.JDBC");
                         m_connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
                         m_statement = m_connection.createStatement();
@@ -308,7 +308,8 @@ public class AddBookDlg extends JDialog {
 
     public static void main(String[] args) {
         AddBookDlg dialog = new AddBookDlg();
-        dialog.pack();
+        dialog.setTitle("Ajouter une lecture");
+        dialog.setSize(800,500);
         dialog.setVisible(true);
         System.exit(0);
     }

@@ -132,6 +132,7 @@ public class MainWindow extends JDialog {
         AddBookBtn.addActionListener(new ActionListener() {//open the dlg for add a reading
             public void actionPerformed(ActionEvent evt) {
                 AddBookDlg diag = new AddBookDlg();
+                diag.setTitle("Ajouter une lecture");
                 diag.setSize(800,500);
                 diag.setVisible(true);
                 if (diag.isValide()){
@@ -291,6 +292,7 @@ public class MainWindow extends JDialog {
             System.err.println( "Failed to initialize LaF" );
         }
         MainWindow dialog = new MainWindow();
+        dialog.setTitle("Book manager");
         dialog.setSize(1000,550);
         dialog.setVisible(true);
         System.exit(0);
