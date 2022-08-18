@@ -147,10 +147,34 @@ public class AddBookDlg extends JDialog {
         ValidateBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
+                String sql = "SELECT Title, Author, DateReading FROM BookManager";
                 if(AlreadyReadChecbox.isSelected() && getExitingBookComboBox().getSelectedItem()!=""){
-                    m_isValide=true;
-                    setVisible(false);
-                    dispose();
+                    try {//Can add a new reading if the book exists at the same reading date
+                        Class.forName("org.sqlite.JDBC");
+                        m_connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
+                        m_statement = m_connection.createStatement();
+                        ResultSet qry = m_statement.executeQuery(sql);
+
+                        boolean bookFind =false;
+                        while (qry.next() && bookFind==false){//
+                            if (!BookUnknownReadDateChecbox.isSelected() && Objects.equals(qry.getString(3), getNewBookDateReading())){//
+                                JFrame jFrame = new JFrame();
+                                JOptionPane.showMessageDialog(jFrame, "La date de lecture éxiste déjà !");
+                                bookFind = true;//
+                            }
+                            else
+                                bookFind = false;
+                        }
+                        if (bookFind==false){//If a book has not been found in the database when leaving the loop, then the book typed is valid
+                            m_isValide=true;
+                            setVisible(false);
+                            dispose();
+                        }
+
+                    }catch (Exception e){
+                        System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+                        System.exit(0);
+                    }
                 }
                 else if(AlreadyReadChecbox.isSelected() && getExitingBookComboBox().getSelectedItem()==""){//Verif if we select a book in combobox
                     JFrame jFrame = new JFrame();
@@ -161,7 +185,7 @@ public class AddBookDlg extends JDialog {
                         Class.forName("org.sqlite.JDBC");
                         m_connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
                         m_statement = m_connection.createStatement();
-                        ResultSet bookQry = m_statement.executeQuery("SELECT Title, Author FROM BookManager GROUP BY Title, Author ORDER BY Title ASC;");
+                        ResultSet bookQry = m_statement.executeQuery(sql);
 
                         boolean bookFind =false;
                         while (bookQry.next() && bookFind==false){//We browse the database until we find a book that already exists, in relation to the book created

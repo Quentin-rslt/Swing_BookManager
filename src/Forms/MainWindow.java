@@ -221,9 +221,7 @@ public class MainWindow extends JDialog {
                 diag.setTitle("Gérer les lectures");
                 diag.setSize(500,300);
                 diag.setVisible(true);
-                if(diag.isValid()){
-                    loadDB();
-                }
+                loadDB();
             }
         });
     }
@@ -266,7 +264,7 @@ public class MainWindow extends JDialog {
     }
     public void loadDB(){
         m_tableModel.setRowCount(0);
-        try (Connection conn = this.connect()){
+        try(Connection conn = this.connect()){
             m_statement = conn.createStatement();
             System.out.println("Table connexion successfully");
 

@@ -19,7 +19,6 @@ public class ManageReadingDlg extends JDialog {
     private String m_title = "";
     private String m_author = "";
     private String m_dateReading = "";
-    private boolean m_isValid = false;
     private JPopupMenu m_popup;
 
     public ManageReadingDlg(String title, String author) {
@@ -40,12 +39,11 @@ public class ManageReadingDlg extends JDialog {
             public void actionPerformed(ActionEvent e) {
                 setVisible(false);
                 dispose();
-                setIsValid(true);
             }
         });
         m_bookListTable.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent evt) {
+            public void mouseReleased(MouseEvent evt) {
                 int row = m_bookListTable.rowAtPoint(evt.getPoint());
                 setTitle(m_bookListTable.getValueAt(row, 0).toString()); //get the value of the column of the table
                 setAuthor(m_bookListTable.getValueAt(row, 1).toString());
@@ -63,8 +61,7 @@ public class ManageReadingDlg extends JDialog {
             public void actionPerformed(ActionEvent evt) {
                 System.out.println("Delete !");
                 String sql = "DELETE FROM BookManager WHERE Title='"+getTitle()+"' AND Author='"+getAuthor()+"' AND DateReading='"+getDateReading()+"'";//Delete in bdd the item that we want delete
-                try (Connection conn = connect();
-                     PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
                     // execute the delete statement
                     pstmt.executeUpdate();
                     fillBookList();
@@ -77,7 +74,7 @@ public class ManageReadingDlg extends JDialog {
     }
 
     private Connection connect() {
-        // SQLite connection string
+        //SQLite connection string
         String url = "jdbc:sqlite:BookManager.db";
         try {
             m_connection = DriverManager.getConnection(url);
@@ -95,9 +92,6 @@ public class ManageReadingDlg extends JDialog {
     public String getDateReading() {
         return m_dateReading;
     }
-    public boolean isValid() {
-        return m_isValid;
-    }
 
     public void setAuthor(String m_author) {
         this.m_author = m_author;
@@ -107,9 +101,6 @@ public class ManageReadingDlg extends JDialog {
     }
     public void setDateReading(String m_dateReading) {
         this.m_dateReading = m_dateReading;
-    }
-    public void setIsValid(boolean m_isValid) {
-        this.m_isValid = m_isValid;
     }
     public void fillBookList(){
         m_tableModel.setRowCount(0);
