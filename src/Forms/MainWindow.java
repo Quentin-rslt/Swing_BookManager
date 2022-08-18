@@ -78,6 +78,7 @@ public class MainWindow extends JDialog {
                 AddBookDlg diag = new AddBookDlg();
                 diag.setTitle("Ajouter une lecture");
                 diag.setSize(800,500);
+                diag.setLocationRelativeTo(null);
                 diag.setVisible(true);
                 if (diag.isValide()){
                     String qry = "INSERT INTO BookManager (Title,Author,Image,NumberOP,NotePerso,NoteBabelio,DateReading,ReleaseYear,Summary) " +
@@ -163,10 +164,13 @@ public class MainWindow extends JDialog {
                 ManageReadingDlg diag = new ManageReadingDlg(m_title, m_author);
                 diag.setTitle("Gérer les lectures");
                 diag.setSize(500,300);
+                diag.setLocationRelativeTo(null);
                 diag.setVisible(true);
                 loadDB();
                 if(diag.isEmpty())
                     initComponents();
+                else
+                    loadComponents(m_title, m_author);
             }
         });
     }
@@ -333,6 +337,7 @@ public class MainWindow extends JDialog {
         MainWindow dialog = new MainWindow();
         dialog.setTitle("Book manager");
         dialog.setSize(1000,550);
+        dialog.setLocationRelativeTo(null);
         dialog.setVisible(true);
         System.exit(0);
     }

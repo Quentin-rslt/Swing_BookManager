@@ -39,7 +39,6 @@ public class AddBookDlg extends JDialog {
     private JSpinner BookNoteBblSpin;
     private JLabel SummaryLabel;
     private JTextPane BookSummaryTextPane;
-    private JCheckBox AlreadyReadChecbox;
     private JSpinner BookReleaseYearSpin;
     private JSpinner BookDateReadSpin;
     private JSpinner BookNumberOPSpin;
@@ -57,18 +56,8 @@ public class AddBookDlg extends JDialog {
         fillBookCombobox();
         setModal(true);
         initComponents();
+        initComponents(true);
 
-        AlreadyReadChecbox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {//If we have already entered the book in the database, hide the way to create a reading, just add a reading date
-                if(AlreadyReadChecbox.isSelected()){
-                    initComponents(false);
-                }
-                else{
-                    initComponents(true);
-                }
-            }
-        });
         BookUnknownReadDateChecbox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -84,6 +73,7 @@ public class AddBookDlg extends JDialog {
             @Override
             public void actionPerformed(ActionEvent evt) {//set the title and the author, retrieved by the ComboBox
                 if(ExitingBookComboBox.getSelectedItem() != ""){
+                    initComponents(false);
                     String row = Objects.requireNonNull(ExitingBookComboBox.getSelectedItem()).toString();//get the item that we chose
                     String author = "";
                     m_title = "";
@@ -109,6 +99,8 @@ public class AddBookDlg extends JDialog {
                         System.exit(0);
                     }
                 }
+                else
+                    initComponents(true);
             }
         });
         CancelBtn.addActionListener(new ActionListener() {
@@ -123,7 +115,7 @@ public class AddBookDlg extends JDialog {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 String sql = "SELECT Title, Author, DateReading FROM BookManager";
-                if(AlreadyReadChecbox.isSelected() && getExitingBookComboBox().getSelectedItem()!=""){//Can add a new reading if the book exists at the same reading date
+                if(getIsAlreadyRead() && getExitingBookComboBox().getSelectedItem()!=""){//Can add a new reading if the book exists at the same reading date
                     try {
                         Class.forName("org.sqlite.JDBC");
                         m_connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
@@ -150,11 +142,12 @@ public class AddBookDlg extends JDialog {
                         System.exit(0);
                     }
                 }
-                else if(AlreadyReadChecbox.isSelected() && getExitingBookComboBox().getSelectedItem()==""){//Verif if we select a book in combobox
-                    JFrame jFrame = new JFrame();
-                    JOptionPane.showMessageDialog(jFrame, "Veuillez sélectionner un livre ! ");
+                else if(getIsAlreadyRead() && getExitingBookComboBox().getSelectedItem()==""){//Verif if we select a book in combobox
+                    /*JFrame jFrame = new JFrame();
+                    JOptionPane.showMessageDialog(jFrame, "Veuillez sélectionner un livre ! ");*/
+                    initComponents(true);
                 }
-                else if(!AlreadyReadChecbox.isSelected() && !Objects.equals(getNewBookAuthor(), "") && !Objects.equals(getNewBookTitle(), "") && !Objects.equals(getNewBookSummary(), "") && !Objects.equals(getURL(), "")){//Verif if the input are good to quit the dlg and recovered the data for bdd
+                else if(!getIsAlreadyRead() && !Objects.equals(getNewBookAuthor(), "") && !Objects.equals(getNewBookTitle(), "") && !Objects.equals(getNewBookSummary(), "") && !Objects.equals(getURL(), "")){//Verif if the input are good to quit the dlg and recovered the data for bdd
                     try{//Can add a new reading if the book already exist
                         Class.forName("org.sqlite.JDBC");
                         m_connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
@@ -248,7 +241,11 @@ public class AddBookDlg extends JDialog {
         return m_URL;
     }
     public boolean getIsAlreadyRead(){
-        return AlreadyReadChecbox.isSelected();
+        if(ExitingBookComboBox.getSelectedItem()=="")
+            return false;
+        else
+            return true;
+        //return AlreadyReadChecbox.isSelected();
     }
     public JComboBox getExitingBookComboBox(){
         return ExitingBookComboBox;
@@ -305,6 +302,19 @@ public class AddBookDlg extends JDialog {
         BookDateReadSpin.setEditor(ded);
     }
     public void initComponents(boolean bool){
+        //ExitingBookComboBox.setEnabled(!bool);
+        BookNameTextField.setEnabled(bool);
+        BookAuthorTextField.setEnabled(bool);
+        BookReleaseYearSpin.setEnabled(bool);
+        BookNumberOPSpin.setEnabled(bool);
+        BookPersonalNoteSpin.setEnabled(bool);
+        BookNoteBblSpin.setEnabled(bool);
+        BookSummaryTextPane.setEnabled(bool);
+        BookReleaseYearSpin.setEnabled(bool);
+        BookBrowseBtn.setEnabled(bool);
+        //ExitingBookComboBox.setSelectedIndex(0);
+        PreviewPhotoPanel.updateUI();
+        PreviewPhotoPanel.removeAll();
     }
     public void setURL(String url){
         m_URL= url;
