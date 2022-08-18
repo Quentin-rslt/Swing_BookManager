@@ -157,23 +157,23 @@ public class AddBookDlg extends JDialog {
                     JOptionPane.showMessageDialog(jFrame, "Veuillez sélectionner un livre ! ");
                 }
                 else if(!AlreadyReadChecbox.isSelected() && !Objects.equals(getNewBookAuthor(), "") && !Objects.equals(getNewBookAuthor(), "") && !Objects.equals(getNewBookSummary(), "") && !Objects.equals(getURL(), "")){//Verif if the input are good to quit the dlg and recovered the data for bdd
-                    try{//Can't
+                    try{//Can't add a new reading if the book already exist
                         Class.forName("org.sqlite.JDBC");
                         m_connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
                         m_statement = m_connection.createStatement();
                         ResultSet bookQry = m_statement.executeQuery("SELECT Title, Author FROM BookManager GROUP BY Title, Author ORDER BY Title ASC;");
 
-                        boolean verif =false;
-                        while (bookQry.next() && verif==false){
-                            if (Objects.equals(bookQry.getString(1), getNewBookTitle()) && Objects.equals(bookQry.getString(2), getNewBookAuthor())){
+                        boolean bookFind =false;
+                        while (bookQry.next() && bookFind==false){//We browse the database until we find a book that already exists, in relation to the book created
+                            if (Objects.equals(bookQry.getString(1), getNewBookTitle()) && Objects.equals(bookQry.getString(2), getNewBookAuthor())){//If the created book is already in the database, we exit the loop by setting an error dialog
                                 JFrame jFrame = new JFrame();
                                 JOptionPane.showMessageDialog(jFrame, "Le livre existe déjà !");
-                                verif = true;
+                                bookFind = true;//If you have found a book, you are out of the loop
                             }
                             else
-                                verif = false;
+                                bookFind = false;
                         }
-                        if (verif==false){
+                        if (bookFind==false){//If a book has not been found in the database when leaving the loop, then the book typed is valid
                             m_isValide=true;
                             setVisible(false);
                             dispose();
@@ -221,9 +221,7 @@ public class AddBookDlg extends JDialog {
     }
     public String getNewBookReleaseYear(){
         SimpleDateFormat formater = new SimpleDateFormat("yyyy");//set the date format returned to have just the year release
-        String spinnerValue = formater.format(BookReleaseYearSpin.getValue());
-
-        return spinnerValue;
+        return formater.format(BookReleaseYearSpin.getValue());
     }
     public String getNewBookPersonalNote(){
         return BookPersonalNoteSpin.getValue().toString();
@@ -236,8 +234,7 @@ public class AddBookDlg extends JDialog {
     }
     public String getNewBookDateReading(){
         SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd");//set the date format returned to have the day, month and year
-        String spinnerValue = formater.format(BookReleaseYearSpin.getValue());
-        return spinnerValue;
+        return formater.format(BookDateReadSpin.getValue());
     }
     public boolean isDateUnknown(){
         return BookUnknownReadDateChecbox.isSelected();

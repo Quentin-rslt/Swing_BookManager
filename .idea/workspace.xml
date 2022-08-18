@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5ede3cbf-f5c9-462f-8dc0-7982017c2136" name="Changes" comment="Set the date format returned to have the day, month and year for DateReading&#10;And set the date format returned to have just the year for ReleaseDate">
+    <list default="true" id="5ede3cbf-f5c9-462f-8dc0-7982017c2136" name="Changes" comment="Add a first item in Combobox in AddBookDlg, for fix som bug&#10;Can't add a new reading, if the book already exist">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Forms/Dialogs/AddBookDlg.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Forms/Dialogs/AddBookDlg.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Forms/MainWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Forms/MainWindow.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -169,7 +168,14 @@
       <option name="project" value="LOCAL" />
       <updated>1660807346633</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="Add a first item in Combobox in AddBookDlg, for fix som bug&#10;Can't add a new reading, if the book already exist">
+      <created>1660812195058</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1660812195058</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -197,6 +203,7 @@
     <MESSAGE value="Create again getter for AddBookDlg&#10;Set some bug in AddBookDlg&#10;Change addImageToPanel function, only a path in parameters&#10;The code of button &quot;Valider&quot; and &quot;Annuler&quot; are implemented" />
     <MESSAGE value="We can add a reading now&#10;Change the method of the connection in BDD with a method" />
     <MESSAGE value="Set the date format returned to have the day, month and year for DateReading&#10;And set the date format returned to have just the year for ReleaseDate" />
-    <option name="LAST_COMMIT_MESSAGE" value="Set the date format returned to have the day, month and year for DateReading&#10;And set the date format returned to have just the year for ReleaseDate" />
+    <MESSAGE value="Add a first item in Combobox in AddBookDlg, for fix som bug&#10;Can't add a new reading, if the book already exist" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add a first item in Combobox in AddBookDlg, for fix som bug&#10;Can't add a new reading, if the book already exist" />
   </component>
 </project>
