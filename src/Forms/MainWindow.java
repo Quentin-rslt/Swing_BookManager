@@ -44,14 +44,14 @@ public class MainWindow extends JDialog {
     private JLabel CountReadingLabel;
     private JToolBar Menubar;
     private JLabel ReleaseYearLAbel;
+
     private JTable  m_bookListTable = new JTable();
     private JScrollPane m_pane;
     private DefaultTableModel m_tableModel = new DefaultTableModel();
     private Statement m_statement = null;
-    private Connection m_connection = null;
     private String m_title = "";
     private String m_author = "";
-
+    private JPopupMenu m_popup;
 
     public MainWindow() {
         setContentPane(contentPane);
@@ -59,17 +59,28 @@ public class MainWindow extends JDialog {
         initComponents();
         connectionDB();
         loadDB();
+
+        m_popup = new JPopupMenu();//Create a popup menu to delete a reading an edit this reading
+        JMenuItem cut = new JMenuItem("Supprimer");
+        JMenuItem edit = new JMenuItem("Modifier");
+        m_popup.add(cut);
+        m_popup.add(edit);
+
         if(m_bookListTable != null){//Vérif if the table is not empty
             m_bookListTable.addMouseListener(new MouseAdapter() {
                 @Override
-                public void mouseClicked(MouseEvent evt) {//set main UI when we clicked on an element of the array, retrieved from the db
-                    super.mouseClicked(evt);
+                public void mouseReleased(MouseEvent evt) {//set main UI when we clicked on an element of the array, retrieved from the db
+                    super.mouseReleased(evt);
                     ManageReadingsBtn.setEnabled(true);
                     int row = m_bookListTable.rowAtPoint(evt.getPoint());
                     m_title = m_bookListTable.getValueAt(row, 0).toString(); //get the value of the column of the table
                     m_author = m_bookListTable.getValueAt(row, 1).toString();
                     //Fill in the data on the app
                     loadComponents(m_title, m_author);
+                    if(evt.getButton() == MouseEvent.BUTTON3) {//if we right click show a popup to edit the book
+                        m_bookListTable.setRowSelectionInterval(row, row);//we focus the row when we right on the item
+                        m_popup.show(BookListPanel, evt.getX(), evt.getY());
+                    }
                 }
             });
         }
@@ -173,18 +184,46 @@ public class MainWindow extends JDialog {
                     loadComponents(m_title, m_author);
             }
         });
+        cut.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                String sql = "DELETE FROM BookManager WHERE Title='"+getTitle()+"' AND Author='"+getAuthor()+"'";//sql to delete the book when we right click
+                try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                    // execute the delete statement
+                    pstmt.executeUpdate();
+                    initComponents();
+                    loadDB();
+
+                } catch (SQLException e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+        });
     }
     private Connection connect() {
         // SQLite connection string
+        Connection connection = null;
         String url = "jdbc:sqlite:BookManager.db";
         try {
-            m_connection = DriverManager.getConnection(url);
+            connection = DriverManager.getConnection(url);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-        return m_connection;
+        return connection;
+    }
+    public String getTitle(){
+        return m_title;
+    }
+    public String getAuthor(){
+        return m_author;
     }
 
+    public void setTitle(String title){
+        m_title=title;
+    }
+    public void setAuthor(String author){
+        m_author=author;
+    }
     public void connectionDB(){
         try (Connection conn = this.connect()) {
             Class.forName("org.sqlite.JDBC");

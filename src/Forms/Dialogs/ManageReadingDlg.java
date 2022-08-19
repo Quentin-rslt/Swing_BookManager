@@ -54,17 +54,15 @@ public class ManageReadingDlg extends JDialog {
                 setAuthor(m_bookListTable.getValueAt(row, 1).toString());
                 setDateReading(m_dateReading = m_bookListTable.getValueAt(row, 2).toString());
 
-                if(m_bookListTable.isRowSelected(row)){//Vérif if we selected an item and right click on this item
-                    if(evt.getButton() == MouseEvent.BUTTON3) {
-                        m_popup.show(contentPane, evt.getX(), evt.getY());
-                    }
+                if(evt.getButton() == MouseEvent.BUTTON3) {
+                    m_bookListTable.setRowSelectionInterval(row, row);//we focus the row when we right on the item
+                    m_popup.show(contentPane, evt.getX(), evt.getY());//show a popup to edit the reading
                 }
             }
         });
         cut.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                System.out.println("Delete !");
                 String sql = "DELETE FROM BookManager WHERE Title='"+getTitle()+"' AND Author='"+getAuthor()+"' AND DateReading='"+getDateReading()+"'";//Delete in bdd the item that we want delete
                 try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
                     // execute the delete statement

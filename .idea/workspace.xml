@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5ede3cbf-f5c9-462f-8dc0-7982017c2136" name="Changes" comment="Create function initcomponent(boolean) to simplificate the code">
+    <list default="true" id="5ede3cbf-f5c9-462f-8dc0-7982017c2136" name="Changes" comment="Change the way to determinate if a book is already read">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Forms/Dialogs/AddBookDlg.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Forms/Dialogs/AddBookDlg.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Forms/Dialogs/ManageReadingDlg.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Forms/Dialogs/ManageReadingDlg.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Forms/MainWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Forms/MainWindow.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Sources/Dialogs/AddBookDlg.form" beforeDir="false" afterPath="$PROJECT_DIR$/src/Sources/Dialogs/AddBookDlg.form" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -227,7 +226,14 @@
       <option name="project" value="LOCAL" />
       <updated>1660836263868</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="Change the way to determinate if a book is already read">
+      <created>1660851704136</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1660851704136</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -262,6 +268,7 @@
     <MESSAGE value="Fix If the book already exists, retrieve the correct reading date if you have it&#10;We can delete a reading now" />
     <MESSAGE value="Refresh system implemented&#10;Fix bug when the same author and title are entered&#10;Clear de contentPane when we delete completely a book" />
     <MESSAGE value="Create function initcomponent(boolean) to simplificate the code" />
-    <option name="LAST_COMMIT_MESSAGE" value="Create function initcomponent(boolean) to simplificate the code" />
+    <MESSAGE value="Change the way to determinate if a book is already read" />
+    <option name="LAST_COMMIT_MESSAGE" value="Change the way to determinate if a book is already read" />
   </component>
 </project>
