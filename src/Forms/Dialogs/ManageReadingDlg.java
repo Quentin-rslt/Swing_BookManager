@@ -13,7 +13,11 @@ public class ManageReadingDlg extends JDialog {
 
     private Connection m_connection;
     private Statement m_statement;
-    private JTable  m_bookListTable = new JTable();
+    private JTable  m_bookListTable = new JTable(){//Create a Jtable with the tablemodel not editable
+        public boolean isCellEditable(int rowIndex, int colIndex) {
+            return false; //Disallow the editing of any cell
+        }
+    };
     private JScrollPane m_pane;
     private DefaultTableModel m_tableModel = new DefaultTableModel();
     private String m_title = "";
@@ -69,6 +73,8 @@ public class ManageReadingDlg extends JDialog {
                     try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
                         // execute the delete statement
                         pstmt.executeUpdate();
+                        contentPane.updateUI();
+                        BookListPanel.removeAll();
                         fillBookList();
 
                     } catch (SQLException e) {
@@ -87,6 +93,8 @@ public class ManageReadingDlg extends JDialog {
                         try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
                             // execute the delete statement
                             pstmt.executeUpdate();
+                            contentPane.updateUI();
+                            BookListPanel.removeAll();
                             fillBookList();
 
                         } catch (SQLException e) {
@@ -152,11 +160,7 @@ public class ManageReadingDlg extends JDialog {
                 m_tableModel.setColumnIdentifiers(header);//Create the header
                 m_tableModel.addRow(data);//add to tablemodel the data
 
-                m_bookListTable = new JTable(m_tableModel){//Create a Jtable with the tablemodel not editable
-                    public boolean isCellEditable(int rowIndex, int colIndex) {
-                        return false; //Disallow the editing of any cell
-                    }
-                };
+                m_bookListTable.setModel(m_tableModel);
                 m_bookListTable.setFocusable(false);
                 m_pane = new JScrollPane(m_bookListTable);//Create a scrollpane with the Jtable for the error that did not display the header
 

@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5ede3cbf-f5c9-462f-8dc0-7982017c2136" name="Changes" comment="Add a JoptionPane to MainWindow and ManageReadingDlg when we delete a item to verify if the user really want to delete the item">
+    <list default="true" id="5ede3cbf-f5c9-462f-8dc0-7982017c2136" name="Changes" comment="We can now scroll the summary&#10;Start the focus row when we right click on item">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Forms/Dialogs/ManageReadingDlg.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Forms/Dialogs/ManageReadingDlg.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Forms/MainWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Forms/MainWindow.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Sources/MainWindow.form" beforeDir="false" afterPath="$PROJECT_DIR$/src/Sources/MainWindow.form" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -248,7 +247,14 @@
       <option name="project" value="LOCAL" />
       <updated>1660897330189</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="We can now scroll the summary&#10;Start the focus row when we right click on item">
+      <created>1660914966141</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1660914966141</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -286,6 +292,7 @@
     <MESSAGE value="Change the way to determinate if a book is already read" />
     <MESSAGE value="We can delete completely a book in the booklistJtable in MainWindow" />
     <MESSAGE value="Add a JoptionPane to MainWindow and ManageReadingDlg when we delete a item to verify if the user really want to delete the item" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add a JoptionPane to MainWindow and ManageReadingDlg when we delete a item to verify if the user really want to delete the item" />
+    <MESSAGE value="We can now scroll the summary&#10;Start the focus row when we right click on item" />
+    <option name="LAST_COMMIT_MESSAGE" value="We can now scroll the summary&#10;Start the focus row when we right click on item" />
   </component>
 </project>

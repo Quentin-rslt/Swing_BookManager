@@ -45,7 +45,11 @@ public class MainWindow extends JDialog {
     private JToolBar Menubar;
     private JLabel ReleaseYearLAbel;
 
-    private JTable  m_bookListTable = new JTable();
+    private JTable  m_bookListTable = new JTable(){//Create a Jtable with the tablemodel not editable
+        public boolean isCellEditable(int rowIndex, int colIndex) {
+            return false; //Disallow the editing of any cell
+        }
+    };
     private JScrollPane m_pane;
     private DefaultTableModel m_tableModel = new DefaultTableModel();
     private Statement m_statement = null;
@@ -97,6 +101,8 @@ public class MainWindow extends JDialog {
                 if (diag.isValide()){
                     String qry = "INSERT INTO BookManager (Title,Author,Image,NumberOP,NotePerso,NoteBabelio,DateReading,ReleaseYear,Summary) " +
                             "VALUES (?,?,?,?,?,?,?,?,?);";
+                    contentPane.updateUI();
+                    BookListPanel.removeAll();
 
                     try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(qry)) {
                         m_statement = conn.createStatement();
@@ -115,7 +121,6 @@ public class MainWindow extends JDialog {
                                 pstmt.setString(9, diag.getNewBookSummary());
                                 pstmt.executeUpdate();//Insert the new Book
                                 loadComponents(diag.getNewBookTitle(), diag.getNewBookAuthor());
-                                loadDB();
                             }
                             else {
                                 pstmt.setString(1, diag.getNewBookTitle());
@@ -129,7 +134,6 @@ public class MainWindow extends JDialog {
                                 pstmt.setString(9, diag.getNewBookSummary());
                                 pstmt.executeUpdate();//Insert the new Boo
                                 loadComponents(diag.getNewBookTitle(), diag.getNewBookAuthor());
-                                loadDB();
                             }
                         }
                         else{
@@ -146,7 +150,6 @@ public class MainWindow extends JDialog {
                                 pstmt.setString(9, rs.getString(9));
                                 pstmt.executeUpdate();//Insert the new Book
                                 loadComponents(diag.getTitle(), diag.getAuthor());
-                                loadDB();
                                 m_bookListTable.setRowSelectionInterval(getRowSelected(), getRowSelected());
                             }
                             else {
@@ -161,11 +164,11 @@ public class MainWindow extends JDialog {
                                 pstmt.setString(9, rs.getString(9));
                                 pstmt.executeUpdate();//Insert the new Book
                                 loadComponents(diag.getTitle(), diag.getAuthor());
-                                loadDB();
                                 m_bookListTable.setRowSelectionInterval(getRowSelected(), getRowSelected());
                             }
                             rs.close();
                         }
+                        loadDB();
                         conn.close();
                         m_statement.close();
                     } catch (SQLException e) {
@@ -182,6 +185,8 @@ public class MainWindow extends JDialog {
                 diag.setSize(500,300);
                 diag.setLocationRelativeTo(null);
                 diag.setVisible(true);
+                contentPane.updateUI();
+                BookListPanel.removeAll();
                 loadDB();
                 if(diag.isEmpty())
                     initComponents();
@@ -204,6 +209,7 @@ public class MainWindow extends JDialog {
                         // execute the delete statement
                         pstmt.executeUpdate();
                         initComponents();
+                        BookListPanel.removeAll();
                         loadDB();
 
                     } catch (SQLException e) {
@@ -269,7 +275,6 @@ public class MainWindow extends JDialog {
         }
     }
     public void loadDB(){
-        BookListPanel.updateUI();
         m_tableModel.setRowCount(0);
         try(Connection conn = this.connect()){
             m_statement = conn.createStatement();
@@ -287,12 +292,9 @@ public class MainWindow extends JDialog {
                 m_tableModel.setColumnIdentifiers(header);//Create the header
                 m_tableModel.addRow(data);//add to tablemodel the data
 
-                m_bookListTable = new JTable(m_tableModel){//Create a Jtable with the tablemodel not editable
-                    public boolean isCellEditable(int rowIndex, int colIndex) {
-                        return false; //Disallow the editing of any cell
-                    }
-                };
+                m_bookListTable.setModel(m_tableModel);
                 m_bookListTable.setFocusable(false);
+
                 m_pane = new JScrollPane(m_bookListTable);//Create a scrollpane with the Jtable for the error that did not display the header
 
                 BookListPanel.add(m_pane);//add the scrolpane to our Jpanel
