@@ -63,14 +63,35 @@ public class ManageReadingDlg extends JDialog {
         cut.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                String sql = "DELETE FROM BookManager WHERE Title='"+getTitle()+"' AND Author='"+getAuthor()+"' AND DateReading='"+getDateReading()+"'";//Delete in bdd the item that we want delete
-                try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-                    // execute the delete statement
-                    pstmt.executeUpdate();
-                    fillBookList();
+                if(m_bookListTable.getRowCount()>1){//If there is more than one reading you don't need to know if the person really wants to delete the book
+                    String sql = "DELETE FROM BookManager WHERE Title='"+getTitle()+"' AND Author='"+getAuthor()+"' AND DateReading='"+getDateReading()+"'";//Delete in bdd the item that we want delete
+                    try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                        // execute the delete statement
+                        pstmt.executeUpdate();
+                        fillBookList();
 
-                } catch (SQLException e) {
-                    System.out.println(e.getMessage());
+                    } catch (SQLException e) {
+                        System.out.println(e.getMessage());
+                    }
+                }
+                else{
+                    JFrame jFrame = new JFrame();
+                    int n = JOptionPane.showConfirmDialog(//Open a optionPane to verify if the user really want to delete the book return 0 il they want and 1 if they refuse
+                            jFrame,
+                            "Cette acion supprimeras complétement le livre et sera irréversible. \n"+"Etes-vous sûr de vouloir le faire ?",
+                            "An Inane Question",
+                            JOptionPane.YES_NO_OPTION);
+                    if(n==0){
+                        String sql = "DELETE FROM BookManager WHERE Title='"+getTitle()+"' AND Author='"+getAuthor()+"' AND DateReading='"+getDateReading()+"'";//Delete in bdd the item that we want delete
+                        try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                            // execute the delete statement
+                            pstmt.executeUpdate();
+                            fillBookList();
+
+                        } catch (SQLException e) {
+                            System.out.println(e.getMessage());
+                        }
+                    }
                 }
             }
         });

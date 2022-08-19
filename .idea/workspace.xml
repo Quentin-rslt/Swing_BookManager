@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5ede3cbf-f5c9-462f-8dc0-7982017c2136" name="Changes" comment="Change the way to determinate if a book is already read">
+    <list default="true" id="5ede3cbf-f5c9-462f-8dc0-7982017c2136" name="Changes" comment="We can delete completely a book in the booklistJtable in MainWindow">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Forms/Dialogs/ManageReadingDlg.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Forms/Dialogs/ManageReadingDlg.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Forms/MainWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Forms/MainWindow.java" afterDir="false" />
@@ -233,7 +233,14 @@
       <option name="project" value="LOCAL" />
       <updated>1660851704136</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="We can delete completely a book in the booklistJtable in MainWindow">
+      <created>1660895037731</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1660895037731</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -269,6 +276,7 @@
     <MESSAGE value="Refresh system implemented&#10;Fix bug when the same author and title are entered&#10;Clear de contentPane when we delete completely a book" />
     <MESSAGE value="Create function initcomponent(boolean) to simplificate the code" />
     <MESSAGE value="Change the way to determinate if a book is already read" />
-    <option name="LAST_COMMIT_MESSAGE" value="Change the way to determinate if a book is already read" />
+    <MESSAGE value="We can delete completely a book in the booklistJtable in MainWindow" />
+    <option name="LAST_COMMIT_MESSAGE" value="We can delete completely a book in the booklistJtable in MainWindow" />
   </component>
 </project>

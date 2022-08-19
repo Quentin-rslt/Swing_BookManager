@@ -84,6 +84,9 @@ public class MainWindow extends JDialog {
                 }
             });
         }
+        else{
+            ManageReadingsBtn.setEnabled(false);
+        }
         AddBookBtn.addActionListener(new ActionListener() {//open the dlg for add a reading
             public void actionPerformed(ActionEvent evt) {
                 AddBookDlg diag = new AddBookDlg();
@@ -187,15 +190,23 @@ public class MainWindow extends JDialog {
         cut.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                String sql = "DELETE FROM BookManager WHERE Title='"+getTitle()+"' AND Author='"+getAuthor()+"'";//sql to delete the book when we right click
-                try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-                    // execute the delete statement
-                    pstmt.executeUpdate();
-                    initComponents();
-                    loadDB();
+                JFrame jFrame = new JFrame();
+                int n = JOptionPane.showConfirmDialog(//Open a optionPane to verify if the user really want to delete the book return 0 il they want and 1 if they refuse
+                        jFrame,
+                        "Etes-vous sûr de vouloir supprimer définitivement le livre ?\n"+"Cette acion sera irréversible !",
+                        "An Inane Question",
+                        JOptionPane.YES_NO_OPTION);
+                if(n == 0){
+                    String sql = "DELETE FROM BookManager WHERE Title='"+getTitle()+"' AND Author='"+getAuthor()+"'";//sql to delete the book when we right click
+                    try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                        // execute the delete statement
+                        pstmt.executeUpdate();
+                        initComponents();
+                        loadDB();
 
-                } catch (SQLException e) {
-                    System.out.println(e.getMessage());
+                    } catch (SQLException e) {
+                        System.out.println(e.getMessage());
+                    }
                 }
             }
         });
@@ -362,6 +373,7 @@ public class MainWindow extends JDialog {
         FirstReadingLabel.setText("Première lecture :");
         LastReadingLabel.setText("Dernière lecture :");
         BookSummary.setText("");
+        ManageReadingsBtn.setEnabled(false);
         BookPhotoPanel.removeAll();
         contentPane.updateUI();
     }
