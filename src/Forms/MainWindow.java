@@ -51,6 +51,7 @@ public class MainWindow extends JDialog {
     private Statement m_statement = null;
     private String m_title = "";
     private String m_author = "";
+    private int m_rowSelected = 0;
     private JPopupMenu m_popup;
 
     public MainWindow() {
@@ -72,13 +73,12 @@ public class MainWindow extends JDialog {
                 public void mouseReleased(MouseEvent evt) {//set main UI when we clicked on an element of the array, retrieved from the db
                     super.mouseReleased(evt);
                     ManageReadingsBtn.setEnabled(true);
-                    int row = m_bookListTable.rowAtPoint(evt.getPoint());
-                    m_title = m_bookListTable.getValueAt(row, 0).toString(); //get the value of the column of the table
-                    m_author = m_bookListTable.getValueAt(row, 1).toString();
-                    //Fill in the data on the app
+                    setRowSelected(m_bookListTable.rowAtPoint(evt.getPoint()));
+                    m_title = m_bookListTable.getValueAt(getRowSelected(), 0).toString(); //get the value of the column of the table
+                    m_author = m_bookListTable.getValueAt(getRowSelected(), 1).toString();
                     loadComponents(m_title, m_author);
                     if(evt.getButton() == MouseEvent.BUTTON3) {//if we right click show a popup to edit the book
-                        m_bookListTable.setRowSelectionInterval(row, row);//we focus the row when we right on the item
+                        m_bookListTable.setRowSelectionInterval(getRowSelected(), getRowSelected());//we focus the row when we right on the item
                         m_popup.show(BookListPanel, evt.getX(), evt.getY());
                     }
                 }
@@ -147,6 +147,7 @@ public class MainWindow extends JDialog {
                                 pstmt.executeUpdate();//Insert the new Book
                                 loadComponents(diag.getTitle(), diag.getAuthor());
                                 loadDB();
+                                m_bookListTable.setRowSelectionInterval(getRowSelected(), getRowSelected());
                             }
                             else {
                                 pstmt.setString(1, diag.getTitle());
@@ -161,6 +162,7 @@ public class MainWindow extends JDialog {
                                 pstmt.executeUpdate();//Insert the new Book
                                 loadComponents(diag.getTitle(), diag.getAuthor());
                                 loadDB();
+                                m_bookListTable.setRowSelectionInterval(getRowSelected(), getRowSelected());
                             }
                             rs.close();
                         }
@@ -228,7 +230,12 @@ public class MainWindow extends JDialog {
     public String getAuthor(){
         return m_author;
     }
-
+    public int getRowSelected() {
+        return m_rowSelected;
+    }
+    public void setRowSelected(int m_rowSelected) {
+        this.m_rowSelected = m_rowSelected;
+    }
     public void setTitle(String title){
         m_title=title;
     }
@@ -262,7 +269,7 @@ public class MainWindow extends JDialog {
         }
     }
     public void loadDB(){
-        contentPane.updateUI();
+        BookListPanel.updateUI();
         m_tableModel.setRowCount(0);
         try(Connection conn = this.connect()){
             m_statement = conn.createStatement();

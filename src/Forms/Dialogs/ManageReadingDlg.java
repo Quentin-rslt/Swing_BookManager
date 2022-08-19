@@ -53,11 +53,12 @@ public class ManageReadingDlg extends JDialog {
                 setTitle(m_bookListTable.getValueAt(row, 0).toString()); //get the value of the column of the table
                 setAuthor(m_bookListTable.getValueAt(row, 1).toString());
                 setDateReading(m_dateReading = m_bookListTable.getValueAt(row, 2).toString());
-
-                if(evt.getButton() == MouseEvent.BUTTON3) {
-                    m_bookListTable.setRowSelectionInterval(row, row);//we focus the row when we right on the item
-                    m_popup.show(contentPane, evt.getX(), evt.getY());//show a popup to edit the reading
-                }
+                //if(m_bookListTable.isRowSelected(row)){
+                    if(evt.getButton() == MouseEvent.BUTTON3) {
+                        m_bookListTable.setRowSelectionInterval(row, row);//we focus the row when we right on the item
+                        m_popup.show(contentPane, evt.getX(), evt.getY());//show a popup to edit the reading
+                    }
+                //}
             }
         });
         cut.addActionListener(new ActionListener() {
