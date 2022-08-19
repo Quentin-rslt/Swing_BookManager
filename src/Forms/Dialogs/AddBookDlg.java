@@ -199,7 +199,7 @@ public class AddBookDlg extends JDialog {
         });
     }
 
-    public String getTitle(){
+    public String getMTitle(){
         return m_title;
     }
     public String getAuthor(){

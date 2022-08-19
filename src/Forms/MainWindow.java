@@ -54,15 +54,14 @@ public class MainWindow extends JDialog {
     private JScrollPane m_pane;
     private DefaultTableModel m_tableModel = new DefaultTableModel();
     private Statement m_statement = null;
-    private String m_title = "";
-    private String m_author = "";
+    private String m_title;
+    private String m_author;
     private int m_rowSelected = 0;
     private JPopupMenu m_popup;
 
     public MainWindow() {
         setContentPane(contentPane);
         setModal(true);
-        initComponents();
         connectionDB();
         loadDB();
 
@@ -73,15 +72,21 @@ public class MainWindow extends JDialog {
         m_popup.add(edit);
 
         if(m_bookListTable != null){//Vérif if the table is not empty
+            setMTitle(m_bookListTable.getValueAt(0, 0).toString());
+            setAuthor(m_bookListTable.getValueAt(0, 1).toString());
+            loadComponents(getMTitle(), getAuthor());
+            System.out.println(getMTitle()+" - "+getAuthor());
+            m_bookListTable.setRowSelectionInterval(getRowSelected(getMTitle(),getAuthor()), getRowSelected(getMTitle(),getAuthor()));
+            ManageReadingsBtn.setEnabled(true);
             m_bookListTable.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseReleased(MouseEvent evt) {//set main UI when we clicked on an element of the array, retrieved from the db
                     super.mouseReleased(evt);
                     ManageReadingsBtn.setEnabled(true);
                     setRowSelected(m_bookListTable.rowAtPoint(evt.getPoint()));
-                    m_title = m_bookListTable.getValueAt(getRowSelected(), 0).toString(); //get the value of the column of the table
-                    m_author = m_bookListTable.getValueAt(getRowSelected(), 1).toString();
-                    loadComponents(m_title, m_author);
+                    setMTitle(m_bookListTable.getValueAt(getRowSelected(), 0).toString()); //get the value of the column of the table
+                    setAuthor(m_bookListTable.getValueAt(getRowSelected(), 1).toString());
+                    loadComponents(getMTitle(), getAuthor());
                     if(evt.getButton() == MouseEvent.BUTTON3) {//if we right click show a popup to edit the book
                         m_bookListTable.setRowSelectionInterval(getRowSelected(), getRowSelected());//we focus the row when we right on the item
                         m_popup.show(BookListPanel, evt.getX(), evt.getY());
@@ -119,6 +124,8 @@ public class MainWindow extends JDialog {
                                 pstmt.setString(8, diag.getNewBookReleaseYear());
                                 pstmt.setString(9, diag.getNewBookSummary());
                                 pstmt.executeUpdate();//Insert the new Book
+                                setMTitle(diag.getNewBookTitle());
+                                setAuthor(diag.getNewBookAuthor());
                                 loadComponents(diag.getNewBookTitle(), diag.getNewBookAuthor());
                                 loadDB();
                                 //Focus in the jtable on the book created
@@ -134,7 +141,9 @@ public class MainWindow extends JDialog {
                                 pstmt.setString(7, "Inconnu");
                                 pstmt.setString(8, diag.getNewBookReleaseYear());
                                 pstmt.setString(9, diag.getNewBookSummary());
-                                pstmt.executeUpdate();//Insert the new Boo
+                                pstmt.executeUpdate();//Insert the new Book
+                                setMTitle(diag.getNewBookTitle());
+                                setAuthor(diag.getNewBookAuthor());
                                 loadComponents(diag.getNewBookTitle(), diag.getNewBookAuthor());
                                 loadDB();
                                 //Focus in the jtable on the book created
@@ -142,9 +151,9 @@ public class MainWindow extends JDialog {
                             }
                         }
                         else{
-                            ResultSet rs = m_statement.executeQuery("SELECT * FROM BookManager WHERE Title='"+diag.getTitle()+"' AND Author='"+diag.getAuthor()+ "'");
+                            ResultSet rs = m_statement.executeQuery("SELECT * FROM BookManager WHERE Title='"+diag.getMTitle()+"' AND Author='"+diag.getAuthor()+ "'");
                             if(!diag.isDateUnknown()){
-                                pstmt.setString(1, diag.getTitle());
+                                pstmt.setString(1, diag.getMTitle());
                                 pstmt.setString(2, diag.getAuthor());
                                 pstmt.setString(3, rs.getString(3));
                                 pstmt.setString(4, rs.getString(4));
@@ -154,13 +163,15 @@ public class MainWindow extends JDialog {
                                 pstmt.setString(8, rs.getString(8));
                                 pstmt.setString(9, rs.getString(9));
                                 pstmt.executeUpdate();//Insert the new Book
-                                loadComponents(diag.getTitle(), diag.getAuthor());
+                                setMTitle(diag.getMTitle());
+                                setAuthor(diag.getAuthor());
+                                loadComponents(diag.getMTitle(), diag.getAuthor());
                                 loadDB();
                                 //Focus in the jtable on a reading created from an existing book
-                                m_bookListTable.setRowSelectionInterval(getRowSelected(diag.getTitle(), diag.getAuthor()), getRowSelected(diag.getTitle(), diag.getAuthor()));
+                                m_bookListTable.setRowSelectionInterval(getRowSelected(diag.getMTitle(), diag.getAuthor()), getRowSelected(diag.getMTitle(), diag.getAuthor()));
                             }
                             else {
-                                pstmt.setString(1, diag.getTitle());
+                                pstmt.setString(1, diag.getMTitle());
                                 pstmt.setString(2, diag.getAuthor());
                                 pstmt.setString(3, rs.getString(3));
                                 pstmt.setString(4, rs.getString(4));
@@ -170,10 +181,12 @@ public class MainWindow extends JDialog {
                                 pstmt.setString(8, rs.getString(8));
                                 pstmt.setString(9, rs.getString(9));
                                 pstmt.executeUpdate();//Insert the new Book
-                                loadComponents(diag.getTitle(), diag.getAuthor());
+                                setMTitle(diag.getMTitle());
+                                setAuthor(diag.getAuthor());
+                                loadComponents(diag.getMTitle(), diag.getAuthor());
                                 loadDB();
                                 //Focus in the jtable on a reading created from an existing book
-                                m_bookListTable.setRowSelectionInterval(getRowSelected(diag.getTitle(), diag.getAuthor()), getRowSelected(diag.getTitle(), diag.getAuthor()));
+                                m_bookListTable.setRowSelectionInterval(getRowSelected(diag.getMTitle(), diag.getAuthor()), getRowSelected(diag.getMTitle(), diag.getAuthor()));
                             }
                             rs.close();
                         }
@@ -188,7 +201,8 @@ public class MainWindow extends JDialog {
         ManageReadingsBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ManageReadingDlg diag = new ManageReadingDlg(m_title, m_author);
+                System.out.println(getMTitle()+" - "+getAuthor());
+                ManageReadingDlg diag = new ManageReadingDlg(getMTitle(), getAuthor());
                 diag.setTitle("Gérer les lectures");
                 diag.setSize(500,300);
                 diag.setLocationRelativeTo(null);
@@ -199,8 +213,8 @@ public class MainWindow extends JDialog {
                 if(diag.isEmpty())
                     initComponents();
                 else {
-                    m_bookListTable.setRowSelectionInterval(getRowSelected(m_title,m_author),getRowSelected(m_title,m_author));//focus on the book where you have managed your readings
-                    loadComponents(m_title, m_author);
+                    m_bookListTable.setRowSelectionInterval(getRowSelected(getMTitle(),getAuthor()),getRowSelected(getMTitle(),getAuthor()));//focus on the book where you have managed your readings
+                    loadComponents(getMTitle(), getAuthor());
                 }
             }
         });
@@ -214,7 +228,7 @@ public class MainWindow extends JDialog {
                         "An Inane Question",
                         JOptionPane.YES_NO_OPTION);
                 if(n == 0){
-                    String sql = "DELETE FROM BookManager WHERE Title='"+getTitle()+"' AND Author='"+getAuthor()+"'";//sql to delete the book when we right click
+                    String sql = "DELETE FROM BookManager WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";//sql to delete the book when we right click
                     try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
                         // execute the delete statement
                         pstmt.executeUpdate();
@@ -240,7 +254,7 @@ public class MainWindow extends JDialog {
         }
         return connection;
     }
-    public String getTitle(){
+    public String getMTitle(){
         return m_title;
     }
     public String getAuthor(){
@@ -249,7 +263,7 @@ public class MainWindow extends JDialog {
     public int getRowSelected() {
         return m_rowSelected;
     }
-    public int getRowSelected(String title, String author){
+    public int getRowSelected(String title, String author){//return the row find by a title and an author
         int row = 0;
         for (int i= 0; i<m_bookListTable.getRowCount();i++)
             if(Objects.equals(m_bookListTable.getValueAt(i, 0).toString(), title) && Objects.equals(m_bookListTable.getValueAt(i, 1).toString(), author))
@@ -257,10 +271,11 @@ public class MainWindow extends JDialog {
 
         return row;
     }
+
     public void setRowSelected(int m_rowSelected) {
         this.m_rowSelected = m_rowSelected;
     }
-    public void setTitle(String title){
+    public void setMTitle(String title){
         m_title=title;
     }
     public void setAuthor(String author){
