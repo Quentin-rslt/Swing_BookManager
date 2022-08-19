@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5ede3cbf-f5c9-462f-8dc0-7982017c2136" name="Changes" comment="We can now scroll the summary&#10;Start the focus row when we right click on item">
+    <list default="true" id="5ede3cbf-f5c9-462f-8dc0-7982017c2136" name="Changes" comment="Focus row when we right click on item in ManageReadingDlg and MainWindow">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Forms/Dialogs/ManageReadingDlg.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Forms/Dialogs/ManageReadingDlg.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Forms/MainWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Forms/MainWindow.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -254,7 +253,14 @@
       <option name="project" value="LOCAL" />
       <updated>1660914966141</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL-00027" summary="Focus row when we right click on item in ManageReadingDlg and MainWindow">
+      <created>1660935332763</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1660935332763</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -293,6 +299,7 @@
     <MESSAGE value="We can delete completely a book in the booklistJtable in MainWindow" />
     <MESSAGE value="Add a JoptionPane to MainWindow and ManageReadingDlg when we delete a item to verify if the user really want to delete the item" />
     <MESSAGE value="We can now scroll the summary&#10;Start the focus row when we right click on item" />
-    <option name="LAST_COMMIT_MESSAGE" value="We can now scroll the summary&#10;Start the focus row when we right click on item" />
+    <MESSAGE value="Focus row when we right click on item in ManageReadingDlg and MainWindow" />
+    <option name="LAST_COMMIT_MESSAGE" value="Focus row when we right click on item in ManageReadingDlg and MainWindow" />
   </component>
 </project>
