@@ -71,13 +71,13 @@ public class MainWindow extends JDialog {
         m_popup.add(cut);
         m_popup.add(edit);
 
-        if(m_bookListTable != null){//Vérif if the table is not empty
+        if(m_bookListTable != null){//Vérif if the table is not empty; when starting the app, load and focus on the first book of the table
             setMTitle(m_bookListTable.getValueAt(0, 0).toString());
             setAuthor(m_bookListTable.getValueAt(0, 1).toString());
             loadComponents(getMTitle(), getAuthor());
-            System.out.println(getMTitle()+" - "+getAuthor());
             m_bookListTable.setRowSelectionInterval(getRowSelected(getMTitle(),getAuthor()), getRowSelected(getMTitle(),getAuthor()));
             ManageReadingsBtn.setEnabled(true);
+
             m_bookListTable.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseReleased(MouseEvent evt) {//set main UI when we clicked on an element of the array, retrieved from the db
@@ -201,7 +201,6 @@ public class MainWindow extends JDialog {
         ManageReadingsBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println(getMTitle()+" - "+getAuthor());
                 ManageReadingDlg diag = new ManageReadingDlg(getMTitle(), getAuthor());
                 diag.setTitle("Gérer les lectures");
                 diag.setSize(500,300);

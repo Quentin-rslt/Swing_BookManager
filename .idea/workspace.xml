@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5ede3cbf-f5c9-462f-8dc0-7982017c2136" name="Changes" comment="Focus in the jtable on the book created or on a reading created from an existing book &#10;Focus in the jtbale on the book where you have managed your readings">
+    <list default="true" id="5ede3cbf-f5c9-462f-8dc0-7982017c2136" name="Changes" comment="When starting the app, load and focus on the first book of the Jtable&#10;Change name get and set Title on every class, because setTitle and getTitle aleady exist to set a name for the dialog">
+      <change afterPath="$PROJECT_DIR$/src/Forms/Dialogs/EditReadingDlg.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Sources/Dialogs/EditReadingDlg.form" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Forms/Dialogs/AddBookDlg.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Forms/Dialogs/AddBookDlg.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Forms/Dialogs/ManageReadingDlg.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Forms/Dialogs/ManageReadingDlg.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Forms/MainWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Forms/MainWindow.java" afterDir="false" />
     </list>
@@ -269,7 +270,14 @@
       <option name="project" value="LOCAL" />
       <updated>1660945058563</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary="When starting the app, load and focus on the first book of the Jtable&#10;Change name get and set Title on every class, because setTitle and getTitle aleady exist to set a name for the dialog">
+      <created>1660948237486</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1660948237486</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -284,7 +292,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Change class main" />
     <MESSAGE value="Add BDD to project, with connexion and data recovery on the BookTableList" />
     <MESSAGE value="Change value on gitignore" />
     <MESSAGE value="Add : &#10;- Display of all the information of the book when we click on it: Author, Title, Image etc...&#10;- Change of app size and panel" />
@@ -309,6 +316,7 @@
     <MESSAGE value="We can now scroll the summary&#10;Start the focus row when we right click on item" />
     <MESSAGE value="Focus row when we right click on item in ManageReadingDlg and MainWindow" />
     <MESSAGE value="Focus in the jtable on the book created or on a reading created from an existing book &#10;Focus in the jtbale on the book where you have managed your readings" />
-    <option name="LAST_COMMIT_MESSAGE" value="Focus in the jtable on the book created or on a reading created from an existing book &#10;Focus in the jtbale on the book where you have managed your readings" />
+    <MESSAGE value="When starting the app, load and focus on the first book of the Jtable&#10;Change name get and set Title on every class, because setTitle and getTitle aleady exist to set a name for the dialog" />
+    <option name="LAST_COMMIT_MESSAGE" value="When starting the app, load and focus on the first book of the Jtable&#10;Change name get and set Title on every class, because setTitle and getTitle aleady exist to set a name for the dialog" />
   </component>
 </project>

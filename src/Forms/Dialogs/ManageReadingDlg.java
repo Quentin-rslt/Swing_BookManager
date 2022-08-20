@@ -102,6 +102,30 @@ public class ManageReadingDlg extends JDialog {
                 }
             }
         });
+        edit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                EditReadingDlg diag = new EditReadingDlg(getMTitle(), getAuthor(), getDateReading());
+                diag.setTitle("Modifier une lecture");
+                diag.setSize(500,150);
+                diag.setLocationRelativeTo(null);
+                diag.setVisible(true);
+
+                if(diag.isValid()){
+                    String sql = "UPDATE BookManager SET DateReading='"+diag.getBookNewDateReading()+"' WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"' AND DateReading='"+getDateReading()+"'";//Delete in bdd the item that we want delete
+                    try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                        // execute the delete statement
+                        pstmt.executeUpdate();
+                        contentPane.updateUI();
+                        BookListPanel.removeAll();
+                        fillBookList();
+
+                    } catch (SQLException e) {
+                        System.out.println(e.getMessage());
+                    }
+                }
+            }
+        });
     }
 
     private Connection connect() {
