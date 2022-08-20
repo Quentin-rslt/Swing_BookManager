@@ -112,12 +112,12 @@ public class ManageReadingDlg extends JDialog {
             public void actionPerformed(ActionEvent evt) {
                 EditReadingDlg diag = new EditReadingDlg(getMTitle(), getAuthor(), getDateReading());//Open a dialog where we can edit the date reading
                 diag.setTitle("Modifier une lecture");
-                diag.setSize(500,150);
+                diag.setSize(500,200);
                 diag.setLocationRelativeTo(null);
                 diag.setVisible(true);
 
                 if(diag.isValid()){
-                    String sql = "UPDATE BookManager SET DateReading='"+diag.getBookNewDateReading()+"' WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"' AND DateReading='"+getDateReading()+"'";//Edit in bdd the item that we want to change the reading date
+                    String sql = "UPDATE BookManager SET DateReading='"+diag.getNewDateReading()+"' WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"' AND DateReading='"+getDateReading()+"'";//Edit in bdd the item that we want to change the reading date
                     try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
                         // execute the uptdate statement
                         pstmt.executeUpdate();

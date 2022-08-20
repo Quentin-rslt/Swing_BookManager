@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5ede3cbf-f5c9-462f-8dc0-7982017c2136" name="Changes" comment="Can edit date reading now">
+    <list default="true" id="5ede3cbf-f5c9-462f-8dc0-7982017c2136" name="Changes" comment="Can't add or edit a date with a date in the future">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Forms/Dialogs/AddBookDlg.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Forms/Dialogs/AddBookDlg.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Forms/Dialogs/EditReadingDlg.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Forms/Dialogs/EditReadingDlg.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Forms/Dialogs/ManageReadingDlg.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Forms/Dialogs/ManageReadingDlg.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Sources/Dialogs/EditReadingDlg.form" beforeDir="false" afterPath="$PROJECT_DIR$/src/Sources/Dialogs/EditReadingDlg.form" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -283,7 +283,14 @@
       <option name="project" value="LOCAL" />
       <updated>1660985303588</updated>
     </task>
-    <option name="localTasksCounter" value="31" />
+    <task id="LOCAL-00031" summary="Can't add or edit a date with a date in the future">
+      <created>1660986405470</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1660986405470</updated>
+    </task>
+    <option name="localTasksCounter" value="32" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -298,7 +305,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Change value on gitignore" />
     <MESSAGE value="Add : &#10;- Display of all the information of the book when we click on it: Author, Title, Image etc...&#10;- Change of app size and panel" />
     <MESSAGE value="- Change DataBase with the merger of LastRadeing and FirstReading into just DateReading. &#10;- Creation of the addBookDlg class&#10;- Change the look and feel" />
     <MESSAGE value="- Retrieving data from the AddBookDlg database with the fillbookcombobox, and the image that appears &#10;- Change of spinner for the reading date&#10;- Setting up checkbox roles (hiding some boxes for some cases)" />
@@ -323,17 +329,7 @@
     <MESSAGE value="Focus in the jtable on the book created or on a reading created from an existing book &#10;Focus in the jtbale on the book where you have managed your readings" />
     <MESSAGE value="When starting the app, load and focus on the first book of the Jtable&#10;Change name get and set Title on every class, because setTitle and getTitle aleady exist to set a name for the dialog" />
     <MESSAGE value="Can edit date reading now" />
-    <option name="LAST_COMMIT_MESSAGE" value="Can edit date reading now" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/Forms/Dialogs/AddBookDlg.java</url>
-          <line>284</line>
-          <option name="timeStamp" value="4" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+    <MESSAGE value="Can't add or edit a date with a date in the future" />
+    <option name="LAST_COMMIT_MESSAGE" value="Can't add or edit a date with a date in the future" />
   </component>
 </project>

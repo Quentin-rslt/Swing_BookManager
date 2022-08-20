@@ -20,12 +20,14 @@ public class EditReadingDlg extends JDialog {
     private JLabel BookAuthorLabel;
     private JLabel BookDateReadingLabel;
     private JLabel NewBookDateRedingLabel;
-    private JSpinner BookNewDateRedingSpin;
+    private JSpinner BookNewDateReadingSpin;
+    private JCheckBox BookUnknownDateReadingCheckBox;
 
 
     private String m_title;
     private String m_author;
     private String m_dateReading;
+    private String m_newDateReading;
     private boolean m_isValid = false;
     private Date m_date = new Date();
 
@@ -47,21 +49,39 @@ public class EditReadingDlg extends JDialog {
         OkBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(!Objects.equals(getDateReading(), getBookNewDateReading())  ){
+                if(!Objects.equals(getDateReading(), getNewDateReading())){//If the new date and old date are not similar
                     setIsValid(true);
                     setVisible(false);
                     dispose();
-                }
-                else{
+                } else if (!Objects.equals(getDateReading(), "Inconnu") && Objects.equals(getNewDateReading(), "Inconnu")) {//if the old date is not "Inconnu" and the new is "Inconnu"
+                    setIsValid(true);
+                    setVisible(false);
+                    dispose();
+                } else{//else we can't change the reading date
                     JFrame jFrame = new JFrame();
                     JOptionPane.showMessageDialog(jFrame, "Ne peut pas modifier la date de lecture avec une date déjà existante ! ");
                 }
+            }
+        });
+        BookUnknownDateReadingCheckBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (isDateReadingUnknown())
+                    BookNewDateReadingSpin.setEnabled(false);
+                else
+                    BookNewDateReadingSpin.setEnabled(true);
             }
         });
     }
 
     public String getDateReading() {
         return m_dateReading;
+    }
+    public String getNewDateReading() {
+        if (isDateReadingUnknown())
+            return "Inconnu";
+        else
+            return m_newDateReading;
     }
     public String getAuthor() {
         return m_author;
@@ -72,16 +92,21 @@ public class EditReadingDlg extends JDialog {
     public boolean isValid() {
         return m_isValid;
     }
-    public String getBookNewDateReading(){
-        SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd");//set the date format returned to have the day, month and year
-        return formater.format(BookNewDateRedingSpin.getValue());
-    }
     public Date getDate() {
         return m_date;
+    }
+    public boolean isDateReadingUnknown(){
+        if(BookUnknownDateReadingCheckBox.isSelected())
+            return true;
+        else
+            return false;
     }
 
     public void setDateReading(String m_dateReading) {
         this.m_dateReading = m_dateReading;
+    }
+    public void setNewDateReading(String m_newDateReading) {
+        this.m_newDateReading = m_newDateReading;
     }
     public void setAuthor(String m_author) {
         this.m_author = m_author;
@@ -102,8 +127,11 @@ public class EditReadingDlg extends JDialog {
         BookDateReadingLabel.setText("Date de lecture : "+getDateReading());
 
         SpinnerDateModel NewBookDateReadingSpinModel = new SpinnerDateModel(getDate(),null,getDate(),Calendar.YEAR);//Create a spinner date, to correctly select a date
-        BookNewDateRedingSpin.setModel(NewBookDateReadingSpinModel);
-        JSpinner.DateEditor Year = new JSpinner.DateEditor(BookNewDateRedingSpin,"yyyy-MM-dd");//set the display of the JSpinner of release date
-        BookNewDateRedingSpin.setEditor(Year);
+        BookNewDateReadingSpin.setModel(NewBookDateReadingSpinModel);
+        JSpinner.DateEditor Year = new JSpinner.DateEditor(BookNewDateReadingSpin,"yyyy-MM-dd");//set the display of the JSpinner of release date
+        BookNewDateReadingSpin.setEditor(Year);
+
+        SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd");//set the date format returned to have the day, month and year
+        setNewDateReading(formater.format(BookNewDateReadingSpin.getValue()));//set the new date
     }
 }
