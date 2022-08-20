@@ -290,8 +290,8 @@ public class AddBookDlg extends JDialog {
         Date dateRelease = new Date();
         Date date = new Date();
 
-        SpinnerDateModel BookReadDateSpinDate = new SpinnerDateModel(date, null,null, Calendar.YEAR);//Create a spinner date, to correctly select a date
-        SpinnerDateModel BookReleaseDateSpinModel = new SpinnerDateModel(dateRelease,null,null,Calendar.YEAR);//Create a spinner date, to correctly select a date
+        SpinnerDateModel BookReadDateSpinDate = new SpinnerDateModel(date, null,date, Calendar.YEAR);//Create a spinner date, to correctly select a date
+        SpinnerDateModel BookReleaseDateSpinModel = new SpinnerDateModel(dateRelease,null,dateRelease,Calendar.YEAR);//Create a spinner date, to correctly select a date
 
         BookReleaseYearSpin.setModel(BookReleaseDateSpinModel);
         JSpinner.DateEditor Year = new JSpinner.DateEditor(BookReleaseYearSpin,"yyyy");//set the display of the JSpinner of release date

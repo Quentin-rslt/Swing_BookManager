@@ -11,7 +11,7 @@ public class ManageReadingDlg extends JDialog {
     private JPanel BookBtnPanel;
     private JButton CancelBtn;
 
-    private Connection m_connection;
+
     private Statement m_statement;
     private JTable  m_bookListTable = new JTable(){//Create a Jtable with the tablemodel not editable
         public boolean isCellEditable(int rowIndex, int colIndex) {
@@ -25,6 +25,7 @@ public class ManageReadingDlg extends JDialog {
     private String m_dateReading = "";
     private JPopupMenu m_popup;
     private boolean m_isEmpty = false;
+    private int m_row;
 
     public ManageReadingDlg(String title, String author) {
         setContentPane(contentPane);
@@ -53,12 +54,12 @@ public class ManageReadingDlg extends JDialog {
         m_bookListTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent evt) {
-                int row = m_bookListTable.rowAtPoint(evt.getPoint());
-                setMTitle(m_bookListTable.getValueAt(row, 0).toString()); //get the value of the column of the table
-                setAuthor(m_bookListTable.getValueAt(row, 1).toString());
-                setDateReading(m_dateReading = m_bookListTable.getValueAt(row, 2).toString());
+                setRow(m_bookListTable.rowAtPoint(evt.getPoint()));
+                setMTitle(m_bookListTable.getValueAt(getRow(), 0).toString()); //get the value of the column of the table
+                setAuthor(m_bookListTable.getValueAt(getRow(), 1).toString());
+                setDateReading(m_dateReading = m_bookListTable.getValueAt(getRow(), 2).toString());
                 if(evt.getButton() == MouseEvent.BUTTON3) {
-                    m_bookListTable.setRowSelectionInterval(row, row);//we focus the row when we right on the item
+                    m_bookListTable.setRowSelectionInterval(getRow(), getRow());//we focus the row when we right on the item
                     m_popup.show(contentPane, evt.getX(), evt.getY());//show a popup to edit the reading
                 }
             }
@@ -74,6 +75,8 @@ public class ManageReadingDlg extends JDialog {
                         contentPane.updateUI();
                         BookListPanel.removeAll();
                         fillBookList();
+                        conn.close();
+                        pstmt.close();
 
                     } catch (SQLException e) {
                         System.out.println(e.getMessage());
@@ -94,6 +97,8 @@ public class ManageReadingDlg extends JDialog {
                             contentPane.updateUI();
                             BookListPanel.removeAll();
                             fillBookList();
+                            conn.close();
+                            pstmt.close();
 
                         } catch (SQLException e) {
                             System.out.println(e.getMessage());
@@ -105,21 +110,23 @@ public class ManageReadingDlg extends JDialog {
         edit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                EditReadingDlg diag = new EditReadingDlg(getMTitle(), getAuthor(), getDateReading());
+                EditReadingDlg diag = new EditReadingDlg(getMTitle(), getAuthor(), getDateReading());//Open a dialog where we can edit the date reading
                 diag.setTitle("Modifier une lecture");
                 diag.setSize(500,150);
                 diag.setLocationRelativeTo(null);
                 diag.setVisible(true);
 
                 if(diag.isValid()){
-                    String sql = "UPDATE BookManager SET DateReading='"+diag.getBookNewDateReading()+"' WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"' AND DateReading='"+getDateReading()+"'";//Delete in bdd the item that we want delete
+                    String sql = "UPDATE BookManager SET DateReading='"+diag.getBookNewDateReading()+"' WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"' AND DateReading='"+getDateReading()+"'";//Edit in bdd the item that we want to change the reading date
                     try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-                        // execute the delete statement
+                        // execute the uptdate statement
                         pstmt.executeUpdate();
                         contentPane.updateUI();
                         BookListPanel.removeAll();
                         fillBookList();
-
+                        m_bookListTable.setRowSelectionInterval(getRow(), getRow());//Focus on the reading that we edit
+                        conn.close();
+                        pstmt.close();
                     } catch (SQLException e) {
                         System.out.println(e.getMessage());
                     }
@@ -129,14 +136,14 @@ public class ManageReadingDlg extends JDialog {
     }
 
     private Connection connect() {
-        //SQLite connection string
+        Connection connection = null;
         String url = "jdbc:sqlite:BookManager.db";
         try {
-            m_connection = DriverManager.getConnection(url);
+            connection = DriverManager.getConnection(url);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-        return m_connection;
+        return connection;
     }
     public String getAuthor() {
         return m_author;
@@ -149,6 +156,9 @@ public class ManageReadingDlg extends JDialog {
     }
     public boolean isEmpty() {
         return m_isEmpty;
+    }
+    public int getRow() {
+        return m_row;
     }
 
     public void setAuthor(String m_author) {
@@ -163,12 +173,13 @@ public class ManageReadingDlg extends JDialog {
     public void setDateReading(String m_dateReading) {
         this.m_dateReading = m_dateReading;
     }
+    public void setRow(int m_row) {
+        this.m_row = m_row;
+    }
     public void fillBookList(){
         m_tableModel.setRowCount(0);
-        try{
-            Class.forName("org.sqlite.JDBC");
-            m_connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
-            m_statement = m_connection.createStatement();
+        try(Connection conn = connect()){
+            m_statement = conn.createStatement();
             ResultSet qry = m_statement.executeQuery("SELECT Title, Author, DateReading FROM BookManager WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+ "'");//Retrieved from the bdd the URL of the book image
 
             while (qry.next()){
@@ -189,7 +200,7 @@ public class ManageReadingDlg extends JDialog {
                 BookListPanel.add(m_pane);//add the scrolpane to our Jpanel
             }
             qry.close();
-            m_connection.close();
+            conn.close();
             m_statement.close();
         } catch ( Exception e ) {
             System.err.println( e.getClass().getName() + ": " + e.getMessage() );

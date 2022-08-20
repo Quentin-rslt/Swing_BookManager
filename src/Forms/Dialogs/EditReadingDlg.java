@@ -27,6 +27,7 @@ public class EditReadingDlg extends JDialog {
     private String m_author;
     private String m_dateReading;
     private boolean m_isValid = false;
+    private Date m_date = new Date();
 
     public EditReadingDlg(String title, String author, String dateReading) {
         setContentPane(contentPane);
@@ -46,7 +47,7 @@ public class EditReadingDlg extends JDialog {
         OkBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(!Objects.equals(getDateReading(), getBookNewDateReading())){
+                if(!Objects.equals(getDateReading(), getBookNewDateReading())  ){
                     setIsValid(true);
                     setVisible(false);
                     dispose();
@@ -75,6 +76,9 @@ public class EditReadingDlg extends JDialog {
         SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd");//set the date format returned to have the day, month and year
         return formater.format(BookNewDateRedingSpin.getValue());
     }
+    public Date getDate() {
+        return m_date;
+    }
 
     public void setDateReading(String m_dateReading) {
         this.m_dateReading = m_dateReading;
@@ -88,13 +92,16 @@ public class EditReadingDlg extends JDialog {
     public void setIsValid(boolean m_isValid) {
         this.m_isValid = m_isValid;
     }
+    public void setDate(Date m_date) {
+        this.m_date = m_date;
+    }
     public void initComponent(){
+        //Retrieves the data entered as a parameter from the constructor, and therefore from the DB
         BookTitleLable.setText("Titre : "+getMtitle());
         BookAuthorLabel.setText("Auteur : "+getAuthor());
         BookDateReadingLabel.setText("Date de lecture : "+getDateReading());
 
-        Date date = new Date();
-        SpinnerDateModel NewBookDateReadingSpinModel = new SpinnerDateModel(date,null,null,Calendar.YEAR);//Create a spinner date, to correctly select a date
+        SpinnerDateModel NewBookDateReadingSpinModel = new SpinnerDateModel(getDate(),null,getDate(),Calendar.YEAR);//Create a spinner date, to correctly select a date
         BookNewDateRedingSpin.setModel(NewBookDateReadingSpinModel);
         JSpinner.DateEditor Year = new JSpinner.DateEditor(BookNewDateRedingSpin,"yyyy-MM-dd");//set the display of the JSpinner of release date
         BookNewDateRedingSpin.setEditor(Year);
