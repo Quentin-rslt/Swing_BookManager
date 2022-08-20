@@ -244,12 +244,38 @@ public class MainWindow extends JDialog {
         });
         edit.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent evt) {
                 EditBookDlg diag = new EditBookDlg(getMTitle(), getAuthor());
                 diag.setTitle("Modifier un livre");
                 diag.setSize(800,500);
                 diag.setLocationRelativeTo(null);
                 diag.setVisible(true);
+                if (diag.isValid()){
+                    String sql = "UPDATE BookManager SET Title=?, Author=?, Image=?, NumberOP=?, NotePerso=?, NoteBabelio=?, ReleaseYear=?, Summary=?"+
+                                 "WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";//Edit in bdd the book that we want to change
+                    try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                        // execute the uptdate statement
+                        pstmt.setString(1, diag.getNewTitle());
+                        pstmt.setString(2, diag.getNewAuthor());
+                        pstmt.setString(3, diag.getNewURL());
+                        pstmt.setString(4, diag.getNewNumberPage());
+                        pstmt.setString(5, diag.getNewPersonnalNote());
+                        pstmt.setString(6, diag.getNewBBLNote());
+                        pstmt.setString(7, diag.getNewReleaseyear());
+                        pstmt.setString(8, diag.getNewSummary());
+                        pstmt.executeUpdate();
+
+                        contentPane.updateUI();
+                        BookListPanel.removeAll();
+                        loadDB();
+                        loadComponents(diag.getNewTitle(), diag.getNewAuthor());//reload changes made to the book
+                        m_bookListTable.setRowSelectionInterval(getRowSelected(diag.getNewTitle(), diag.getNewAuthor()), getRowSelected(diag.getNewTitle(), diag.getNewAuthor()));//focus on the edited book
+                        conn.close();
+                        pstmt.close();
+                    } catch (SQLException e) {
+                        System.out.println(e.getMessage());
+                    }
+                }
             }
         });
     }
@@ -363,11 +389,11 @@ public class MainWindow extends JDialog {
             ResultSet authorQry = m_statement.executeQuery("SELECT Author FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
             AuthorLabel.setText("Auteur : "+authorQry.getString(1));
 
-            //Release year label
+            //Number of reading label
             ResultSet NumberOPQry = m_statement.executeQuery("SELECT NumberOP FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
             NumberPageLabel.setText("Nombre de page : "+NumberOPQry.getString(1));
 
-            //Number of reading label
+            //Release year label
             ResultSet ReleaseYearQry = m_statement.executeQuery("SELECT ReleaseYear FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
             ReleaseYearLAbel.setText("Année de sortie : "+ReleaseYearQry.getString(1));
 
