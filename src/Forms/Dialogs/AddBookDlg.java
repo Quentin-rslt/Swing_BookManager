@@ -32,7 +32,7 @@ public class AddBookDlg extends JDialog {
     private JLabel ReadingDateLabel;
     private JCheckBox BookUnknownReadDateChecbox;
     private JPanel DateReadPanel;
-    private JPanel LeftPanel;
+    private JPanel RightPanel;
     private JLabel PhotoLabel;
     private JButton BookBrowseBtn;
     private JLabel NoteBblLabel;
@@ -43,6 +43,7 @@ public class AddBookDlg extends JDialog {
     private JSpinner BookDateReadSpin;
     private JSpinner BookNumberOPSpin;
     private JLabel NumberOPLabel;
+    private JPanel LeftPanel;
 
     private String m_author;
     private String m_title;
@@ -137,14 +138,14 @@ public class AddBookDlg extends JDialog {
                             setVisible(false);
                             dispose();
                         }
+                        m_connection.close();
+                        m_statement.close();
                     }catch (Exception e){
                         System.err.println( e.getClass().getName() + ": " + e.getMessage() );
                         System.exit(0);
                     }
                 }
                 else if(getIsAlreadyRead() && getExitingBookComboBox().getSelectedItem()==""){//Verif if we select a book in combobox
-                    /*JFrame jFrame = new JFrame();
-                    JOptionPane.showMessageDialog(jFrame, "Veuillez sélectionner un livre ! ");*/
                     initComponents(true);
                 }
                 else if(!getIsAlreadyRead() && !Objects.equals(getNewBookAuthor(), "") && !Objects.equals(getNewBookTitle(), "") && !Objects.equals(getNewBookSummary(), "") && !Objects.equals(getURL(), "")){//Verif if the input are good to quit the dlg and recovered the data for bdd

@@ -117,9 +117,6 @@ public class EditReadingDlg extends JDialog {
     public void setIsValid(boolean m_isValid) {
         this.m_isValid = m_isValid;
     }
-    public void setDate(Date m_date) {
-        this.m_date = m_date;
-    }
     public void initComponent(){
         //Retrieves the data entered as a parameter from the constructor, and therefore from the DB
         BookTitleLable.setText("Titre : "+getMtitle());

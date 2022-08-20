@@ -1,6 +1,7 @@
 package Forms;
 
 import Forms.Dialogs.AddBookDlg;
+import Forms.Dialogs.EditBookDlg;
 import Forms.Dialogs.ManageReadingDlg;
 import com.formdev.flatlaf.FlatDarkLaf;
 
@@ -239,6 +240,16 @@ public class MainWindow extends JDialog {
                         System.out.println(e.getMessage());
                     }
                 }
+            }
+        });
+        edit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                EditBookDlg diag = new EditBookDlg(getMTitle(), getAuthor());
+                diag.setTitle("Modifier un livre");
+                diag.setSize(800,500);
+                diag.setLocationRelativeTo(null);
+                diag.setVisible(true);
             }
         });
     }
