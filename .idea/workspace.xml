@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5ede3cbf-f5c9-462f-8dc0-7982017c2136" name="Changes" comment="Fixes the bug, that deleted all dateReading &quot;Unknown&quot; of a book when we wanted to delete a dateReading &quot;Unknown&quot;">
+    <list default="true" id="5ede3cbf-f5c9-462f-8dc0-7982017c2136" name="Changes" comment="Modify a dateRead with a check, if the new date does not exist">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Forms/Dialogs/EditReadingDlg.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Forms/Dialogs/EditReadingDlg.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Forms/Dialogs/ManageReadingDlg.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Forms/Dialogs/ManageReadingDlg.java" afterDir="false" />
@@ -303,7 +303,14 @@
       <option name="project" value="LOCAL" />
       <updated>1661202737960</updated>
     </task>
-    <option name="localTasksCounter" value="34" />
+    <task id="LOCAL-00034" summary="Modify a dateRead with a check, if the new date does not exist">
+      <created>1661204732232</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1661204732232</updated>
+    </task>
+    <option name="localTasksCounter" value="35" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -318,7 +325,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="- Retrieving data from the AddBookDlg database with the fillbookcombobox, and the image that appears &#10;- Change of spinner for the reading date&#10;- Setting up checkbox roles (hiding some boxes for some cases)" />
     <MESSAGE value="Fully commented code" />
     <MESSAGE value="Set all spinner value with default and max value&#10;Set all spinner date with a spinnerDateModel" />
     <MESSAGE value="Create all getter in AddBookDlg" />
@@ -343,6 +349,7 @@
     <MESSAGE value="Can't add or edit a date with a date in the future" />
     <MESSAGE value="We can give an unknown date for the modication of the reading date" />
     <MESSAGE value="Fixes the bug, that deleted all dateReading &quot;Unknown&quot; of a book when we wanted to delete a dateReading &quot;Unknown&quot;" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixes the bug, that deleted all dateReading &quot;Unknown&quot; of a book when we wanted to delete a dateReading &quot;Unknown&quot;" />
+    <MESSAGE value="Modify a dateRead with a check, if the new date does not exist" />
+    <option name="LAST_COMMIT_MESSAGE" value="Modify a dateRead with a check, if the new date does not exist" />
   </component>
 </project>

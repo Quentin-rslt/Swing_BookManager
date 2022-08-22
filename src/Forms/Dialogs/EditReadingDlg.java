@@ -53,7 +53,7 @@ public class EditReadingDlg extends JDialog {
         OkBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                String sql = "SELECT Title, Author, DateReading FROM Reading";
+                String sql = "SELECT Title, Author, DateReading FROM Reading WHERE Title='"+getMtitle()+"' AND Author='"+getAuthor()+"'";
                 try {
                     Class.forName("org.sqlite.JDBC");
                     Connection connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");

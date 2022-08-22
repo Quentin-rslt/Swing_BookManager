@@ -192,7 +192,6 @@ public class ManageReadingDlg extends JDialog {
                 InsetrPstmt.setString(2, title);
                 InsetrPstmt.setString(3, author);
                 InsetrPstmt.setString(4, m_bookListTable.getValueAt(i, 2).toString());
-                //System.out.println(m_bookListTable.getValueAt(i, 2).toString());
                 InsetrPstmt.executeUpdate();
             }
             conn.close();
