@@ -2,7 +2,10 @@ package Forms.Dialogs;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.*;
 
 public class ManageReadingDlg extends JDialog {
@@ -67,16 +70,17 @@ public class ManageReadingDlg extends JDialog {
         cut.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
+                String ReadingQry = "DELETE FROM Reading WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"' AND ID='"+getRow()+"'";//Delete in bdd the item that we want delete
+                String BookQry = "DELETE FROM Book WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";//Delete in bdd the item that we want delete
                 if(m_bookListTable.getRowCount()>1){//If there is more than one reading you don't need to know if the person really wants to delete the book
-                    String sql = "DELETE FROM BookManager WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"' AND DateReading='"+getDateReading()+"'";//Delete in bdd the item that we want delete
-                    try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-                        // execute the delete statement
-                        pstmt.executeUpdate();
+                    try (Connection conn = connect(); PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry, 1); PreparedStatement BookPstmt = conn.prepareStatement(BookQry)) {
+                        ReadingPstmt.executeUpdate();
                         contentPane.updateUI();
                         BookListPanel.removeAll();
                         fillBookList();
+                        setIdReading(getMTitle(), getAuthor(), getRowCount());//refresh all ID in the table ReadingDate
                         conn.close();
-                        pstmt.close();
+                        ReadingPstmt.close();
 
                     } catch (SQLException e) {
                         System.out.println(e.getMessage());
@@ -90,15 +94,13 @@ public class ManageReadingDlg extends JDialog {
                             "An Inane Question",
                             JOptionPane.YES_NO_OPTION);
                     if(n==0){
-                        String sql = "DELETE FROM BookManager WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"' AND DateReading='"+getDateReading()+"'";//Delete in bdd the item that we want delete
-                        try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-                            // execute the delete statement
-                            pstmt.executeUpdate();
+                        try (Connection conn = connect(); PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry); PreparedStatement BookPstmt = conn.prepareStatement(BookQry)) {
+                            ReadingPstmt.executeUpdate();
+                            BookPstmt.executeUpdate();
                             contentPane.updateUI();
                             BookListPanel.removeAll();
-                            fillBookList();
                             conn.close();
-                            pstmt.close();
+                            ReadingPstmt.close();
 
                         } catch (SQLException e) {
                             System.out.println(e.getMessage());
@@ -117,7 +119,7 @@ public class ManageReadingDlg extends JDialog {
                 diag.setVisible(true);
 
                 if(diag.isValid()){
-                    String sql = "UPDATE BookManager SET DateReading='"+diag.getNewDateReading()+"' WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"' AND DateReading='"+getDateReading()+"'";//Edit in bdd the item that we want to change the reading date
+                    String sql = "UPDATE Reading SET DateReading='"+diag.getNewDateReading()+"' WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"' AND ID='"+getRow()+"'";//Edit in bdd the item that we want to change the reading date
                     try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
                         // execute the uptdate statement
                         pstmt.executeUpdate();
@@ -160,6 +162,9 @@ public class ManageReadingDlg extends JDialog {
     public int getRow() {
         return m_row;
     }
+    public int getRowCount(){
+        return m_bookListTable.getRowCount();
+    }
 
     public void setAuthor(String m_author) {
         this.m_author = m_author;
@@ -176,11 +181,33 @@ public class ManageReadingDlg extends JDialog {
     public void setRow(int m_row) {
         this.m_row = m_row;
     }
+    public void setIdReading(String title, String author, int rowCount){
+        String ReadingQry = "DELETE FROM Reading WHERE Title='"+title+"' AND Author='"+author+"'";//clear all the table
+        String InsetrQry = "INSERT INTO Reading (ID,Title,Author,DateReading) " +
+                "VALUES (?,?,?,?);";
+        try (Connection conn = connect(); PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry); PreparedStatement InsetrPstmt = conn.prepareStatement(InsetrQry)){
+            ReadingPstmt.executeUpdate();//Delete all the table
+            for(int i=0;i<rowCount; i++){//filled the table against the bookList
+                InsetrPstmt.setInt(1, i);
+                InsetrPstmt.setString(2, title);
+                InsetrPstmt.setString(3, author);
+                InsetrPstmt.setString(4, m_bookListTable.getValueAt(i, 2).toString());
+                //System.out.println(m_bookListTable.getValueAt(i, 2).toString());
+                InsetrPstmt.executeUpdate();
+            }
+            conn.close();
+            ReadingPstmt.close();
+            InsetrPstmt.close();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+    }
     public void fillBookList(){
         m_tableModel.setRowCount(0);
         try(Connection conn = connect()){
             m_statement = conn.createStatement();
-            ResultSet qry = m_statement.executeQuery("SELECT Title, Author, DateReading FROM BookManager WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+ "'");//Retrieved from the bdd the URL of the book image
+            ResultSet qry = m_statement.executeQuery("SELECT Title, Author, DateReading FROM Reading WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+ "'");//Retrieved from the bdd the URL of the book image
 
             while (qry.next()){
                 String title = qry.getString("Title");//Retrieve the title

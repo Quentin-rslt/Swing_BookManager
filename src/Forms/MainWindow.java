@@ -106,25 +106,32 @@ public class MainWindow extends JDialog {
                 diag.setLocationRelativeTo(null);
                 diag.setVisible(true);
                 if (diag.isValide()){
-                    String qry = "INSERT INTO BookManager (Title,Author,Image,NumberOP,NotePerso,NoteBabelio,DateReading,ReleaseYear,Summary) " +
-                            "VALUES (?,?,?,?,?,?,?,?,?);";
+                    String BookQry = "INSERT INTO Book (Title,Author,Image,NumberOP,NotePerso,NoteBabelio,ReleaseYear,Summary) " +
+                            "VALUES (?,?,?,?,?,?,?,?);";
+                    String ReadingQry = "INSERT INTO Reading (ID,Title,Author,DateReading) " +
+                            "VALUES (?,?,?,?);";
                     contentPane.updateUI();
                     BookListPanel.removeAll();//refresh the table of book
-                    try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(qry)) {
+                    try (Connection conn = connect(); PreparedStatement BookPstmt = conn.prepareStatement(BookQry); PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry)) {
                         m_statement = conn.createStatement();
                         //If nothing is selected in the combobox
                         if(!diag.getIsAlreadyRead()){
                             if(!diag.isDateUnknown()){
-                                pstmt.setString(1, diag.getNewBookTitle());
-                                pstmt.setString(2, diag.getNewBookAuthor());
-                                pstmt.setString(3, diag.getURL());
-                                pstmt.setString(4, diag.getNewBookNumberOP());
-                                pstmt.setString(5, diag.getNewBookPersonalNote());
-                                pstmt.setString(6, diag.getNewBookBBLNote());
-                                pstmt.setString(7, diag.getNewBookDateReading());
-                                pstmt.setString(8, diag.getNewBookReleaseYear());
-                                pstmt.setString(9, diag.getNewBookSummary());
-                                pstmt.executeUpdate();//Insert the new Book
+                                ReadingPstmt.setInt(1, setIdReading(diag.getNewBookTitle(), diag.getNewBookAuthor()));
+                                ReadingPstmt.setString(2, diag.getNewBookTitle());
+                                ReadingPstmt.setString(3, diag.getNewBookAuthor());
+                                ReadingPstmt.setString(4, diag.getNewBookDateReading());
+
+                                BookPstmt.setString(1, diag.getNewBookTitle());
+                                BookPstmt.setString(2, diag.getNewBookAuthor());
+                                BookPstmt.setString(3, diag.getURL());
+                                BookPstmt.setString(4, diag.getNewBookNumberOP());
+                                BookPstmt.setString(5, diag.getNewBookPersonalNote());
+                                BookPstmt.setString(6, diag.getNewBookBBLNote());
+                                BookPstmt.setString(7, diag.getNewBookReleaseYear());
+                                BookPstmt.setString(8, diag.getNewBookSummary());
+                                BookPstmt.executeUpdate();//Insert the new Book
+                                ReadingPstmt.executeUpdate();//Insert the new reading
                                 setMTitle(diag.getNewBookTitle());
                                 setAuthor(diag.getNewBookAuthor());
                                 loadComponents(diag.getNewBookTitle(), diag.getNewBookAuthor());
@@ -133,16 +140,21 @@ public class MainWindow extends JDialog {
                                 m_bookListTable.setRowSelectionInterval(getRowSelected(diag.getNewBookTitle(), diag.getNewBookAuthor()), getRowSelected(diag.getNewBookTitle(), diag.getNewBookAuthor()));
                             }
                             else {
-                                pstmt.setString(1, diag.getNewBookTitle());
-                                pstmt.setString(2, diag.getNewBookAuthor());
-                                pstmt.setString(3, diag.getURL());
-                                pstmt.setString(4, diag.getNewBookNumberOP());
-                                pstmt.setString(5, diag.getNewBookPersonalNote());
-                                pstmt.setString(6, diag.getNewBookBBLNote());
-                                pstmt.setString(7, "Inconnu");
-                                pstmt.setString(8, diag.getNewBookReleaseYear());
-                                pstmt.setString(9, diag.getNewBookSummary());
-                                pstmt.executeUpdate();//Insert the new Book
+                                ReadingPstmt.setInt(1, setIdReading(diag.getNewBookTitle(), diag.getNewBookAuthor()));
+                                ReadingPstmt.setString(2, diag.getNewBookTitle());
+                                ReadingPstmt.setString(3, diag.getNewBookAuthor());
+                                ReadingPstmt.setString(4, "Inconnu");
+
+                                BookPstmt.setString(1, diag.getNewBookTitle());
+                                BookPstmt.setString(2, diag.getNewBookAuthor());
+                                BookPstmt.setString(3, diag.getURL());
+                                BookPstmt.setString(4, diag.getNewBookNumberOP());
+                                BookPstmt.setString(5, diag.getNewBookPersonalNote());
+                                BookPstmt.setString(6, diag.getNewBookBBLNote());
+                                BookPstmt.setString(7, diag.getNewBookReleaseYear());
+                                BookPstmt.setString(8, diag.getNewBookSummary());
+                                BookPstmt.executeUpdate();//Insert the new Book in table Book
+                                ReadingPstmt.executeUpdate();//Insert the new reading
                                 setMTitle(diag.getNewBookTitle());
                                 setAuthor(diag.getNewBookAuthor());
                                 loadComponents(diag.getNewBookTitle(), diag.getNewBookAuthor());
@@ -152,18 +164,14 @@ public class MainWindow extends JDialog {
                             }
                         }
                         else{
-                            ResultSet rs = m_statement.executeQuery("SELECT * FROM BookManager WHERE Title='"+diag.getMTitle()+"' AND Author='"+diag.getAuthor()+ "'");
+                            ResultSet rs = m_statement.executeQuery("SELECT * FROM Book WHERE Title='"+diag.getMTitle()+"' AND Author='"+diag.getAuthor()+ "'");
                             if(!diag.isDateUnknown()){
-                                pstmt.setString(1, diag.getMTitle());
-                                pstmt.setString(2, diag.getAuthor());
-                                pstmt.setString(3, rs.getString(3));
-                                pstmt.setString(4, rs.getString(4));
-                                pstmt.setString(5, rs.getString(5));
-                                pstmt.setString(6, rs.getString(6));
-                                pstmt.setString(7, diag.getNewBookDateReading());
-                                pstmt.setString(8, rs.getString(8));
-                                pstmt.setString(9, rs.getString(9));
-                                pstmt.executeUpdate();//Insert the new Book
+                                ReadingPstmt.setInt(1, setIdReading(diag.getMTitle(), diag.getAuthor()));
+                                ReadingPstmt.setString(2, diag.getMTitle());
+                                ReadingPstmt.setString(3, diag.getAuthor());
+                                ReadingPstmt.setString(4, diag.getNewBookDateReading());
+
+                                ReadingPstmt.executeUpdate();//Insert the new reading
                                 setMTitle(diag.getMTitle());
                                 setAuthor(diag.getAuthor());
                                 loadComponents(diag.getMTitle(), diag.getAuthor());
@@ -172,16 +180,12 @@ public class MainWindow extends JDialog {
                                 m_bookListTable.setRowSelectionInterval(getRowSelected(diag.getMTitle(), diag.getAuthor()), getRowSelected(diag.getMTitle(), diag.getAuthor()));
                             }
                             else {
-                                pstmt.setString(1, diag.getMTitle());
-                                pstmt.setString(2, diag.getAuthor());
-                                pstmt.setString(3, rs.getString(3));
-                                pstmt.setString(4, rs.getString(4));
-                                pstmt.setString(5, rs.getString(5));
-                                pstmt.setString(6, rs.getString(6));
-                                pstmt.setString(7, "Inconnu");
-                                pstmt.setString(8, rs.getString(8));
-                                pstmt.setString(9, rs.getString(9));
-                                pstmt.executeUpdate();//Insert the new Book
+                                ReadingPstmt.setInt(1, setIdReading(diag.getMTitle(), diag.getAuthor()));
+                                ReadingPstmt.setString(2, diag.getMTitle());
+                                ReadingPstmt.setString(3, diag.getAuthor());
+                                ReadingPstmt.setString(4, "Inconnu");
+
+                                ReadingPstmt.executeUpdate();//Insert the new reading
                                 setMTitle(diag.getMTitle());
                                 setAuthor(diag.getAuthor());
                                 loadComponents(diag.getMTitle(), diag.getAuthor());
@@ -195,6 +199,7 @@ public class MainWindow extends JDialog {
                         m_statement.close();
                     } catch (SQLException e) {
                         System.out.println(e.getMessage());
+                        System.exit(0);
                     }
                 }
             }
@@ -228,10 +233,12 @@ public class MainWindow extends JDialog {
                         "An Inane Question",
                         JOptionPane.YES_NO_OPTION);
                 if(n == 0){
-                    String sql = "DELETE FROM BookManager WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";//sql to delete the book when we right click
-                    try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                    String sql = "DELETE FROM Book WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";//sql to delete the book in table book when we right click
+                    String sql2 = "DELETE FROM Reading WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";//sql to delete the book in table reading when we right click
+                    try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql); PreparedStatement pstmt2 = conn.prepareStatement(sql2)) {
                         // execute the delete statement
                         pstmt.executeUpdate();
+                        pstmt2.executeUpdate();
                         initComponents();
                         BookListPanel.removeAll();
                         loadDB();
@@ -251,19 +258,24 @@ public class MainWindow extends JDialog {
                 diag.setLocationRelativeTo(null);
                 diag.setVisible(true);
                 if (diag.isValid()){
-                    String sql = "UPDATE BookManager SET Title=?, Author=?, Image=?, NumberOP=?, NotePerso=?, NoteBabelio=?, ReleaseYear=?, Summary=?"+
-                                 "WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";//Edit in bdd the book that we want to change
-                    try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                    String BookQry = "UPDATE Book SET Title=?, Author=?, Image=?, NumberOP=?, NotePerso=?, NoteBabelio=?, ReleaseYear=?, Summary=?"+
+                            "WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";//Edit in bdd the book that we want to change
+                    String ReadingQry = "UPDATE Reading SET Title=?, Author=?"+
+                            "WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";//Edit in bdd the book that we want to change
+                    try (Connection conn = connect(); PreparedStatement BookPstmt = conn.prepareStatement(BookQry); PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry)) {
                         // execute the uptdate statement
-                        pstmt.setString(1, diag.getNewTitle());
-                        pstmt.setString(2, diag.getNewAuthor());
-                        pstmt.setString(3, diag.getNewURL());
-                        pstmt.setString(4, diag.getNewNumberPage());
-                        pstmt.setString(5, diag.getNewPersonnalNote());
-                        pstmt.setString(6, diag.getNewBBLNote());
-                        pstmt.setString(7, diag.getNewReleaseyear());
-                        pstmt.setString(8, diag.getNewSummary());
-                        pstmt.executeUpdate();
+                        ReadingPstmt.setString(1, diag.getNewTitle());
+                        ReadingPstmt.setString(2, diag.getNewAuthor());
+                        BookPstmt.setString(1, diag.getNewTitle());
+                        BookPstmt.setString(2, diag.getNewAuthor());
+                        BookPstmt.setString(3, diag.getNewURL());
+                        BookPstmt.setString(4, diag.getNewNumberPage());
+                        BookPstmt.setString(5, diag.getNewPersonnalNote());
+                        BookPstmt.setString(6, diag.getNewBBLNote());
+                        BookPstmt.setString(8, diag.getNewReleaseyear());
+                        BookPstmt.setString(9, diag.getNewSummary());
+                        BookPstmt.executeUpdate();
+                        ReadingPstmt.executeUpdate();
 
                         contentPane.updateUI();
                         BookListPanel.removeAll();
@@ -271,7 +283,8 @@ public class MainWindow extends JDialog {
                         loadComponents(diag.getNewTitle(), diag.getNewAuthor());//reload changes made to the book
                         m_bookListTable.setRowSelectionInterval(getRowSelected(diag.getNewTitle(), diag.getNewAuthor()), getRowSelected(diag.getNewTitle(), diag.getNewAuthor()));//focus on the edited book
                         conn.close();
-                        pstmt.close();
+                        ReadingPstmt.close();
+                        BookPstmt.close();
                     } catch (SQLException e) {
                         System.out.println(e.getMessage());
                     }
@@ -322,18 +335,24 @@ public class MainWindow extends JDialog {
             Class.forName("org.sqlite.JDBC");
             m_statement = conn.createStatement();
 
-            String sql = "CREATE TABLE IF NOT EXISTS BookManager" +
+            String sql = "CREATE TABLE IF NOT EXISTS Book" +
                     "(Title TEXT, " +
                     " Author TEXT, " +
                     " Image TEXT, " +
                     " NumberOP INT, " +
                     " NotePerso INT, " +
                     " NoteBabelio INT, " +
-                    " DateReading TEXT, " +
                     " ReleaseYear TEXT, " +
                     " Summary TEXT)";
 
+            String sql2 = "CREATE TABLE IF NOT EXISTS Reading" +
+                    "(ID INT, " +
+                    " Title TEXT, " +
+                    " Author TEXT, " +
+                    " DateReading TEXT)";
+
             m_statement.executeUpdate(sql);//Create the BDD
+            m_statement.executeUpdate(sql2);//Create the BDD
             System.out.println("Table created successfully");
 
             conn.close();
@@ -349,8 +368,8 @@ public class MainWindow extends JDialog {
             m_statement = conn.createStatement();
             System.out.println("Table connexion successfully");
 
-            ResultSet rs = m_statement.executeQuery("SELECT * FROM BookManager GROUP BY Title, Author;");//Execute a Query to retrieve all the values from the database by grouping the duplicates
-                                                                                                            // (with their name and author)
+            ResultSet rs = m_statement.executeQuery("SELECT * FROM Book GROUP BY Title, Author;");//Execute a Query to retrieve all the values from the database by grouping the duplicates
+            // (with their name and author)
             while (rs.next()) {//Fill in the table of the list of Book
                 String title = rs.getString("Title");//Retrieve the title
                 String author = rs.getString("Author");//Retrieve the author
@@ -382,47 +401,47 @@ public class MainWindow extends JDialog {
             m_statement = conn.createStatement();
 
             //Title label
-            ResultSet titleQry = m_statement.executeQuery("SELECT Title FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
+            ResultSet titleQry = m_statement.executeQuery("SELECT Title FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
             TitleLabel.setText(titleQry.getString(1));
 
             //Author label
-            ResultSet authorQry = m_statement.executeQuery("SELECT Author FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
+            ResultSet authorQry = m_statement.executeQuery("SELECT Author FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
             AuthorLabel.setText("Auteur : "+authorQry.getString(1));
 
             //Number of reading label
-            ResultSet NumberOPQry = m_statement.executeQuery("SELECT NumberOP FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
+            ResultSet NumberOPQry = m_statement.executeQuery("SELECT NumberOP FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
             NumberPageLabel.setText("Nombre de page : "+NumberOPQry.getString(1));
 
             //Release year label
-            ResultSet ReleaseYearQry = m_statement.executeQuery("SELECT ReleaseYear FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
+            ResultSet ReleaseYearQry = m_statement.executeQuery("SELECT ReleaseYear FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
             ReleaseYearLAbel.setText("Année de sortie : "+ReleaseYearQry.getString(1));
 
             //Number of reading label
-            ResultSet CountReadingQry = m_statement.executeQuery("SELECT COUNT(*) FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
+            ResultSet CountReadingQry = m_statement.executeQuery("SELECT COUNT(*) FROM Reading WHERE Title='"+title+"' AND Author='"+author+ "'");
             CountReadingLabel.setText("Nombre de lecture : "+CountReadingQry.getString(1));
 
             //Note on babelio
-            ResultSet NoteBBQry = m_statement.executeQuery("SELECT NoteBabelio FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
+            ResultSet NoteBBQry = m_statement.executeQuery("SELECT NoteBabelio FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
             NoteLabel.setText("Note : "+NoteBBQry.getString(1));
 
             //Summary
-            ResultSet SummaryQry = m_statement.executeQuery("SELECT Summary FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
+            ResultSet SummaryQry = m_statement.executeQuery("SELECT Summary FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
             BookSummary.setText(SummaryQry.getString(1));
 
             //Personal note
-            ResultSet NotePersoQry = m_statement.executeQuery("SELECT NotePerso FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
+            ResultSet NotePersoQry = m_statement.executeQuery("SELECT NotePerso FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
             PersonalNoteLabel.setText("Ma note : "+NotePersoQry.getString(1));
 
             //First reading
-            ResultSet FirstReadQry = m_statement.executeQuery("SELECT DateReading FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'ORDER BY DateReading ASC LIMIT 1");
+            ResultSet FirstReadQry = m_statement.executeQuery("SELECT DateReading FROM Reading WHERE Title='"+title+"' AND Author='"+author+ "'ORDER BY DateReading ASC LIMIT 1");
             FirstReadingLabel.setText("Première lecture : "+FirstReadQry.getString(1));
 
             //Last reading
-            ResultSet LastReadQry = m_statement.executeQuery("SELECT DateReading FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'ORDER BY DateReading DESC LIMIT 1");
+            ResultSet LastReadQry = m_statement.executeQuery("SELECT DateReading FROM Reading WHERE Title='"+title+"' AND Author='"+author+ "'ORDER BY DateReading DESC LIMIT 1");
             LastReadingLabel.setText("Dernière lecture : "+FirstReadQry.getString(1));
 
             //Image
-            ResultSet ImageQry = m_statement.executeQuery("SELECT Image FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
+            ResultSet ImageQry = m_statement.executeQuery("SELECT Image FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
 
             Image img = Toolkit.getDefaultToolkit().getImage(ImageQry.getString(1));
             img=img.getScaledInstance(200, 300, Image.SCALE_DEFAULT);//set size of image
@@ -455,6 +474,23 @@ public class MainWindow extends JDialog {
         BookPhotoPanel.removeAll();
         contentPane.updateUI();
     }
+    public int setIdReading(String title, String author) {
+        int i =0;
+        try (Connection conn = connect()) {
+            m_statement = conn.createStatement();
+            ResultSet rs = m_statement.executeQuery("SELECT * FROM Reading WHERE Title='"+title+"' AND Author='"+author+ "'");
+            while (rs.next()){
+                i++;
+            }
+            rs.close();
+            conn.close();
+            m_statement.close();
+        }catch (Exception e){
+            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+            System.exit(0);
+        }
+        return i;
+    }
 
     public static void main(String[] args) {
         try {
@@ -471,3 +507,4 @@ public class MainWindow extends JDialog {
         System.exit(0);
     }
 }
+

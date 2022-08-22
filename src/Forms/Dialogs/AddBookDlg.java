@@ -89,7 +89,7 @@ public class AddBookDlg extends JDialog {
                         Class.forName("org.sqlite.JDBC");
                         m_connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
                         m_statement = m_connection.createStatement();
-                        ResultSet ImageQry = m_statement.executeQuery("SELECT Image FROM BookManager WHERE Title='"+m_title+"' AND Author='"+m_author+ "'");//Retrieved from the bdd the URL of the book image
+                        ResultSet ImageQry = m_statement.executeQuery("SELECT Image FROM Book WHERE Title='"+m_title+"' AND Author='"+m_author+ "'");//Retrieved from the bdd the URL of the book image
                         // in parameters the title and the author enter in parameters of this function
                         addImageToPanel(ImageQry.getString(1));//add the image of the book, with the author and the title recovered on the combobox, in our panel
 
@@ -115,7 +115,7 @@ public class AddBookDlg extends JDialog {
         ValidateBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                String sql = "SELECT Title, Author, DateReading FROM BookManager";
+                String sql = "SELECT Title, Author, DateReading FROM Reading";
                 if(getIsAlreadyRead() && getExitingBookComboBox().getSelectedItem()!=""){//Can add a new reading if the book exists at the same reading date
                     try {
                         Class.forName("org.sqlite.JDBC");
@@ -259,7 +259,7 @@ public class AddBookDlg extends JDialog {
             m_connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
             m_statement = m_connection.createStatement();
 
-            ResultSet rs = m_statement.executeQuery("SELECT Title, Author FROM BookManager GROUP BY Title, Author ORDER BY Title ASC;");
+            ResultSet rs = m_statement.executeQuery("SELECT Title, Author FROM Book GROUP BY Title, Author ORDER BY Title ASC;");
             while (rs.next()) {
                 ExitingBookComboBox.addItem(rs.getString(1)+ " - " + rs.getString(2));//Filled the combobox with the data Recovered from the database
             }
