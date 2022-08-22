@@ -3,6 +3,10 @@ package Forms.Dialogs;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -48,18 +52,36 @@ public class EditReadingDlg extends JDialog {
         });
         OkBtn.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                if(!Objects.equals(getDateReading(), getNewDateReading())){//If the new date and old date are not similar
-                    setIsValid(true);
-                    setVisible(false);
-                    dispose();
-                } else if (!Objects.equals(getDateReading(), "Inconnu") && Objects.equals(getNewDateReading(), "Inconnu")) {//if the old date is not "Inconnu" and the new is "Inconnu"
-                    setIsValid(true);
-                    setVisible(false);
-                    dispose();
-                } else{//else we can't change the reading date
-                    JFrame jFrame = new JFrame();
-                    JOptionPane.showMessageDialog(jFrame, "Ne peut pas modifier la date de lecture avec une date déjà existante ! ");
+            public void actionPerformed(ActionEvent evt) {
+                String sql = "SELECT Title, Author, DateReading FROM Reading";
+                try {
+                    Class.forName("org.sqlite.JDBC");
+                    Connection connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
+                    Statement statement = connection.createStatement();
+                    ResultSet qry = statement.executeQuery(sql);
+
+                    boolean dateFind =false;
+                    while (qry.next() && !dateFind){//check if the modified date already exists (unless it is Unknown)
+                        if (Objects.equals(getNewDateReading() ,qry.getString(3)) &&//If there is a date then we do not modify and display an error message
+                                !Objects.equals(qry.getString(3), "Inconnu") && !Objects.equals(getNewDateReading(), "Inconnu")){
+                            JFrame jFrame = new JFrame();
+                            JOptionPane.showMessageDialog(jFrame, "La date de lecture existe déjà !");
+                            dateFind = true;
+                        }
+                        else{
+                            dateFind = false;
+                        }
+                    }
+                    if (!dateFind){//If a date has not been found in the database when leaving the loop, then the date typed is valid
+                        setIsValid(true);
+                        setVisible(false);
+                        dispose();
+                    }
+                    connection.close();
+                    statement.close();
+                }catch (Exception e){
+                    System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+                    System.exit(0);
                 }
             }
         });
@@ -80,8 +102,10 @@ public class EditReadingDlg extends JDialog {
     public String getNewDateReading() {
         if (isDateReadingUnknown())
             return "Inconnu";
-        else
-            return m_newDateReading;
+        else{
+            SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd");//set the date format returned to have the day, month and year
+            return formater.format(BookNewDateReadingSpin.getValue());
+        }
     }
     public String getAuthor() {
         return m_author;

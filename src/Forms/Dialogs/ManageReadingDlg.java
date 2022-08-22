@@ -78,7 +78,7 @@ public class ManageReadingDlg extends JDialog {
                         contentPane.updateUI();
                         BookListPanel.removeAll();
                         fillBookList();
-                        setIdReading(getMTitle(), getAuthor(), getRowCount());//refresh all ID in the table ReadingDate
+                        resetIdReading(getMTitle(), getAuthor(), getRowCount());//refresh all ID in the table ReadingDate
                         conn.close();
                         ReadingPstmt.close();
 
@@ -181,7 +181,7 @@ public class ManageReadingDlg extends JDialog {
     public void setRow(int m_row) {
         this.m_row = m_row;
     }
-    public void setIdReading(String title, String author, int rowCount){
+    public void resetIdReading(String title, String author, int rowCount){
         String ReadingQry = "DELETE FROM Reading WHERE Title='"+title+"' AND Author='"+author+"'";//clear all the table
         String InsetrQry = "INSERT INTO Reading (ID,Title,Author,DateReading) " +
                 "VALUES (?,?,?,?);";
