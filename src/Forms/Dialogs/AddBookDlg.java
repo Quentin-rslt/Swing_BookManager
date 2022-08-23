@@ -47,7 +47,7 @@ public class AddBookDlg extends JDialog {
 
     private String m_author;
     private String m_title;
-    private String m_URL;
+    private String m_URL="";
     private boolean m_isValide = false;//Useful for determinate if the input are good
     private Connection m_connection;
     private Statement m_statement;
@@ -92,7 +92,7 @@ public class AddBookDlg extends JDialog {
                         ResultSet ImageQry = m_statement.executeQuery("SELECT Image FROM Book WHERE Title='"+m_title+"' AND Author='"+m_author+ "'");//Retrieved from the bdd the URL of the book image
                         // in parameters the title and the author enter in parameters of this function
                         addImageToPanel(ImageQry.getString(1));//add the image of the book, with the author and the title recovered on the combobox, in our panel
-
+                        setURL(ImageQry.getString(1));
                         m_connection.close();
                         m_statement.close();
                     } catch ( Exception e ) {
@@ -100,8 +100,10 @@ public class AddBookDlg extends JDialog {
                         System.exit(0);
                     }
                 }
-                else
+                else{
+                    setURL("");
                     initComponents(true);
+                }
             }
         });
         CancelBtn.addActionListener(new ActionListener() {
@@ -148,7 +150,7 @@ public class AddBookDlg extends JDialog {
                 else if(getIsAlreadyRead() && getExitingBookComboBox().getSelectedItem()==""){//Verif if we select a book in combobox
                     initComponents(true);
                 }
-                else if(!getIsAlreadyRead() && !Objects.equals(getNewBookAuthor(), "") && !Objects.equals(getNewBookTitle(), "") && !Objects.equals(getNewBookSummary(), "") && !Objects.equals(getURL(), "")){//Verif if the input are good to quit the dlg and recovered the data for bdd
+                else if(!getIsAlreadyRead() && !Objects.equals(getNewBookAuthor(), "") && !Objects.equals(getNewBookTitle(), "") && !Objects.equals(getNewBookSummary(), "")){//Verif if the input are good to quit the dlg and recovered the data for bdd
                     try{//Can add a new reading if the book already exist
                         Class.forName("org.sqlite.JDBC");
                         m_connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
@@ -156,7 +158,7 @@ public class AddBookDlg extends JDialog {
                         ResultSet bookQry = m_statement.executeQuery(sql);
 
                         boolean bookFind =false;
-                        while (bookQry.next() && bookFind==false){//We browse the database until we find a book that already exists, in relation to the book created
+                        while (bookQry.next() && !bookFind){//We browse the database until we find a book that already exists, in relation to the book created
                             if (Objects.equals(bookQry.getString(1), getNewBookTitle()) && Objects.equals(bookQry.getString(2), getNewBookAuthor())){//If the created book is already in the database, we exit the loop by setting an error dialog
                                 JFrame jFrame = new JFrame();
                                 JOptionPane.showMessageDialog(jFrame, "Le livre existe déjà !");
@@ -165,7 +167,15 @@ public class AddBookDlg extends JDialog {
                             else
                                 bookFind = false;
                         }
-                        if (bookFind==false){//If a book has not been found in the database when leaving the loop, then the book typed is valid
+                        if (!bookFind && Objects.equals(getURL(), "")){//If a book has not been found in the database when leaving the loop, then the book typed is valid
+                            String path = String.valueOf(getClass().getResource("/Ressource/Default.jpg"));
+                            String path2 = path.replace("file:/", "");
+                            setURL(path2);//create default image if we did'nt choice an image
+                            m_isValide=true;
+                            setVisible(false);
+                            dispose();
+                        }
+                        else if (!Objects.equals(getURL(), "")){
                             m_isValide=true;
                             setVisible(false);
                             dispose();

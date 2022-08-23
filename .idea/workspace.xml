@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5ede3cbf-f5c9-462f-8dc0-7982017c2136" name="Changes" comment="Fix one bug when we edit a dateReading, forget to verify the Title and Author">
+    <list default="true" id="5ede3cbf-f5c9-462f-8dc0-7982017c2136" name="Changes" comment="Fix the bug when we started the app with a empty BDD =&gt; can't start the app; NOW IT'S OK">
+      <change afterPath="$PROJECT_DIR$/src/Ressource/Default.jpg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Forms/MainWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Forms/MainWindow.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Forms/Dialogs/AddBookDlg.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Forms/Dialogs/AddBookDlg.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,23 +33,28 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;ToolWindowRun.ShowToolbar&quot;: &quot;false&quot;,
-    &quot;UI_DESIGNER_EDITOR_MODE.UIDesignerToolWindowManager.SHOW&quot;: &quot;true&quot;,
-    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;openjdk-18&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/quent/Documents/LookAndFeel/V3/syntheticaAluOxide.jar&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Libraries&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "ToolWindowRun.ShowToolbar": "false",
+    "UI_DESIGNER_EDITOR_MODE.UIDesignerToolWindowManager.SHOW": "true",
+    "jdk.selected.JAVA_MODULE": "openjdk-18",
+    "last_opened_file_path": "C:/Users/quent/IdeaProjects/BookManager/src/Ressource",
+    "project.structure.last.edited": "Libraries",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "preferences.pluginManager"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\quent\IdeaProjects\BookManager\src\Ressource" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\quent\IdeaProjects\BookManager\src\Ressource\Ressource" />
+      <recent name="C:\Users\quent\IdeaProjects\BookManager\src\Ressource" />
       <recent name="C:\Users\quent\IdeaProjects\BookManager\src\Sources\Dialogs" />
       <recent name="C:\Users\quent\IdeaProjects\BookManager\src\Sources" />
     </key>
@@ -316,7 +322,14 @@
       <option name="project" value="LOCAL" />
       <updated>1661205517099</updated>
     </task>
-    <option name="localTasksCounter" value="36" />
+    <task id="LOCAL-00036" summary="Fix the bug when we started the app with a empty BDD =&gt; can't start the app; NOW IT'S OK">
+      <created>1661237654106</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1661237654106</updated>
+    </task>
+    <option name="localTasksCounter" value="37" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -331,7 +344,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Set all spinner value with default and max value&#10;Set all spinner date with a spinnerDateModel" />
     <MESSAGE value="Create all getter in AddBookDlg" />
     <MESSAGE value="Create again getter for AddBookDlg&#10;Set some bug in AddBookDlg&#10;Change addImageToPanel function, only a path in parameters&#10;The code of button &quot;Valider&quot; and &quot;Annuler&quot; are implemented" />
     <MESSAGE value="We can add a reading now&#10;Change the method of the connection in BDD with a method" />
@@ -356,6 +368,7 @@
     <MESSAGE value="Fixes the bug, that deleted all dateReading &quot;Unknown&quot; of a book when we wanted to delete a dateReading &quot;Unknown&quot;" />
     <MESSAGE value="Modify a dateRead with a check, if the new date does not exist" />
     <MESSAGE value="Fix one bug when we edit a dateReading, forget to verify the Title and Author" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix one bug when we edit a dateReading, forget to verify the Title and Author" />
+    <MESSAGE value="Fix the bug when we started the app with a empty BDD =&gt; can't start the app; NOW IT'S OK" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix the bug when we started the app with a empty BDD =&gt; can't start the app; NOW IT'S OK" />
   </component>
 </project>
