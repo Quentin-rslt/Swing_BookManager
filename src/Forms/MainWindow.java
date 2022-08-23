@@ -72,7 +72,7 @@ public class MainWindow extends JDialog {
         m_popup.add(cut);
         m_popup.add(edit);
 
-        if(m_bookListTable != null){//Vérif if the table is not empty; when starting the app, load and focus on the first book of the table
+        if(m_bookListTable.getRowCount() != 0){//Vérif if the table is not empty; when starting the app, load and focus on the first book of the table
             setMTitle(m_bookListTable.getValueAt(0, 0).toString());
             setAuthor(m_bookListTable.getValueAt(0, 1).toString());
             loadComponents(getMTitle(), getAuthor());

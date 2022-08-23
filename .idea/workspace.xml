@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5ede3cbf-f5c9-462f-8dc0-7982017c2136" name="Changes" comment="Modify a dateRead with a check, if the new date does not exist">
+    <list default="true" id="5ede3cbf-f5c9-462f-8dc0-7982017c2136" name="Changes" comment="Fix one bug when we edit a dateReading, forget to verify the Title and Author">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Forms/Dialogs/EditReadingDlg.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Forms/Dialogs/EditReadingDlg.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Forms/Dialogs/ManageReadingDlg.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Forms/Dialogs/ManageReadingDlg.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Forms/MainWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Forms/MainWindow.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -310,7 +309,14 @@
       <option name="project" value="LOCAL" />
       <updated>1661204732232</updated>
     </task>
-    <option name="localTasksCounter" value="35" />
+    <task id="LOCAL-00035" summary="Fix one bug when we edit a dateReading, forget to verify the Title and Author">
+      <created>1661205517099</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1661205517099</updated>
+    </task>
+    <option name="localTasksCounter" value="36" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -325,7 +331,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Fully commented code" />
     <MESSAGE value="Set all spinner value with default and max value&#10;Set all spinner date with a spinnerDateModel" />
     <MESSAGE value="Create all getter in AddBookDlg" />
     <MESSAGE value="Create again getter for AddBookDlg&#10;Set some bug in AddBookDlg&#10;Change addImageToPanel function, only a path in parameters&#10;The code of button &quot;Valider&quot; and &quot;Annuler&quot; are implemented" />
@@ -350,6 +355,7 @@
     <MESSAGE value="We can give an unknown date for the modication of the reading date" />
     <MESSAGE value="Fixes the bug, that deleted all dateReading &quot;Unknown&quot; of a book when we wanted to delete a dateReading &quot;Unknown&quot;" />
     <MESSAGE value="Modify a dateRead with a check, if the new date does not exist" />
-    <option name="LAST_COMMIT_MESSAGE" value="Modify a dateRead with a check, if the new date does not exist" />
+    <MESSAGE value="Fix one bug when we edit a dateReading, forget to verify the Title and Author" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix one bug when we edit a dateReading, forget to verify the Title and Author" />
   </component>
 </project>
