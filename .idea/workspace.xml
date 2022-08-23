@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5ede3cbf-f5c9-462f-8dc0-7982017c2136" name="Changes" comment="Fix the bug when we started the app with a empty BDD =&gt; can't start the app; NOW IT'S OK">
-      <change afterPath="$PROJECT_DIR$/src/Ressource/Default.jpg" afterDir="false" />
+    <list default="true" id="5ede3cbf-f5c9-462f-8dc0-7982017c2136" name="Changes" comment="create default image if we did'nt choice an image">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Forms/Dialogs/AddBookDlg.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Forms/Dialogs/AddBookDlg.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Forms/Dialogs/EditBookDlg.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Forms/Dialogs/EditBookDlg.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Forms/MainWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Forms/MainWindow.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -329,7 +329,14 @@
       <option name="project" value="LOCAL" />
       <updated>1661237654106</updated>
     </task>
-    <option name="localTasksCounter" value="37" />
+    <task id="LOCAL-00037" summary="create default image if we did'nt choice an image">
+      <created>1661242333910</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1661242333910</updated>
+    </task>
+    <option name="localTasksCounter" value="38" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -344,7 +351,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Create all getter in AddBookDlg" />
     <MESSAGE value="Create again getter for AddBookDlg&#10;Set some bug in AddBookDlg&#10;Change addImageToPanel function, only a path in parameters&#10;The code of button &quot;Valider&quot; and &quot;Annuler&quot; are implemented" />
     <MESSAGE value="We can add a reading now&#10;Change the method of the connection in BDD with a method" />
     <MESSAGE value="Set the date format returned to have the day, month and year for DateReading&#10;And set the date format returned to have just the year for ReleaseDate" />
@@ -369,6 +375,7 @@
     <MESSAGE value="Modify a dateRead with a check, if the new date does not exist" />
     <MESSAGE value="Fix one bug when we edit a dateReading, forget to verify the Title and Author" />
     <MESSAGE value="Fix the bug when we started the app with a empty BDD =&gt; can't start the app; NOW IT'S OK" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix the bug when we started the app with a empty BDD =&gt; can't start the app; NOW IT'S OK" />
+    <MESSAGE value="create default image if we did'nt choice an image" />
+    <option name="LAST_COMMIT_MESSAGE" value="create default image if we did'nt choice an image" />
   </component>
 </project>

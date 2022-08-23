@@ -134,15 +134,15 @@ public class EditBookDlg extends JDialog {
         try(Connection conn = connect()) {
             Statement statement = conn.createStatement();
             //Title
-            ResultSet titleQry = statement.executeQuery("SELECT Title FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
+            ResultSet titleQry = statement.executeQuery("SELECT Title FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
             BookTitleTextField.setText(titleQry.getString(1));
 
             //Author
-            ResultSet authorQry = statement.executeQuery("SELECT Author FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
+            ResultSet authorQry = statement.executeQuery("SELECT Author FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
             BookAuthorTextField.setText(authorQry.getString(1));
 
             //Release year
-            ResultSet NumberOPQry = statement.executeQuery("SELECT ReleaseYear FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
+            ResultSet NumberOPQry = statement.executeQuery("SELECT ReleaseYear FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
             Date dateRelease = new Date();
             SpinnerDateModel BookReleaseDateSpinModel = new SpinnerDateModel(new SimpleDateFormat("yyyy").parse(NumberOPQry.getString(1)),null,dateRelease,Calendar.YEAR);//Create a spinner date, to correctly select a date
             BookReleaseYearSpin.setModel(BookReleaseDateSpinModel);
@@ -150,26 +150,26 @@ public class EditBookDlg extends JDialog {
             BookReleaseYearSpin.setEditor(Year);
 
             //Number of page
-            ResultSet ReleaseYearQry = statement.executeQuery("SELECT NumberOP FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
+            ResultSet ReleaseYearQry = statement.executeQuery("SELECT NumberOP FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
             SpinnerModel BookNumberSM = new SpinnerNumberModel(ReleaseYearQry.getInt(1), 0, 3248, 1);
             BookNumberOPSpin.setModel(BookNumberSM);
 
             //Note on babelio
-            ResultSet NoteBBQry = statement.executeQuery("SELECT NoteBabelio FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
+            ResultSet NoteBBQry = statement.executeQuery("SELECT NoteBabelio FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
             SpinnerModel BookNoteBbblSM = new SpinnerNumberModel(NoteBBQry.getDouble(1), 0, 5, 0.01);
             BookNoteBblSpin.setModel(BookNoteBbblSM);
 
             //Personal note
-            ResultSet NotePersoQry = statement.executeQuery("SELECT NotePerso FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
+            ResultSet NotePersoQry = statement.executeQuery("SELECT NotePerso FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
             SpinnerModel BookPersonalNotelSM = new SpinnerNumberModel(NotePersoQry.getDouble(1), 0, 5, 0.5);//Set a default and max value for spinner Note
             BookPersonalNoteSpin.setModel(BookPersonalNotelSM);
 
             //Summary
-            ResultSet SummaryQry = statement.executeQuery("SELECT Summary FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
+            ResultSet SummaryQry = statement.executeQuery("SELECT Summary FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
             BookSummaryTextPane.setText(SummaryQry.getString(1));
 
             //Image
-            ResultSet ImageQry = statement.executeQuery("SELECT Image FROM BookManager WHERE Title='"+title+"' AND Author='"+author+ "'");
+            ResultSet ImageQry = statement.executeQuery("SELECT Image FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
             addImageToPanel(ImageQry.getString(1));
             setNewURL(ImageQry.getString(1));
 

@@ -272,8 +272,8 @@ public class MainWindow extends JDialog {
                         BookPstmt.setString(4, diag.getNewNumberPage());
                         BookPstmt.setString(5, diag.getNewPersonnalNote());
                         BookPstmt.setString(6, diag.getNewBBLNote());
-                        BookPstmt.setString(8, diag.getNewReleaseyear());
-                        BookPstmt.setString(9, diag.getNewSummary());
+                        BookPstmt.setString(7, diag.getNewReleaseyear());
+                        BookPstmt.setString(8, diag.getNewSummary());
                         BookPstmt.executeUpdate();
                         ReadingPstmt.executeUpdate();
 
