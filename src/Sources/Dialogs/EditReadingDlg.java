@@ -1,4 +1,4 @@
-package Forms.Dialogs;
+package Sources.Dialogs;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

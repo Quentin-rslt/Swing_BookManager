@@ -1,8 +1,8 @@
-package Forms;
+package Sources;
 
-import Forms.Dialogs.AddBookDlg;
-import Forms.Dialogs.EditBookDlg;
-import Forms.Dialogs.ManageReadingDlg;
+import Sources.Dialogs.AddBookDlg;
+import Sources.Dialogs.EditBookDlg;
+import Sources.Dialogs.ManageReadingDlg;
 import com.formdev.flatlaf.FlatDarkLaf;
 
 import javax.swing.*;
@@ -444,7 +444,7 @@ public class MainWindow extends JDialog {
             ResultSet ImageQry = m_statement.executeQuery("SELECT Image FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
 
             Image img = Toolkit.getDefaultToolkit().getImage(ImageQry.getString(1));
-            img=img.getScaledInstance(200, 300, Image.SCALE_DEFAULT);//set size of image
+            img=img.getScaledInstance(200, 300, Image.SCALE_AREA_AVERAGING);//set size of image
             ImageIcon icon = new ImageIcon(img);
             JLabel imgLabel = new JLabel();
             imgLabel.setIcon(icon);

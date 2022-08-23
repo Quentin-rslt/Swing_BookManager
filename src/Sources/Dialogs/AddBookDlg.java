@@ -1,4 +1,4 @@
-package Forms.Dialogs;
+package Sources.Dialogs;
 
 import javax.swing.*;
 import java.awt.*;
@@ -283,7 +283,7 @@ public class AddBookDlg extends JDialog {
     }
     public void addImageToPanel(String path){//Apply to our panel an image with path
         Image img = Toolkit.getDefaultToolkit().getImage(path);
-        img=img.getScaledInstance(200, 300, Image.SCALE_DEFAULT);
+        img=img.getScaledInstance(200, 300, Image.SCALE_AREA_AVERAGING);
         ImageIcon icon = new ImageIcon(img);
         JLabel imgLabel = new JLabel();
         imgLabel.setIcon(icon);
