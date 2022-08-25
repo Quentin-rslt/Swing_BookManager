@@ -3,7 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="5ede3cbf-f5c9-462f-8dc0-7982017c2136" name="Changes" comment="Add default image when we created a book without choice an image&#10;Fix bug when we deleted a reading and that the fill Of reading was empty, the app crashed">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Forms/MainWindow.form" beforeDir="false" afterPath="$PROJECT_DIR$/src/Forms/MainWindow.form" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Sources/Dialogs/AddBookDlg.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Sources/Dialogs/AddBookDlg.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Sources/Dialogs/ManageReadingDlg.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Sources/Dialogs/ManageReadingDlg.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Sources/MainWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Sources/MainWindow.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

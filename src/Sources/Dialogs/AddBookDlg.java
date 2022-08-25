@@ -164,11 +164,11 @@ public class AddBookDlg extends JDialog {
                             } else
                                 bookFind = false;
                         }
-                        if (!bookFind && isDateUnknown()){
+                        if (!bookFind && !Objects.equals(getNewBookStartReading(), getNewBookEndReading()) && isDateUnknown()){
                             m_isValide=true;
                             setVisible(false);
                             dispose();
-                        } else if (!bookFind && !isDateUnknown() && isNotDOne()) {
+                        } else if (!bookFind && !Objects.equals(getNewBookStartReading(), getNewBookEndReading()) && !isDateUnknown() && isNotDOne()) {
                             m_isValide=true;
                             setVisible(false);
                             dispose();

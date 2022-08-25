@@ -468,16 +468,21 @@ public class MainWindow extends JDialog {
             String sql = "SELECT StartReading, EndReading FROM Reading WHERE Title='"+title+"' AND Author='"+author+"'";
             ResultSet qry = m_statement.executeQuery(sql);
             long days = 0;
+            int dateValid = 0;
             while (qry.next()){
-                if(qry.getString(1).equals("Inconnu") && qry.getString(2).equals("Inconnu")){
-                } else if(!qry.getString(1).equals("Inconnu") && qry.getString(2).equals("Inconnu")){
-                } else if(qry.getString(1).equals("Inconnu") && !qry.getString(2).equals("Inconnu")){
+                if((qry.getString(1).equals("Inconnu") && qry.getString(2).equals("Inconnu")) ||
+                        (qry.getString(1).equals("Inconnu") && qry.getString(2).equals("Pas fini"))){
+                } else if((!qry.getString(1).equals("Inconnu") && qry.getString(2).equals("Inconnu")) ||
+                        (!qry.getString(1).equals("Inconnu") && qry.getString(2).equals("Pas fini"))){
+                } else if((qry.getString(1).equals("Inconnu") && !qry.getString(2).equals("Inconnu")) ||
+                        ((qry.getString(1).equals("Inconnu") && !qry.getString(2).equals("Pas fini")))){
                 }
                 else{
+                    dateValid++;
                     LocalDate start = LocalDate.parse(qry.getString(1)) ;
                     LocalDate stop = LocalDate.parse(qry.getString(2)) ;
                     days = days + ChronoUnit.DAYS.between(start , stop);
-                    CountReadingLabel.setText("Temps moyen de lecture : : "+days/CountReadingQry.getInt(1)+" jours");
+                    CountReadingLabel.setText("Temps moyen de lecture : : "+days/dateValid+" jours");
                 }
             }
 

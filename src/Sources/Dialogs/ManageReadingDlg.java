@@ -7,6 +7,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 public class ManageReadingDlg extends JDialog {
     private JPanel contentPane;
@@ -232,8 +234,24 @@ public class ManageReadingDlg extends JDialog {
                 String startReading = qry.getString("StartReading");
                 String endReading = qry.getString("EndReading");
 
+                long days = 0;
+                String StdDays="";
+                if((qry.getString("StartReading").equals("Inconnu") && qry.getString("EndReading").equals("Inconnu")) ||
+                        (qry.getString("StartReading").equals("Inconnu") && qry.getString("EndReading").equals("Pas fini"))){
+                } else if((!qry.getString("StartReading").equals("Inconnu") && qry.getString("EndReading").equals("Inconnu")) ||
+                        (!qry.getString("StartReading").equals("Inconnu") && qry.getString("EndReading").equals("Pas fini"))){
+                } else if((qry.getString("StartReading").equals("Inconnu") && !qry.getString("EndReading").equals("Inconnu")) ||
+                        ((qry.getString("StartReading").equals("Inconnu") && !qry.getString("EndReading").equals("Pas fini")))){
+                }
+                else{
+                    LocalDate start = LocalDate.parse(qry.getString("StartReading")) ;
+                    LocalDate stop = LocalDate.parse(qry.getString("EndReading")) ;
+                    days = ChronoUnit.DAYS.between(start , stop);
+                    StdDays = days+" jours";
+                }
+
                 String[] header = {"Titre","Auteur","Début de lecture", "Fin de lecture", "Temps de lecture"};
-                Object[] data = {title, author, startReading, endReading};
+                Object[] data = {title, author, startReading, endReading, StdDays};
 
                 m_tableModel.setColumnIdentifiers(header);//Create the header
                 m_tableModel.addRow(data);//add to tablemodel the data
