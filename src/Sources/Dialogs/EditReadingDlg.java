@@ -216,7 +216,12 @@ public class EditReadingDlg extends JDialog {
             BookEndReadingLabel.setText("Fin de lecture : "+getEndReading());
 
             Date endDate = new Date();
-            SpinnerDateModel NewBookEndReadingSpinModel = new SpinnerDateModel(new SimpleDateFormat("yyyy-MM-dd").parse(getEndReading()) ,null,endDate, Calendar.YEAR);//Create a spinner date, to correctly select a date
+            SpinnerDateModel NewBookEndReadingSpinModel = new SpinnerDateModel();
+            if(!getEndReading().equals("Pas fini") && !getEndReading().equals("Inconnu")){
+                 NewBookEndReadingSpinModel = new SpinnerDateModel(new SimpleDateFormat("yyyy-MM-dd").parse(getEndReading()) ,null,endDate, Calendar.YEAR);
+            } else{
+                NewBookEndReadingSpinModel = new SpinnerDateModel(endDate ,null,endDate, Calendar.YEAR);//Create a spinner date, to correctly select a date
+            }
             BookNewEndReadingSpin.setModel(NewBookEndReadingSpinModel);
             JSpinner.DateEditor end = new JSpinner.DateEditor(BookNewEndReadingSpin,"yyyy-MM-dd");//set the display of the JSpinner of release date
             BookNewEndReadingSpin.setEditor(end);
@@ -225,7 +230,12 @@ public class EditReadingDlg extends JDialog {
             setNewEndReading(EndFormater.format(BookNewEndReadingSpin.getValue()));//set the new date
 
             Date startDate = new Date();
-            SpinnerDateModel NewBookStartReadingSpinModel = new SpinnerDateModel(new SimpleDateFormat("yyyy-MM-dd").parse(getStartReading()),null,endDate,Calendar.YEAR);//Create a spinner date, to correctly select a date
+            SpinnerDateModel NewBookStartReadingSpinModel;
+             if(!getStartReading().equals("Inconnu")){
+                NewBookStartReadingSpinModel = new SpinnerDateModel(new SimpleDateFormat("yyyy-MM-dd").parse(getStartReading()) ,null,endDate, Calendar.YEAR);//Create a spinner date, to correctly select a date
+            } else{
+                NewBookStartReadingSpinModel = new SpinnerDateModel(startDate ,null,startDate, Calendar.YEAR);//Create a spinner date, to correctly select a date
+            }
             BookNewStartReadingSpin.setModel(NewBookStartReadingSpinModel);
             JSpinner.DateEditor start = new JSpinner.DateEditor(BookNewStartReadingSpin,"yyyy-MM-dd");//set the display of the JSpinner of release date
             BookNewStartReadingSpin.setEditor(start);
