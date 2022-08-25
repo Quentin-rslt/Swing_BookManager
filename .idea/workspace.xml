@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5ede3cbf-f5c9-462f-8dc0-7982017c2136" name="Changes" comment="Add startReading date, and endReading date">
+    <list default="true" id="5ede3cbf-f5c9-462f-8dc0-7982017c2136" name="Changes" comment="Add default image when we created a book without choice an image&#10;Fix bug when we deleted a reading and that the fill Of reading was empty, the app crashed">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Sources/Dialogs/ManageReadingDlg.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Sources/Dialogs/ManageReadingDlg.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Forms/MainWindow.form" beforeDir="false" afterPath="$PROJECT_DIR$/src/Forms/MainWindow.form" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Sources/MainWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Sources/MainWindow.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -351,7 +351,14 @@
       <option name="project" value="LOCAL" />
       <updated>1661415404365</updated>
     </task>
-    <option name="localTasksCounter" value="40" />
+    <task id="LOCAL-00040" summary="Add default image when we created a book without choice an image&#10;Fix bug when we deleted a reading and that the fill Of reading was empty, the app crashed">
+      <created>1661416596850</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1661416596850</updated>
+    </task>
+    <option name="localTasksCounter" value="41" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -366,7 +373,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Set the date format returned to have the day, month and year for DateReading&#10;And set the date format returned to have just the year for ReleaseDate" />
     <MESSAGE value="Add a first item in Combobox in AddBookDlg, for fix som bug&#10;Can't add a new reading, if the book already exist" />
     <MESSAGE value="Comment the code&#10;Fix bug with dateReading in AddBookDlg" />
     <MESSAGE value="Can add a new reading if the book already exist" />
@@ -391,6 +397,7 @@
     <MESSAGE value="create default image if we did'nt choice an image" />
     <MESSAGE value="Fix some bug with edit the book" />
     <MESSAGE value="Add startReading date, and endReading date" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add startReading date, and endReading date" />
+    <MESSAGE value="Add default image when we created a book without choice an image&#10;Fix bug when we deleted a reading and that the fill Of reading was empty, the app crashed" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add default image when we created a book without choice an image&#10;Fix bug when we deleted a reading and that the fill Of reading was empty, the app crashed" />
   </component>
 </project>

@@ -12,9 +12,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
-
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 public class MainWindow extends JDialog {
@@ -46,6 +46,7 @@ public class MainWindow extends JDialog {
     private JLabel CountReadingLabel;
     private JToolBar Menubar;
     private JLabel ReleaseYearLAbel;
+    private JLabel BookTimeAverageLabel;
 
     private JTable  m_bookListTable = new JTable(){//Create a Jtable with the tablemodel not editable
         public boolean isCellEditable(int rowIndex, int colIndex) {
@@ -450,17 +451,35 @@ public class MainWindow extends JDialog {
             ResultSet authorQry = m_statement.executeQuery("SELECT Author FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
             AuthorLabel.setText("Auteur : "+authorQry.getString(1));
 
-            //Number of reading label
-            ResultSet NumberOPQry = m_statement.executeQuery("SELECT NumberOP FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
-            NumberPageLabel.setText("Nombre de page : "+NumberOPQry.getString(1));
-
             //Release year label
             ResultSet ReleaseYearQry = m_statement.executeQuery("SELECT ReleaseYear FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
             ReleaseYearLAbel.setText("Année de sortie : "+ReleaseYearQry.getString(1));
 
+            //Number of page label
+            ResultSet NumberOPQry = m_statement.executeQuery("SELECT NumberOP FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
+            NumberPageLabel.setText("Nombre de page : "+NumberOPQry.getString(1));
+
             //Number of reading label
-            ResultSet CountReadingQry = m_statement.executeQuery("SELECT COUNT(*) FROM Reading WHERE Title='"+title+"' AND Author='"+author+ "'");
+            Statement statement = conn.createStatement();
+            ResultSet CountReadingQry = statement.executeQuery("SELECT COUNT(*) FROM Reading WHERE Title='"+title+"' AND Author='"+author+ "'");
             CountReadingLabel.setText("Nombre de lecture : "+CountReadingQry.getString(1));
+
+            //Average time lable
+            String sql = "SELECT StartReading, EndReading FROM Reading WHERE Title='"+title+"' AND Author='"+author+"'";
+            ResultSet qry = m_statement.executeQuery(sql);
+            long days = 0;
+            while (qry.next()){
+                if(qry.getString(1).equals("Inconnu") && qry.getString(2).equals("Inconnu")){
+                } else if(!qry.getString(1).equals("Inconnu") && qry.getString(2).equals("Inconnu")){
+                } else if(qry.getString(1).equals("Inconnu") && !qry.getString(2).equals("Inconnu")){
+                }
+                else{
+                    LocalDate start = LocalDate.parse(qry.getString(1)) ;
+                    LocalDate stop = LocalDate.parse(qry.getString(2)) ;
+                    days = days + ChronoUnit.DAYS.between(start , stop);
+                    CountReadingLabel.setText("Temps moyen de lecture : : "+days/CountReadingQry.getInt(1)+" jours");
+                }
+            }
 
             //Note on babelio
             ResultSet NoteBBQry = m_statement.executeQuery("SELECT NoteBabelio FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
@@ -496,6 +515,7 @@ public class MainWindow extends JDialog {
 
             conn.close();
             m_statement.close();
+            statement.close();
         } catch ( Exception e ) {
             System.err.println( e.getClass().getName() + ": " + e.getMessage() );
             System.exit(0);
