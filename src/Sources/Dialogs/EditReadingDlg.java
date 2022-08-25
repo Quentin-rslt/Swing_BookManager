@@ -21,26 +21,32 @@ public class EditReadingDlg extends JDialog {
     private JPanel BookEditReadingPanel;
     private JPanel BookInfoPanel;
     private JLabel BookTitleLable;
-    private JLabel BookAuthorLabel;
-    private JLabel BookDateReadingLabel;
     private JLabel NewBookDateRedingLabel;
-    private JSpinner BookNewDateReadingSpin;
+    private JLabel BookAuthorLabel;
+    private JLabel BookEndReadingLabel;
+    private JLabel BookStartReadingLabel;
+    private JSpinner BookNewEndReadingSpin;
     private JCheckBox BookUnknownDateReadingCheckBox;
+    private JCheckBox BookNotDoneReadChecbox;
+    private JSpinner BookNewStartReadingSpin;
 
 
     private String m_title;
     private String m_author;
-    private String m_dateReading;
-    private String m_newDateReading;
+    private String m_startReading;
+    private String m_endReading;
+    private String m_newEndReading;
+    private String m_newStartReading;
     private boolean m_isValid = false;
     private Date m_date = new Date();
 
-    public EditReadingDlg(String title, String author, String dateReading) {
+    public EditReadingDlg(String title, String author, String startReading, String endReading) {
         setContentPane(contentPane);
         setModal(true);
         setMtitle(title);
         setAuthor(author);
-        setDateReading(dateReading);
+        setStartReading(startReading);
+        setEndReading(endReading);
         initComponent();
         CancelBtn.addActionListener(new ActionListener() {
             @Override
@@ -53,7 +59,7 @@ public class EditReadingDlg extends JDialog {
         OkBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                String sql = "SELECT Title, Author, DateReading FROM Reading WHERE Title='"+getMtitle()+"' AND Author='"+getAuthor()+"'";
+                String sql = "SELECT Title, Author, StartReading, EndReading FROM Reading WHERE Title='"+getMtitle()+"' AND Author='"+getAuthor()+"'";
                 try {
                     Class.forName("org.sqlite.JDBC");
                     Connection connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
@@ -62,20 +68,40 @@ public class EditReadingDlg extends JDialog {
 
                     boolean dateFind =false;
                     while (qry.next() && !dateFind){//check if the modified date already exists (unless it is Unknown)
-                        if (Objects.equals(getNewDateReading() ,qry.getString(3)) &&//If there is a date then we do not modify and display an error message
-                                !Objects.equals(qry.getString(3), "Inconnu") && !Objects.equals(getNewDateReading(), "Inconnu")){
+                        //If there is a date then we do not modify and display an error message
+                        if (getNewStartReading().equals(qry.getString(3)) && getNewEndReading().equals(qry.getString(4))
+                                && !isDateReadingUnknown() && !isNotDone()){
                             JFrame jFrame = new JFrame();
                             JOptionPane.showMessageDialog(jFrame, "La date de lecture existe déjà !");
                             dateFind = true;
-                        }
-                        else{
+                        } else if (!isDateReadingUnknown() && isNotDone() && Objects.equals(qry.getString(3), getNewStartReading())) {
+                            JFrame jFrame = new JFrame();
+                            JOptionPane.showMessageDialog(jFrame, "La date de début de lecture existe déjà !");
+                            dateFind = true;//
+                        } else if (!isDateReadingUnknown() && !isNotDone() && Objects.equals(qry.getString(4), getNewEndReading())) {
+                            JFrame jFrame = new JFrame();
+                            JOptionPane.showMessageDialog(jFrame, "La date de fin de lecture existe déjà !");
+                            dateFind = true;//
+                        } else
                             dateFind = false;
-                        }
                     }
-                    if (!dateFind){//If a date has not been found in the database when leaving the loop, then the date typed is valid
+                    if (!dateFind && isDateReadingUnknown()){
                         setIsValid(true);
                         setVisible(false);
                         dispose();
+                    } else if (!dateFind && !isDateReadingUnknown() && isNotDone()) {
+                        setIsValid(true);
+                        setVisible(false);
+                        dispose();
+                    } else if (!dateFind && !Objects.equals(getNewStartReading(), getNewEndReading()) && !isDateReadingUnknown() && !isNotDone()){
+                        setIsValid(true);
+                        setVisible(false);
+                        dispose();
+                    }
+                    else if(!dateFind && Objects.equals(getNewStartReading(), getNewEndReading())
+                            && !isDateReadingUnknown() && !isNotDone()){
+                        JFrame jFrame = new JFrame();
+                        JOptionPane.showMessageDialog(jFrame, "La date de début de lecture ne peut pas être identique à la fin de lecture !");
                     }
                     connection.close();
                     statement.close();
@@ -88,23 +114,57 @@ public class EditReadingDlg extends JDialog {
         BookUnknownDateReadingCheckBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (isDateReadingUnknown())
-                    BookNewDateReadingSpin.setEnabled(false);
-                else
-                    BookNewDateReadingSpin.setEnabled(true);
+                if (isDateReadingUnknown()){
+                    BookNewEndReadingSpin.setEnabled(false);
+                    BookNewStartReadingSpin.setEnabled(false);
+                    BookNotDoneReadChecbox.setEnabled(false);
+                }
+                else{
+                    BookNewEndReadingSpin.setEnabled(true);
+                    BookNewStartReadingSpin.setEnabled(true);
+                    BookNotDoneReadChecbox.setEnabled(true);
+                }
+            }
+        });
+        BookNotDoneReadChecbox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (isNotDone()){
+                    BookNewEndReadingSpin.setEnabled(false);
+                }
+                else{
+                    BookNewEndReadingSpin.setEnabled(true);
+                }
             }
         });
     }
 
-    public String getDateReading() {
-        return m_dateReading;
+    public String getEndReading() {
+        return m_endReading;
     }
-    public String getNewDateReading() {
+    public String getStartReading() {
+        return m_startReading;
+    }
+    public String getNewEndReading() {
+        if (isNotDone())
+            return "Pas fini";
+        else if (!isNotDone() && isDateReadingUnknown()) {
+            return "Inconnu";
+        }
+        else if (isNotDone() && isDateReadingUnknown()) {
+            return "Inconnu";
+        }
+        else{
+            SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd");//set the date format returned to have the day, month and year
+            return formater.format(BookNewEndReadingSpin.getValue());
+        }
+    }
+    public String getNewStartReading() {
         if (isDateReadingUnknown())
             return "Inconnu";
         else{
             SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd");//set the date format returned to have the day, month and year
-            return formater.format(BookNewDateReadingSpin.getValue());
+            return formater.format(BookNewStartReadingSpin.getValue());
         }
     }
     public String getAuthor() {
@@ -116,21 +176,27 @@ public class EditReadingDlg extends JDialog {
     public boolean isValid() {
         return m_isValid;
     }
-    public Date getDate() {
-        return m_date;
-    }
     public boolean isDateReadingUnknown(){
         if(BookUnknownDateReadingCheckBox.isSelected())
             return true;
         else
             return false;
     }
-
-    public void setDateReading(String m_dateReading) {
-        this.m_dateReading = m_dateReading;
+    public boolean isNotDone(){
+        return BookNotDoneReadChecbox.isSelected();
     }
-    public void setNewDateReading(String m_newDateReading) {
-        this.m_newDateReading = m_newDateReading;
+
+    public void setEndReading(String m_endReading) {
+        this.m_endReading = m_endReading;
+    }
+    public void setStartReading(String m_dateReading) {
+        this.m_startReading = m_dateReading;
+    }
+    public void setNewEndReading(String newEndReading) {
+        this.m_newEndReading = newEndReading;
+    }
+    public void setNewStartReading (String m_newStartReading){
+        this.m_newStartReading = m_newStartReading;
     }
     public void setAuthor(String m_author) {
         this.m_author = m_author;
@@ -145,14 +211,25 @@ public class EditReadingDlg extends JDialog {
         //Retrieves the data entered as a parameter from the constructor, and therefore from the DB
         BookTitleLable.setText("Titre : "+getMtitle());
         BookAuthorLabel.setText("Auteur : "+getAuthor());
-        BookDateReadingLabel.setText("Date de lecture : "+getDateReading());
+        BookStartReadingLabel.setText("Début de lecture : "+getStartReading());
+        BookEndReadingLabel.setText("Fin de lecture : "+getEndReading());
 
-        SpinnerDateModel NewBookDateReadingSpinModel = new SpinnerDateModel(getDate(),null,getDate(),Calendar.YEAR);//Create a spinner date, to correctly select a date
-        BookNewDateReadingSpin.setModel(NewBookDateReadingSpinModel);
-        JSpinner.DateEditor Year = new JSpinner.DateEditor(BookNewDateReadingSpin,"yyyy-MM-dd");//set the display of the JSpinner of release date
-        BookNewDateReadingSpin.setEditor(Year);
+        Date endDate = new Date();
+        SpinnerDateModel NewBookEndReadingSpinModel = new SpinnerDateModel(endDate,null,endDate,Calendar.YEAR);//Create a spinner date, to correctly select a date
+        BookNewEndReadingSpin.setModel(NewBookEndReadingSpinModel);
+        JSpinner.DateEditor end = new JSpinner.DateEditor(BookNewEndReadingSpin,"yyyy-MM-dd");//set the display of the JSpinner of release date
+        BookNewEndReadingSpin.setEditor(end);
 
-        SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd");//set the date format returned to have the day, month and year
-        setNewDateReading(formater.format(BookNewDateReadingSpin.getValue()));//set the new date
+        SimpleDateFormat EndFormater = new SimpleDateFormat("yyyy-MM-dd");//set the date format returned to have the day, month and year
+        setNewEndReading(EndFormater.format(BookNewEndReadingSpin.getValue()));//set the new date
+
+        Date startDate = new Date();
+        SpinnerDateModel NewBookStartReadingSpinModel = new SpinnerDateModel(startDate,null,startDate,Calendar.YEAR);//Create a spinner date, to correctly select a date
+        BookNewStartReadingSpin.setModel(NewBookStartReadingSpinModel);
+        JSpinner.DateEditor start = new JSpinner.DateEditor(BookNewStartReadingSpin,"yyyy-MM-dd");//set the display of the JSpinner of release date
+        BookNewStartReadingSpin.setEditor(start);
+
+        SimpleDateFormat StartFormater = new SimpleDateFormat("yyyy-MM-dd");//set the date format returned to have the day, month and year
+        setNewStartReading(StartFormater.format(BookNewStartReadingSpin.getValue()));//set the new date
     }
 }

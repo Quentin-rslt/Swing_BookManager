@@ -4,6 +4,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.channels.FileChannel;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -29,7 +34,7 @@ public class AddBookDlg extends JDialog {
     private JLabel ReleaseYearLabel;
     private JLabel PersonalNoteLabel;
     private JSpinner BookPersonalNoteSpin;
-    private JLabel ReadingDateLabel;
+    private JLabel StartReadingLabel;
     private JCheckBox BookUnknownReadDateChecbox;
     private JPanel DateReadPanel;
     private JPanel RightPanel;
@@ -40,10 +45,13 @@ public class AddBookDlg extends JDialog {
     private JLabel SummaryLabel;
     private JTextPane BookSummaryTextPane;
     private JSpinner BookReleaseYearSpin;
-    private JSpinner BookDateReadSpin;
+    private JSpinner BookEndReadingSpin;
     private JSpinner BookNumberOPSpin;
     private JLabel NumberOPLabel;
     private JPanel LeftPanel;
+    private JCheckBox BookNotDoneReadChecbox;
+    private JLabel EndReadingLabel;
+    private JSpinner BookStartReadingSpin;
 
     private String m_author;
     private String m_title;
@@ -63,11 +71,24 @@ public class AddBookDlg extends JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(BookUnknownReadDateChecbox.isSelected()){//Hide the possibility to add a reading date when we don't know when you read it
-                    BookDateReadSpin.setEnabled(false);
+                    BookEndReadingSpin.setEnabled(false);
+                    BookStartReadingSpin.setEnabled(false);
+                    BookNotDoneReadChecbox.setEnabled(false);
                 }
                 else{
-                    BookDateReadSpin.setEnabled(true);
+                    BookEndReadingSpin.setEnabled(true);
+                    BookStartReadingSpin.setEnabled(true);
+                    BookNotDoneReadChecbox.setEnabled(true);
                 }
+            }
+        });
+        BookNotDoneReadChecbox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (BookNotDoneReadChecbox.isSelected())
+                    BookEndReadingSpin.setEnabled(false);
+                else
+                    BookEndReadingSpin.setEnabled(true);
             }
         });
         ExitingBookComboBox.addActionListener(new ActionListener() {
@@ -117,7 +138,7 @@ public class AddBookDlg extends JDialog {
         ValidateBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                String sql = "SELECT Title, Author, DateReading FROM Reading";
+                String sql = "SELECT Title, Author, StartReading, EndReading FROM Reading";
                 if(getIsAlreadyRead() && getExitingBookComboBox().getSelectedItem()!=""){//Can add a new reading if the book exists at the same reading date
                     try {
                         Class.forName("org.sqlite.JDBC");
@@ -127,18 +148,40 @@ public class AddBookDlg extends JDialog {
 
                         boolean bookFind =false;
                         while (qry.next() && !bookFind){//
-                            if (!BookUnknownReadDateChecbox.isSelected() && Objects.equals(qry.getString(3), getNewBookDateReading())){//
+                            if (!isDateUnknown() && !isNotDOne() && Objects.equals(qry.getString(3), getNewBookStartReading())
+                                    && Objects.equals(qry.getString(4), getNewBookEndReading())){
                                 JFrame jFrame = new JFrame();
-                                JOptionPane.showMessageDialog(jFrame, "La date de lecture existe déjà !");
+                                JOptionPane.showMessageDialog(jFrame, "Les dates de lecture existent déjà !");
                                 bookFind = true;//
-                            }
-                            else
+                            } else if (!isDateUnknown() && isNotDOne() && Objects.equals(qry.getString(3), getNewBookStartReading())) {
+                                JFrame jFrame = new JFrame();
+                                JOptionPane.showMessageDialog(jFrame, "La date de début de lecture existe déjà !");
+                                bookFind = true;//
+                            } else if (!isDateUnknown() && !isNotDOne() && Objects.equals(qry.getString(4), getNewBookEndReading())) {
+                                JFrame jFrame = new JFrame();
+                                JOptionPane.showMessageDialog(jFrame, "La date de fin de lecture existe déjà !");
+                                bookFind = true;//
+                            } else
                                 bookFind = false;
                         }
-                        if (!bookFind){//If a book has not been found in the database when leaving the loop, then the book typed is valid
+                        if (!bookFind && isDateUnknown()){
                             m_isValide=true;
                             setVisible(false);
                             dispose();
+                        } else if (!bookFind && !isDateUnknown() && isNotDOne()) {
+                            m_isValide=true;
+                            setVisible(false);
+                            dispose();
+                        } else if (!bookFind && !Objects.equals(getNewBookStartReading(), getNewBookEndReading()) && !isDateUnknown() && !isNotDOne()){
+                            //If a book has not been found in the database when leaving the loop, then the book typed is valid
+                            m_isValide=true;
+                            setVisible(false);
+                            dispose();
+                        }
+                        else if(!bookFind && Objects.equals(getNewBookStartReading(), getNewBookEndReading())
+                                && !isDateUnknown() && !isNotDOne()){
+                            JFrame jFrame = new JFrame();
+                            JOptionPane.showMessageDialog(jFrame, "La date de début de lecture ne peut pas être identique à la fin de lecture !");
                         }
                         m_connection.close();
                         m_statement.close();
@@ -167,18 +210,46 @@ public class AddBookDlg extends JDialog {
                             else
                                 bookFind = false;
                         }
-                        if (!bookFind && Objects.equals(getURL(), "")){//If a book has not been found in the database when leaving the loop, then the book typed is valid
+                        if (!bookFind && Objects.equals(getURL(), "") && !Objects.equals(getNewBookStartReading(), getNewBookEndReading()) && !isDateUnknown() && !isNotDOne()){
+                            //If a book has not been found in the database when leaving the loop, then the book typed is valid
                             String path = String.valueOf(getClass().getResource("/Ressource/Default.jpg"));
                             String path2 = path.replace("file:/", "");
                             setURL(path2);//create default image if we did'nt choice an image
                             m_isValide=true;
                             setVisible(false);
                             dispose();
-                        }
-                        else if (!Objects.equals(getURL(), "")){
+                        } else if (!bookFind && Objects.equals(getURL(), "") && !isDateUnknown() && isNotDOne()) {
+                            String path = String.valueOf(getClass().getResource("/Ressource/Default.jpg"));
+                            String path2 = path.replace("file:/", "");
+                            setURL(path2);
                             m_isValide=true;
                             setVisible(false);
                             dispose();
+                        } else if (!bookFind && isDateUnknown() && Objects.equals(getURL(), "")) {
+                            String path = String.valueOf(getClass().getResource("/Ressource/Default.jpg"));
+                            String path2 = path.replace("file:/", "");
+                            setURL(path2);
+                            m_isValide=true;
+                            setVisible(false);
+                            dispose();
+                        } else if (!bookFind && isDateUnknown() && !Objects.equals(getURL(), "")){
+                            /*File source = new File(getURL());
+                            File dest = new File(getURL());
+                            copyFileUsingChannel(source, dest);*/
+                            m_isValide=true;
+                            setVisible(false);
+                            dispose();
+                        } else if (!bookFind && !Objects.equals(getURL(), "") && !isDateUnknown() && !Objects.equals(getNewBookStartReading(), getNewBookEndReading()) && !isNotDOne()) {
+                            m_isValide=true;
+                            setVisible(false);
+                            dispose();
+                        } else if (!bookFind && !Objects.equals(getURL(), "") && !isDateUnknown() && isNotDOne()) {
+                            m_isValide=true;
+                            setVisible(false);
+                            dispose();
+                        } else if(Objects.equals(getNewBookStartReading(), getNewBookEndReading()) && !isDateUnknown() && !isNotDOne()){
+                            JFrame jFrame = new JFrame();
+                            JOptionPane.showMessageDialog(jFrame, "La date de début de lecture ne peut être identique à la fin de lecture !");
                         }
                         m_connection.close();
                         m_statement.close();
@@ -238,12 +309,19 @@ public class AddBookDlg extends JDialog {
     public String getNewBookSummary(){
         return BookSummaryTextPane.getText();
     }
-    public String getNewBookDateReading(){
+    public String getNewBookEndReading(){
         SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd");//set the date format returned to have the day, month and year
-        return formater.format(BookDateReadSpin.getValue());
+        return formater.format(BookEndReadingSpin.getValue());
+    }
+    public String getNewBookStartReading(){
+        SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd");//set the date format returned to have the day, month and year
+        return formater.format(BookStartReadingSpin.getValue());
     }
     public boolean isDateUnknown(){
         return BookUnknownReadDateChecbox.isSelected();
+    }
+    public boolean isNotDOne(){
+        return BookNotDoneReadChecbox.isSelected();
     }
     public boolean isValide(){
         return m_isValide;
@@ -299,18 +377,22 @@ public class AddBookDlg extends JDialog {
         BookNoteBblSpin.setModel(BookNoteBbblSM);
 
         Date dateRelease = new Date();
-        Date date = new Date();
-
-        SpinnerDateModel BookReadDateSpinDate = new SpinnerDateModel(date, null,date, Calendar.YEAR);//Create a spinner date, to correctly select a date
         SpinnerDateModel BookReleaseDateSpinModel = new SpinnerDateModel(dateRelease,null,dateRelease,Calendar.YEAR);//Create a spinner date, to correctly select a date
-
         BookReleaseYearSpin.setModel(BookReleaseDateSpinModel);
         JSpinner.DateEditor Year = new JSpinner.DateEditor(BookReleaseYearSpin,"yyyy");//set the display of the JSpinner of release date
         BookReleaseYearSpin.setEditor(Year);
 
-        BookDateReadSpin.setModel(BookReadDateSpinDate);
-        JSpinner.DateEditor ded = new JSpinner.DateEditor(BookDateReadSpin,"yyyy/MM/dd");//set the display of the JSpinner reading book date
-        BookDateReadSpin.setEditor(ded);
+        Date dateEnd = new Date();
+        SpinnerDateModel BookEndReadSpinDate = new SpinnerDateModel(dateEnd, null,dateEnd, Calendar.YEAR);//Create a spinner date, to correctly select a date
+        BookEndReadingSpin.setModel(BookEndReadSpinDate);
+        JSpinner.DateEditor ded = new JSpinner.DateEditor(BookEndReadingSpin,"yyyy/MM/dd");//set the display of the JSpinner reading book date
+        BookEndReadingSpin.setEditor(ded);
+
+        Date dateStart = new Date();
+        SpinnerDateModel BookStartReadSpinDate = new SpinnerDateModel(dateStart, null,dateStart, Calendar.YEAR);
+        BookStartReadingSpin.setModel(BookStartReadSpinDate);
+        JSpinner.DateEditor start = new JSpinner.DateEditor(BookStartReadingSpin,"yyyy/MM/dd");//set the display of the JSpinner reading book date
+        BookStartReadingSpin.setEditor(start);
     }
     public void initComponents(boolean bool){
         //ExitingBookComboBox.setEnabled(!bool);
@@ -329,5 +411,17 @@ public class AddBookDlg extends JDialog {
     }
     public void setURL(String url){
         m_URL= url;
+    }
+    public static void copyFileUsingChannel(File source, File dest) throws IOException {
+        FileChannel sourceChannel = null;
+        FileChannel destChannel = null;
+        try {
+            sourceChannel = new FileInputStream(source).getChannel();
+            destChannel = new FileOutputStream(dest).getChannel();
+            destChannel.transferFrom(sourceChannel, 0, sourceChannel.size());
+        }finally{
+            sourceChannel.close();
+            destChannel.close();
+        }
     }
 }
