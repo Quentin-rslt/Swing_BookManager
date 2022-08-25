@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5ede3cbf-f5c9-462f-8dc0-7982017c2136" name="Changes" comment="Add default image when we created a book without choice an image&#10;Fix bug when we deleted a reading and that the fill Of reading was empty, the app crashed">
+    <list default="true" id="5ede3cbf-f5c9-462f-8dc0-7982017c2136" name="Changes" comment="Add reading time in ManageReadingDlg&#10;Fix some bug">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Sources/Dialogs/AddBookDlg.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Sources/Dialogs/AddBookDlg.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Sources/Dialogs/ManageReadingDlg.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Sources/Dialogs/ManageReadingDlg.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Sources/MainWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Sources/MainWindow.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Sources/Dialogs/EditReadingDlg.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Sources/Dialogs/EditReadingDlg.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -359,7 +357,14 @@
       <option name="project" value="LOCAL" />
       <updated>1661416596850</updated>
     </task>
-    <option name="localTasksCounter" value="41" />
+    <task id="LOCAL-00041" summary="Add reading time in ManageReadingDlg&#10;Fix some bug">
+      <created>1661465428192</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1661465428192</updated>
+    </task>
+    <option name="localTasksCounter" value="42" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -374,7 +379,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Add a first item in Combobox in AddBookDlg, for fix som bug&#10;Can't add a new reading, if the book already exist" />
     <MESSAGE value="Comment the code&#10;Fix bug with dateReading in AddBookDlg" />
     <MESSAGE value="Can add a new reading if the book already exist" />
     <MESSAGE value="Add file ManageReadingDlg to see all the readings of a book and manage them&#10;Interface set up&#10;Book reading list completed and functional" />
@@ -399,6 +403,7 @@
     <MESSAGE value="Fix some bug with edit the book" />
     <MESSAGE value="Add startReading date, and endReading date" />
     <MESSAGE value="Add default image when we created a book without choice an image&#10;Fix bug when we deleted a reading and that the fill Of reading was empty, the app crashed" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add default image when we created a book without choice an image&#10;Fix bug when we deleted a reading and that the fill Of reading was empty, the app crashed" />
+    <MESSAGE value="Add reading time in ManageReadingDlg&#10;Fix some bug" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add reading time in ManageReadingDlg&#10;Fix some bug" />
   </component>
 </project>

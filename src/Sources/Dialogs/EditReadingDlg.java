@@ -208,28 +208,33 @@ public class EditReadingDlg extends JDialog {
         this.m_isValid = m_isValid;
     }
     public void initComponent(){
-        //Retrieves the data entered as a parameter from the constructor, and therefore from the DB
-        BookTitleLable.setText("Titre : "+getMtitle());
-        BookAuthorLabel.setText("Auteur : "+getAuthor());
-        BookStartReadingLabel.setText("Début de lecture : "+getStartReading());
-        BookEndReadingLabel.setText("Fin de lecture : "+getEndReading());
+        try {
+//Retrieves the data entered as a parameter from the constructor, and therefore from the DB
+            BookTitleLable.setText("Titre : "+getMtitle());
+            BookAuthorLabel.setText("Auteur : "+getAuthor());
+            BookStartReadingLabel.setText("Début de lecture : "+getStartReading());
+            BookEndReadingLabel.setText("Fin de lecture : "+getEndReading());
 
-        Date endDate = new Date();
-        SpinnerDateModel NewBookEndReadingSpinModel = new SpinnerDateModel(endDate,null,endDate,Calendar.YEAR);//Create a spinner date, to correctly select a date
-        BookNewEndReadingSpin.setModel(NewBookEndReadingSpinModel);
-        JSpinner.DateEditor end = new JSpinner.DateEditor(BookNewEndReadingSpin,"yyyy-MM-dd");//set the display of the JSpinner of release date
-        BookNewEndReadingSpin.setEditor(end);
+            Date endDate = new Date();
+            SpinnerDateModel NewBookEndReadingSpinModel = new SpinnerDateModel(new SimpleDateFormat("yyyy-MM-dd").parse(getEndReading()) ,null,endDate, Calendar.YEAR);//Create a spinner date, to correctly select a date
+            BookNewEndReadingSpin.setModel(NewBookEndReadingSpinModel);
+            JSpinner.DateEditor end = new JSpinner.DateEditor(BookNewEndReadingSpin,"yyyy-MM-dd");//set the display of the JSpinner of release date
+            BookNewEndReadingSpin.setEditor(end);
 
-        SimpleDateFormat EndFormater = new SimpleDateFormat("yyyy-MM-dd");//set the date format returned to have the day, month and year
-        setNewEndReading(EndFormater.format(BookNewEndReadingSpin.getValue()));//set the new date
+            SimpleDateFormat EndFormater = new SimpleDateFormat("yyyy-MM-dd");//set the date format returned to have the day, month and year
+            setNewEndReading(EndFormater.format(BookNewEndReadingSpin.getValue()));//set the new date
 
-        Date startDate = new Date();
-        SpinnerDateModel NewBookStartReadingSpinModel = new SpinnerDateModel(startDate,null,startDate,Calendar.YEAR);//Create a spinner date, to correctly select a date
-        BookNewStartReadingSpin.setModel(NewBookStartReadingSpinModel);
-        JSpinner.DateEditor start = new JSpinner.DateEditor(BookNewStartReadingSpin,"yyyy-MM-dd");//set the display of the JSpinner of release date
-        BookNewStartReadingSpin.setEditor(start);
+            Date startDate = new Date();
+            SpinnerDateModel NewBookStartReadingSpinModel = new SpinnerDateModel(new SimpleDateFormat("yyyy-MM-dd").parse(getStartReading()),null,endDate,Calendar.YEAR);//Create a spinner date, to correctly select a date
+            BookNewStartReadingSpin.setModel(NewBookStartReadingSpinModel);
+            JSpinner.DateEditor start = new JSpinner.DateEditor(BookNewStartReadingSpin,"yyyy-MM-dd");//set the display of the JSpinner of release date
+            BookNewStartReadingSpin.setEditor(start);
 
-        SimpleDateFormat StartFormater = new SimpleDateFormat("yyyy-MM-dd");//set the date format returned to have the day, month and year
-        setNewStartReading(StartFormater.format(BookNewStartReadingSpin.getValue()));//set the new date
+            SimpleDateFormat StartFormater = new SimpleDateFormat("yyyy-MM-dd");//set the date format returned to have the day, month and year
+            setNewStartReading(StartFormater.format(BookNewStartReadingSpin.getValue()));//set the new date
+        }catch (Exception e){
+            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+            System.exit(0);
+        }
     }
 }
