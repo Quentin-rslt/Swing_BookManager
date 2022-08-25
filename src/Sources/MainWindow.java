@@ -255,8 +255,9 @@ public class MainWindow extends JDialog {
                 contentPane.updateUI();
                 BookListPanel.removeAll();//refresh the table of book
                 loadDB();
-                if(diag.isEmpty())
+                if(diag.isEmpty()){
                     initComponents();
+                }
                 else {
                     m_bookListTable.setRowSelectionInterval(getRowSelected(getMTitle(),getAuthor()),getRowSelected(getMTitle(),getAuthor()));//focus on the book where you have managed your readings
                     loadComponents(getMTitle(), getAuthor());

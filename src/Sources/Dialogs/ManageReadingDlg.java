@@ -75,7 +75,6 @@ public class ManageReadingDlg extends JDialog {
                 String ReadingQry = "DELETE FROM Reading WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"' AND ID='"+getRow()+"'";//Delete in bdd the item that we want delete
                 String BookQry = "DELETE FROM Book WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";//Delete in bdd the item that we want delete
                 if(m_bookListTable.getRowCount()>1){//If there is more than one reading you don't need to know if the person really wants to delete the book
-                    setIsEmpty(false);
                     try (Connection conn = connect(); PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry, 1); PreparedStatement BookPstmt = conn.prepareStatement(BookQry)) {
                         ReadingPstmt.executeUpdate();
                         contentPane.updateUI();
@@ -90,7 +89,6 @@ public class ManageReadingDlg extends JDialog {
                     }
                 }
                 else{
-                    setIsEmpty(true);
                     JFrame jFrame = new JFrame();
                     int n = JOptionPane.showConfirmDialog(//Open a optionPane to verify if the user really want to delete the book return 0 il they want and 1 if they refuse
                             jFrame,
@@ -101,6 +99,7 @@ public class ManageReadingDlg extends JDialog {
                         try (Connection conn = connect(); PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry); PreparedStatement BookPstmt = conn.prepareStatement(BookQry)) {
                             ReadingPstmt.executeUpdate();
                             BookPstmt.executeUpdate();
+                            fillBookList();
                             contentPane.updateUI();
                             BookListPanel.removeAll();
                             conn.close();

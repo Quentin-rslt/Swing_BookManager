@@ -1,13 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5ede3cbf-f5c9-462f-8dc0-7982017c2136" name="Changes" comment="Changing the names of file locations">
-      <change afterPath="$PROJECT_DIR$/Ressource/Image/Default.jpg" afterDir="false" />
+    <list default="true" id="5ede3cbf-f5c9-462f-8dc0-7982017c2136" name="Changes" comment="Add startReading date, and endReading date">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Forms/Dialogs/AddBookDlg.form" beforeDir="false" afterPath="$PROJECT_DIR$/src/Forms/Dialogs/AddBookDlg.form" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Forms/Dialogs/EditReadingDlg.form" beforeDir="false" afterPath="$PROJECT_DIR$/src/Forms/Dialogs/EditReadingDlg.form" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Sources/Dialogs/AddBookDlg.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Sources/Dialogs/AddBookDlg.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Sources/Dialogs/EditReadingDlg.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Sources/Dialogs/EditReadingDlg.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Sources/Dialogs/ManageReadingDlg.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Sources/Dialogs/ManageReadingDlg.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Sources/MainWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Sources/MainWindow.java" afterDir="false" />
     </list>
@@ -349,7 +344,14 @@
       <option name="project" value="LOCAL" />
       <updated>1661242619723</updated>
     </task>
-    <option name="localTasksCounter" value="39" />
+    <task id="LOCAL-00039" summary="Add startReading date, and endReading date">
+      <created>1661415404365</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1661415404365</updated>
+    </task>
+    <option name="localTasksCounter" value="40" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -364,7 +366,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="We can add a reading now&#10;Change the method of the connection in BDD with a method" />
     <MESSAGE value="Set the date format returned to have the day, month and year for DateReading&#10;And set the date format returned to have just the year for ReleaseDate" />
     <MESSAGE value="Add a first item in Combobox in AddBookDlg, for fix som bug&#10;Can't add a new reading, if the book already exist" />
     <MESSAGE value="Comment the code&#10;Fix bug with dateReading in AddBookDlg" />
@@ -389,6 +390,7 @@
     <MESSAGE value="Fix the bug when we started the app with a empty BDD =&gt; can't start the app; NOW IT'S OK" />
     <MESSAGE value="create default image if we did'nt choice an image" />
     <MESSAGE value="Fix some bug with edit the book" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix some bug with edit the book" />
+    <MESSAGE value="Add startReading date, and endReading date" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add startReading date, and endReading date" />
   </component>
 </project>
