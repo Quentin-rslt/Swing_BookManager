@@ -69,7 +69,7 @@ public class MainWindow extends JDialog {
         loadDB();
 
         m_popup = new JPopupMenu();//Create a popup menu to delete a reading an edit this reading
-        JMenuItem add = new JMenuItem("Ajouter");
+        JMenuItem add = new JMenuItem("Ajouter une lecture");
         JMenuItem cut = new JMenuItem("Supprimer");
         JMenuItem edit = new JMenuItem("Modifier");
         m_popup.add(add);

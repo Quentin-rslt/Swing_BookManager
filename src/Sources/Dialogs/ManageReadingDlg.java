@@ -15,6 +15,9 @@ public class ManageReadingDlg extends JDialog {
     private JPanel BookListPanel;
     private JPanel BookBtnPanel;
     private JButton CancelBtn;
+    private JLabel ManageTitleLabel;
+    private JLabel ManageAuthorLabel;
+    private JPanel ListPanel;
 
 
     private Statement m_statement;
@@ -61,13 +64,11 @@ public class ManageReadingDlg extends JDialog {
             @Override
             public void mouseReleased(MouseEvent evt) {
                 setRow(m_bookListTable.rowAtPoint(evt.getPoint()));
-                setMTitle(m_bookListTable.getValueAt(getRow(), 0).toString()); //get the value of the column of the table
-                setAuthor(m_bookListTable.getValueAt(getRow(), 1).toString());
-                setStartReading(m_startReading = m_bookListTable.getValueAt(getRow(), 2).toString());
-                setEndReading(m_endReading = m_bookListTable.getValueAt(getRow(), 3).toString());
+                setStartReading(m_startReading = m_bookListTable.getValueAt(getRow(), 0).toString());
+                setEndReading(m_endReading = m_bookListTable.getValueAt(getRow(), 1).toString());
                 if(evt.getButton() == MouseEvent.BUTTON3) {
                     m_bookListTable.setRowSelectionInterval(getRow(), getRow());//we focus the row when we right on the item
-                    m_popup.show(contentPane, evt.getX(), evt.getY());//show a popup to edit the reading
+                    m_popup.show(BookListPanel, evt.getX(), evt.getY());//show a popup to edit the reading
                 }
             }
         });
@@ -101,6 +102,8 @@ public class ManageReadingDlg extends JDialog {
                         try (Connection conn = connect(); PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry); PreparedStatement BookPstmt = conn.prepareStatement(BookQry)) {
                             ReadingPstmt.executeUpdate();
                             BookPstmt.executeUpdate();
+                            ManageTitleLabel.setText("Lectures du livre : ");
+                            ManageAuthorLabel.setText("Auteur : ");
                             fillBookList();
                             contentPane.updateUI();
                             conn.close();
@@ -176,10 +179,6 @@ public class ManageReadingDlg extends JDialog {
     public int getRowCount(){
         return m_bookListTable.getRowCount();
     }
-    public String getReadingTime(String start, String en){
-        String time = "";
-        return time;
-    }
 
     public void setAuthor(String m_author) {
         this.m_author = m_author;
@@ -222,14 +221,14 @@ public class ManageReadingDlg extends JDialog {
 
     }
     public void fillBookList(){
+        ManageTitleLabel.setText("Lectures du livre : "+getMTitle());
+        ManageAuthorLabel.setText("Auteur : "+getAuthor());
         m_tableModel.setRowCount(0);
         try(Connection conn = connect()){
             m_statement = conn.createStatement();
-            ResultSet qry = m_statement.executeQuery("SELECT Title, Author, StartReading, EndReading FROM Reading WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+ "'");
+            ResultSet qry = m_statement.executeQuery("SELECT StartReading, EndReading FROM Reading WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+ "'");
 
             while (qry.next()){
-                String title = qry.getString("Title");//Retrieve the title
-                String author = qry.getString("Author");//Retrieve the author
                 String startReading = qry.getString("StartReading");
                 String endReading = qry.getString("EndReading");
 
@@ -249,8 +248,8 @@ public class ManageReadingDlg extends JDialog {
                     StdDays = days+" jours";
                 }
 
-                String[] header = {"Titre","Auteur","Début de lecture", "Fin de lecture", "Temps de lecture"};
-                Object[] data = {title, author, startReading, endReading, StdDays};
+                String[] header = {"Début de lecture", "Fin de lecture", "Temps de lecture"};
+                Object[] data = {startReading, endReading, StdDays};
 
                 m_tableModel.setColumnIdentifiers(header);//Create the header
                 m_tableModel.addRow(data);//add to tablemodel the data
