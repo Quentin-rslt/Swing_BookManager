@@ -63,11 +63,13 @@ public class EditReadingDlg extends JDialog {
                     Connection connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
                     Statement statement = connection.createStatement();
                     ResultSet qry = statement.executeQuery(sql);
+                    Date enDate =new SimpleDateFormat("yyyy-MM-dd").parse(getNewEndReading());
+                    Date startDate = new SimpleDateFormat("yyyy-MM-dd").parse(getNewStartReading());
 
                     boolean dateFind =false;
                     while (qry.next() && !dateFind){//check if the modified date already exists (unless it is Unknown)
                         //If there is a date then we do not modify and display an error message
-                        if (!getNewStartReading().equals(getStartReading()) && !getNewEndReading().equals(getEndReading())){
+                        if (!getNewStartReading().equals(getStartReading()) && !getNewEndReading().equals(getEndReading())){//if we don't edit the end date
                             if (getNewStartReading().equals(qry.getString(3)) && getNewEndReading().equals(qry.getString(4))
                                     && !isDateReadingUnknown() && !isNotDone()){
                                 JFrame jFrame = new JFrame();
@@ -83,7 +85,7 @@ public class EditReadingDlg extends JDialog {
                                 dateFind = true;//
                             } else
                                 dateFind = false;
-                        } else if (getNewStartReading().equals(getStartReading()) && !getNewEndReading().equals(getEndReading())) {
+                        } else if (getNewStartReading().equals(getStartReading()) && !getNewEndReading().equals(getEndReading())) {//if we don't edit the start date
                             if (getNewStartReading().equals(qry.getString(3)) && getNewEndReading().equals(qry.getString(4))
                                     && !isDateReadingUnknown() && !isNotDone()){
                                 JFrame jFrame = new JFrame();
@@ -121,12 +123,14 @@ public class EditReadingDlg extends JDialog {
                         setIsValid(true);
                         setVisible(false);
                         dispose();
-                    } else if (!dateFind && !Objects.equals(getNewStartReading(), getNewEndReading()) && !isDateReadingUnknown() && !isNotDone()){
+                    } else if (!dateFind && !Objects.equals(getNewStartReading(), getNewEndReading()) && !isDateReadingUnknown() && !isNotDone() && startDate.compareTo(enDate)<0){
                         setIsValid(true);
                         setVisible(false);
                         dispose();
-                    }
-                    else if(!dateFind && Objects.equals(getNewStartReading(), getNewEndReading())
+                    } else if (!dateFind && !Objects.equals(getNewStartReading(), getNewEndReading()) && !isDateReadingUnknown() && !isNotDone() && startDate.compareTo(enDate)>0){
+                        JFrame jFrame = new JFrame();
+                        JOptionPane.showMessageDialog(jFrame, "La date de début de lecture ne peut pas être après à la fin de lecture !");
+                    } else if(!dateFind && Objects.equals(getNewStartReading(), getNewEndReading())
                             && !isDateReadingUnknown() && !isNotDone()){
                         JFrame jFrame = new JFrame();
                         JOptionPane.showMessageDialog(jFrame, "La date de début de lecture ne peut pas être identique à la fin de lecture !");
