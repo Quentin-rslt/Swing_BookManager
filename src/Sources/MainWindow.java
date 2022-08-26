@@ -1,6 +1,7 @@
 package Sources;
 
 import Sources.Dialogs.AddBookDlg;
+import Sources.Dialogs.AddReading;
 import Sources.Dialogs.EditBookDlg;
 import Sources.Dialogs.ManageReadingDlg;
 import com.formdev.flatlaf.FlatDarkLaf;
@@ -68,8 +69,10 @@ public class MainWindow extends JDialog {
         loadDB();
 
         m_popup = new JPopupMenu();//Create a popup menu to delete a reading an edit this reading
+        JMenuItem add = new JMenuItem("Ajouter");
         JMenuItem cut = new JMenuItem("Supprimer");
         JMenuItem edit = new JMenuItem("Modifier");
+        m_popup.add(add);
         m_popup.add(cut);
         m_popup.add(edit);
 
@@ -102,7 +105,7 @@ public class MainWindow extends JDialog {
         AddBookBtn.addActionListener(new ActionListener() {//open the dlg for add a reading
             public void actionPerformed(ActionEvent evt) {
                 AddBookDlg diag = new AddBookDlg();
-                diag.setTitle("Ajouter une lecture");
+                diag.setTitle("Ajouter un livvre");
                 diag.setSize(800,550);
                 diag.setLocationRelativeTo(null);
                 diag.setVisible(true);
@@ -115,127 +118,77 @@ public class MainWindow extends JDialog {
                     BookListPanel.removeAll();//refresh the table of book
                     try (Connection conn = connect(); PreparedStatement BookPstmt = conn.prepareStatement(BookQry); PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry)) {
                         m_statement = conn.createStatement();
-                        //If nothing is selected in the combobox
-                        if(!diag.getIsAlreadyRead()){
-                            if(!diag.isDateUnknown() && !diag.isNotDOne()){
-                                ReadingPstmt.setInt(1, setIdReading(diag.getNewBookTitle(), diag.getNewBookAuthor()));
-                                ReadingPstmt.setString(2, diag.getNewBookTitle());
-                                ReadingPstmt.setString(3, diag.getNewBookAuthor());
-                                ReadingPstmt.setString(4, diag.getNewBookStartReading());
-                                ReadingPstmt.setString(5, diag.getNewBookEndReading());
+                        if(!diag.isDateUnknown() && !diag.isNotDOne()){
+                            ReadingPstmt.setInt(1, setIdReading(diag.getNewBookTitle(), diag.getNewBookAuthor()));
+                            ReadingPstmt.setString(2, diag.getNewBookTitle());
+                            ReadingPstmt.setString(3, diag.getNewBookAuthor());
+                            ReadingPstmt.setString(4, diag.getNewBookStartReading());
+                            ReadingPstmt.setString(5, diag.getNewBookEndReading());
 
-                                BookPstmt.setString(1, diag.getNewBookTitle());
-                                BookPstmt.setString(2, diag.getNewBookAuthor());
-                                BookPstmt.setString(3, diag.getURL());
-                                BookPstmt.setString(4, diag.getNewBookNumberOP());
-                                BookPstmt.setString(5, diag.getNewBookPersonalNote());
-                                BookPstmt.setString(6, diag.getNewBookBBLNote());
-                                BookPstmt.setString(7, diag.getNewBookReleaseYear());
-                                BookPstmt.setString(8, diag.getNewBookSummary());
-                                BookPstmt.executeUpdate();//Insert the new Book
-                                ReadingPstmt.executeUpdate();//Insert the new reading
-                                setMTitle(diag.getNewBookTitle());
-                                setAuthor(diag.getNewBookAuthor());
-                                loadComponents(diag.getNewBookTitle(), diag.getNewBookAuthor());
-                                loadDB();
-                                //Focus in the jtable on the book created
-                                m_bookListTable.setRowSelectionInterval(getRowSelected(diag.getNewBookTitle(), diag.getNewBookAuthor()), getRowSelected(diag.getNewBookTitle(), diag.getNewBookAuthor()));
-                            } else if (!diag.isDateUnknown() && diag.isNotDOne()) {
-                                ReadingPstmt.setInt(1, setIdReading(diag.getNewBookTitle(), diag.getNewBookAuthor()));
-                                ReadingPstmt.setString(2, diag.getNewBookTitle());
-                                ReadingPstmt.setString(3, diag.getNewBookAuthor());
-                                ReadingPstmt.setString(4, diag.getNewBookStartReading());
-                                ReadingPstmt.setString(5, "Pas fini");
+                            BookPstmt.setString(1, diag.getNewBookTitle());
+                            BookPstmt.setString(2, diag.getNewBookAuthor());
+                            BookPstmt.setString(3, diag.getURL());
+                            BookPstmt.setString(4, diag.getNewBookNumberOP());
+                            BookPstmt.setString(5, diag.getNewBookPersonalNote());
+                            BookPstmt.setString(6, diag.getNewBookBBLNote());
+                            BookPstmt.setString(7, diag.getNewBookReleaseYear());
+                            BookPstmt.setString(8, diag.getNewBookSummary());
+                            BookPstmt.executeUpdate();//Insert the new Book
+                            ReadingPstmt.executeUpdate();//Insert the new reading
+                            setMTitle(diag.getNewBookTitle());
+                            setAuthor(diag.getNewBookAuthor());
+                            loadComponents(diag.getNewBookTitle(), diag.getNewBookAuthor());
+                            loadDB();
+                            //Focus in the jtable on the book created
+                            m_bookListTable.setRowSelectionInterval(getRowSelected(diag.getNewBookTitle(), diag.getNewBookAuthor()), getRowSelected(diag.getNewBookTitle(), diag.getNewBookAuthor()));
+                        } else if (!diag.isDateUnknown() && diag.isNotDOne()) {
+                            ReadingPstmt.setInt(1, setIdReading(diag.getNewBookTitle(), diag.getNewBookAuthor()));
+                            ReadingPstmt.setString(2, diag.getNewBookTitle());
+                            ReadingPstmt.setString(3, diag.getNewBookAuthor());
+                            ReadingPstmt.setString(4, diag.getNewBookStartReading());
+                            ReadingPstmt.setString(5, "Pas fini");
 
-                                BookPstmt.setString(1, diag.getNewBookTitle());
-                                BookPstmt.setString(2, diag.getNewBookAuthor());
-                                BookPstmt.setString(3, diag.getURL());
-                                BookPstmt.setString(4, diag.getNewBookNumberOP());
-                                BookPstmt.setString(5, diag.getNewBookPersonalNote());
-                                BookPstmt.setString(6, diag.getNewBookBBLNote());
-                                BookPstmt.setString(7, diag.getNewBookReleaseYear());
-                                BookPstmt.setString(8, diag.getNewBookSummary());
-                                BookPstmt.executeUpdate();//Insert the new Book
-                                ReadingPstmt.executeUpdate();//Insert the new reading
-                                setMTitle(diag.getNewBookTitle());
-                                setAuthor(diag.getNewBookAuthor());
-                                loadComponents(diag.getNewBookTitle(), diag.getNewBookAuthor());
-                                loadDB();
-                                //Focus in the jtable on the book created
-                                m_bookListTable.setRowSelectionInterval(getRowSelected(diag.getNewBookTitle(), diag.getNewBookAuthor()), getRowSelected(diag.getNewBookTitle(), diag.getNewBookAuthor()));
-                            } else {
-                                ReadingPstmt.setInt(1, setIdReading(diag.getNewBookTitle(), diag.getNewBookAuthor()));
-                                ReadingPstmt.setString(2, diag.getNewBookTitle());
-                                ReadingPstmt.setString(3, diag.getNewBookAuthor());
-                                ReadingPstmt.setString(4, "Inconnu");
-                                ReadingPstmt.setString(5, "Inconnu");
+                            BookPstmt.setString(1, diag.getNewBookTitle());
+                            BookPstmt.setString(2, diag.getNewBookAuthor());
+                            BookPstmt.setString(3, diag.getURL());
+                            BookPstmt.setString(4, diag.getNewBookNumberOP());
+                            BookPstmt.setString(5, diag.getNewBookPersonalNote());
+                            BookPstmt.setString(6, diag.getNewBookBBLNote());
+                            BookPstmt.setString(7, diag.getNewBookReleaseYear());
+                            BookPstmt.setString(8, diag.getNewBookSummary());
+                            BookPstmt.executeUpdate();//Insert the new Book
+                            ReadingPstmt.executeUpdate();//Insert the new reading
+                            setMTitle(diag.getNewBookTitle());
+                            setAuthor(diag.getNewBookAuthor());
+                            loadComponents(diag.getNewBookTitle(), diag.getNewBookAuthor());
+                            loadDB();
+                            //Focus in the jtable on the book created
+                            m_bookListTable.setRowSelectionInterval(getRowSelected(diag.getNewBookTitle(), diag.getNewBookAuthor()), getRowSelected(diag.getNewBookTitle(), diag.getNewBookAuthor()));
+                        } else {
+                            ReadingPstmt.setInt(1, setIdReading(diag.getNewBookTitle(), diag.getNewBookAuthor()));
+                            ReadingPstmt.setString(2, diag.getNewBookTitle());
+                            ReadingPstmt.setString(3, diag.getNewBookAuthor());
+                            ReadingPstmt.setString(4, "Inconnu");
+                            ReadingPstmt.setString(5, "Inconnu");
 
-                                BookPstmt.setString(1, diag.getNewBookTitle());
-                                BookPstmt.setString(2, diag.getNewBookAuthor());
-                                BookPstmt.setString(3, diag.getURL());
-                                BookPstmt.setString(4, diag.getNewBookNumberOP());
-                                BookPstmt.setString(5, diag.getNewBookPersonalNote());
-                                BookPstmt.setString(6, diag.getNewBookBBLNote());
-                                BookPstmt.setString(7, diag.getNewBookReleaseYear());
-                                BookPstmt.setString(8, diag.getNewBookSummary());
-                                BookPstmt.executeUpdate();//Insert the new Book in table Book
-                                ReadingPstmt.executeUpdate();//Insert the new reading
-                                setMTitle(diag.getNewBookTitle());
-                                setAuthor(diag.getNewBookAuthor());
-                                loadComponents(diag.getNewBookTitle(), diag.getNewBookAuthor());
-                                loadDB();
-                                //Focus in the jtable on the book created
-                                m_bookListTable.setRowSelectionInterval(getRowSelected(diag.getNewBookTitle(), diag.getNewBookAuthor()), getRowSelected(diag.getNewBookTitle(), diag.getNewBookAuthor()));
-                            }
+                            BookPstmt.setString(1, diag.getNewBookTitle());
+                            BookPstmt.setString(2, diag.getNewBookAuthor());
+                            BookPstmt.setString(3, diag.getURL());
+                            BookPstmt.setString(4, diag.getNewBookNumberOP());
+                            BookPstmt.setString(5, diag.getNewBookPersonalNote());
+                            BookPstmt.setString(6, diag.getNewBookBBLNote());
+                            BookPstmt.setString(7, diag.getNewBookReleaseYear());
+                            BookPstmt.setString(8, diag.getNewBookSummary());
+                            BookPstmt.executeUpdate();//Insert the new Book in table Book
+                            ReadingPstmt.executeUpdate();//Insert the new reading
+                            setMTitle(diag.getNewBookTitle());
+                            setAuthor(diag.getNewBookAuthor());
+                            loadComponents(diag.getNewBookTitle(), diag.getNewBookAuthor());
+                            loadDB();
+                            //Focus in the jtable on the book created
+                            m_bookListTable.setRowSelectionInterval(getRowSelected(diag.getNewBookTitle(), diag.getNewBookAuthor()), getRowSelected(diag.getNewBookTitle(), diag.getNewBookAuthor()));
                         }
-                        else{
-                            ResultSet rs = m_statement.executeQuery("SELECT * FROM Book WHERE Title='"+diag.getMTitle()+"' AND Author='"+diag.getAuthor()+ "'");
-                            if(!diag.isDateUnknown()&& !diag.isNotDOne()){
-                                ReadingPstmt.setInt(1, setIdReading(diag.getMTitle(), diag.getAuthor()));
-                                ReadingPstmt.setString(2, diag.getMTitle());
-                                ReadingPstmt.setString(3, diag.getAuthor());
-                                ReadingPstmt.setString(4, diag.getNewBookStartReading());
-                                ReadingPstmt.setString(5, diag.getNewBookEndReading());
 
-                                ReadingPstmt.executeUpdate();//Insert the new reading
-                                setMTitle(diag.getMTitle());
-                                setAuthor(diag.getAuthor());
-                                loadComponents(diag.getMTitle(), diag.getAuthor());
-                                loadDB();
-                                //Focus in the jtable on a reading created from an existing book
-                                m_bookListTable.setRowSelectionInterval(getRowSelected(diag.getMTitle(), diag.getAuthor()), getRowSelected(diag.getMTitle(), diag.getAuthor()));
-                            }else if (!diag.isDateUnknown() && diag.isNotDOne()) {
-                                ReadingPstmt.setInt(1, setIdReading(diag.getMTitle(), diag.getAuthor()));
-                                ReadingPstmt.setString(2,  diag.getMTitle());
-                                ReadingPstmt.setString(3, diag.getAuthor());
-                                ReadingPstmt.setString(4, diag.getNewBookStartReading());
-                                ReadingPstmt.setString(5, "Pas fini");
-
-                                ReadingPstmt.executeUpdate();//Insert the new reading
-                                setMTitle(diag.getNewBookTitle());
-                                setAuthor(diag.getNewBookAuthor());
-                                loadComponents(diag.getMTitle(), diag.getAuthor());
-                                loadDB();
-                                //Focus in the jtable on a reading created from an existing book
-                                m_bookListTable.setRowSelectionInterval(getRowSelected(diag.getMTitle(), diag.getAuthor()), getRowSelected(diag.getMTitle(), diag.getAuthor()));
-                            }
-                            else {
-                                ReadingPstmt.setInt(1, setIdReading(diag.getMTitle(), diag.getAuthor()));
-                                ReadingPstmt.setString(2, diag.getMTitle());
-                                ReadingPstmt.setString(3, diag.getAuthor());
-                                ReadingPstmt.setString(4, "Inconnu");
-                                ReadingPstmt.setString(5, "Inconnu");
-
-                                ReadingPstmt.executeUpdate();//Insert the new reading
-                                setMTitle(diag.getMTitle());
-                                setAuthor(diag.getAuthor());
-                                loadComponents(diag.getMTitle(), diag.getAuthor());
-                                loadDB();
-                                //Focus in the jtable on a reading created from an existing book
-                                m_bookListTable.setRowSelectionInterval(getRowSelected(diag.getMTitle(), diag.getAuthor()), getRowSelected(diag.getMTitle(), diag.getAuthor()));
-                            }
-                            rs.close();
-                        }
                         conn.close();
                         m_statement.close();
                     } catch (SQLException e) {
@@ -333,9 +286,78 @@ public class MainWindow extends JDialog {
                 }
             }
         });
+        add.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                AddReading diag = new AddReading(getMTitle(), getAuthor());
+                diag.setTitle("Ajouter une lecture");
+                diag.setSize(550,270);
+                diag.setLocationRelativeTo(null);
+                diag.setVisible(true);
+                if (diag.getIsValid()){
+                    String ReadingQry = "INSERT INTO Reading (ID,Title,Author,StartReading, EndReading) " +
+                            "VALUES (?,?,?,?,?);";
+                    contentPane.updateUI();
+                    BookListPanel.removeAll();//refresh the table of book
+                    try(Connection conn = connect(); PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry)){
+                        m_statement = conn.createStatement();
+                        ResultSet rs = m_statement.executeQuery("SELECT * FROM Book WHERE Title='"+diag.getMtitle()+"' AND Author='"+diag.getAuthor()+ "'");
+                        if(!diag.isDateUnknown()&& !diag.isNotDone()){
+                            ReadingPstmt.setInt(1, setIdReading(diag.getMtitle(), diag.getAuthor()));
+                            ReadingPstmt.setString(2, diag.getMtitle());
+                            ReadingPstmt.setString(3, diag.getAuthor());
+                            ReadingPstmt.setString(4, diag.getNewStartReading());
+                            ReadingPstmt.setString(5, diag.getNewEndReading());
+
+                            ReadingPstmt.executeUpdate();//Insert the new reading
+                            setMTitle(diag.getMtitle());
+                            setAuthor(diag.getAuthor());
+                            loadComponents(diag.getMtitle(), diag.getAuthor());
+                            loadDB();
+                            //Focus in the jtable on a reading created from an existing book
+                            m_bookListTable.setRowSelectionInterval(getRowSelected(diag.getMtitle(), diag.getAuthor()), getRowSelected(diag.getMtitle(), diag.getAuthor()));
+                        }else if (!diag.isDateUnknown() && diag.isNotDone()) {
+                            ReadingPstmt.setInt(1, setIdReading(diag.getMtitle(), diag.getAuthor()));
+                            ReadingPstmt.setString(2,  diag.getMtitle());
+                            ReadingPstmt.setString(3, diag.getAuthor());
+                            ReadingPstmt.setString(4, diag.getNewStartReading());
+                            ReadingPstmt.setString(5, "Pas fini");
+
+                            ReadingPstmt.executeUpdate();//Insert the new reading
+                            setMTitle(diag.getMtitle());
+                            setAuthor(diag.getAuthor());
+                            loadComponents(diag.getMtitle(), diag.getAuthor());
+                            loadDB();
+                            //Focus in the jtable on a reading created from an existing book
+                            m_bookListTable.setRowSelectionInterval(getRowSelected(diag.getMtitle(), diag.getAuthor()), getRowSelected(diag.getMtitle(), diag.getAuthor()));
+                        }
+                        else {
+                            ReadingPstmt.setInt(1, setIdReading(diag.getMtitle(), diag.getAuthor()));
+                            ReadingPstmt.setString(2, diag.getMtitle());
+                            ReadingPstmt.setString(3, diag.getAuthor());
+                            ReadingPstmt.setString(4, "Inconnu");
+                            ReadingPstmt.setString(5, "Inconnu");
+
+                            ReadingPstmt.executeUpdate();//Insert the new reading
+                            setMTitle(diag.getMtitle());
+                            setAuthor(diag.getAuthor());
+                            loadComponents(diag.getMtitle(), diag.getAuthor());
+                            loadDB();
+                            //Focus in the jtable on a reading created from an existing book
+                            m_bookListTable.setRowSelectionInterval(getRowSelected(diag.getMtitle(), diag.getAuthor()), getRowSelected(diag.getMtitle(), diag.getAuthor()));
+                        }
+                        rs.close();
+                        conn.close();
+                        m_statement.close();
+                    }catch (SQLException e){
+                        System.out.println(e.getMessage());
+                        System.exit(0);
+                    }
+                }
+            }
+        });
     }
     private Connection connect() {
-        // SQLite connection string
         Connection connection = null;
         String url = "jdbc:sqlite:BookManager.db";
         try {
@@ -482,8 +504,10 @@ public class MainWindow extends JDialog {
                     LocalDate start = LocalDate.parse(qry.getString(1)) ;
                     LocalDate stop = LocalDate.parse(qry.getString(2)) ;
                     days = days + ChronoUnit.DAYS.between(start , stop);
-                    BookTimeAverageLabel.setText("Temps moyen de lecture : : "+days/dateValid+" jours");
+                    BookTimeAverageLabel.setText("Temps moyen de lecture : "+days/dateValid+" jours");
                 }
+                if (dateValid==0)
+                    BookTimeAverageLabel.setText("Temps moyen de lecture : Pas de moyenne");
             }
 
             //Note on babelio
@@ -531,6 +555,7 @@ public class MainWindow extends JDialog {
         AuthorLabel.setText("Auteur :");
         ReleaseYearLAbel.setText("Année de sortie :");
         NumberPageLabel.setText("Nombre de page :");
+        BookTimeAverageLabel.setText("Temps moyen de lecture : ");
         CountReadingLabel.setText("Nombre de lecture :");
         NoteLabel.setText("Note :");
         PersonalNoteLabel.setText("Ma note :");

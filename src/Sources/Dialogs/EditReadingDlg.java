@@ -14,19 +14,20 @@ import java.util.Objects;
 
 public class EditReadingDlg extends JDialog {
     private JPanel contentPane;
-    private JPanel BookPanel;
-    private JPanel BookBtnPanel;
     private JButton OkBtn;
     private JButton CancelBtn;
-    private JPanel BookInfoPanel;
     private JLabel BookTitleLable;
     private JLabel BookAuthorLabel;
     private JLabel BookEndReadingLabel;
-    private JLabel BookStartReadingLabel;
     private JSpinner BookNewEndReadingSpin;
     private JCheckBox BookUnknownDateReadingCheckBox;
     private JCheckBox BookNotDoneReadChecbox;
     private JSpinner BookNewStartReadingSpin;
+    private JPanel Cont;
+    private JPanel BookPanel;
+    private JPanel BookInfoPanel;
+    private JLabel BookStartReadingLabel;
+    private JPanel BookBtnPanel;
 
 
     private String m_title;
@@ -36,7 +37,6 @@ public class EditReadingDlg extends JDialog {
     private String m_newEndReading;
     private String m_newStartReading;
     private boolean m_isValid = false;
-    private Date m_date = new Date();
 
     public EditReadingDlg(String title, String author, String startReading, String endReading) {
         setContentPane(contentPane);
@@ -72,7 +72,7 @@ public class EditReadingDlg extends JDialog {
                     boolean dateFind =false;
                     while (qry.next() && !dateFind){//check if the modified date already exists (unless it is Unknown)
                         //If there is a date then we do not modify and display an error message
-                        if (!getNewStartReading().equals(getStartReading()) && !getNewEndReading().equals(getEndReading())){//if we don't edit the end date
+                        if (!getNewStartReading().equals(getStartReading()) && !getNewEndReading().equals(getEndReading()) && !Objects.equals(getNewStartReading(), getNewEndReading())){//if we don't edit the end date
                             if (getNewStartReading().equals(qry.getString(3)) && getNewEndReading().equals(qry.getString(4))
                                     && !isDateReadingUnknown() && !isNotDone()){
                                 JFrame jFrame = new JFrame();
@@ -82,13 +82,17 @@ public class EditReadingDlg extends JDialog {
                                 JFrame jFrame = new JFrame();
                                 JOptionPane.showMessageDialog(jFrame, "La date de début de lecture existe déjà !");
                                 dateFind = true;//
+                            } else if (!isDateReadingUnknown() && isNotDone() && Objects.equals(qry.getString(3), getNewStartReading())) {
+                                JFrame jFrame = new JFrame();
+                                JOptionPane.showMessageDialog(jFrame, "La date de début de lecture existe déjà !");
+                                dateFind = true;//
                             } else if (!isDateReadingUnknown() && !isNotDone() && Objects.equals(qry.getString(4), getNewEndReading())) {
                                 JFrame jFrame = new JFrame();
                                 JOptionPane.showMessageDialog(jFrame, "La date de fin de lecture existe déjà !");
                                 dateFind = true;//
                             } else
                                 dateFind = false;
-                        } else if (getNewStartReading().equals(getStartReading()) && !getNewEndReading().equals(getEndReading())) {//if we don't edit the start date
+                        } else if (getNewStartReading().equals(getStartReading()) && !getNewEndReading().equals(getEndReading())&& !Objects.equals(getNewStartReading(), getNewEndReading())) {//if we don't edit the start date
                             if (getNewStartReading().equals(qry.getString(3)) && getNewEndReading().equals(qry.getString(4))
                                     && !isDateReadingUnknown() && !isNotDone()){
                                 JFrame jFrame = new JFrame();
@@ -100,7 +104,7 @@ public class EditReadingDlg extends JDialog {
                                 dateFind = true;
                             } else
                                 dateFind = false;
-                        } else if (!getNewStartReading().equals(getStartReading()) && getNewEndReading().equals(getEndReading())) {
+                        } else if (!getNewStartReading().equals(getStartReading()) && getNewEndReading().equals(getEndReading()) && !Objects.equals(getNewStartReading(), getNewEndReading())) {
                             if (getNewStartReading().equals(qry.getString(3)) && getNewEndReading().equals(qry.getString(4))
                                     && !isDateReadingUnknown() && !isNotDone()){
                                 JFrame jFrame = new JFrame();
@@ -150,14 +154,13 @@ public class EditReadingDlg extends JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (isDateReadingUnknown()){
+                    BookNotDoneReadChecbox.setSelected(false);
                     BookNewEndReadingSpin.setEnabled(false);
                     BookNewStartReadingSpin.setEnabled(false);
-                    BookNotDoneReadChecbox.setEnabled(false);
                 }
                 else{
                     BookNewEndReadingSpin.setEnabled(true);
                     BookNewStartReadingSpin.setEnabled(true);
-                    BookNotDoneReadChecbox.setEnabled(true);
                 }
             }
         });
@@ -165,6 +168,8 @@ public class EditReadingDlg extends JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (isNotDone()){
+                    BookUnknownDateReadingCheckBox.setSelected(false);
+                    BookNewStartReadingSpin.setEnabled(true);
                     BookNewEndReadingSpin.setEnabled(false);
                 }
                 else{
@@ -256,7 +261,6 @@ public class EditReadingDlg extends JDialog {
             } else if(getEndReading().equals("Inconnu")){
                 BookNewEndReadingSpin.setEnabled(false);
                 BookNewStartReadingSpin.setEnabled(false);
-                BookNotDoneReadChecbox.setEnabled(false);
                 BookUnknownDateReadingCheckBox.setSelected(true);
                 NewBookEndReadingSpinModel = new SpinnerDateModel(endDate ,null,endDate, Calendar.YEAR);//Create a spinner date, to correctly select a date
             }

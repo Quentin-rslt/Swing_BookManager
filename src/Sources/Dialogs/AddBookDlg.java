@@ -24,7 +24,6 @@ public class AddBookDlg extends JDialog {
     private JButton CancelBtn;
     private JPanel BtnPanel;
     private JPanel PreviewPhotoPanel;
-    private JLabel BookAlreadyReadLabel;
     private JComboBox ExitingBookComboBox;
     private JLabel NewBookLabel;
     private JLabel NameLabel;
@@ -62,7 +61,6 @@ public class AddBookDlg extends JDialog {
 
     public AddBookDlg() {
         setContentPane(contentPane);
-        fillBookCombobox();
         setModal(true);
         initComponents();
         initComponents(true);
@@ -91,42 +89,6 @@ public class AddBookDlg extends JDialog {
                     BookEndReadingSpin.setEnabled(true);
             }
         });
-        ExitingBookComboBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {//set the title and the author, retrieved by the ComboBox
-                if(ExitingBookComboBox.getSelectedItem() != ""){
-                    initComponents(false);
-                    String row = Objects.requireNonNull(ExitingBookComboBox.getSelectedItem()).toString();//get the item that we chose
-                    String author = "";
-                    m_title = "";
-                    int i = 0;
-                    do {//As long as the character in the string is not '-', we add to our title variable the letter
-                        m_title += row.charAt(i);//at the end we have juste the title
-                        i++;
-                    } while (row.charAt(i+1)!= '-');
-                    author = row.replace(m_title, "");//We recover only the end of the line to keep only the author
-                    m_author = author.substring(3 , author.length());
-                    try{
-                        Class.forName("org.sqlite.JDBC");
-                        m_connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
-                        m_statement = m_connection.createStatement();
-                        ResultSet ImageQry = m_statement.executeQuery("SELECT Image FROM Book WHERE Title='"+m_title+"' AND Author='"+m_author+ "'");//Retrieved from the bdd the URL of the book image
-                        // in parameters the title and the author enter in parameters of this function
-                        addImageToPanel(ImageQry.getString(1));//add the image of the book, with the author and the title recovered on the combobox, in our panel
-                        setURL(ImageQry.getString(1));
-                        m_connection.close();
-                        m_statement.close();
-                    } catch ( Exception e ) {
-                        System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-                        System.exit(0);
-                    }
-                }
-                else{
-                    setURL("");
-                    initComponents(true);
-                }
-            }
-        });
         CancelBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {//Quit dlg without taking into account the input
@@ -139,64 +101,7 @@ public class AddBookDlg extends JDialog {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 String sql = "SELECT Title, Author, StartReading, EndReading FROM Reading";
-                if(getIsAlreadyRead() && getExitingBookComboBox().getSelectedItem()!=""){//Can add a new reading if the book exists at the same reading date
-                    try {
-                        Date enDate =new SimpleDateFormat("yyyy-MM-dd").parse(getNewBookEndReading());
-                        Date startDate = new SimpleDateFormat("yyyy-MM-dd").parse(getNewBookStartReading());
-                        Class.forName("org.sqlite.JDBC");
-                        m_connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
-                        m_statement = m_connection.createStatement();
-                        ResultSet qry = m_statement.executeQuery(sql);
-
-                        boolean bookFind =false;
-                        while (qry.next()){//
-                            if (!isDateUnknown() && !isNotDOne() && Objects.equals(qry.getString(3), getNewBookStartReading())
-                                    && Objects.equals(qry.getString(4), getNewBookEndReading())){
-                                JFrame jFrame = new JFrame();
-                                JOptionPane.showMessageDialog(jFrame, "Les dates de lecture existent déjà !");
-                                bookFind = true;//
-                            } else if (!isDateUnknown() && isNotDOne() && Objects.equals(qry.getString(3), getNewBookStartReading())) {
-                                JFrame jFrame = new JFrame();
-                                JOptionPane.showMessageDialog(jFrame, "La date de début de lecture existe déjà !");
-                                bookFind = true;//
-                            } else if (!isDateUnknown() && !isNotDOne() && Objects.equals(qry.getString(4), getNewBookEndReading())) {
-                                JFrame jFrame = new JFrame();
-                                JOptionPane.showMessageDialog(jFrame, "La date de fin de lecture existe déjà !");
-                                bookFind = true;//
-                            } else
-                                bookFind = false;
-                        }
-                        if (!bookFind && isDateUnknown()){
-                            m_isValide=true;
-                            setVisible(false);
-                            dispose();
-                        } else if (!bookFind && !isDateUnknown() && isNotDOne()) {
-                            m_isValide=true;
-                            setVisible(false);
-                            dispose();
-                        } else if (!bookFind && !Objects.equals(getNewBookStartReading(), getNewBookEndReading()) && !isDateUnknown() && !isNotDOne() && startDate.compareTo(enDate)<0){
-                            m_isValide=true;
-                            setVisible(false);
-                            dispose();
-                        } else if (!bookFind && !Objects.equals(getNewBookStartReading(), getNewBookEndReading()) && !isDateUnknown() && !isNotDOne() && startDate.compareTo(enDate)>0) {
-                            JFrame jFrame = new JFrame();
-                            JOptionPane.showMessageDialog(jFrame, "La date de début de lecture ne peut pas être après à la fin de lecture !");
-                        } else if(!bookFind && Objects.equals(getNewBookStartReading(), getNewBookEndReading())
-                                && !isDateUnknown() && !isNotDOne()){
-                            JFrame jFrame = new JFrame();
-                            JOptionPane.showMessageDialog(jFrame, "La date de début de lecture ne peut pas être identique à la fin de lecture !");
-                        }
-                        m_connection.close();
-                        m_statement.close();
-                    }catch (Exception e){
-                        System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-                        System.exit(0);
-                    }
-                }
-                else if(getIsAlreadyRead() && getExitingBookComboBox().getSelectedItem()==""){//Verif if we select a book in combobox
-                    initComponents(true);
-                }
-                else if(!getIsAlreadyRead() && !Objects.equals(getNewBookAuthor(), "") && !Objects.equals(getNewBookTitle(), "") && !Objects.equals(getNewBookSummary(), "")){//Verif if the input are good to quit the dlg and recovered the data for bdd
+                if(!Objects.equals(getNewBookAuthor(), "") && !Objects.equals(getNewBookTitle(), "") && !Objects.equals(getNewBookSummary(), "")){//Verif if the input are good to quit the dlg and recovered the data for bdd
                     try{//Can add a new reading if the book already exist
                         Class.forName("org.sqlite.JDBC");
                         m_connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
@@ -296,12 +201,6 @@ public class AddBookDlg extends JDialog {
         });
     }
 
-    public String getMTitle(){
-        return m_title;
-    }
-    public String getAuthor(){
-        return m_author;
-    }
     public String getNewBookTitle(){//Get the new book title from JtextField
         return BookNameTextField.getText();
     }
@@ -344,36 +243,7 @@ public class AddBookDlg extends JDialog {
     public String getURL(){
         return m_URL;
     }
-    public boolean getIsAlreadyRead(){
-        if(ExitingBookComboBox.getSelectedItem()=="")
-            return false;
-        else
-            return true;
-        //return AlreadyReadChecbox.isSelected();
-    }
-    public JComboBox getExitingBookComboBox(){
-        return ExitingBookComboBox;
-    }
 
-    public void fillBookCombobox(){
-        ExitingBookComboBox.addItem("");
-        try {
-            Class.forName("org.sqlite.JDBC");
-            m_connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
-            m_statement = m_connection.createStatement();
-
-            ResultSet rs = m_statement.executeQuery("SELECT Title, Author FROM Book GROUP BY Title, Author ORDER BY Title ASC;");
-            while (rs.next()) {
-                ExitingBookComboBox.addItem(rs.getString(1)+ " - " + rs.getString(2));//Filled the combobox with the data Recovered from the database
-            }
-            m_connection.close();
-            m_statement.close();
-            rs.close();
-        } catch ( Exception e ) {
-            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-            System.exit(0);
-        }
-    }
     public void addImageToPanel(String path){//Apply to our panel an image with path
         Image img = Toolkit.getDefaultToolkit().getImage(path);
         img=img.getScaledInstance(200, 300, Image.SCALE_AREA_AVERAGING);
@@ -410,7 +280,6 @@ public class AddBookDlg extends JDialog {
         BookStartReadingSpin.setEditor(start);
     }
     public void initComponents(boolean bool){
-        //ExitingBookComboBox.setEnabled(!bool);
         BookNameTextField.setEnabled(bool);
         BookAuthorTextField.setEnabled(bool);
         BookReleaseYearSpin.setEnabled(bool);
@@ -420,7 +289,6 @@ public class AddBookDlg extends JDialog {
         BookSummaryTextPane.setEnabled(bool);
         BookReleaseYearSpin.setEnabled(bool);
         BookBrowseBtn.setEnabled(bool);
-        //ExitingBookComboBox.setSelectedIndex(0);
         PreviewPhotoPanel.updateUI();
         PreviewPhotoPanel.removeAll();
     }

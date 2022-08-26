@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5ede3cbf-f5c9-462f-8dc0-7982017c2136" name="Changes" comment="We can't now add a start date greater than the end date in EditReadingDlg">
+    <list default="true" id="5ede3cbf-f5c9-462f-8dc0-7982017c2136" name="Changes" comment="Fix bug with the edit of reading">
+      <change afterPath="$PROJECT_DIR$/src/Forms/Dialogs/AddReading.form" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Sources/Dialogs/AddReading.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Forms/Dialogs/AddBookDlg.form" beforeDir="false" afterPath="$PROJECT_DIR$/src/Forms/Dialogs/AddBookDlg.form" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Forms/Dialogs/EditReadingDlg.form" beforeDir="false" afterPath="$PROJECT_DIR$/src/Forms/Dialogs/EditReadingDlg.form" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Forms/MainWindow.form" beforeDir="false" afterPath="$PROJECT_DIR$/src/Forms/MainWindow.form" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Sources/Dialogs/AddBookDlg.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Sources/Dialogs/AddBookDlg.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Sources/Dialogs/EditReadingDlg.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Sources/Dialogs/EditReadingDlg.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Sources/MainWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Sources/MainWindow.java" afterDir="false" />
     </list>
@@ -54,6 +61,7 @@
       <recent name="C:\Users\quent\IdeaProjects\BookManager\src\Ressource" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\quent\IdeaProjects\BookManager\src\Forms\Dialogs" />
       <recent name="C:\Users\quent\IdeaProjects\BookManager\src\Ressource\Ressource" />
       <recent name="C:\Users\quent\IdeaProjects\BookManager\src\Ressource" />
       <recent name="C:\Users\quent\IdeaProjects\BookManager\src\Sources\Dialogs" />
@@ -407,7 +415,14 @@
       <option name="project" value="LOCAL" />
       <updated>1661504948163</updated>
     </task>
-    <option name="localTasksCounter" value="48" />
+    <task id="LOCAL-00048" summary="Fix bug with the edit of reading">
+      <created>1661542703853</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1661542703853</updated>
+    </task>
+    <option name="localTasksCounter" value="49" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -422,7 +437,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Change the way to determinate if a book is already read" />
     <MESSAGE value="We can delete completely a book in the booklistJtable in MainWindow" />
     <MESSAGE value="Add a JoptionPane to MainWindow and ManageReadingDlg when we delete a item to verify if the user really want to delete the item" />
     <MESSAGE value="We can now scroll the summary&#10;Start the focus row when we right click on item" />
@@ -447,6 +461,7 @@
     <MESSAGE value="Don't remove now the list of reading in ManageReadingDlg, when we delete the last reading" />
     <MESSAGE value="We can't now add a start date greater than the end date" />
     <MESSAGE value="We can't now add a start date greater than the end date in EditReadingDlg" />
-    <option name="LAST_COMMIT_MESSAGE" value="We can't now add a start date greater than the end date in EditReadingDlg" />
+    <MESSAGE value="Fix bug with the edit of reading" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix bug with the edit of reading" />
   </component>
 </project>

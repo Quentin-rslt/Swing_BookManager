@@ -248,7 +248,7 @@
                   <hideActionText value="false"/>
                   <horizontalAlignment value="0"/>
                   <horizontalTextPosition value="0"/>
-                  <text value="Ajouter une lecture"/>
+                  <text value="Ajouter un livre"/>
                   <verticalAlignment value="0"/>
                 </properties>
               </component>
