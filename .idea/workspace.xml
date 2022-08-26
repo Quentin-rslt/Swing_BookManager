@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5ede3cbf-f5c9-462f-8dc0-7982017c2136" name="Changes" comment="Now adding a reading date and creating a reading is separated by two different interfaces&#10;And fix some bug">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Forms/Dialogs/ManageReadingDlg.form" beforeDir="false" afterPath="$PROJECT_DIR$/src/Forms/Dialogs/ManageReadingDlg.form" afterDir="false" />
+    <list default="true" id="5ede3cbf-f5c9-462f-8dc0-7982017c2136" name="Changes" comment="Change the designe of the interface ManageReadingDlg">
       <change beforePath="$PROJECT_DIR$/src/Sources/Dialogs/ManageReadingDlg.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Sources/Dialogs/ManageReadingDlg.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Sources/MainWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Sources/MainWindow.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -79,13 +76,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1659605699794</updated>
-    </task>
-    <task id="LOCAL-00001" summary="Change value gitignore">
-      <created>1659605925282</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1659605925282</updated>
     </task>
     <task id="LOCAL-00002" summary="Change value gitignore">
       <created>1659606098088</created>
@@ -423,7 +413,14 @@
       <option name="project" value="LOCAL" />
       <updated>1661555044259</updated>
     </task>
-    <option name="localTasksCounter" value="50" />
+    <task id="LOCAL-00050" summary="Change the designe of the interface ManageReadingDlg">
+      <created>1661556306586</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1661556306586</updated>
+    </task>
+    <option name="localTasksCounter" value="51" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -438,7 +435,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Add a JoptionPane to MainWindow and ManageReadingDlg when we delete a item to verify if the user really want to delete the item" />
     <MESSAGE value="We can now scroll the summary&#10;Start the focus row when we right click on item" />
     <MESSAGE value="Focus row when we right click on item in ManageReadingDlg and MainWindow" />
     <MESSAGE value="Focus in the jtable on the book created or on a reading created from an existing book &#10;Focus in the jtbale on the book where you have managed your readings" />
@@ -463,6 +459,7 @@
     <MESSAGE value="We can't now add a start date greater than the end date in EditReadingDlg" />
     <MESSAGE value="Fix bug with the edit of reading" />
     <MESSAGE value="Now adding a reading date and creating a reading is separated by two different interfaces&#10;And fix some bug" />
-    <option name="LAST_COMMIT_MESSAGE" value="Now adding a reading date and creating a reading is separated by two different interfaces&#10;And fix some bug" />
+    <MESSAGE value="Change the designe of the interface ManageReadingDlg" />
+    <option name="LAST_COMMIT_MESSAGE" value="Change the designe of the interface ManageReadingDlg" />
   </component>
 </project>
