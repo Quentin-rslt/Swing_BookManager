@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5ede3cbf-f5c9-462f-8dc0-7982017c2136" name="Changes" comment="Fix bug with the verificatiopn of the start and end Date">
+    <list default="true" id="5ede3cbf-f5c9-462f-8dc0-7982017c2136" name="Changes" comment="Fix bug, that we can't add a reading with unknown date reading when we don't edit the spinner date">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Sources/Dialogs/AddBookDlg.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Sources/Dialogs/AddBookDlg.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Sources/Dialogs/ManageReadingDlg.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Sources/Dialogs/ManageReadingDlg.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -378,7 +379,14 @@
       <option name="project" value="LOCAL" />
       <updated>1661500525679</updated>
     </task>
-    <option name="localTasksCounter" value="44" />
+    <task id="LOCAL-00044" summary="Fix bug, that we can't add a reading with unknown date reading when we don't edit the spinner date">
+      <created>1661501108547</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1661501108547</updated>
+    </task>
+    <option name="localTasksCounter" value="45" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -393,7 +401,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Add file ManageReadingDlg to see all the readings of a book and manage them&#10;Interface set up&#10;Book reading list completed and functional" />
     <MESSAGE value="Fix If the book already exists, retrieve the correct reading date if you have it&#10;We can delete a reading now" />
     <MESSAGE value="Refresh system implemented&#10;Fix bug when the same author and title are entered&#10;Clear de contentPane when we delete completely a book" />
     <MESSAGE value="Create function initcomponent(boolean) to simplificate the code" />
@@ -418,6 +425,7 @@
     <MESSAGE value="Add reading time in ManageReadingDlg&#10;Fix some bug" />
     <MESSAGE value="Change the interface of EditReadingDlg, and init the end spinner date and start spinner date" />
     <MESSAGE value="Fix bug with the verificatiopn of the start and end Date" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix bug with the verificatiopn of the start and end Date" />
+    <MESSAGE value="Fix bug, that we can't add a reading with unknown date reading when we don't edit the spinner date" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix bug, that we can't add a reading with unknown date reading when we don't edit the spinner date" />
   </component>
 </project>

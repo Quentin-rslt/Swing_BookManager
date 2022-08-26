@@ -103,7 +103,6 @@ public class ManageReadingDlg extends JDialog {
                             BookPstmt.executeUpdate();
                             fillBookList();
                             contentPane.updateUI();
-                            BookListPanel.removeAll();
                             conn.close();
                             BookPstmt.close();
                             ReadingPstmt.close();

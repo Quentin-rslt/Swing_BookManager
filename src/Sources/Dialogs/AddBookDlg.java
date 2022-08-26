@@ -150,17 +150,14 @@ public class AddBookDlg extends JDialog {
                         while (qry.next()){//
                             if (!isDateUnknown() && !isNotDOne() && Objects.equals(qry.getString(3), getNewBookStartReading())
                                     && Objects.equals(qry.getString(4), getNewBookEndReading())){
-                                System.out.println(1);
                                 JFrame jFrame = new JFrame();
                                 JOptionPane.showMessageDialog(jFrame, "Les dates de lecture existent déjà !");
                                 bookFind = true;//
                             } else if (!isDateUnknown() && isNotDOne() && Objects.equals(qry.getString(3), getNewBookStartReading())) {
-                                System.out.println(2);
                                 JFrame jFrame = new JFrame();
                                 JOptionPane.showMessageDialog(jFrame, "La date de début de lecture existe déjà !");
                                 bookFind = true;//
                             } else if (!isDateUnknown() && !isNotDOne() && Objects.equals(qry.getString(4), getNewBookEndReading())) {
-                                System.out.println(3);
                                 JFrame jFrame = new JFrame();
                                 JOptionPane.showMessageDialog(jFrame, "La date de fin de lecture existe déjà !");
                                 bookFind = true;//
@@ -168,18 +165,15 @@ public class AddBookDlg extends JDialog {
                                 bookFind = false;
                         }
                         if (!bookFind && isDateUnknown()){
-                            System.out.println(4);
                             m_isValide=true;
                             setVisible(false);
                             dispose();
                         } else if (!bookFind && !isDateUnknown() && isNotDOne()) {
-                            System.out.println(5);
                             m_isValide=true;
                             setVisible(false);
                             dispose();
                         } else if (!bookFind && !Objects.equals(getNewBookStartReading(), getNewBookEndReading()) && !isDateUnknown() && !isNotDOne()){
                             //If a book has not been found in the database when leaving the loop, then the book typed is valid
-                            System.out.println(6);
                             m_isValide=true;
                             setVisible(false);
                             dispose();
