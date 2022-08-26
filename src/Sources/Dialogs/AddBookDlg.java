@@ -141,6 +141,8 @@ public class AddBookDlg extends JDialog {
                 String sql = "SELECT Title, Author, StartReading, EndReading FROM Reading";
                 if(getIsAlreadyRead() && getExitingBookComboBox().getSelectedItem()!=""){//Can add a new reading if the book exists at the same reading date
                     try {
+                        Date enDate =new SimpleDateFormat("yyyy-MM-dd").parse(getNewBookEndReading());
+                        Date startDate = new SimpleDateFormat("yyyy-MM-dd").parse(getNewBookStartReading());
                         Class.forName("org.sqlite.JDBC");
                         m_connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
                         m_statement = m_connection.createStatement();
@@ -172,13 +174,14 @@ public class AddBookDlg extends JDialog {
                             m_isValide=true;
                             setVisible(false);
                             dispose();
-                        } else if (!bookFind && !Objects.equals(getNewBookStartReading(), getNewBookEndReading()) && !isDateUnknown() && !isNotDOne()){
-                            //If a book has not been found in the database when leaving the loop, then the book typed is valid
+                        } else if (!bookFind && !Objects.equals(getNewBookStartReading(), getNewBookEndReading()) && !isDateUnknown() && !isNotDOne() && startDate.compareTo(enDate)<0){
                             m_isValide=true;
                             setVisible(false);
                             dispose();
-                        }
-                        else if(!bookFind && Objects.equals(getNewBookStartReading(), getNewBookEndReading())
+                        } else if (!bookFind && !Objects.equals(getNewBookStartReading(), getNewBookEndReading()) && !isDateUnknown() && !isNotDOne() && startDate.compareTo(enDate)>0) {
+                            JFrame jFrame = new JFrame();
+                            JOptionPane.showMessageDialog(jFrame, "La date de début de lecture ne peut pas être après à la fin de lecture !");
+                        } else if(!bookFind && Objects.equals(getNewBookStartReading(), getNewBookEndReading())
                                 && !isDateUnknown() && !isNotDOne()){
                             JFrame jFrame = new JFrame();
                             JOptionPane.showMessageDialog(jFrame, "La date de début de lecture ne peut pas être identique à la fin de lecture !");
@@ -199,6 +202,8 @@ public class AddBookDlg extends JDialog {
                         m_connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
                         m_statement = m_connection.createStatement();
                         ResultSet bookQry = m_statement.executeQuery(sql);
+                        Date enDate =new SimpleDateFormat("yyyy-MM-dd").parse(getNewBookEndReading());
+                        Date startDate = new SimpleDateFormat("yyyy-MM-dd").parse(getNewBookStartReading());
 
                         boolean bookFind =false;
                         while (bookQry.next() && !bookFind){//We browse the database until we find a book that already exists, in relation to the book created
@@ -210,7 +215,8 @@ public class AddBookDlg extends JDialog {
                             else
                                 bookFind = false;
                         }
-                        if (!bookFind && Objects.equals(getURL(), "") && !Objects.equals(getNewBookStartReading(), getNewBookEndReading()) && !isDateUnknown() && !isNotDOne()){
+                        if (!bookFind && Objects.equals(getURL(), "") && !Objects.equals(getNewBookStartReading(), getNewBookEndReading()) && !isDateUnknown() && !isNotDOne()
+                                && startDate.compareTo(enDate)<0){
                             //If a book has not been found in the database when leaving the loop, then the book typed is valid
                             String path = String.valueOf(getClass().getResource("/Ressource/Default.jpg"));
                             String path2 = path.replace("file:/", "");
@@ -218,6 +224,10 @@ public class AddBookDlg extends JDialog {
                             m_isValide=true;
                             setVisible(false);
                             dispose();
+                        } else if (!bookFind && Objects.equals(getURL(), "") && !Objects.equals(getNewBookStartReading(), getNewBookEndReading()) && !isDateUnknown() && !isNotDOne()
+                                && startDate.compareTo(enDate)>0) {
+                            JFrame jFrame = new JFrame();
+                            JOptionPane.showMessageDialog(jFrame, "La date de début de lecture ne peut pas être après à la fin de lecture !");
                         } else if (!bookFind && Objects.equals(getURL(), "") && !isDateUnknown() && isNotDOne()) {
                             String path = String.valueOf(getClass().getResource("/Ressource/Default.jpg"));
                             String path2 = path.replace("file:/", "");
@@ -239,15 +249,20 @@ public class AddBookDlg extends JDialog {
                             m_isValide=true;
                             setVisible(false);
                             dispose();
-                        } else if (!bookFind && !Objects.equals(getURL(), "") && !isDateUnknown() && !Objects.equals(getNewBookStartReading(), getNewBookEndReading()) && !isNotDOne()) {
-                            m_isValide=true;
-                            setVisible(false);
-                            dispose();
                         } else if (!bookFind && !Objects.equals(getURL(), "") && !isDateUnknown() && isNotDOne()) {
                             m_isValide=true;
                             setVisible(false);
                             dispose();
-                        } else if(Objects.equals(getNewBookStartReading(), getNewBookEndReading()) && !isDateUnknown() && !isNotDOne()){
+                        } else if (!bookFind && !Objects.equals(getURL(), "") && !Objects.equals(getNewBookStartReading(), getNewBookEndReading()) && !isDateUnknown() && !isNotDOne()
+                                && startDate.compareTo(enDate)<0) {
+                            m_isValide=true;
+                            setVisible(false);
+                            dispose();
+                        } else if (!bookFind && !Objects.equals(getURL(), "") && !Objects.equals(getNewBookStartReading(), getNewBookEndReading()) && !isDateUnknown() && !isNotDOne()
+                                && startDate.compareTo(enDate)>0) {
+                            JFrame jFrame = new JFrame();
+                            JOptionPane.showMessageDialog(jFrame, "La date de début de lecture ne peut pas être après à la fin de lecture !");
+                        } else if(!bookFind && Objects.equals(getNewBookStartReading(), getNewBookEndReading()) && !isDateUnknown() && !isNotDOne()){
                             JFrame jFrame = new JFrame();
                             JOptionPane.showMessageDialog(jFrame, "La date de début de lecture ne peut être identique à la fin de lecture !");
                         }
