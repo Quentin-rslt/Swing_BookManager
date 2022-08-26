@@ -482,7 +482,7 @@ public class MainWindow extends JDialog {
                     LocalDate start = LocalDate.parse(qry.getString(1)) ;
                     LocalDate stop = LocalDate.parse(qry.getString(2)) ;
                     days = days + ChronoUnit.DAYS.between(start , stop);
-                    CountReadingLabel.setText("Temps moyen de lecture : : "+days/dateValid+" jours");
+                    BookTimeAverageLabel.setText("Temps moyen de lecture : : "+days/dateValid+" jours");
                 }
             }
 

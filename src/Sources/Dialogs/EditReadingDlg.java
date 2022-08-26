@@ -63,8 +63,11 @@ public class EditReadingDlg extends JDialog {
                     Connection connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
                     Statement statement = connection.createStatement();
                     ResultSet qry = statement.executeQuery(sql);
-                    Date enDate =new SimpleDateFormat("yyyy-MM-dd").parse(getNewEndReading());
-                    Date startDate = new SimpleDateFormat("yyyy-MM-dd").parse(getNewStartReading());
+                    Date enDate = new Date(), startDate = new Date();
+                    if(!isNotDone() && !isDateReadingUnknown()){
+                        enDate =new SimpleDateFormat("yyyy-MM-dd").parse(getNewEndReading());
+                        startDate = new SimpleDateFormat("yyyy-MM-dd").parse(getNewStartReading());
+                    }
 
                     boolean dateFind =false;
                     while (qry.next() && !dateFind){//check if the modified date already exists (unless it is Unknown)
@@ -106,7 +109,7 @@ public class EditReadingDlg extends JDialog {
                             } else if (!isDateReadingUnknown() && !isNotDone() && Objects.equals(qry.getString(3), getNewStartReading())) {
                                 JFrame jFrame = new JFrame();
                                 JOptionPane.showMessageDialog(jFrame, "La date de début de lecture existe déjà !");
-                                dateFind = true;//
+                                dateFind = true;
                             } else if (!isDateReadingUnknown() && isNotDone() && Objects.equals(qry.getString(3), getNewStartReading())) {
                                 JFrame jFrame = new JFrame();
                                 JOptionPane.showMessageDialog(jFrame, "La date de début de lecture existe déjà !");

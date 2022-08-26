@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5ede3cbf-f5c9-462f-8dc0-7982017c2136" name="Changes" comment="We can't now add a start date greater than the end date">
+    <list default="true" id="5ede3cbf-f5c9-462f-8dc0-7982017c2136" name="Changes" comment="We can't now add a start date greater than the end date in EditReadingDlg">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Sources/Dialogs/EditReadingDlg.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Sources/Dialogs/EditReadingDlg.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Sources/MainWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Sources/MainWindow.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -399,7 +400,14 @@
       <option name="project" value="LOCAL" />
       <updated>1661504762279</updated>
     </task>
-    <option name="localTasksCounter" value="47" />
+    <task id="LOCAL-00047" summary="We can't now add a start date greater than the end date in EditReadingDlg">
+      <created>1661504948163</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1661504948163</updated>
+    </task>
+    <option name="localTasksCounter" value="48" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -414,7 +422,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Create function initcomponent(boolean) to simplificate the code" />
     <MESSAGE value="Change the way to determinate if a book is already read" />
     <MESSAGE value="We can delete completely a book in the booklistJtable in MainWindow" />
     <MESSAGE value="Add a JoptionPane to MainWindow and ManageReadingDlg when we delete a item to verify if the user really want to delete the item" />
@@ -439,6 +446,7 @@
     <MESSAGE value="Fix bug, that we can't add a reading with unknown date reading when we don't edit the spinner date" />
     <MESSAGE value="Don't remove now the list of reading in ManageReadingDlg, when we delete the last reading" />
     <MESSAGE value="We can't now add a start date greater than the end date" />
-    <option name="LAST_COMMIT_MESSAGE" value="We can't now add a start date greater than the end date" />
+    <MESSAGE value="We can't now add a start date greater than the end date in EditReadingDlg" />
+    <option name="LAST_COMMIT_MESSAGE" value="We can't now add a start date greater than the end date in EditReadingDlg" />
   </component>
 </project>
