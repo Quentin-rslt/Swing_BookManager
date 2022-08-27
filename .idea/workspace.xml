@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5ede3cbf-f5c9-462f-8dc0-7982017c2136" name="Changes" comment="Change the designe of the interface ManageReadingDlg">
-      <change beforePath="$PROJECT_DIR$/src/Sources/Dialogs/ManageReadingDlg.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Sources/Dialogs/ManageReadingDlg.java" afterDir="false" />
+    <list default="true" id="5ede3cbf-f5c9-462f-8dc0-7982017c2136" name="Changes" comment="Fix bug in EditReading">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Sources/Dialogs/AddBookDlg.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Sources/Dialogs/AddBookDlg.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,11 +53,11 @@
       <recent name="C:\Users\quent\IdeaProjects\BookManager\src\Ressource" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\quent\IdeaProjects\BookManager\Ressource\Image" />
+      <recent name="C:\Users\quent\IdeaProjects\BookManager\Ressource" />
       <recent name="C:\Users\quent\IdeaProjects\BookManager\src\Forms\Dialogs" />
       <recent name="C:\Users\quent\IdeaProjects\BookManager\src\Ressource\Ressource" />
       <recent name="C:\Users\quent\IdeaProjects\BookManager\src\Ressource" />
-      <recent name="C:\Users\quent\IdeaProjects\BookManager\src\Sources\Dialogs" />
-      <recent name="C:\Users\quent\IdeaProjects\BookManager\src\Sources" />
     </key>
   </component>
   <component name="RunManager">
@@ -76,13 +77,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1659605699794</updated>
-    </task>
-    <task id="LOCAL-00002" summary="Change value gitignore">
-      <created>1659606098088</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1659606098088</updated>
     </task>
     <task id="LOCAL-00003" summary="Change class main">
       <created>1660120850416</created>
@@ -420,7 +414,14 @@
       <option name="project" value="LOCAL" />
       <updated>1661556306586</updated>
     </task>
-    <option name="localTasksCounter" value="51" />
+    <task id="LOCAL-00051" summary="Fix bug in EditReading">
+      <created>1661556444671</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1661556444671</updated>
+    </task>
+    <option name="localTasksCounter" value="52" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -435,7 +436,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="We can now scroll the summary&#10;Start the focus row when we right click on item" />
     <MESSAGE value="Focus row when we right click on item in ManageReadingDlg and MainWindow" />
     <MESSAGE value="Focus in the jtable on the book created or on a reading created from an existing book &#10;Focus in the jtbale on the book where you have managed your readings" />
     <MESSAGE value="When starting the app, load and focus on the first book of the Jtable&#10;Change name get and set Title on every class, because setTitle and getTitle aleady exist to set a name for the dialog" />
@@ -460,6 +460,7 @@
     <MESSAGE value="Fix bug with the edit of reading" />
     <MESSAGE value="Now adding a reading date and creating a reading is separated by two different interfaces&#10;And fix some bug" />
     <MESSAGE value="Change the designe of the interface ManageReadingDlg" />
-    <option name="LAST_COMMIT_MESSAGE" value="Change the designe of the interface ManageReadingDlg" />
+    <MESSAGE value="Fix bug in EditReading" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix bug in EditReading" />
   </component>
 </project>

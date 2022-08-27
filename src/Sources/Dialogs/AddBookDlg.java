@@ -123,9 +123,9 @@ public class AddBookDlg extends JDialog {
                         if (!bookFind && Objects.equals(getURL(), "") && !Objects.equals(getNewBookStartReading(), getNewBookEndReading()) && !isDateUnknown() && !isNotDOne()
                                 && startDate.compareTo(enDate)<0){
                             //If a book has not been found in the database when leaving the loop, then the book typed is valid
-                            String path = String.valueOf(getClass().getResource("/Ressource/Default.jpg"));
-                            String path2 = path.replace("file:/", "");
-                            setURL(path2);//create default image if we did'nt choice an image
+                            File file = new File("Ressource/Image/Default.jpg");
+                            String path = file.getAbsolutePath();
+                            setURL(path);//create default image if we did'nt choice an image
                             m_isValide=true;
                             setVisible(false);
                             dispose();
@@ -134,20 +134,20 @@ public class AddBookDlg extends JDialog {
                             JFrame jFrame = new JFrame();
                             JOptionPane.showMessageDialog(jFrame, "La date de début de lecture ne peut pas être après à la fin de lecture !");
                         } else if (!bookFind && Objects.equals(getURL(), "") && !isDateUnknown() && isNotDOne()) {
-                            String path = String.valueOf(getClass().getResource("/Ressource/Default.jpg"));
-                            String path2 = path.replace("file:/", "");
-                            setURL(path2);
+                            File file = new File("Ressource/Image/Default.jpg");
+                            String path = file.getAbsolutePath();
+                            setURL(path);
                             m_isValide=true;
                             setVisible(false);
                             dispose();
-                        } else if (!bookFind && isDateUnknown() && Objects.equals(getURL(), "")) {
-                            String path = String.valueOf(getClass().getResource("/Ressource/Default.jpg"));
-                            String path2 = path.replace("file:/", "");
-                            setURL(path2);
+                        } else if (!bookFind && isDateUnknown()&& !isNotDOne() && Objects.equals(getURL(), "")) {
+                            File file = new File("Ressource/Image/Default.jpg");
+                            String path = file.getAbsolutePath();
+                            setURL(path);
                             m_isValide=true;
                             setVisible(false);
                             dispose();
-                        } else if (!bookFind && isDateUnknown() && !Objects.equals(getURL(), "")){
+                        } else if (!bookFind && isDateUnknown()&& !isNotDOne() && !Objects.equals(getURL(), "")){
                             /*File source = new File(getURL());
                             File dest = new File(getURL());
                             copyFileUsingChannel(source, dest);*/
