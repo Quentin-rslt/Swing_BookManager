@@ -13,6 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -69,9 +70,24 @@ public class MainWindow extends JDialog {
         loadDB();
 
         m_popup = new JPopupMenu();//Create a popup menu to delete a reading an edit this reading
-        JMenuItem add = new JMenuItem("Ajouter une lecture");
-        JMenuItem cut = new JMenuItem("Supprimer");
-        JMenuItem edit = new JMenuItem("Modifier");
+        File fileAdd = new File("Ressource/Icons/add.png");
+        String pathAdd = fileAdd.getAbsolutePath();
+        Image imgAdd = Toolkit.getDefaultToolkit().getImage(pathAdd);
+        imgAdd = imgAdd.getScaledInstance(16,16,Image.SCALE_AREA_AVERAGING);
+        JMenuItem add = new JMenuItem("Ajouter une lecture", new ImageIcon(imgAdd));
+
+        File fileRemove = new File("Ressource/Icons/remove.png");
+        String pathRemove = fileRemove.getAbsolutePath();
+        Image imgRemove = Toolkit.getDefaultToolkit().getImage(pathRemove);
+        imgRemove = imgRemove.getScaledInstance(16,16,Image.SCALE_AREA_AVERAGING);
+        JMenuItem cut = new JMenuItem("Supprimer", new ImageIcon(imgRemove));
+
+        File fileEdit = new File("Ressource/Icons/edit.png");
+        String pathEdit = fileEdit.getAbsolutePath();
+        Image imgEdit = Toolkit.getDefaultToolkit().getImage(pathEdit);
+        imgEdit = imgEdit.getScaledInstance(16,16,Image.SCALE_AREA_AVERAGING);
+        JMenuItem edit = new JMenuItem("Modifier", new ImageIcon(imgEdit));
+
         m_popup.add(add);
         m_popup.add(cut);
         m_popup.add(edit);
@@ -291,7 +307,7 @@ public class MainWindow extends JDialog {
             public void actionPerformed(ActionEvent evt) {
                 AddReading diag = new AddReading(getMTitle(), getAuthor());
                 diag.setTitle("Ajouter une lecture");
-                diag.setSize(550,270);
+                diag.setSize(550,250);
                 diag.setLocationRelativeTo(null);
                 diag.setVisible(true);
                 if (diag.getIsValid()){

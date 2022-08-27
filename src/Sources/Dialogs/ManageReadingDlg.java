@@ -2,10 +2,12 @@ package Sources.Dialogs;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -43,8 +45,17 @@ public class ManageReadingDlg extends JDialog {
         fillBookList();
 
         m_popup = new JPopupMenu();//Create a popup menu to delete a reading an edit this reading
-        JMenuItem cut = new JMenuItem("Supprimer");
-        JMenuItem edit = new JMenuItem("Modifier");
+        File fileRemove = new File("Ressource/Icons/remove.png");
+        String pathRemove = fileRemove.getAbsolutePath();
+        Image imgRemove = Toolkit.getDefaultToolkit().getImage(pathRemove);
+        imgRemove = imgRemove.getScaledInstance(16,16,Image.SCALE_AREA_AVERAGING);
+        JMenuItem cut = new JMenuItem("Supprimer", new ImageIcon(imgRemove));
+
+        File fileEdit = new File("Ressource/Icons/edit.png");
+        String pathEdit = fileEdit.getAbsolutePath();
+        Image imgEdit = Toolkit.getDefaultToolkit().getImage(pathEdit);
+        imgEdit = imgEdit.getScaledInstance(16,16,Image.SCALE_AREA_AVERAGING);
+        JMenuItem edit = new JMenuItem("Modifier", new ImageIcon(imgEdit));
         m_popup.add(cut);
         m_popup.add(edit);
 
@@ -102,9 +113,9 @@ public class ManageReadingDlg extends JDialog {
                         try (Connection conn = connect(); PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry); PreparedStatement BookPstmt = conn.prepareStatement(BookQry)) {
                             ReadingPstmt.executeUpdate();
                             BookPstmt.executeUpdate();
-                            ManageTitleLabel.setText("Lectures du livre : ");
-                            ManageAuthorLabel.setText("Auteur : ");
                             fillBookList();
+                            ManageTitleLabel.setText("Lectures du livre : ");
+                            ManageAuthorLabel.setText("Ecrit par : ");
                             contentPane.updateUI();
                             conn.close();
                             BookPstmt.close();
@@ -222,7 +233,7 @@ public class ManageReadingDlg extends JDialog {
     }
     public void fillBookList(){
         ManageTitleLabel.setText("Lectures du livre : "+getMTitle());
-        ManageAuthorLabel.setText("Auteur : "+getAuthor());
+        ManageAuthorLabel.setText("Ecrit par : "+getAuthor());
         m_tableModel.setRowCount(0);
         try(Connection conn = connect()){
             m_statement = conn.createStatement();

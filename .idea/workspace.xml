@@ -2,7 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5ede3cbf-f5c9-462f-8dc0-7982017c2136" name="Changes" comment="Fix bug with default image">
-      <change beforePath="$PROJECT_DIR$/src/Ressource/Default.jpg" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/Ressource/Icons/add.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Ressource/Icons/edit.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Ressource/Icons/remove.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Sources/Dialogs/ManageReadingDlg.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Sources/Dialogs/ManageReadingDlg.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Sources/MainWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Sources/MainWindow.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,32 +36,33 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;ToolWindowRun.ShowToolbar&quot;: &quot;false&quot;,
-    &quot;UI_DESIGNER_EDITOR_MODE.UIDesignerToolWindowManager.SHOW&quot;: &quot;true&quot;,
-    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;openjdk-18&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/quent/IdeaProjects/BookManager/Ressource/Image&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Libraries&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "ToolWindowRun.ShowToolbar": "false",
+    "UI_DESIGNER_EDITOR_MODE.UIDesignerToolWindowManager.SHOW": "true",
+    "jdk.selected.JAVA_MODULE": "openjdk-18",
+    "last_opened_file_path": "C:/Users/quent/IdeaProjects/BookManager/Ressource/Icons",
+    "project.structure.last.edited": "Libraries",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "preferences.pluginManager"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\quent\IdeaProjects\BookManager\Ressource\Icons" />
       <recent name="C:\Users\quent\IdeaProjects\BookManager\Ressource\Image" />
       <recent name="C:\Users\quent\IdeaProjects\BookManager\src\Ressource" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\quent\IdeaProjects\BookManager\Ressource\Icons" />
       <recent name="C:\Users\quent\IdeaProjects\BookManager\Ressource\Image" />
       <recent name="C:\Users\quent\IdeaProjects\BookManager\Ressource" />
       <recent name="C:\Users\quent\IdeaProjects\BookManager\src\Forms\Dialogs" />
       <recent name="C:\Users\quent\IdeaProjects\BookManager\src\Ressource\Ressource" />
-      <recent name="C:\Users\quent\IdeaProjects\BookManager\src\Ressource" />
     </key>
   </component>
   <component name="RunManager">
@@ -76,13 +82,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1659605699794</updated>
-    </task>
-    <task id="LOCAL-00004" summary="Add BDD to project, with connexion and data recovery on the BookTableList">
-      <created>1660223890584</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1660223890584</updated>
     </task>
     <task id="LOCAL-00005" summary="Change value on gitignore">
       <created>1660223959426</created>
@@ -420,7 +419,14 @@
       <option name="project" value="LOCAL" />
       <updated>1661586480564</updated>
     </task>
-    <option name="localTasksCounter" value="53" />
+    <task id="LOCAL-00053" summary="Fix bug with default image">
+      <created>1661586541405</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1661586541405</updated>
+    </task>
+    <option name="localTasksCounter" value="54" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
