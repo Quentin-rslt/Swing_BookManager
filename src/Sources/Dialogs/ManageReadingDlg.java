@@ -48,13 +48,13 @@ public class ManageReadingDlg extends JDialog {
         File fileRemove = new File("Ressource/Icons/remove.png");
         String pathRemove = fileRemove.getAbsolutePath();
         Image imgRemove = Toolkit.getDefaultToolkit().getImage(pathRemove);
-        imgRemove = imgRemove.getScaledInstance(16,16,Image.SCALE_AREA_AVERAGING);
+        imgRemove = imgRemove.getScaledInstance(18,18,Image.SCALE_AREA_AVERAGING);
         JMenuItem cut = new JMenuItem("Supprimer", new ImageIcon(imgRemove));
 
         File fileEdit = new File("Ressource/Icons/edit.png");
         String pathEdit = fileEdit.getAbsolutePath();
         Image imgEdit = Toolkit.getDefaultToolkit().getImage(pathEdit);
-        imgEdit = imgEdit.getScaledInstance(16,16,Image.SCALE_AREA_AVERAGING);
+        imgEdit = imgEdit.getScaledInstance(18,18,Image.SCALE_AREA_AVERAGING);
         JMenuItem edit = new JMenuItem("Modifier", new ImageIcon(imgEdit));
         m_popup.add(cut);
         m_popup.add(edit);

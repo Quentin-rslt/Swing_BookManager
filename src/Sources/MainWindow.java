@@ -73,19 +73,19 @@ public class MainWindow extends JDialog {
         File fileAdd = new File("Ressource/Icons/add.png");
         String pathAdd = fileAdd.getAbsolutePath();
         Image imgAdd = Toolkit.getDefaultToolkit().getImage(pathAdd);
-        imgAdd = imgAdd.getScaledInstance(16,16,Image.SCALE_AREA_AVERAGING);
+        imgAdd = imgAdd.getScaledInstance(18,18,Image.SCALE_AREA_AVERAGING);
         JMenuItem add = new JMenuItem("Ajouter une lecture", new ImageIcon(imgAdd));
 
         File fileRemove = new File("Ressource/Icons/remove.png");
         String pathRemove = fileRemove.getAbsolutePath();
         Image imgRemove = Toolkit.getDefaultToolkit().getImage(pathRemove);
-        imgRemove = imgRemove.getScaledInstance(16,16,Image.SCALE_AREA_AVERAGING);
+        imgRemove = imgRemove.getScaledInstance(18,18,Image.SCALE_AREA_AVERAGING);
         JMenuItem cut = new JMenuItem("Supprimer", new ImageIcon(imgRemove));
 
         File fileEdit = new File("Ressource/Icons/edit.png");
         String pathEdit = fileEdit.getAbsolutePath();
         Image imgEdit = Toolkit.getDefaultToolkit().getImage(pathEdit);
-        imgEdit = imgEdit.getScaledInstance(16,16,Image.SCALE_AREA_AVERAGING);
+        imgEdit = imgEdit.getScaledInstance(18,18,Image.SCALE_AREA_AVERAGING);
         JMenuItem edit = new JMenuItem("Modifier", new ImageIcon(imgEdit));
 
         m_popup.add(add);
@@ -122,6 +122,11 @@ public class MainWindow extends JDialog {
             public void actionPerformed(ActionEvent evt) {
                 AddBookDlg diag = new AddBookDlg();
                 diag.setTitle("Ajouter un livvre");
+                File fileAdd = new File("Ressource/Icons/add.png");
+                String pathAdd = fileAdd.getAbsolutePath();
+                Image imgAdd = Toolkit.getDefaultToolkit().getImage(pathAdd);
+                imgAdd = imgAdd.getScaledInstance(16,16,Image.SCALE_AREA_AVERAGING);
+                diag.setIconImage(imgAdd);
                 diag.setSize(800,550);
                 diag.setLocationRelativeTo(null);
                 diag.setVisible(true);
@@ -265,6 +270,11 @@ public class MainWindow extends JDialog {
             public void actionPerformed(ActionEvent evt) {
                 EditBookDlg diag = new EditBookDlg(getMTitle(), getAuthor());
                 diag.setTitle("Modifier un livre");
+                File fileEdit = new File("Ressource/Icons/edit.png");
+                String pathEdit = fileEdit.getAbsolutePath();
+                Image imgEdit = Toolkit.getDefaultToolkit().getImage(pathEdit);
+                imgEdit = imgEdit.getScaledInstance(16,16,Image.SCALE_AREA_AVERAGING);
+                diag.setIconImage(imgEdit);
                 diag.setSize(800,500);
                 diag.setLocationRelativeTo(null);
                 diag.setVisible(true);
@@ -308,6 +318,11 @@ public class MainWindow extends JDialog {
                 AddReading diag = new AddReading(getMTitle(), getAuthor());
                 diag.setTitle("Ajouter une lecture");
                 diag.setSize(550,250);
+                File fileAdd = new File("Ressource/Icons/add.png");
+                String pathAdd = fileAdd.getAbsolutePath();
+                Image imgAdd = Toolkit.getDefaultToolkit().getImage(pathAdd);
+                imgAdd = imgAdd.getScaledInstance(16,16,Image.SCALE_AREA_AVERAGING);
+                diag.setIconImage(imgAdd);
                 diag.setLocationRelativeTo(null);
                 diag.setVisible(true);
                 if (diag.getIsValid()){
@@ -539,12 +554,32 @@ public class MainWindow extends JDialog {
             PersonalNoteLabel.setText("Ma note : "+NotePersoQry.getString(1));
 
             //First reading
-            ResultSet FirstReadQry = m_statement.executeQuery("SELECT EndReading FROM Reading WHERE Title='"+title+"' AND Author='"+author+ "'ORDER BY EndReading ASC LIMIT 1");
-            FirstReadingLabel.setText("Première lecture : "+FirstReadQry.getString(1));
+            ResultSet FirstReadQry = m_statement.executeQuery("SELECT EndReading FROM Reading WHERE Title='"+title+"' AND Author='"+author+ "'ORDER BY EndReading ASC");
+            boolean findFirst = false;
+            while (FirstReadQry.next() && !findFirst){
+                if(FirstReadQry.getString(1).equals("Inconnu") || FirstReadQry.getString(1).equals("Pas fini")){
+                    FirstReadingLabel.setText("Première lecture : Pas de lecture fini");
+                    findFirst = false;
+                }
+                else if(!FirstReadQry.getString(1).equals("Inconnu") && !FirstReadQry.getString(1).equals("Pas fini")){
+                    FirstReadingLabel.setText("Première lecture : "+FirstReadQry.getString(1));
+                    findFirst =true;
+                }
+            }
 
             //Last reading
-            ResultSet LastReadQry = m_statement.executeQuery("SELECT EndReading FROM Reading WHERE Title='"+title+"' AND Author='"+author+ "'ORDER BY EndReading DESC LIMIT 1");
-            LastReadingLabel.setText("Dernière lecture : "+FirstReadQry.getString(1));
+            ResultSet LastReadQry = m_statement.executeQuery("SELECT EndReading FROM Reading WHERE Title='"+title+"' AND Author='"+author+ "'ORDER BY EndReading DESC");
+            boolean findLast = false;
+            while (LastReadQry.next() && !findLast){
+                if(LastReadQry.getString(1).equals("Inconnu") || LastReadQry.getString(1).equals("Pas fini")){
+                    LastReadingLabel.setText("Dernière lecture : Pas de lecture fini");
+                    findLast = false;
+                }
+                else if(!LastReadQry.getString(1).equals("Inconnu") && !LastReadQry.getString(1).equals("Pas fini")){
+                    LastReadingLabel.setText("Dernière lecture : "+LastReadQry.getString(1));
+                    findLast =true;
+                }
+            }
 
             //Image
             ResultSet ImageQry = m_statement.executeQuery("SELECT Image FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
