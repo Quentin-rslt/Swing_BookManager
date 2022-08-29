@@ -87,46 +87,46 @@ public class AddReading extends JDialog {
                         enDate =new SimpleDateFormat("yyyy-MM-dd").parse(getNewEndReading());
                         startDate = new SimpleDateFormat("yyyy-MM-dd").parse(getNewStartReading());
                     }
-                    boolean readingFind =false;
-                    while (qry.next() && !readingFind){
+                    boolean readingFound =false;
+                    while (qry.next() && !readingFound){
                         if (!isDateUnknown() && !isNotDone() && Objects.equals(qry.getString(3), getNewStartReading())
                                 && Objects.equals(qry.getString(4), getNewEndReading())){
                             JFrame jFrame = new JFrame();
                             JOptionPane.showMessageDialog(jFrame, "Les dates de lecture existent déjà !");
-                            readingFind = true;//
+                            readingFound = true;//
                         } else if (!isDateUnknown() && isNotDone() && Objects.equals(qry.getString(3), getNewStartReading()) && !Objects.equals(getNewStartReading(), getNewEndReading())) {
                             JFrame jFrame = new JFrame();
                             JOptionPane.showMessageDialog(jFrame, "La date de début de lecture existe déjà !");
-                            readingFind = true;//
+                            readingFound = true;//
                         } else if (!isDateUnknown() && !isNotDone() && Objects.equals(qry.getString(3), getNewStartReading()) && !Objects.equals(getNewStartReading(), getNewEndReading())) {
                             JFrame jFrame = new JFrame();
                             JOptionPane.showMessageDialog(jFrame, "La date de début de lecture existe déjà !");
-                            readingFind = true;//
+                            readingFound = true;//
                         } else if (!isDateUnknown() && !isNotDone() && Objects.equals(qry.getString(4), getNewEndReading()) && !Objects.equals(getNewStartReading(), getNewEndReading())) {
                             JFrame jFrame = new JFrame();
                             JOptionPane.showMessageDialog(jFrame, "La date de fin de lecture existe déjà !");
-                            readingFind = true;//
+                            readingFound = true;//
                         } else{
-                            readingFind = false;
+                            readingFound = false;
                         }
                     }
-                    if (!readingFind && isDateUnknown()){
+                    if (!readingFound && isDateUnknown()){
                         setIsValid(true);
                         setVisible(false);
                         dispose();
-                    } else if (!readingFind && isNotDone()) {
+                    } else if (!readingFound && isNotDone()) {
                         setIsValid(true);
                         setVisible(false);
                         dispose();
-                    } else if (!readingFind && !Objects.equals(getNewStartReading(), getNewEndReading()) && !isDateUnknown() && !isNotDone() && startDate.compareTo(enDate)<0){
+                    } else if (!readingFound && !Objects.equals(getNewStartReading(), getNewEndReading()) && !isDateUnknown() && !isNotDone() && startDate.compareTo(enDate)<0){
                         setIsValid(true);
                         setVisible(false);
                         dispose();
-                    } else if (!readingFind && !Objects.equals(getNewStartReading(), getNewEndReading()) && !isDateUnknown() && !isNotDone() && startDate.compareTo(enDate)>0) {
+                    } else if (!readingFound && !Objects.equals(getNewStartReading(), getNewEndReading()) && !isDateUnknown() && !isNotDone() && startDate.compareTo(enDate)>0) {
                         setIsValid(false);
                         JFrame jFrame = new JFrame();
                         JOptionPane.showMessageDialog(jFrame, "La date de début de lecture ne peut pas être après à la fin de lecture !");
-                    } else if(!readingFind && Objects.equals(getNewStartReading(), getNewEndReading())
+                    } else if(!readingFound && Objects.equals(getNewStartReading(), getNewEndReading())
                             && !isDateUnknown() && !isNotDone()){
                         setIsValid(false);
                         JFrame jFrame = new JFrame();
