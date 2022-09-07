@@ -132,6 +132,11 @@ public class ManageReadingDlg extends JDialog {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 EditReadingDlg diag = new EditReadingDlg(getMTitle(), getAuthor(),getStartReading(), getEndReading());//Open a dialog where we can edit the date reading
+                File fileEdit = new File("Ressource/Icons/edit.png");
+                String pathEdit = fileEdit.getAbsolutePath();
+                Image imgEdit = Toolkit.getDefaultToolkit().getImage(pathEdit);
+                imgEdit = imgEdit.getScaledInstance(18,18,Image.SCALE_AREA_AVERAGING);
+                diag.setIconImage(imgEdit);
                 diag.setTitle("Modifier une lecture");
                 diag.setSize(500,200);
                 diag.setLocationRelativeTo(null);

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5ede3cbf-f5c9-462f-8dc0-7982017c2136" name="Changes" comment="Fix bug with the display of the first and last readings">
-      <change afterPath="$PROJECT_DIR$/src/Forms/Dialogs/FiltersDlg.form" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Sources/Dialogs/FiltersDlg.java" afterDir="false" />
+    <list default="true" id="5ede3cbf-f5c9-462f-8dc0-7982017c2136" name="Changes" comment="Add filters book">
+      <change afterPath="$PROJECT_DIR$/src/Sources/Tag.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Sources/Tags.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Forms/MainWindow.form" beforeDir="false" afterPath="$PROJECT_DIR$/src/Forms/MainWindow.form" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Sources/Dialogs/AddReading.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Sources/Dialogs/AddReading.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Sources/Dialogs/ManageReadingDlg.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Sources/Dialogs/ManageReadingDlg.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Sources/MainWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Sources/MainWindow.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -82,13 +82,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1659605699794</updated>
-    </task>
-    <task id="LOCAL-00007" summary="- Change DataBase with the merger of LastRadeing and FirstReading into just DateReading. &#10;- Creation of the addBookDlg class&#10;- Change the look and feel">
-      <created>1660475910683</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1660475910683</updated>
     </task>
     <task id="LOCAL-00008" summary="- Retrieving data from the AddBookDlg database with the fillbookcombobox, and the image that appears &#10;- Change of spinner for the reading date&#10;- Setting up checkbox roles (hiding some boxes for some cases)">
       <created>1660502852518</created>
@@ -426,7 +419,14 @@
       <option name="project" value="LOCAL" />
       <updated>1661674046470</updated>
     </task>
-    <option name="localTasksCounter" value="56" />
+    <task id="LOCAL-00056" summary="Add filters book">
+      <created>1661760457417</created>
+      <option name="number" value="00056" />
+      <option name="presentableId" value="LOCAL-00056" />
+      <option name="project" value="LOCAL" />
+      <updated>1661760457418</updated>
+    </task>
+    <option name="localTasksCounter" value="57" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -441,7 +441,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Can edit date reading now" />
     <MESSAGE value="Can't add or edit a date with a date in the future" />
     <MESSAGE value="We can give an unknown date for the modication of the reading date" />
     <MESSAGE value="Fixes the bug, that deleted all dateReading &quot;Unknown&quot; of a book when we wanted to delete a dateReading &quot;Unknown&quot;" />
@@ -466,6 +465,7 @@
     <MESSAGE value="Fix bug with default image" />
     <MESSAGE value="Add icon to JPopupMenu" />
     <MESSAGE value="Fix bug with the display of the first and last readings" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix bug with the display of the first and last readings" />
+    <MESSAGE value="Add filters book" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add filters book" />
   </component>
 </project>

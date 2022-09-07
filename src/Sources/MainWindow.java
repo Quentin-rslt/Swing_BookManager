@@ -46,6 +46,7 @@ public class MainWindow extends JDialog {
     private JToolBar Menubar;
     private JLabel ReleaseYearLAbel;
     private JLabel BookTimeAverageLabel;
+    private JLabel TagsLabel;
 
     private JTable  m_bookListTable = new JTable(){//Create a Jtable with the tablemodel not editable
         public boolean isCellEditable(int rowIndex, int colIndex) {
@@ -109,6 +110,23 @@ public class MainWindow extends JDialog {
                     if(evt.getButton() == MouseEvent.BUTTON3) {//if we right click show a popup to edit the book
                         m_bookListTable.setRowSelectionInterval(getRowSelected(), getRowSelected());//we focus the row when we right on the item
                         m_popup.show(BookListPanel, evt.getX(), evt.getY());
+                    }
+                    if(evt.getClickCount() == 2 && evt.getButton() == MouseEvent.BUTTON1){
+                        ManageReadingDlg diag = new ManageReadingDlg(getMTitle(), getAuthor());
+                        diag.setTitle("Gérer les lectures");
+                        diag.setSize(500,300);
+                        diag.setLocationRelativeTo(null);
+                        diag.setVisible(true);
+                        contentPane.updateUI();
+                        BookListPanel.removeAll();//refresh the table of book
+                        loadDB(false);
+                        if(diag.isEmpty()){
+                            initComponents();
+                        }
+                        else {
+                            m_bookListTable.setRowSelectionInterval(getRowSelected(getMTitle(),getAuthor()),getRowSelected(getMTitle(),getAuthor()));//focus on the book where you have managed your readings
+                            loadComponents(getMTitle(), getAuthor());
+                        }
                     }
                 }
             });
