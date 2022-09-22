@@ -1,6 +1,5 @@
 package Sources.Dialogs;
 
-import Sources.Tag;
 import Sources.Tags;
 
 import javax.swing.*;
@@ -13,7 +12,6 @@ import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.sql.*;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
@@ -53,6 +51,8 @@ public class AddBookDlg extends JDialog {
     private JSpinner BookStartReadingSpin;
     private JComboBox BookThemeCB;
     private JLabel BookThemeLabel;
+    private JPanel BookTagPanel;
+    private JPanel BookSecTagPanel;
 
     private String m_author;
     private String m_title;
@@ -208,12 +208,21 @@ public class AddBookDlg extends JDialog {
         BookThemeCB.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(!BookThemeCB.getSelectedItem().equals("")){
-                    if (getTags().getSize()<2) {
-                        getTags().addTag(BookThemeCB.getSelectedItem().toString());
-                        System.out.println(BookThemeCB.getSelectedItem());
-                    }
-                    else{
+                if (!BookThemeCB.getSelectedItem().equals("")) {
+                    if (getTags().getSizeTags() < 2) {
+                        if (getTags().isEmpty()) {
+                            getTags().addTag(BookThemeCB.getSelectedItem().toString());
+                            BookTagPanel.add(getTags().getTag(0));
+                            BookTagPanel.updateUI();
+                        } else if (getTags().isNotEmpty() && !BookThemeCB.getSelectedItem().equals(getTags().getTag(0).getTextTag())) {
+                            getTags().addTag(BookThemeCB.getSelectedItem().toString());
+                            BookTagPanel.add(getTags().getTag(1));
+                            BookTagPanel.updateUI();
+                        } else {
+                            JFrame jFrame = new JFrame();
+                            JOptionPane.showMessageDialog(jFrame, "Vous avez déjà sélectionné ce tag !");
+                        }
+                    } else {
                         JFrame jFrame = new JFrame();
                         JOptionPane.showMessageDialog(jFrame, "2 tags autorisés maximum !");
                     }
@@ -274,7 +283,7 @@ public class AddBookDlg extends JDialog {
     }
     public String listOfTags(){
         String tags = "";
-        for(int i=0; i<getTags().getSize(); i++){
+        for(int i=0; i<getTags().getSizeTags(); i++){
             tags = tags+getTags().getTag(i).getTextTag()+"  ";
         }
         return tags;

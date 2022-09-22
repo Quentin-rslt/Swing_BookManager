@@ -146,7 +146,7 @@ public class MainWindow extends JDialog {
                 Image imgAdd = Toolkit.getDefaultToolkit().getImage(pathAdd);
                 imgAdd = imgAdd.getScaledInstance(16,16,Image.SCALE_AREA_AVERAGING);
                 diag.setIconImage(imgAdd);
-                diag.setSize(800,570);
+                diag.setSize(900,610);
                 diag.setLocationRelativeTo(null);
                 diag.setVisible(true);
                 if (diag.isValide()){
@@ -590,7 +590,8 @@ public class MainWindow extends JDialog {
 
             //Tags Label
             ResultSet themeQry = m_statement.executeQuery("SELECT Tags FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
-            TagsLabel.setText(findTag(themeQry.getString(1),1).getTextTag());
+            TagsLabel.setText(themeQry.getString(1));
+            //TagsLabel.setText(findTag(themeQry.getString(1),1).getTextTag()+" - "+findTag(themeQry.getString(1),2).getTextTag());
 
             //Release year label
             ResultSet ReleaseYearQry = m_statement.executeQuery("SELECT ReleaseYear FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
