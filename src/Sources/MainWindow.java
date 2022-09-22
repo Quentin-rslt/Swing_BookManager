@@ -1,9 +1,10 @@
 package Sources;
 
 import Sources.Dialogs.*;
-import com.formdev.flatlaf.FlatDarkLaf;
+//import com.formdev.flatlaf.FlatDarkLaf;
 
 import javax.swing.*;
+import javax.swing.plaf.metal.MetalLookAndFeel;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -91,49 +92,47 @@ public class MainWindow extends JDialog {
         m_popup.add(cut);
         m_popup.add(edit);
 
-        if(m_bookListTable.getRowCount() != 0){//Vérif if the table is not empty; when starting the app, load and focus on the first book of the table
+        if(m_bookListTable.getRowCount() != 0) {//Vérif if the table is not empty; when starting the app, load and focus on the first book of the table
             setMTitle(m_bookListTable.getValueAt(0, 0).toString());
             setAuthor(m_bookListTable.getValueAt(0, 1).toString());
             loadComponents(getMTitle(), getAuthor());
-            m_bookListTable.setRowSelectionInterval(getRowSelected(getMTitle(),getAuthor()), getRowSelected(getMTitle(),getAuthor()));
+            m_bookListTable.setRowSelectionInterval(getRowSelected(getMTitle(), getAuthor()), getRowSelected(getMTitle(), getAuthor()));
             ManageReadingsBtn.setEnabled(true);
-
-            m_bookListTable.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseReleased(MouseEvent evt) {//set main UI when we clicked on an element of the array, retrieved from the db
-                    super.mouseReleased(evt);
-                    ManageReadingsBtn.setEnabled(true);
-                    setRowSelected(m_bookListTable.rowAtPoint(evt.getPoint()));
-                    setMTitle(m_bookListTable.getValueAt(getRowSelected(), 0).toString()); //get the value of the column of the table
-                    setAuthor(m_bookListTable.getValueAt(getRowSelected(), 1).toString());
-                    loadComponents(getMTitle(), getAuthor());
-                    if(evt.getButton() == MouseEvent.BUTTON3) {//if we right click show a popup to edit the book
-                        m_bookListTable.setRowSelectionInterval(getRowSelected(), getRowSelected());//we focus the row when we right on the item
-                        m_popup.show(BookListPanel, evt.getX(), evt.getY());
-                    }
-                    if(evt.getClickCount() == 2 && evt.getButton() == MouseEvent.BUTTON1){
-                        ManageReadingDlg diag = new ManageReadingDlg(getMTitle(), getAuthor());
-                        diag.setTitle("Gérer les lectures");
-                        diag.setSize(500,300);
-                        diag.setLocationRelativeTo(null);
-                        diag.setVisible(true);
-                        contentPane.updateUI();
-                        BookListPanel.removeAll();//refresh the table of book
-                        loadDB(false);
-                        if(diag.isEmpty()){
-                            initComponents();
-                        }
-                        else {
-                            m_bookListTable.setRowSelectionInterval(getRowSelected(getMTitle(),getAuthor()),getRowSelected(getMTitle(),getAuthor()));//focus on the book where you have managed your readings
-                            loadComponents(getMTitle(), getAuthor());
-                        }
-                    }
-                }
-            });
-        }
-        else{
+        }else{
             ManageReadingsBtn.setEnabled(false);
         }
+        m_bookListTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent evt) {//set main UI when we clicked on an element of the array, retrieved from the db
+                super.mouseReleased(evt);
+                ManageReadingsBtn.setEnabled(true);
+                setRowSelected(m_bookListTable.rowAtPoint(evt.getPoint()));
+                setMTitle(m_bookListTable.getValueAt(getRowSelected(), 0).toString()); //get the value of the column of the table
+                setAuthor(m_bookListTable.getValueAt(getRowSelected(), 1).toString());
+                loadComponents(getMTitle(), getAuthor());
+                if(evt.getButton() == MouseEvent.BUTTON3) {//if we right click show a popup to edit the book
+                    m_bookListTable.setRowSelectionInterval(getRowSelected(), getRowSelected());//we focus the row when we right on the item
+                    m_popup.show(BookListPanel, evt.getX(), evt.getY());
+                }
+                if(evt.getClickCount() == 2 && evt.getButton() == MouseEvent.BUTTON1){
+                    ManageReadingDlg diag = new ManageReadingDlg(getMTitle(), getAuthor());
+                    diag.setTitle("Gérer les lectures");
+                    diag.setSize(500,300);
+                    diag.setLocationRelativeTo(null);
+                    diag.setVisible(true);
+                    contentPane.updateUI();
+                    BookListPanel.removeAll();//refresh the table of book
+                    loadDB(false);
+                    if(diag.isEmpty()){
+                        initComponents();
+                    }
+                    else {
+                        m_bookListTable.setRowSelectionInterval(getRowSelected(getMTitle(),getAuthor()),getRowSelected(getMTitle(),getAuthor()));//focus on the book where you have managed your readings
+                        loadComponents(getMTitle(), getAuthor());
+                    }
+                }
+            }
+        });
         AddBookBtn.addActionListener(new ActionListener() {//open the dlg for add a reading
             public void actionPerformed(ActionEvent evt) {
                 AddBookDlg diag = new AddBookDlg();
@@ -702,8 +701,8 @@ public class MainWindow extends JDialog {
 
     public static void main(String[] args) {
         try {
-            UIManager.setLookAndFeel(new FlatDarkLaf());
-
+            UIManager.setLookAndFeel(new MetalLookAndFeel());
+            //UIManager.setLookAndFeel(new FlatDarkLaf());
         }catch( Exception ex ) {
             System.err.println( "Failed to initialize LaF" );
         }
