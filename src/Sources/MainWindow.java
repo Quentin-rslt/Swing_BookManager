@@ -98,14 +98,18 @@ public class MainWindow extends JDialog {
             loadComponents(getMTitle(), getAuthor());
             m_bookListTable.setRowSelectionInterval(getRowSelected(getMTitle(), getAuthor()), getRowSelected(getMTitle(), getAuthor()));
             ManageReadingsBtn.setEnabled(true);
+            FiltersBookBtn.setEnabled(true);
         }else{
             ManageReadingsBtn.setEnabled(false);
+            FiltersBookBtn.setEnabled(false);
         }
+
         m_bookListTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent evt) {//set main UI when we clicked on an element of the array, retrieved from the db
                 super.mouseReleased(evt);
                 ManageReadingsBtn.setEnabled(true);
+                FiltersBookBtn.setEnabled(true);
                 setRowSelected(m_bookListTable.rowAtPoint(evt.getPoint()));
                 setMTitle(m_bookListTable.getValueAt(getRowSelected(), 0).toString()); //get the value of the column of the table
                 setAuthor(m_bookListTable.getValueAt(getRowSelected(), 1).toString());
@@ -142,12 +146,12 @@ public class MainWindow extends JDialog {
                 Image imgAdd = Toolkit.getDefaultToolkit().getImage(pathAdd);
                 imgAdd = imgAdd.getScaledInstance(16,16,Image.SCALE_AREA_AVERAGING);
                 diag.setIconImage(imgAdd);
-                diag.setSize(800,550);
+                diag.setSize(800,570);
                 diag.setLocationRelativeTo(null);
                 diag.setVisible(true);
                 if (diag.isValide()){
-                    String BookQry = "INSERT INTO Book (Title,Author,Image,NumberOP,NotePerso,NoteBabelio,ReleaseYear,Summary) " +
-                            "VALUES (?,?,?,?,?,?,?,?);";
+                    String BookQry = "INSERT INTO Book (Title,Author,Image,NumberOP,NotePerso,NoteBabelio,ReleaseYear,Tags,Summary) " +
+                            "VALUES (?,?,?,?,?,?,?,?,?);";
                     String ReadingQry = "INSERT INTO Reading (ID,Title,Author,StartReading, EndReading) " +
                             "VALUES (?,?,?,?,?);";
                     contentPane.updateUI();
@@ -168,7 +172,8 @@ public class MainWindow extends JDialog {
                             BookPstmt.setString(5, diag.getNewBookPersonalNote());
                             BookPstmt.setString(6, diag.getNewBookBBLNote());
                             BookPstmt.setString(7, diag.getNewBookReleaseYear());
-                            BookPstmt.setString(8, diag.getNewBookSummary());
+                            BookPstmt.setString(8, diag.listOfTags());
+                            BookPstmt.setString(9, diag.getNewBookSummary());
                             BookPstmt.executeUpdate();//Insert the new Book
                             ReadingPstmt.executeUpdate();//Insert the new reading
                             setMTitle(diag.getNewBookTitle());
@@ -190,8 +195,8 @@ public class MainWindow extends JDialog {
                             BookPstmt.setString(4, diag.getNewBookNumberOP());
                             BookPstmt.setString(5, diag.getNewBookPersonalNote());
                             BookPstmt.setString(6, diag.getNewBookBBLNote());
-                            BookPstmt.setString(7, diag.getNewBookReleaseYear());
-                            BookPstmt.setString(8, diag.getNewBookSummary());
+                            BookPstmt.setString(8, diag.listOfTags());
+                            BookPstmt.setString(9, diag.getNewBookSummary());
                             BookPstmt.executeUpdate();//Insert the new Book
                             ReadingPstmt.executeUpdate();//Insert the new reading
                             setMTitle(diag.getNewBookTitle());
@@ -213,8 +218,8 @@ public class MainWindow extends JDialog {
                             BookPstmt.setString(4, diag.getNewBookNumberOP());
                             BookPstmt.setString(5, diag.getNewBookPersonalNote());
                             BookPstmt.setString(6, diag.getNewBookBBLNote());
-                            BookPstmt.setString(7, diag.getNewBookReleaseYear());
-                            BookPstmt.setString(8, diag.getNewBookSummary());
+                            BookPstmt.setString(8, diag.listOfTags());
+                            BookPstmt.setString(9, diag.getNewBookSummary());
                             BookPstmt.executeUpdate();//Insert the new Book in table Book
                             ReadingPstmt.executeUpdate();//Insert the new reading
                             setMTitle(diag.getNewBookTitle());
@@ -461,12 +466,26 @@ public class MainWindow extends JDialog {
         return m_rowSelected;
     }
     public int getRowSelected(String title, String author){//return the row find by a title and an author
+        FiltersBookBtn.setEnabled(true);
+        ManageReadingsBtn.setEnabled(true);
         int row = 0;
         for (int i= 0; i<m_bookListTable.getRowCount();i++)
             if(Objects.equals(m_bookListTable.getValueAt(i, 0).toString(), title) && Objects.equals(m_bookListTable.getValueAt(i, 1).toString(), author))
                 row = i;
 
         return row;
+    }
+    public Tag findTag(String tags, int index){
+        Tag tag = new Tag();
+        boolean tagFind = false;
+        String[] splitTag = tags.split("  ");
+        if(index == 1){
+            tag.setTag(splitTag[0]);
+        }
+        else {
+            tag.setTag(splitTag[1]);;
+        }
+        return tag;
     }
 
     public void setRowSelected(int m_rowSelected) {
@@ -491,6 +510,7 @@ public class MainWindow extends JDialog {
                     " NotePerso INT, " +
                     " NoteBabelio INT, " +
                     " ReleaseYear TEXT, " +
+                    " Tags TEXT, " +
                     " Summary TEXT)";
 
             String sql2 = "CREATE TABLE IF NOT EXISTS Reading" +
@@ -526,7 +546,7 @@ public class MainWindow extends JDialog {
                         "AND NotePerso BETWEEN '"+m_diag.getFirstNote()+"' AND '"+m_diag.getLastNote()+"';";
                 rs = m_statement.executeQuery(qry);
             }
-            else if(!isFiltered){
+            else{
                 rs = m_statement.executeQuery("SELECT * FROM Book;");//Execute a Query to retrieve all the values from the database by grouping the duplicates
             }
             // (with their name and author)
@@ -567,6 +587,10 @@ public class MainWindow extends JDialog {
             //Author label
             ResultSet authorQry = m_statement.executeQuery("SELECT Author FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
             AuthorLabel.setText("Auteur : "+authorQry.getString(1));
+
+            //Tags Label
+            ResultSet themeQry = m_statement.executeQuery("SELECT Tags FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
+            TagsLabel.setText(findTag(themeQry.getString(1),1).getTextTag());
 
             //Release year label
             ResultSet ReleaseYearQry = m_statement.executeQuery("SELECT ReleaseYear FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
@@ -678,6 +702,7 @@ public class MainWindow extends JDialog {
         LastReadingLabel.setText("Dernière lecture :");
         BookSummary.setText("");
         ManageReadingsBtn.setEnabled(false);
+        FiltersBookBtn.setEnabled(false);
         BookPhotoPanel.removeAll();
         contentPane.updateUI();
     }

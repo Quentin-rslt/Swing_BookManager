@@ -1,19 +1,19 @@
 package Sources.Dialogs;
 
+import Sources.Tag;
+import Sources.Tags;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
@@ -51,6 +51,8 @@ public class AddBookDlg extends JDialog {
     private JCheckBox BookNotDoneReadChecbox;
     private JLabel EndReadingLabel;
     private JSpinner BookStartReadingSpin;
+    private JComboBox BookThemeCB;
+    private JLabel BookThemeLabel;
 
     private String m_author;
     private String m_title;
@@ -58,8 +60,12 @@ public class AddBookDlg extends JDialog {
     private boolean m_isValide = false;//Useful for determinate if the input are good
     private Connection m_connection;
     private Statement m_statement;
+    private Tags m_tags;
+
 
     public AddBookDlg() {
+        this.m_tags = new Tags();
+
         setContentPane(contentPane);
         setModal(true);
         initComponents();
@@ -199,6 +205,26 @@ public class AddBookDlg extends JDialog {
                 }
             }
         });
+        BookThemeCB.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(!BookThemeCB.getSelectedItem().equals("")){
+                    if (getTags().getSize()<2) {
+                        getTags().addTag(BookThemeCB.getSelectedItem().toString());
+                        System.out.println(BookThemeCB.getSelectedItem());
+                    }
+                    else{
+                        JFrame jFrame = new JFrame();
+                        JOptionPane.showMessageDialog(jFrame, "2 tags autorisés maximum !");
+                    }
+                }
+            }
+        });
+        /*BookThemeCB.getEditor().getEditorComponent().addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                System.out.println(BookThemeCB.getEditor().getItem());
+            }
+        });*/
     }
 
     public String getNewBookTitle(){//Get the new book title from JtextField
@@ -243,6 +269,40 @@ public class AddBookDlg extends JDialog {
     public String getURL(){
         return m_URL;
     }
+    public Tags getTags(){
+        return this.m_tags;
+    }
+    public String listOfTags(){
+        String tags = "";
+        for(int i=0; i<getTags().getSize(); i++){
+            tags = tags+getTags().getTag(i).getTextTag()+"  ";
+        }
+        return tags;
+    }
+    public String findTag(int index){
+        String sql = "SELECT Tags FROM Book";
+        String tag = "";
+        boolean tagFind = false;
+        try {//Can add a new reading if the book already exist
+            Class.forName("org.sqlite.JDBC");
+            m_connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
+            m_statement = m_connection.createStatement();
+            ResultSet tagQry = m_statement.executeQuery(sql);
+            if(tagQry!=null){
+                String[] tags = tagQry.getString(1).split("  ");
+                if(index == 1){
+                    tag = tags[0];
+                }
+                else {
+                    tag = tags[1];
+                }
+            }
+        }catch (Exception e){
+            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+            System.exit(0);
+        }
+        return tag;
+    }
 
     public void addImageToPanel(String path){//Apply to our panel an image with path
         Image img = Toolkit.getDefaultToolkit().getImage(path);
@@ -278,6 +338,8 @@ public class AddBookDlg extends JDialog {
         BookStartReadingSpin.setModel(BookStartReadSpinDate);
         JSpinner.DateEditor start = new JSpinner.DateEditor(BookStartReadingSpin,"yyyy/MM/dd");//set the display of the JSpinner reading book date
         BookStartReadingSpin.setEditor(start);
+
+        fillThemeCB();
     }
     public void initComponents(boolean bool){
         BookNameTextField.setEnabled(bool);
@@ -294,6 +356,13 @@ public class AddBookDlg extends JDialog {
     }
     public void setURL(String url){
         m_URL= url;
+    }
+    public void fillThemeCB(){
+        this.BookThemeCB.addItem("");
+        this.BookThemeCB.addItem("Science-fiction");
+        this.BookThemeCB.addItem("Horreur");
+        this.BookThemeCB.addItem("Fantastique");
+        this.BookThemeCB.addItem("Polar");
     }
     public static void copyFileUsingChannel(File source, File dest) throws IOException {
         FileChannel sourceChannel = null;
