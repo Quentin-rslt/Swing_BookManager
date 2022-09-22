@@ -4,7 +4,7 @@ import Sources.Dialogs.*;
 //import com.formdev.flatlaf.FlatDarkLaf;
 
 import javax.swing.*;
-import javax.swing.plaf.metal.MetalLookAndFeel;
+import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -701,7 +701,7 @@ public class MainWindow extends JDialog {
 
     public static void main(String[] args) {
         try {
-            UIManager.setLookAndFeel(new MetalLookAndFeel());
+            UIManager.setLookAndFeel(new NimbusLookAndFeel());
             //UIManager.setLookAndFeel(new FlatDarkLaf());
         }catch( Exception ex ) {
             System.err.println( "Failed to initialize LaF" );
