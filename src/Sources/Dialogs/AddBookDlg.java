@@ -7,10 +7,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.channels.FileChannel;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -23,7 +19,6 @@ public class AddBookDlg extends JDialog {
     private JButton CancelBtn;
     private JPanel BtnPanel;
     private JPanel PreviewPhotoPanel;
-    private JComboBox ExitingBookComboBox;
     private JLabel NewBookLabel;
     private JLabel NameLabel;
     private JTextField BookNameTextField;
@@ -52,11 +47,7 @@ public class AddBookDlg extends JDialog {
     private JSpinner BookStartReadingSpin;
     private JComboBox BookThemeCB;
     private JLabel BookThemeLabel;
-    private JPanel BookTagPanel;
-    private JPanel BookSecTagPanel;
-
-    private String m_author;
-    private String m_title;
+    private JPanel BookTagsPanel;
     private String m_URL="";
     private boolean m_isValide = false;//Useful for determinate if the input are good
     private Connection m_connection;
@@ -210,28 +201,25 @@ public class AddBookDlg extends JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!Objects.equals(BookThemeCB.getSelectedItem(), "")) {
-                    if (getTags().getSizeTags() < 2) {
-                        if (getTags().isEmpty()) {
-                            getTags().createTag(Objects.requireNonNull(BookThemeCB.getSelectedItem()).toString());
-                            setBackgroundTag(getTags().getTag(0));
-
-                            BookTagPanel.add(getTags().getTag(0));
-                            BookTagPanel.updateUI();
-                        } else if (getTags().isNotEmpty() && !Objects.equals(BookThemeCB.getSelectedItem(), getTags().getTag(0).getTextTag())) {
-                            getTags().createTag(Objects.requireNonNull(BookThemeCB.getSelectedItem()).toString());
-                            setBackgroundTag(getTags().getTag(1));
-
-                            BookTagPanel.add(getTags().getTag(1));
-                            BookTagPanel.updateUI();
-                        } else {
+                    boolean tagFind = false;
+                    int i = 0;
+                    while(!tagFind && i<getTags().getSizeTags()){
+                        if(Objects.equals(BookThemeCB.getSelectedItem(), getTags().getTag(i).getTextTag())){
                             JFrame jFrame = new JFrame();
                             JOptionPane.showMessageDialog(jFrame, "Vous avez déjà sélectionné ce tag !");
+                            tagFind =true;
                         }
-                    } else {
-                        JFrame jFrame = new JFrame();
-                        JOptionPane.showMessageDialog(jFrame, "2 tags autorisés maximum !");
+                        else i++;
+                    }
+                    if(!tagFind){
+                        getTags().createTag(Objects.requireNonNull(BookThemeCB.getSelectedItem()).toString());
+                        for (int j = 0; j<getTags().getSizeTags(); j++){
+                            BookTagsPanel.add(getTags().getTag(j));
+                            setBackgroundTag(getTags().getTag(j));
+                        }
                     }
                 }
+                BookTagsPanel.updateUI();
             }
         });
         /*BookThemeCB.getEditor().getEditorComponent().addKeyListener(new java.awt.event.KeyAdapter() {
@@ -378,27 +366,12 @@ public class AddBookDlg extends JDialog {
         this.BookThemeCB.addItem("Polar");
     }
     public void setBackgroundTag(Tag tag){
-        if(tag.getTextTag().equals("Science-fiction"))
-            tag.setBackground(new Color(255, 206, 45, 102));
-        else if(tag.getTextTag().equals("Fantastique"))
-            tag.setBackground(new Color(142, 255, 71, 102));
-        else if(tag.getTextTag().equals("Horreur"))
-            tag.setBackground(new Color(255, 64, 64, 102));
-        else if(tag.getTextTag().equals("Polar"))
-            tag.setBackground(new Color(74, 153, 187, 102));
-        else
-            tag.setBackground(new Color(255, 45, 227, 102));
-    }
-    public static void copyFileUsingChannel(File source, File dest) throws IOException {
-        FileChannel sourceChannel = null;
-        FileChannel destChannel = null;
-        try {
-            sourceChannel = new FileInputStream(source).getChannel();
-            destChannel = new FileOutputStream(dest).getChannel();
-            destChannel.transferFrom(sourceChannel, 0, sourceChannel.size());
-        }finally{
-            sourceChannel.close();
-            destChannel.close();
+        switch (tag.getTextTag()) {
+            case "Science-fiction" -> tag.setBackground(new Color(255, 206, 45, 102));
+            case "Fantastique" -> tag.setBackground(new Color(142, 255, 71, 102));
+            case "Horreur" -> tag.setBackground(new Color(255, 64, 64, 102));
+            case "Polar" -> tag.setBackground(new Color(74, 153, 187, 102));
+            default -> tag.setBackground(new Color(255, 45, 227, 102));
         }
     }
 }

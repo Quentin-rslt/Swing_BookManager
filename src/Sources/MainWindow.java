@@ -485,11 +485,9 @@ public class MainWindow extends JDialog {
     public Tags findTags(String str){
         Tags tags = new Tags();
         String[] strTags = str.split(" ");
-
-        tags.createTag(strTags[0]);
-        if(Arrays.stream(strTags).count()>1)
-            tags.createTag(strTags[1]);
-
+        for(int i = 0; i<Arrays.stream(strTags).count(); i++){
+            tags.createTag(strTags[i]);
+        }
         return tags;
     }
     public Tags getTags(){
@@ -601,15 +599,11 @@ public class MainWindow extends JDialog {
 
             //Tags Label
             ResultSet themeQry = m_statement.executeQuery("SELECT Tags FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
-
             BookTagsPanel.removeAll();
             setTags(findTags(themeQry.getString(1)));
-
-            BookTagsPanel.add(getTags().getTag(0));
-            setBackgroundTag(getTags().getTag(0));
-            if(getTags().getSizeTags()>1){
-                BookTagsPanel.add(getTags().getTag(1));
-                setBackgroundTag(getTags().getTag(1));
+            for(int i = 0; i<getTags().getSizeTags(); i++){
+                BookTagsPanel.add(getTags().getTag(i));
+                setBackgroundTag(getTags().getTag(i));
             }
             BookTagsPanel.updateUI();
 
@@ -668,7 +662,6 @@ public class MainWindow extends JDialog {
             while (FirstReadQry.next() && !findFirst){
                 if(FirstReadQry.getString(1).equals("Inconnu") || FirstReadQry.getString(1).equals("Pas fini")){
                     FirstReadingLabel.setText("Première lecture : Pas de lecture fini");
-                    findFirst = false;
                 }
                 else if(!FirstReadQry.getString(1).equals("Inconnu") && !FirstReadQry.getString(1).equals("Pas fini")){
                     FirstReadingLabel.setText("Première lecture : "+FirstReadQry.getString(1));
@@ -682,7 +675,6 @@ public class MainWindow extends JDialog {
             while (LastReadQry.next() && !findLast){
                 if(LastReadQry.getString(1).equals("Inconnu") || LastReadQry.getString(1).equals("Pas fini")){
                     LastReadingLabel.setText("Dernière lecture : Pas de lecture fini");
-                    findLast = false;
                 }
                 else if(!LastReadQry.getString(1).equals("Inconnu") && !LastReadQry.getString(1).equals("Pas fini")){
                     LastReadingLabel.setText("Dernière lecture : "+LastReadQry.getString(1));
@@ -722,6 +714,7 @@ public class MainWindow extends JDialog {
         FirstReadingLabel.setText("Première lecture :");
         LastReadingLabel.setText("Dernière lecture :");
         BookSummary.setText("");
+        BookTagsPanel.removeAll();
         ManageReadingsBtn.setEnabled(false);
         FiltersBookBtn.setEnabled(false);
         BookPhotoPanel.removeAll();

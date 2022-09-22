@@ -1,6 +1,5 @@
 package Sources;
 
-import java.awt.*;
 import java.util.ArrayList;
 
 public class Tags extends Tag {
@@ -23,10 +22,7 @@ public class Tags extends Tag {
         return this.m_tags.isEmpty();
     }
     public boolean isNotEmpty(){
-        if(this.m_tags.isEmpty())
-            return false;
-        else
-            return true;
+        return !this.m_tags.isEmpty();
     }
 
     public void setTags(ArrayList<Tag> tag){

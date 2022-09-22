@@ -230,7 +230,7 @@
               <text value="Thèmes"/>
             </properties>
           </component>
-          <grid id="9eed7" binding="BookTagPanel" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="0">
+          <grid id="9eed7" binding="BookTagsPanel" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="0">
             <constraints>
               <grid row="8" column="1" row-span="1" col-span="2" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
                 <minimum-size width="-1" height="30"/>
