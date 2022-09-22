@@ -1,5 +1,6 @@
 package Sources.Dialogs;
 
+import Sources.Tag;
 import Sources.Tags;
 
 import javax.swing.*;
@@ -208,14 +209,18 @@ public class AddBookDlg extends JDialog {
         BookThemeCB.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!BookThemeCB.getSelectedItem().equals("")) {
+                if (!Objects.equals(BookThemeCB.getSelectedItem(), "")) {
                     if (getTags().getSizeTags() < 2) {
                         if (getTags().isEmpty()) {
-                            getTags().addTag(BookThemeCB.getSelectedItem().toString());
+                            getTags().createTag(Objects.requireNonNull(BookThemeCB.getSelectedItem()).toString());
+                            setBackgroundTag(getTags().getTag(0));
+
                             BookTagPanel.add(getTags().getTag(0));
                             BookTagPanel.updateUI();
-                        } else if (getTags().isNotEmpty() && !BookThemeCB.getSelectedItem().equals(getTags().getTag(0).getTextTag())) {
-                            getTags().addTag(BookThemeCB.getSelectedItem().toString());
+                        } else if (getTags().isNotEmpty() && !Objects.equals(BookThemeCB.getSelectedItem(), getTags().getTag(0).getTextTag())) {
+                            getTags().createTag(Objects.requireNonNull(BookThemeCB.getSelectedItem()).toString());
+                            setBackgroundTag(getTags().getTag(1));
+
                             BookTagPanel.add(getTags().getTag(1));
                             BookTagPanel.updateUI();
                         } else {
@@ -284,21 +289,20 @@ public class AddBookDlg extends JDialog {
     public String listOfTags(){
         String tags = "";
         for(int i=0; i<getTags().getSizeTags(); i++){
-            tags = tags+getTags().getTag(i).getTextTag()+"  ";
+            tags = tags+getTags().getTag(i).getTextTag()+" ";
         }
         return tags;
     }
     public String findTag(int index){
         String sql = "SELECT Tags FROM Book";
         String tag = "";
-        boolean tagFind = false;
         try {//Can add a new reading if the book already exist
             Class.forName("org.sqlite.JDBC");
             m_connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
             m_statement = m_connection.createStatement();
             ResultSet tagQry = m_statement.executeQuery(sql);
             if(tagQry!=null){
-                String[] tags = tagQry.getString(1).split("  ");
+                String[] tags = tagQry.getString(1).split(" ");
                 if(index == 1){
                     tag = tags[0];
                 }
@@ -372,6 +376,18 @@ public class AddBookDlg extends JDialog {
         this.BookThemeCB.addItem("Horreur");
         this.BookThemeCB.addItem("Fantastique");
         this.BookThemeCB.addItem("Polar");
+    }
+    public void setBackgroundTag(Tag tag){
+        if(tag.getTextTag().equals("Science-fiction"))
+            tag.setBackground(new Color(255, 206, 45, 102));
+        else if(tag.getTextTag().equals("Fantastique"))
+            tag.setBackground(new Color(142, 255, 71, 102));
+        else if(tag.getTextTag().equals("Horreur"))
+            tag.setBackground(new Color(255, 64, 64, 102));
+        else if(tag.getTextTag().equals("Polar"))
+            tag.setBackground(new Color(74, 153, 187, 102));
+        else
+            tag.setBackground(new Color(255, 45, 227, 102));
     }
     public static void copyFileUsingChannel(File source, File dest) throws IOException {
         FileChannel sourceChannel = null;

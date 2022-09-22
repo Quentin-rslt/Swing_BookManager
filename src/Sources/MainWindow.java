@@ -1,6 +1,7 @@
 package Sources;
 
 import Sources.Dialogs.*;
+import com.formdev.flatlaf.FlatDarkLaf;
 //import com.formdev.flatlaf.FlatDarkLaf;
 
 import javax.swing.*;
@@ -15,6 +16,7 @@ import java.io.File;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.Objects;
 
 public class MainWindow extends JDialog {
@@ -47,6 +49,7 @@ public class MainWindow extends JDialog {
     private JToolBar Menubar;
     private JLabel ReleaseYearLAbel;
     private JLabel BookTimeAverageLabel;
+    private JPanel BookTagsPanel;
     private JLabel TagsLabel;
 
     private JTable  m_bookListTable = new JTable(){//Create a Jtable with the tablemodel not editable
@@ -62,11 +65,13 @@ public class MainWindow extends JDialog {
     private int m_rowSelected = 0;
     private JPopupMenu m_popup;
     private FiltersDlg m_diag;
+    private Tags m_tags;
 
     public MainWindow() {
         setContentPane(contentPane);
         setModal(true);
         connectionDB();
+        m_tags = new Tags();
         loadDB(false);
 
         m_popup = new JPopupMenu();//Create a popup menu to delete a reading an edit this reading
@@ -195,6 +200,7 @@ public class MainWindow extends JDialog {
                             BookPstmt.setString(4, diag.getNewBookNumberOP());
                             BookPstmt.setString(5, diag.getNewBookPersonalNote());
                             BookPstmt.setString(6, diag.getNewBookBBLNote());
+                            BookPstmt.setString(7, diag.getNewBookReleaseYear());
                             BookPstmt.setString(8, diag.listOfTags());
                             BookPstmt.setString(9, diag.getNewBookSummary());
                             BookPstmt.executeUpdate();//Insert the new Book
@@ -218,6 +224,7 @@ public class MainWindow extends JDialog {
                             BookPstmt.setString(4, diag.getNewBookNumberOP());
                             BookPstmt.setString(5, diag.getNewBookPersonalNote());
                             BookPstmt.setString(6, diag.getNewBookBBLNote());
+                            BookPstmt.setString(7, diag.getNewBookReleaseYear());
                             BookPstmt.setString(8, diag.listOfTags());
                             BookPstmt.setString(9, diag.getNewBookSummary());
                             BookPstmt.executeUpdate();//Insert the new Book in table Book
@@ -475,19 +482,23 @@ public class MainWindow extends JDialog {
 
         return row;
     }
-    public Tag findTag(String tags, int index){
-        Tag tag = new Tag();
-        boolean tagFind = false;
-        String[] splitTag = tags.split("  ");
-        if(index == 1){
-            tag.setTag(splitTag[0]);
-        }
-        else {
-            tag.setTag(splitTag[1]);;
-        }
-        return tag;
+    public Tags findTags(String str){
+        Tags tags = new Tags();
+        String[] strTags = str.split(" ");
+
+        tags.createTag(strTags[0]);
+        if(Arrays.stream(strTags).count()>1)
+            tags.createTag(strTags[1]);
+
+        return tags;
+    }
+    public Tags getTags(){
+        return this.m_tags;
     }
 
+    public void setTags(Tags tags){
+        this.m_tags = tags;
+    }
     public void setRowSelected(int m_rowSelected) {
         this.m_rowSelected = m_rowSelected;
     }
@@ -590,8 +601,17 @@ public class MainWindow extends JDialog {
 
             //Tags Label
             ResultSet themeQry = m_statement.executeQuery("SELECT Tags FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
-            TagsLabel.setText(themeQry.getString(1));
-            //TagsLabel.setText(findTag(themeQry.getString(1),1).getTextTag()+" - "+findTag(themeQry.getString(1),2).getTextTag());
+
+            BookTagsPanel.removeAll();
+            setTags(findTags(themeQry.getString(1)));
+
+            BookTagsPanel.add(getTags().getTag(0));
+            setBackgroundTag(getTags().getTag(0));
+            if(getTags().getSizeTags()>1){
+                BookTagsPanel.add(getTags().getTag(1));
+                setBackgroundTag(getTags().getTag(1));
+            }
+            BookTagsPanel.updateUI();
 
             //Release year label
             ResultSet ReleaseYearQry = m_statement.executeQuery("SELECT ReleaseYear FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
@@ -724,11 +744,23 @@ public class MainWindow extends JDialog {
         }
         return i;
     }
+    public void setBackgroundTag(Tag tag){
+        if(tag.getTextTag().equals("Science-fiction"))
+            tag.setBackground(new Color(255, 206, 45, 102));
+        else if(tag.getTextTag().equals("Fantastique"))
+            tag.setBackground(new Color(142, 255, 71, 102));
+        else if(tag.getTextTag().equals("Horreur"))
+            tag.setBackground(new Color(255, 64, 64, 102));
+        else if(tag.getTextTag().equals("Polar"))
+            tag.setBackground(new Color(74, 153, 187, 102));
+        else
+            tag.setBackground(new Color(255, 45, 227, 102));
+    }
 
     public static void main(String[] args) {
         try {
-            UIManager.setLookAndFeel(new NimbusLookAndFeel());
-            //UIManager.setLookAndFeel(new FlatDarkLaf());
+            //UIManager.setLookAndFeel(new NimbusLookAndFeel());
+            UIManager.setLookAndFeel(new FlatDarkLaf());
         }catch( Exception ex ) {
             System.err.println( "Failed to initialize LaF" );
         }
