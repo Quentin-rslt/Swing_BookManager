@@ -251,14 +251,15 @@ public class AddBookDlg extends JDialog {
         });
         //Change the cursor when we focus a tag
         BookTagsPanel.addMouseMotionListener(new MouseMotionAdapter() {
+
             @Override
             public void mouseMoved(MouseEvent e) {
                 super.mouseMoved(e);
-                File fileRemove = new File("Ressource/Icons/remove.png");
+                File fileRemove = new File("Ressource/Icons/Cursor_remove.png");
                 String pathRemove = fileRemove.getAbsolutePath();
                 Image imgRemove = Toolkit.getDefaultToolkit().getImage(pathRemove);
                 Point hotspot = new Point(15, 15);
-                String cursorName = "Lightsaber Cursor";
+                String cursorName = "Delete Cursor";
                 for (int i=0;i<getTags().getSizeTags();i++)
                     getTags().getTag(i).setCursor(getToolkit().createCustomCursor(imgRemove, hotspot, cursorName));
             }
