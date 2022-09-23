@@ -25,6 +25,7 @@ public class Tags extends Tag {
     public void setTags(ArrayList<Tag> tag){
         this.m_tags = tag;
     }
+
     public void setTextTag(String tag, int i){
         this.m_tags.get(i).setTextTag(tag);
     }

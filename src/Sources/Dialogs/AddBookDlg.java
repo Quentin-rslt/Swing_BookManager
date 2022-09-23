@@ -9,6 +9,7 @@ import java.awt.event.*;
 import java.io.File;
 import java.sql.*;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
@@ -233,11 +234,6 @@ public class AddBookDlg extends JDialog {
                 BookTagsPanel.updateUI();
             }
         });
-        /*BookTagsCB.getEditor().getEditorComponent().addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                System.out.println(BookTagsCB.getEditor().getItem());
-            }
-        });*/
     }
 
     public String getNewBookTitle(){//Get the new book title from JtextField
@@ -292,30 +288,42 @@ public class AddBookDlg extends JDialog {
         }
         return tags.toString();
     }
-    public String findTag(int index){
+    public Tags findTags(){
+        Tags tags = new Tags();
         String sql = "SELECT Tags FROM Book";
-        String tag = "";
-        try {//Can add a new reading if the book already exist
+        try {
             Class.forName("org.sqlite.JDBC");
             m_connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
             m_statement = m_connection.createStatement();
-            ResultSet tagQry = m_statement.executeQuery(sql);
-            if(tagQry!=null){
-                String[] tags = tagQry.getString(1).split("/");
-                if(index == 1){
-                    tag = tags[0];
-                }
-                else {
-                    tag = tags[1];
+            ResultSet tagsQry = m_statement.executeQuery(sql);
+            while (tagsQry.next()){
+                String[] strTags = tagsQry.getString(1).split("/");
+                boolean tagFind = false;
+
+                for(int j=0; j<Arrays.stream(strTags).count();j++){
+                    for(int i = 0; i<tags.getSizeTags();i++){
+                        if(strTags[j].equals(tags.getTag(i).getTextTag())){
+                            tagFind=true;
+                        }
+                    }
+                    if(!tagFind){
+                        tags.createTag(strTags[j]);
+                    }
                 }
             }
+            m_connection.close();
+            m_statement.close();
         }catch (Exception e){
             System.err.println( e.getClass().getName() + ": " + e.getMessage() );
             System.exit(0);
         }
-        return tag;
+
+        return tags;
     }
 
+    public void setTags(Tags tags){
+        this.m_tags=tags;
+    }
     public void addImageToPanel(String path){//Apply to our panel an image with path
         Image img = Toolkit.getDefaultToolkit().getImage(path);
         img=img.getScaledInstance(200, 300, Image.SCALE_AREA_AVERAGING);
@@ -371,9 +379,8 @@ public class AddBookDlg extends JDialog {
     }
     public void fillThemeCB(){
         this.BookTagsCB.addItem("");
-        this.BookTagsCB.addItem("Science fiction");
-        this.BookTagsCB.addItem("Horreur");
-        this.BookTagsCB.addItem("Fantastique");
-        this.BookTagsCB.addItem("Polar");
+        for (int i = 0; i<findTags().getSizeTags(); i++){
+            this.BookTagsCB.addItem(findTags().getTag(i).getTextTag());
+        }
     }
 }
