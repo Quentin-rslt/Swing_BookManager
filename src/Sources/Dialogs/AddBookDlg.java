@@ -13,6 +13,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 
+import static java.awt.Event.ENTER;
+
 public class AddBookDlg extends JDialog {
     private JPanel contentPane;
     private JButton ValidateBtn;
@@ -197,24 +199,34 @@ public class AddBookDlg extends JDialog {
                 }
             }
         });
-        BookTagsCB.addActionListener(new ActionListener() {
+        BookTagsCB.getEditor().getEditorComponent().addKeyListener(new java.awt.event.KeyAdapter() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
                 if (!Objects.equals(BookTagsCB.getSelectedItem(), "")) {
-                    boolean tagFind = false;
-                    int i = 0;
-                    while(!tagFind && i<getTags().getSizeTags()){
-                        if(Objects.equals(BookTagsCB.getSelectedItem(), getTags().getTag(i).getTextTag())){
-                            JFrame jFrame = new JFrame();
-                            JOptionPane.showMessageDialog(jFrame, "Vous avez déjà sélectionné ce tag !");
-                            tagFind =true;
+//                    System.out.println(evt.getKeyCode());
+//                    if(evt.getKeyCode()<100 && evt.getKeyCode()>10) {
+//                        for(int i = 0; i<BookTagsCB.getItemCount();i++){
+//                            if(BookTagsCB.getEditor().getItem().toString().contains(BookTagsCB.getItemAt(i).toString())){
+//                                BookTagsCB.showPopup();
+//                            }
+//                        }
+//                    }
+                    if (evt.getKeyCode()==KeyEvent.VK_ENTER){
+                        boolean tagFind = false;
+                        int i = 0;
+                        while(!tagFind && i<getTags().getSizeTags()){
+                            if(Objects.equals(BookTagsCB.getSelectedItem(), getTags().getTag(i).getTextTag())){
+                                JFrame jFrame = new JFrame();
+                                JOptionPane.showMessageDialog(jFrame, "Vous avez déjà sélectionné ce tag !");
+                                tagFind =true;
+                            }
+                            else i++;
                         }
-                        else i++;
-                    }
-                    if(!tagFind){
-                        getTags().createTag(Objects.requireNonNull(BookTagsCB.getSelectedItem()).toString());
-                        for (int j = 0; j<getTags().getSizeTags(); j++){
-                            BookTagsPanel.add(getTags().getTag(j));
+                        if(!tagFind){
+                            getTags().createTag(Objects.requireNonNull(BookTagsCB.getSelectedItem()).toString());
+                            for (int j = 0; j<getTags().getSizeTags(); j++){
+                                BookTagsPanel.add(getTags().getTag(j));
+                            }
                         }
                     }
                 }

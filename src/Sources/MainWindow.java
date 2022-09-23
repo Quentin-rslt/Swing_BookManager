@@ -144,7 +144,7 @@ public class MainWindow extends JDialog {
         AddBookBtn.addActionListener(new ActionListener() {//open the dlg for add a reading
             public void actionPerformed(ActionEvent evt) {
                 AddBookDlg diag = new AddBookDlg();
-                diag.setTitle("Ajouter un livvre");
+                diag.setTitle("Ajouter un livre");
                 File fileAdd = new File("Ressource/Icons/add.png");
                 String pathAdd = fileAdd.getAbsolutePath();
                 Image imgAdd = Toolkit.getDefaultToolkit().getImage(pathAdd);
