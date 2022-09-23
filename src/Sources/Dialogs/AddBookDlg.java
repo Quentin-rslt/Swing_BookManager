@@ -4,6 +4,8 @@ import Sources.Tag;
 import Sources.Tags;
 
 import javax.swing.*;
+import javax.swing.plaf.basic.BasicTableHeaderUI;
+import javax.swing.plaf.basic.BasicTreeUI;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
@@ -102,7 +104,7 @@ public class AddBookDlg extends JDialog {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 String sql = "SELECT Title, Author, StartReading, EndReading FROM Reading";
-                if(!Objects.equals(getNewBookAuthor(), "") && !Objects.equals(getNewBookTitle(), "") && !Objects.equals(getNewBookSummary(), "")){//Verif if the input are good to quit the dlg and recovered the data for bdd
+                if(!getTags().isEmpty() && !Objects.equals(getNewBookAuthor(), "") && !Objects.equals(getNewBookTitle(), "") && !Objects.equals(getNewBookSummary(), "")){//Verif if the input are good to quit the dlg and recovered the data for bdd
                     try{//Can add a new reading if the book already exist
                         Class.forName("org.sqlite.JDBC");
                         m_connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
@@ -149,9 +151,6 @@ public class AddBookDlg extends JDialog {
                             setVisible(false);
                             dispose();
                         } else if (!bookFind && isDateUnknown()&& !isNotDOne() && !Objects.equals(getURL(), "")){
-                            /*File source = new File(getURL());
-                            File dest = new File(getURL());
-                            copyFileUsingChannel(source, dest);*/
                             m_isValide=true;
                             setVisible(false);
                             dispose();
@@ -234,6 +233,36 @@ public class AddBookDlg extends JDialog {
                 BookTagsPanel.updateUI();
             }
         });
+
+        BookTagsPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                Component[] componentList = BookTagsPanel.getComponents();
+                for(int i = 0; i<componentList.length;i++){
+                    if(componentList[i]==e.getComponent().getComponentAt(e.getX(),e.getY())){
+                        BookTagsPanel.remove(componentList[i]);
+                        getTags().getTags().remove(i);
+                    }
+                }
+                System.out.println(getTags().getSizeTags());
+                BookTagsPanel.updateUI();
+            }
+        });
+        //Change the cursor when we focus a tag
+        BookTagsPanel.addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                super.mouseMoved(e);
+                File fileRemove = new File("Ressource/Icons/remove.png");
+                String pathRemove = fileRemove.getAbsolutePath();
+                Image imgRemove = Toolkit.getDefaultToolkit().getImage(pathRemove);
+                Point hotspot = new Point(15, 15);
+                String cursorName = "Lightsaber Cursor";
+                for (int i=0;i<getTags().getSizeTags();i++)
+                    getTags().getTag(i).setCursor(getToolkit().createCustomCursor(imgRemove, hotspot, cursorName));
+            }
+        });
     }
 
     public String getNewBookTitle(){//Get the new book title from JtextField
@@ -288,6 +317,7 @@ public class AddBookDlg extends JDialog {
         }
         return tags.toString();
     }
+    //Dynamically add tags to the combobox, retrieved from bdd
     public Tags findTags(){
         Tags tags = new Tags();
         String sql = "SELECT Tags FROM Book";
@@ -299,7 +329,6 @@ public class AddBookDlg extends JDialog {
             while (tagsQry.next()){
                 String[] strTags = tagsQry.getString(1).split("/");
                 boolean tagFind = false;
-
                 for(int j=0; j<Arrays.stream(strTags).count();j++){
                     for(int i = 0; i<tags.getSizeTags();i++){
                         if(strTags[j].equals(tags.getTag(i).getTextTag())){
@@ -320,7 +349,6 @@ public class AddBookDlg extends JDialog {
 
         return tags;
     }
-
     public void setTags(Tags tags){
         this.m_tags=tags;
     }
