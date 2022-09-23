@@ -45,8 +45,8 @@ public class AddBookDlg extends JDialog {
     private JCheckBox BookNotDoneReadChecbox;
     private JLabel EndReadingLabel;
     private JSpinner BookStartReadingSpin;
-    private JComboBox BookThemeCB;
-    private JLabel BookThemeLabel;
+    private JComboBox BookTagsCB;
+    private JLabel BookTagsLabel;
     private JPanel BookTagsPanel;
     private String m_URL="";
     private boolean m_isValide = false;//Useful for determinate if the input are good
@@ -197,14 +197,14 @@ public class AddBookDlg extends JDialog {
                 }
             }
         });
-        BookThemeCB.addActionListener(new ActionListener() {
+        BookTagsCB.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!Objects.equals(BookThemeCB.getSelectedItem(), "")) {
+                if (!Objects.equals(BookTagsCB.getSelectedItem(), "")) {
                     boolean tagFind = false;
                     int i = 0;
                     while(!tagFind && i<getTags().getSizeTags()){
-                        if(Objects.equals(BookThemeCB.getSelectedItem(), getTags().getTag(i).getTextTag())){
+                        if(Objects.equals(BookTagsCB.getSelectedItem(), getTags().getTag(i).getTextTag())){
                             JFrame jFrame = new JFrame();
                             JOptionPane.showMessageDialog(jFrame, "Vous avez déjà sélectionné ce tag !");
                             tagFind =true;
@@ -212,19 +212,18 @@ public class AddBookDlg extends JDialog {
                         else i++;
                     }
                     if(!tagFind){
-                        getTags().createTag(Objects.requireNonNull(BookThemeCB.getSelectedItem()).toString());
+                        getTags().createTag(Objects.requireNonNull(BookTagsCB.getSelectedItem()).toString());
                         for (int j = 0; j<getTags().getSizeTags(); j++){
                             BookTagsPanel.add(getTags().getTag(j));
-                            setBackgroundTag(getTags().getTag(j));
                         }
                     }
                 }
                 BookTagsPanel.updateUI();
             }
         });
-        /*BookThemeCB.getEditor().getEditorComponent().addKeyListener(new java.awt.event.KeyAdapter() {
+        /*BookTagsCB.getEditor().getEditorComponent().addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                System.out.println(BookThemeCB.getEditor().getItem());
+                System.out.println(BookTagsCB.getEditor().getItem());
             }
         });*/
     }
@@ -275,11 +274,11 @@ public class AddBookDlg extends JDialog {
         return this.m_tags;
     }
     public String listOfTags(){
-        String tags = "";
+        StringBuilder tags = new StringBuilder();
         for(int i=0; i<getTags().getSizeTags(); i++){
-            tags = tags+getTags().getTag(i).getTextTag()+" ";
+            tags.append(getTags().getTag(i).getTextTag()).append("/");
         }
-        return tags;
+        return tags.toString();
     }
     public String findTag(int index){
         String sql = "SELECT Tags FROM Book";
@@ -290,7 +289,7 @@ public class AddBookDlg extends JDialog {
             m_statement = m_connection.createStatement();
             ResultSet tagQry = m_statement.executeQuery(sql);
             if(tagQry!=null){
-                String[] tags = tagQry.getString(1).split(" ");
+                String[] tags = tagQry.getString(1).split("/");
                 if(index == 1){
                     tag = tags[0];
                 }
@@ -359,19 +358,10 @@ public class AddBookDlg extends JDialog {
         m_URL= url;
     }
     public void fillThemeCB(){
-        this.BookThemeCB.addItem("");
-        this.BookThemeCB.addItem("Science-fiction");
-        this.BookThemeCB.addItem("Horreur");
-        this.BookThemeCB.addItem("Fantastique");
-        this.BookThemeCB.addItem("Polar");
-    }
-    public void setBackgroundTag(Tag tag){
-        switch (tag.getTextTag()) {
-            case "Science-fiction" -> tag.setBackground(new Color(255, 206, 45, 102));
-            case "Fantastique" -> tag.setBackground(new Color(142, 255, 71, 102));
-            case "Horreur" -> tag.setBackground(new Color(255, 64, 64, 102));
-            case "Polar" -> tag.setBackground(new Color(74, 153, 187, 102));
-            default -> tag.setBackground(new Color(255, 45, 227, 102));
-        }
+        this.BookTagsCB.addItem("");
+        this.BookTagsCB.addItem("Science fiction");
+        this.BookTagsCB.addItem("Horreur");
+        this.BookTagsCB.addItem("Fantastique");
+        this.BookTagsCB.addItem("Polar");
     }
 }

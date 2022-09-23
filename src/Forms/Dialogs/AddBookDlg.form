@@ -214,7 +214,7 @@
               <text value="Fin de lecture"/>
             </properties>
           </component>
-          <component id="47a8" class="javax.swing.JComboBox" binding="BookThemeCB">
+          <component id="47a8" class="javax.swing.JComboBox" binding="BookTagsCB">
             <constraints>
               <grid row="7" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -222,12 +222,12 @@
               <editable value="false"/>
             </properties>
           </component>
-          <component id="8dd29" class="javax.swing.JLabel" binding="BookThemeLabel">
+          <component id="8dd29" class="javax.swing.JLabel" binding="BookTagsLabel">
             <constraints>
               <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text value="Thèmes"/>
+              <text value="Tags"/>
             </properties>
           </component>
           <grid id="9eed7" binding="BookTagsPanel" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="0">

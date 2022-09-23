@@ -21,9 +21,6 @@ public class Tags extends Tag {
     public boolean isEmpty(){
         return this.m_tags.isEmpty();
     }
-    public boolean isNotEmpty(){
-        return !this.m_tags.isEmpty();
-    }
 
     public void setTags(ArrayList<Tag> tag){
         this.m_tags = tag;

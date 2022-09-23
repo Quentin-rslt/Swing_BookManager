@@ -1,7 +1,6 @@
 package Sources;
 
 import Sources.Dialogs.*;
-import com.formdev.flatlaf.FlatDarkLaf;
 //import com.formdev.flatlaf.FlatDarkLaf;
 
 import javax.swing.*;
@@ -484,7 +483,7 @@ public class MainWindow extends JDialog {
     }
     public Tags findTags(String str){
         Tags tags = new Tags();
-        String[] strTags = str.split(" ");
+        String[] strTags = str.split("/");
         for(int i = 0; i<Arrays.stream(strTags).count(); i++){
             tags.createTag(strTags[i]);
         }
@@ -603,7 +602,6 @@ public class MainWindow extends JDialog {
             setTags(findTags(themeQry.getString(1)));
             for(int i = 0; i<getTags().getSizeTags(); i++){
                 BookTagsPanel.add(getTags().getTag(i));
-                setBackgroundTag(getTags().getTag(i));
             }
             BookTagsPanel.updateUI();
 
@@ -737,23 +735,11 @@ public class MainWindow extends JDialog {
         }
         return i;
     }
-    public void setBackgroundTag(Tag tag){
-        if(tag.getTextTag().equals("Science-fiction"))
-            tag.setBackground(new Color(255, 206, 45, 102));
-        else if(tag.getTextTag().equals("Fantastique"))
-            tag.setBackground(new Color(142, 255, 71, 102));
-        else if(tag.getTextTag().equals("Horreur"))
-            tag.setBackground(new Color(255, 64, 64, 102));
-        else if(tag.getTextTag().equals("Polar"))
-            tag.setBackground(new Color(74, 153, 187, 102));
-        else
-            tag.setBackground(new Color(255, 45, 227, 102));
-    }
 
     public static void main(String[] args) {
         try {
-            //UIManager.setLookAndFeel(new NimbusLookAndFeel());
-            UIManager.setLookAndFeel(new FlatDarkLaf());
+            UIManager.setLookAndFeel(new NimbusLookAndFeel());
+            //UIManager.setLookAndFeel(new FlatDarkLaf());
         }catch( Exception ex ) {
             System.err.println( "Failed to initialize LaF" );
         }
