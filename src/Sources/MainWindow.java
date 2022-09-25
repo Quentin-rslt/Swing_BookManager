@@ -156,103 +156,58 @@ public class MainWindow extends JDialog {
                 if (diag.isValide()){
                     String BookQry = "INSERT INTO Book (Title,Author,Image,NumberOP,NotePerso,NoteBabelio,ReleaseYear,Summary) " +
                             "VALUES (?,?,?,?,?,?,?,?);";
-                    String TaggingQry = "INSERT INTO Tagging (Tags,Color) " +
-                            "VALUES (?,?);";
                     String ReadingQry = "INSERT INTO Reading (ID,Title,Author,StartReading, EndReading) " +
                             "VALUES (?,?,?,?,?);";
-                    String IdBookQry = "SELECT ID FROM Book WHERE Title='"+diag.getNewBookTitle()+"' AND Author='"+diag.getNewBookAuthor()+ "'";
+                    String TagsQry = "INSERT INTO Tagging (Tag,Color) " +
+                            "VALUES (?,?);";
+                    String TaggingQry = "INSERT INTO Tags (IdBook,IdTag) " +
+                            "VALUES (?,?);";
 
                     contentPane.updateUI();
                     BookListPanel.removeAll();//refresh the table of book
                     try (Connection conn = connect(); PreparedStatement BookPstmt = conn.prepareStatement(BookQry); PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry);
-                         PreparedStatement TaggingPstmt = conn.prepareStatement(TaggingQry)) {
+                         PreparedStatement TaggingPstmt = conn.prepareStatement(TaggingQry); PreparedStatement TagsPstmt = conn.prepareStatement(TagsQry)) {
                         m_statement = conn.createStatement();
+
+                        ReadingPstmt.setInt(1, setIdReading(diag.getNewBookTitle(), diag.getNewBookAuthor()));
+                        ReadingPstmt.setString(2, diag.getNewBookTitle());
+                        ReadingPstmt.setString(3, diag.getNewBookAuthor());
+
+                        BookPstmt.setString(1, diag.getNewBookTitle());
+                        BookPstmt.setString(2, diag.getNewBookAuthor());
+                        BookPstmt.setString(3, diag.getURL());
+                        BookPstmt.setString(4, diag.getNewBookNumberOP());
+                        BookPstmt.setString(5, diag.getNewBookPersonalNote());
+                        BookPstmt.setString(6, diag.getNewBookBBLNote());
+                        BookPstmt.setString(7, diag.getNewBookReleaseYear());
+                        BookPstmt.setString(8, diag.getNewBookSummary());
+
+                        for(int i=0; i<diag.getTags().getSizeTags(); i++){
+                            TagsPstmt.setString(1, diag.getTags().getTag(i).getTextTag());
+                            TagsPstmt.setInt(2, diag.getTags().getTag(i).getColor());
+                        }
+
                         if(!diag.isDateUnknown() && !diag.isNotDOne()){
-                            ReadingPstmt.setInt(1, setIdReading(diag.getNewBookTitle(), diag.getNewBookAuthor()));
-                            ReadingPstmt.setString(2, diag.getNewBookTitle());
-                            ReadingPstmt.setString(3, diag.getNewBookAuthor());
                             ReadingPstmt.setString(4, diag.getNewBookStartReading());
-                            ReadingPstmt.setString(5, diag.getNewBookEndReading());
-
-                            BookPstmt.setString(1, diag.getNewBookTitle());
-                            BookPstmt.setString(2, diag.getNewBookAuthor());
-                            BookPstmt.setString(3, diag.getURL());
-                            BookPstmt.setString(4, diag.getNewBookNumberOP());
-                            BookPstmt.setString(5, diag.getNewBookPersonalNote());
-                            BookPstmt.setString(6, diag.getNewBookBBLNote());
-                            BookPstmt.setString(7, diag.getNewBookReleaseYear());
-                            BookPstmt.setString(8, diag.getNewBookSummary());
-
-                            TaggingPstmt.setString(1, diag.listOfTags());
-                            TaggingPstmt.setString(2, diag.listOfColors());
-
-                            TaggingPstmt.executeUpdate();//Insert the new Book
-                            BookPstmt.executeUpdate();//Insert the new Book
-                            ReadingPstmt.executeUpdate();//Insert the new reading
-                            setMTitle(diag.getNewBookTitle());
-                            setAuthor(diag.getNewBookAuthor());
-                            loadComponents(diag.getNewBookTitle(), diag.getNewBookAuthor());
-                            loadDB(false);
-                            //Focus in the jtable on the book created
-                            m_bookListTable.setRowSelectionInterval(getRowSelected(diag.getNewBookTitle(), diag.getNewBookAuthor()), getRowSelected(diag.getNewBookTitle(), diag.getNewBookAuthor()));
+                            ReadingPstmt.setString(5, diag.getNewBookEndReading());;
                         } else if (!diag.isDateUnknown() && diag.isNotDOne()) {
-                            ReadingPstmt.setInt(1, setIdReading(diag.getNewBookTitle(), diag.getNewBookAuthor()));
-                            ReadingPstmt.setString(2, diag.getNewBookTitle());
-                            ReadingPstmt.setString(3, diag.getNewBookAuthor());
                             ReadingPstmt.setString(4, diag.getNewBookStartReading());
                             ReadingPstmt.setString(5, "Pas fini");
-
-                            BookPstmt.setString(1, diag.getNewBookTitle());
-                            BookPstmt.setString(2, diag.getNewBookAuthor());
-                            BookPstmt.setString(3, diag.getURL());
-                            BookPstmt.setString(4, diag.getNewBookNumberOP());
-                            BookPstmt.setString(5, diag.getNewBookPersonalNote());
-                            BookPstmt.setString(6, diag.getNewBookBBLNote());
-                            BookPstmt.setString(7, diag.getNewBookReleaseYear());
-                            BookPstmt.setString(8, diag.getNewBookSummary());
-
-                            TaggingPstmt.setString(1, diag.listOfTags());
-                            TaggingPstmt.setString(2, diag.listOfColors());
-
-                            TaggingPstmt.executeUpdate();//Insert the new Book
-                            BookPstmt.executeUpdate();//Insert the new Book
-                            ReadingPstmt.executeUpdate();//Insert the new reading
-                            setMTitle(diag.getNewBookTitle());
-                            setAuthor(diag.getNewBookAuthor());
-                            loadComponents(diag.getNewBookTitle(), diag.getNewBookAuthor());
-                            loadDB(false);
-                            //Focus in the jtable on the book created
-                            m_bookListTable.setRowSelectionInterval(getRowSelected(diag.getNewBookTitle(), diag.getNewBookAuthor()), getRowSelected(diag.getNewBookTitle(), diag.getNewBookAuthor()));
                         } else {
                             ReadingPstmt.setInt(1, setIdReading(diag.getNewBookTitle(), diag.getNewBookAuthor()));
-                            ReadingPstmt.setString(2, diag.getNewBookTitle());
-                            ReadingPstmt.setString(3, diag.getNewBookAuthor());
                             ReadingPstmt.setString(4, "Inconnu");
                             ReadingPstmt.setString(5, "Inconnu");
-
-                            BookPstmt.setString(1, diag.getNewBookTitle());
-                            BookPstmt.setString(2, diag.getNewBookAuthor());
-                            BookPstmt.setString(3, diag.getURL());
-                            BookPstmt.setString(4, diag.getNewBookNumberOP());
-                            BookPstmt.setString(5, diag.getNewBookPersonalNote());
-                            BookPstmt.setString(6, diag.getNewBookBBLNote());
-                            BookPstmt.setString(7, diag.getNewBookReleaseYear());
-                            BookPstmt.setString(8, diag.getNewBookSummary());
-
-                            TaggingPstmt.setString(1, diag.listOfTags());
-                            TaggingPstmt.setString(2, diag.listOfColors());
-
-                            TaggingPstmt.executeUpdate();//Insert the new Book
-                            BookPstmt.executeUpdate();//Insert the new Book in table Book
-                            ReadingPstmt.executeUpdate();//Insert the new reading
-
-                            setMTitle(diag.getNewBookTitle());
-                            setAuthor(diag.getNewBookAuthor());
-                            loadComponents(diag.getNewBookTitle(), diag.getNewBookAuthor());
-                            loadDB(false);
-                            //Focus in the jtable on the book created
-                            m_bookListTable.setRowSelectionInterval(getRowSelected(diag.getNewBookTitle(), diag.getNewBookAuthor()), getRowSelected(diag.getNewBookTitle(), diag.getNewBookAuthor()));
                         }
+                        TagsPstmt.executeUpdate();//Insert the new Book
+                        BookPstmt.executeUpdate();//Insert the new Book in table Book
+                        ReadingPstmt.executeUpdate();//Insert the new reading
+
+                        setMTitle(diag.getNewBookTitle());
+                        setAuthor(diag.getNewBookAuthor());
+                        loadComponents(diag.getNewBookTitle(), diag.getNewBookAuthor());
+                        loadDB(false);
+                        //Focus in the jtable on the book created
+                        m_bookListTable.setRowSelectionInterval(getRowSelected(diag.getNewBookTitle(), diag.getNewBookAuthor()), getRowSelected(diag.getNewBookTitle(), diag.getNewBookAuthor()));
 
                         conn.close();
                         m_statement.close();
@@ -528,7 +483,7 @@ public class MainWindow extends JDialog {
             Class.forName("org.sqlite.JDBC");
             m_statement = conn.createStatement();
 
-            String sql = "CREATE TABLE IF NOT EXISTS Book" +
+            String BookSql = "CREATE TABLE IF NOT EXISTS Book" +
                     "(ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     " Title TEXT, " +
                     " Author TEXT, " +
@@ -539,21 +494,26 @@ public class MainWindow extends JDialog {
                     " ReleaseYear TEXT, " +
                     " Summary TEXT)";
 
-            String sql2 = "CREATE TABLE IF NOT EXISTS Reading" +
+            String ReadSql = "CREATE TABLE IF NOT EXISTS Reading" +
                     "(ID INT, " +
                     " Title TEXT, " +
                     " Author TEXT, " +
                     " StartReading TEXT, " +
                     " EndReading TEXT)";
 
-            String sql3 = "CREATE TABLE IF NOT EXISTS Tagging" +
-                    "(IdBook INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    " Tags TEXT, " +
+            String TagsSql = "CREATE TABLE IF NOT EXISTS Tags" +
+                    "(ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    " Tag TEXT, " +
                     " Color INT)";
 
-            m_statement.executeUpdate(sql);//Create the book table
-            m_statement.executeUpdate(sql2);//Create the reading table
-            m_statement.executeUpdate(sql3);//Create the tagging table
+            String TaggingSql = "CREATE TABLE IF NOT EXISTS Tagging" +
+                    "(IdBook INT, " +
+                    " IdTag INT)";
+
+            m_statement.executeUpdate(BookSql);//Create the book table
+            m_statement.executeUpdate(ReadSql);//Create the reading table
+            m_statement.executeUpdate(TagsSql);//Create the tags table
+            m_statement.executeUpdate(TaggingSql);//Create the tagging table
             System.out.println("Table created successfully");
 
             conn.close();
