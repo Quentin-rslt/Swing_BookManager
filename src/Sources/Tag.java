@@ -7,15 +7,15 @@ import java.nio.charset.StandardCharsets;
 
 public class Tag extends JLabel {
     String m_tag;
+    int m_color;
 
     public Tag(){
         m_tag="";
     }
     public Tag(String tag){
         initComponent(tag);
-
-
-        setBackground(new Color(stringToHex(tag)));
+        setColor(stringToHex(tag));
+        setBackground(new Color(getColor()));
         setText(tag);
         m_tag= tag;
     }
@@ -35,7 +35,13 @@ public class Tag extends JLabel {
 
         return bigInteger.pow(2).intValue();
     }
+    public int getColor(){
+        return this.m_color;
+    }
 
+    public void setColor(int color){
+        this.m_color = color;
+    }
     public void setTextTag(String tag){
         this.m_tag=tag;
     }

@@ -318,10 +318,17 @@ public class AddBookDlg extends JDialog {
         }
         return tags.toString();
     }
+    public String listOfColors(){
+        StringBuilder colors = new StringBuilder();
+        for(int i=0; i<getTags().getSizeTags(); i++){
+            colors.append(getTags().getTag(i).getColor()).append("/");
+        }
+        return colors.toString();
+    }
     //Dynamically add tags to the combobox, retrieved from bdd
     public Tags findTags(){
         Tags tags = new Tags();
-        String sql = "SELECT Tags FROM Book";
+        String sql = "SELECT Tags FROM Tagging";
         try {
             Class.forName("org.sqlite.JDBC");
             m_connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
@@ -350,6 +357,7 @@ public class AddBookDlg extends JDialog {
 
         return tags;
     }
+
     public void setTags(Tags tags){
         this.m_tags=tags;
     }
