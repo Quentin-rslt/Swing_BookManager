@@ -1,7 +1,7 @@
 package Sources;
 
 import Sources.Dialogs.*;
-//import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatDarkLaf;
 
 import javax.swing.*;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
@@ -738,8 +738,8 @@ public class MainWindow extends JDialog {
 
     public static void main(String[] args) {
         try {
-            UIManager.setLookAndFeel(new NimbusLookAndFeel());
-            //UIManager.setLookAndFeel(new FlatDarkLaf());
+            //UIManager.setLookAndFeel(new NimbusLookAndFeel());
+            UIManager.setLookAndFeel(new FlatDarkLaf());
         }catch( Exception ex ) {
             System.err.println( "Failed to initialize LaF" );
         }
