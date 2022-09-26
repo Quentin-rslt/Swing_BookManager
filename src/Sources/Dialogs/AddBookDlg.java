@@ -297,27 +297,16 @@ public class AddBookDlg extends JDialog {
         return this.m_tags;
     }
     //Dynamically add tags to the combobox, retrieved from bdd
-    public Tags findTags(){
+    public Tags loadTags(){
         Tags tags = new Tags();
-        String sql = "SELECT Tags FROM Tagging";
+        String sql = "SELECT Tag FROM Tags";
         try {
             Class.forName("org.sqlite.JDBC");
             m_connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
             m_statement = m_connection.createStatement();
             ResultSet tagsQry = m_statement.executeQuery(sql);
             while (tagsQry.next()){
-                String[] strTags = tagsQry.getString(1).split("/");
-                boolean tagFind = false;
-                for(int j=0; j<Arrays.stream(strTags).count();j++){
-                    for(int i = 0; i<tags.getSizeTags();i++){
-                        if(strTags[j].equals(tags.getTag(i).getTextTag())){
-                            tagFind=true;
-                        }
-                    }
-                    if(!tagFind){
-                        tags.createTag(strTags[j]);
-                    }
-                }
+                tags.createTag(tagsQry.getString(1));
             }
             m_connection.close();
             m_statement.close();
@@ -387,8 +376,8 @@ public class AddBookDlg extends JDialog {
     }
     public void fillThemeCB(){
         this.BookTagsCB.addItem("");
-//        for (int i = 0; i<findTags().getSizeTags(); i++){
-//            this.BookTagsCB.addItem(findTags().getTag(i).getTextTag());
-//        }
+        for (int i = 0; i<loadTags().getSizeTags(); i++){
+            this.BookTagsCB.addItem(loadTags().getTag(i).getTextTag());
+        }
     }
 }

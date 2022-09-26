@@ -64,13 +64,11 @@ public class MainWindow extends JDialog {
     private int m_rowSelected = 0;
     private JPopupMenu m_popup;
     private FiltersDlg m_diag;
-    private Tags m_tags;
 
     public MainWindow() {
         setContentPane(contentPane);
         setModal(true);
         connectionDB();
-        m_tags = new Tags();
         loadDB(false);
 
         m_popup = new JPopupMenu();//Create a popup menu to delete a reading an edit this reading
@@ -158,12 +156,6 @@ public class MainWindow extends JDialog {
                             "VALUES (?,?,?,?,?,?,?,?);";
                     String ReadingQry = "INSERT INTO Reading (ID,Title,Author,StartReading, EndReading) " +
                             "VALUES (?,?,?,?,?);";
-                    //String TagsQry="";
-//                    for(int i=0; i<diag.getTags().getSizeTags();i++) {
-//                        TagsQry = "INSERT INTO Tags (Tag,Color)" +
-//                                " SELECT '"+ diag.getTags().getTag(i).getTextTag() +"', '"+diag.getTags().getTag(i).getColor()+"'" +
-//                                " WHERE NOT EXISTS(SELECT * FROM Tags WHERE Tag='" + diag.getTags().getTag(i).getTextTag() + "' AND Color='" + diag.getTags().getTag(i).getColor() + "')";
-//                    }
                     String TaggingQry = "INSERT INTO Tagging (IdBook,IdTag) " +
                             "VALUES (?,?);";
 
@@ -173,7 +165,7 @@ public class MainWindow extends JDialog {
                          PreparedStatement TaggingPstmt = conn.prepareStatement(TaggingQry); ) {
                         m_statement = conn.createStatement();
 
-                        ReadingPstmt.setInt(1, setIdReading(diag.getNewBookTitle(), diag.getNewBookAuthor()));
+                        ReadingPstmt.setInt(1, getIdReading(diag.getNewBookTitle(), diag.getNewBookAuthor()));
                         ReadingPstmt.setString(2, diag.getNewBookTitle());
                         ReadingPstmt.setString(3, diag.getNewBookAuthor());
 
@@ -193,7 +185,7 @@ public class MainWindow extends JDialog {
                             ReadingPstmt.setString(4, diag.getNewBookStartReading());
                             ReadingPstmt.setString(5, "Pas fini");
                         } else {
-                            ReadingPstmt.setInt(1, setIdReading(diag.getNewBookTitle(), diag.getNewBookAuthor()));
+                            ReadingPstmt.setInt(1, getIdReading(diag.getNewBookTitle(), diag.getNewBookAuthor()));
                             ReadingPstmt.setString(4, "Inconnu");
                             ReadingPstmt.setString(5, "Inconnu");
                         }
@@ -207,8 +199,8 @@ public class MainWindow extends JDialog {
                             PreparedStatement TagsPstmt = conn.prepareStatement(TagsQry);
                             TagsPstmt.executeUpdate();
 
-                            TaggingPstmt.setInt(1, setIdBook(diag.getNewBookTitle(), diag.getNewBookAuthor()));
-                            TaggingPstmt.setInt(2, setIdTag(diag.getTags().getTag(i).getTextTag(), diag.getTags().getTag(i).getColor()));
+                            TaggingPstmt.setInt(1, getIdBook(diag.getNewBookTitle(), diag.getNewBookAuthor()));
+                            TaggingPstmt.setInt(2, getIdTag(diag.getTags().getTag(i).getTextTag(), diag.getTags().getTag(i).getColor()));
                             TaggingPstmt.executeUpdate();
                         }
 
@@ -343,7 +335,7 @@ public class MainWindow extends JDialog {
                     try(Connection conn = connect(); PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry)){
                         m_statement = conn.createStatement();
                         ResultSet rs = m_statement.executeQuery("SELECT * FROM Book WHERE Title='"+diag.getMtitle()+"' AND Author='"+diag.getAuthor()+ "'");
-                        ReadingPstmt.setInt(1, setIdReading(diag.getMtitle(), diag.getAuthor()));
+                        ReadingPstmt.setInt(1, getIdReading(diag.getMtitle(), diag.getAuthor()));
                         ReadingPstmt.setString(2, diag.getMtitle());
                         ReadingPstmt.setString(3, diag.getAuthor());
 
@@ -445,21 +437,6 @@ public class MainWindow extends JDialog {
 
         return row;
     }
-    public Tags findTags(String str){
-        Tags tags = new Tags();
-        String[] strTags = str.split("/");
-        for(int i = 0; i<Arrays.stream(strTags).count(); i++){
-            tags.createTag(strTags[i]);
-        }
-        return tags;
-    }
-    public Tags getTags(){
-        return this.m_tags;
-    }
-
-    public void setTags(Tags tags){
-        this.m_tags = tags;
-    }
     public void setRowSelected(int m_rowSelected) {
         this.m_rowSelected = m_rowSelected;
     }
@@ -559,6 +536,7 @@ public class MainWindow extends JDialog {
         }
     }
     public void loadComponents(String title, String author){
+        Tags tags = new Tags();
         try(Connection conn = connect()) {
             Class.forName("org.sqlite.JDBC");
             m_statement = conn.createStatement();
@@ -572,13 +550,17 @@ public class MainWindow extends JDialog {
             AuthorLabel.setText("Auteur : "+authorQry.getString(1));
 
             //Tags Label
-//            ResultSet themeQry = m_statement.executeQuery("SELECT Tags FROM Tagging WHERE Title='"+title+"' AND Author='"+author+ "'");
-//            BookTagsPanel.removeAll();
-//            setTags(findTags(themeQry.getString(1)));
-//            for(int i = 0; i<getTags().getSizeTags(); i++){
-//                BookTagsPanel.add(getTags().getTag(i));
-//            }
-//            BookTagsPanel.updateUI();
+            ResultSet tagsQry = m_statement.executeQuery("SELECT Tag,Color FROM Tags JOIN Tagging on Tags.ID=Tagging.IdTag " +
+                    "WHERE Tagging.IdBook='"+getIdBook(title, author)+"'");
+            BookTagsPanel.removeAll();
+            while (tagsQry.next()){
+                tags.createTag(tagsQry.getString(1));
+                tags.getTag(tagsQry.getRow()-1).setColor(tagsQry.getInt(2));
+                for(int i=0; i<tags.getSizeTags();i++) {
+                    BookTagsPanel.add(tags.getTag(i));
+                }
+            }
+            BookTagsPanel.updateUI();
 
             //Release year label
             ResultSet ReleaseYearQry = m_statement.executeQuery("SELECT ReleaseYear FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
@@ -693,12 +675,12 @@ public class MainWindow extends JDialog {
         BookPhotoPanel.removeAll();
         contentPane.updateUI();
     }
-    public int setIdReading(String title, String author) {
+    public int getIdReading(String title, String author) {
         int i =0;
         try (Connection conn = connect()) {
             m_statement = conn.createStatement();
             ResultSet rs = m_statement.executeQuery("SELECT COUNT(*) FROM Reading WHERE Title='"+title+"' AND Author='"+author+ "'");
-            i=rs.getInt(1)+1;
+            i=rs.getInt(1);
             rs.close();
             conn.close();
             m_statement.close();
@@ -708,22 +690,22 @@ public class MainWindow extends JDialog {
         }
         return i;
     }
-    public int setIdBook(String title, String author) {
+    public int getIdBook(String title, String author) {
         int i =0;
         try (Connection conn = connect()) {
-            m_statement = conn.createStatement();
-            ResultSet idBook = m_statement.executeQuery("SELECT ID FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
+            Statement statement = conn.createStatement();
+            ResultSet idBook = statement.executeQuery("SELECT ID FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
             i=idBook.getInt(1);
             idBook.close();
             conn.close();
-            m_statement.close();
+            statement.close();
         }catch (Exception e){
             System.err.println( e.getClass().getName() + ": " + e.getMessage() );
             System.exit(0);
         }
         return i;
     }
-    public int setIdTag(String tag, int color) {
+    public int getIdTag(String tag, int color) {
         int i =0;
         try (Connection conn = connect()) {
             m_statement = conn.createStatement();
