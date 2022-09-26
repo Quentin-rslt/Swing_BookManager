@@ -249,21 +249,6 @@ public class AddBookDlg extends JDialog {
                 BookTagsPanel.updateUI();
             }
         });
-        //Change the cursor when we focus a tag
-        BookTagsPanel.addMouseMotionListener(new MouseMotionAdapter() {
-
-            @Override
-            public void mouseMoved(MouseEvent e) {
-                super.mouseMoved(e);
-                File fileRemove = new File("Ressource/Icons/Cursor_remove.png");
-                String pathRemove = fileRemove.getAbsolutePath();
-                Image imgRemove = Toolkit.getDefaultToolkit().getImage(pathRemove);
-                Point hotspot = new Point(15, 15);
-                String cursorName = "Delete Cursor";
-                for (int i=0;i<getTags().getSizeTags();i++)
-                    getTags().getTag(i).setCursor(getToolkit().createCustomCursor(imgRemove, hotspot, cursorName));
-            }
-        });
     }
 
     public String getNewBookTitle(){//Get the new book title from JtextField
@@ -310,20 +295,6 @@ public class AddBookDlg extends JDialog {
     }
     public Tags getTags(){
         return this.m_tags;
-    }
-    public String listOfTags(){
-        StringBuilder tags = new StringBuilder();
-        for(int i=0; i<getTags().getSizeTags(); i++){
-            tags.append(getTags().getTag(i).getTextTag()).append("/");
-        }
-        return tags.toString();
-    }
-    public String listOfColors(){
-        StringBuilder colors = new StringBuilder();
-        for(int i=0; i<getTags().getSizeTags(); i++){
-            colors.append(getTags().getTag(i).getColor()).append("/");
-        }
-        return colors.toString();
     }
     //Dynamically add tags to the combobox, retrieved from bdd
     public Tags findTags(){
@@ -416,8 +387,8 @@ public class AddBookDlg extends JDialog {
     }
     public void fillThemeCB(){
         this.BookTagsCB.addItem("");
-        for (int i = 0; i<findTags().getSizeTags(); i++){
-            this.BookTagsCB.addItem(findTags().getTag(i).getTextTag());
-        }
+//        for (int i = 0; i<findTags().getSizeTags(); i++){
+//            this.BookTagsCB.addItem(findTags().getTag(i).getTextTag());
+//        }
     }
 }
