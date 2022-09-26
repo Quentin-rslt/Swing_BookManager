@@ -1,10 +1,8 @@
 package Sources;
 
 import Sources.Dialogs.*;
-//simport com.formdev.flatlaf.FlatDarkLaf;
 
 import javax.swing.*;
-import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -15,7 +13,6 @@ import java.io.File;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
 import java.util.Objects;
 
 public class MainWindow extends JDialog {
@@ -70,6 +67,8 @@ public class MainWindow extends JDialog {
         setModal(true);
         connectionDB();
         loadDB(false);
+
+
 
         m_popup = new JPopupMenu();//Create a popup menu to delete a reading an edit this reading
         File fileAdd = new File("Ressource/Icons/add.png");
@@ -725,11 +724,16 @@ public class MainWindow extends JDialog {
 
     public static void main(String[] args) {
         try {
-            UIManager.setLookAndFeel(new NimbusLookAndFeel());
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Windows".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                }
+            }
             //UIManager.setLookAndFeel(new FlatDarkLaf());
         }catch( Exception ex ) {
             System.err.println( "Failed to initialize LaF" );
         }
+
         MainWindow dialog = new MainWindow();
         dialog.setTitle("Book manager");
         dialog.setSize(1000,550);

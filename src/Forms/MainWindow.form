@@ -279,7 +279,7 @@
                           <dragEnabled value="false"/>
                           <editable value="false"/>
                           <enabled value="true"/>
-                          <focusable value="false"/>
+                          <focusable value="true"/>
                           <text value=""/>
                         </properties>
                       </component>

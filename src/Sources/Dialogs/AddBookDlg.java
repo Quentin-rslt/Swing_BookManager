@@ -1,22 +1,19 @@
 package Sources.Dialogs;
 
-import Sources.Tag;
 import Sources.Tags;
 
 import javax.swing.*;
-import javax.swing.plaf.basic.BasicTableHeaderUI;
-import javax.swing.plaf.basic.BasicTreeUI;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
-
-import static java.awt.Event.ENTER;
 
 public class AddBookDlg extends JDialog {
     private JPanel contentPane;
@@ -216,6 +213,7 @@ public class AddBookDlg extends JDialog {
             }
         });
         BookTagsCB.getEditor().getEditorComponent().addKeyListener(new java.awt.event.KeyAdapter() {
+
             @Override
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 if (!Objects.equals(BookTagsCB.getSelectedItem(), "")) {
@@ -274,6 +272,12 @@ public class AddBookDlg extends JDialog {
                 BookTagsPanel.updateUI();
             }
         });
+        edit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+
+            }
+        });
     }
 
     public String getNewBookTitle(){//Get the new book title from JtextField
@@ -321,7 +325,6 @@ public class AddBookDlg extends JDialog {
     public Tags getTags(){
         return this.m_tags;
     }
-    //Dynamically add tags to the combobox, retrieved from bdd
     public Tags loadTags(){
         Tags tags = new Tags();
         String sql = "SELECT Tag FROM Tags";
@@ -344,7 +347,7 @@ public class AddBookDlg extends JDialog {
     }
     public void addImageToPanel(String path){//Apply to our panel an image with path
         Image img = Toolkit.getDefaultToolkit().getImage(path);
-        img=img.getScaledInstance(200, 300, Image.SCALE_AREA_AVERAGING);
+        img=img.getScaledInstance(233, 350, Image.SCALE_AREA_AVERAGING);
         ImageIcon icon = new ImageIcon(img);
         JLabel imgLabel = new JLabel();
         imgLabel.setIcon(icon);
