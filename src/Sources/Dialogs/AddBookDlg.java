@@ -57,7 +57,8 @@ public class AddBookDlg extends JDialog {
     private boolean m_isValide = false;//Useful for determinate if the input are good
     private Connection m_connection;
     private Statement m_statement;
-    private Tags m_tags;
+    final Tags m_tags;
+    private JPopupMenu m_popup;
 
 
     public AddBookDlg() {
@@ -67,6 +68,21 @@ public class AddBookDlg extends JDialog {
         setModal(true);
         initComponents();
         initComponents(true);
+
+        m_popup = new JPopupMenu();//Create a popup menu to delete a reading an edit this reading
+        File fileRemove = new File("Ressource/Icons/remove.png");
+        String pathRemove = fileRemove.getAbsolutePath();
+        Image imgRemove = Toolkit.getDefaultToolkit().getImage(pathRemove);
+        imgRemove = imgRemove.getScaledInstance(18,18,Image.SCALE_AREA_AVERAGING);
+        JMenuItem cut = new JMenuItem("Supprimer", new ImageIcon(imgRemove));
+
+        File fileEdit = new File("Ressource/Icons/edit.png");
+        String pathEdit = fileEdit.getAbsolutePath();
+        Image imgEdit = Toolkit.getDefaultToolkit().getImage(pathEdit);
+        imgEdit = imgEdit.getScaledInstance(18,18,Image.SCALE_AREA_AVERAGING);
+        JMenuItem edit = new JMenuItem("Modifier", new ImageIcon(imgEdit));
+        m_popup.add(cut);
+        m_popup.add(edit);
 
         BookUnknownReadDateChecbox.addActionListener(new ActionListener() {
             @Override
@@ -226,6 +242,7 @@ public class AddBookDlg extends JDialog {
                             getTags().createTag(Objects.requireNonNull(BookTagsCB.getSelectedItem()).toString());
                             for (int j = 0; j<getTags().getSizeTags(); j++){
                                 BookTagsPanel.add(getTags().getTag(j));
+                                BookTagsCB.setSelectedIndex(0);
                             }
                         }
                     }
@@ -238,14 +255,22 @@ public class AddBookDlg extends JDialog {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
+                if(e.getButton() == MouseEvent.BUTTON3) {
+                    m_popup.show(BookTagsPanel, e.getX(), e.getY());//show a popup to edit the reading
+                    m_popup.setInvoker(e.getComponent().getComponentAt(e.getX(),e.getY()));
+                }
+            }
+        });
+        cut.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
                 Component[] componentList = BookTagsPanel.getComponents();
-                for(int i = 0; i<componentList.length;i++){
-                    if(componentList[i]==e.getComponent().getComponentAt(e.getX(),e.getY())){
+                for(int i = 0; i<getTags().getSizeTags();i++){
+                    if(componentList[i]==m_popup.getInvoker()){
                         BookTagsPanel.remove(componentList[i]);
                         getTags().getTags().remove(i);
                     }
                 }
-                System.out.println(getTags().getSizeTags());
                 BookTagsPanel.updateUI();
             }
         });
@@ -316,10 +341,6 @@ public class AddBookDlg extends JDialog {
         }
 
         return tags;
-    }
-
-    public void setTags(Tags tags){
-        this.m_tags=tags;
     }
     public void addImageToPanel(String path){//Apply to our panel an image with path
         Image img = Toolkit.getDefaultToolkit().getImage(path);

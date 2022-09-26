@@ -215,7 +215,6 @@ public class MainWindow extends JDialog {
                         m_statement.close();
                     } catch (SQLException e) {
                         System.out.println(e.getMessage());
-                        System.exit(0);
                     }
                 }
             }
@@ -251,11 +250,14 @@ public class MainWindow extends JDialog {
                         JOptionPane.YES_NO_OPTION);
                 if(n == 0){
                     String boolQry = "DELETE FROM Book WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";//sql to delete the book in table book when we right click
-                    String ReadingQry = "DELETE FROM Reading WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";//sql to delete the book in table reading when we right click
-                    try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(boolQry); PreparedStatement pstmt2 = conn.prepareStatement(ReadingQry)) {
+                    String ReadingQry = "DELETE FROM Reading WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";
+                    String TaggingQry = "DELETE FROM Tagging WHERE IdBook='"+getIdBook(getMTitle(),getAuthor())+"'";
+                    try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(boolQry); PreparedStatement pstmt2 = conn.prepareStatement(ReadingQry);
+                         PreparedStatement taggingPstmt = conn.prepareStatement(TaggingQry)) {
                         // execute the delete statement
                         pstmt.executeUpdate();
                         pstmt2.executeUpdate();
+                        taggingPstmt.executeUpdate();
                         initComponents();
                         BookListPanel.removeAll();
                         loadDB(false);

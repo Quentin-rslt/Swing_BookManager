@@ -88,6 +88,7 @@ public class ManageReadingDlg extends JDialog {
             public void actionPerformed(ActionEvent evt) {
                 String ReadingQry = "DELETE FROM Reading WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"' AND ID='"+getRow()+"'";//Delete in bdd the item that we want delete
                 String BookQry = "DELETE FROM Book WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";//Delete in bdd the item that we want delete
+                String TaggingQry = "DELETE FROM Tagging WHERE IdBook='"+getIdBook(getMTitle(),getAuthor())+"'";
                 if(m_bookListTable.getRowCount()>1){//If there is more than one reading you don't need to know if the person really wants to delete the book
                     try (Connection conn = connect(); PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry, 1); PreparedStatement BookPstmt = conn.prepareStatement(BookQry)) {
                         ReadingPstmt.executeUpdate();
@@ -110,9 +111,11 @@ public class ManageReadingDlg extends JDialog {
                             "An Inane Question",
                             JOptionPane.YES_NO_OPTION);
                     if(n==0){
-                        try (Connection conn = connect(); PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry); PreparedStatement BookPstmt = conn.prepareStatement(BookQry)) {
+                        try (Connection conn = connect(); PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry); PreparedStatement BookPstmt = conn.prepareStatement(BookQry);
+                             PreparedStatement TaggingPstmt = conn.prepareStatement(TaggingQry)) {
                             ReadingPstmt.executeUpdate();
                             BookPstmt.executeUpdate();
+                            TaggingPstmt.executeUpdate();
                             fillBookList();
                             ManageTitleLabel.setText("Lectures du livre : ");
                             ManageAuthorLabel.setText("Ecrit par : ");
@@ -194,6 +197,21 @@ public class ManageReadingDlg extends JDialog {
     }
     public int getRowCount(){
         return m_bookListTable.getRowCount();
+    }
+    public int getIdBook(String title, String author) {
+        int i =0;
+        try (Connection conn = connect()) {
+            Statement statement = conn.createStatement();
+            ResultSet idBook = statement.executeQuery("SELECT ID FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
+            i=idBook.getInt(1);
+            idBook.close();
+            conn.close();
+            statement.close();
+        }catch (Exception e){
+            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+            System.exit(0);
+        }
+        return i;
     }
 
     public void setAuthor(String m_author) {
