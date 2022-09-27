@@ -1,6 +1,7 @@
 package Sources;
 
 import javax.swing.*;
+import javax.swing.border.*;
 import java.awt.*;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
@@ -8,16 +9,29 @@ import java.nio.charset.StandardCharsets;
 public class Tag extends JLabel {
     String m_tag;
     int m_color;
+    int radius;
 
     public Tag(){
         m_tag="";
     }
     public Tag(String tag){
         initComponent(tag);
-        setColor(stringToHex(tag));
-        setBackground(new Color(getColor()));
+        setColor(stringToHex(tag));setBackground(new Color(getColor()));
         setText(tag);
         m_tag= tag;
+        AbstractBorder brdrRight = new TextBubbleBorder(Color.BLACK,2,16,0, false);
+        setBorder(brdrRight);
+    }
+    public Insets getBorderInsets(Component c) {
+        return new Insets(this.radius+1, this.radius+1, this.radius+2, this.radius);
+    }
+
+    public boolean isBorderOpaque() {
+        return true;
+    }
+
+    public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
+        g.drawRoundRect(x,y,width-1,height-1,radius,radius);
     }
 
     public String getTextTag(){

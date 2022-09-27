@@ -3,7 +3,9 @@ package Sources;
 import Sources.Dialogs.*;
 
 import javax.swing.*;
+import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.html.StyleSheet;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -62,13 +64,13 @@ public class MainWindow extends JDialog {
     private JPopupMenu m_popup;
     private FiltersDlg m_diag;
 
+
+
     public MainWindow() {
         setContentPane(contentPane);
         setModal(true);
         connectionDB();
         loadDB(false);
-
-
 
         m_popup = new JPopupMenu();//Create a popup menu to delete a reading an edit this reading
         File fileAdd = new File("Ressource/Icons/add.png");
@@ -724,12 +726,13 @@ public class MainWindow extends JDialog {
 
     public static void main(String[] args) {
         try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Windows".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                }
-            }
-            //UIManager.setLookAndFeel(new FlatDarkLaf());
+//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+//                if ("Windows".equals(info.getName())) {
+//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+//                }
+//                UIManager.getLookAndFeel();
+//            }
+            UIManager.setLookAndFeel(new NimbusLookAndFeel());
         }catch( Exception ex ) {
             System.err.println( "Failed to initialize LaF" );
         }
@@ -739,6 +742,7 @@ public class MainWindow extends JDialog {
         dialog.setSize(1000,550);
         dialog.setLocationRelativeTo(null);
         dialog.setVisible(true);
+
         System.exit(0);
     }
 }
