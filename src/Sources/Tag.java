@@ -19,19 +19,8 @@ public class Tag extends JLabel {
         setColor(stringToHex(tag));setBackground(new Color(getColor()));
         setText(tag);
         m_tag= tag;
-        AbstractBorder brdrRight = new TextBubbleBorder(Color.BLACK,2,16,0, false);
+        AbstractBorder brdrRight = new TextBubbleBorder(new Color(getColor()),5,10,0, false);
         setBorder(brdrRight);
-    }
-    public Insets getBorderInsets(Component c) {
-        return new Insets(this.radius+1, this.radius+1, this.radius+2, this.radius);
-    }
-
-    public boolean isBorderOpaque() {
-        return true;
-    }
-
-    public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
-        g.drawRoundRect(x,y,width-1,height-1,radius,radius);
     }
 
     public String getTextTag(){
@@ -62,9 +51,9 @@ public class Tag extends JLabel {
     public void initComponent(String tag){
         Dimension d;
         if(getSizeText(tag)<10)
-            d = new Dimension(getSizeText(tag)*10,22);
+            d = new Dimension(getSizeText(tag)*15,22);
         else
-            d = new Dimension(getSizeText(tag)*7,22);
+            d = new Dimension(getSizeText(tag)*10,22);
         setHorizontalAlignment(JLabel.CENTER);
         setOpaque(true);
         setMinimumSize(d);
