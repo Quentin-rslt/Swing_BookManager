@@ -1,8 +1,10 @@
 package Sources.Dialogs;
 
+import Sources.RoundBorderCp;
 import Sources.Tags;
 
 import javax.swing.*;
+import javax.swing.border.AbstractBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
@@ -65,6 +67,8 @@ public class AddBookDlg extends JDialog {
         setModal(true);
         initComponents();
         initComponents(true);
+        AbstractBorder roundBrd = new RoundBorderCp(BookSummaryTextPane.getBackground(),3,10);
+        BookSummaryTextPane.setBorder(roundBrd);
 
         m_popup = new JPopupMenu();//Create a popup menu to delete a reading an edit this reading
         File fileRemove = new File("Ressource/Icons/remove.png");

@@ -1,6 +1,9 @@
 package Sources.Dialogs;
 
+import Sources.RoundBorderCp;
+
 import javax.swing.*;
+import javax.swing.border.AbstractBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -46,6 +49,9 @@ public class EditBookDlg extends JDialog {
         setOldTitle(title);
         setOldAuthor(author);
         loadDB(getOldTitle(), getOldAuthor());
+        AbstractBorder roundBrd = new RoundBorderCp(BookSummaryTextPane.getBackground(),3,10);
+        BookSummaryTextPane.setBorder(roundBrd);
+
         BookOkBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

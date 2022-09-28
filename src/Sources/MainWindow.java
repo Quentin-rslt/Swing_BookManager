@@ -4,6 +4,7 @@ import Sources.Dialogs.*;
 import Themes.DarkTheme.DarkTheme;
 
 import javax.swing.*;
+import javax.swing.border.AbstractBorder;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.html.StyleSheet;
@@ -49,6 +50,7 @@ public class MainWindow extends JDialog {
     private JLabel ReleaseYearLAbel;
     private JLabel BookTimeAverageLabel;
     private JPanel BookTagsPanel;
+    private JScrollPane JSpane;
     private JLabel TagsLabel;
 
     private JTable  m_bookListTable = new JTable(){//Create a Jtable with the tablemodel not editable
@@ -72,6 +74,9 @@ public class MainWindow extends JDialog {
         setModal(true);
         connectionDB();
         loadDB(false);
+
+        AbstractBorder roundBrd = new RoundBorderCp(BookSummary.getBackground(),3,10);
+        BookSummary.setBorder(roundBrd);
 
         m_popup = new JPopupMenu();//Create a popup menu to delete a reading an edit this reading
         File fileAdd = new File("Ressource/Icons/add.png");
@@ -529,6 +534,7 @@ public class MainWindow extends JDialog {
 
                 m_pane = new JScrollPane(m_bookListTable);//Create a scrollpane with the Jtable for the error that did not display the header
 
+
                 BookListPanel.add(m_pane);//add the scrolpane to our Jpanel
             }
             rs.close();
@@ -645,7 +651,7 @@ public class MainWindow extends JDialog {
             ResultSet ImageQry = m_statement.executeQuery("SELECT Image FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
 
             Image img = Toolkit.getDefaultToolkit().getImage(ImageQry.getString(1));
-            img=img.getScaledInstance(200, 300, Image.SCALE_AREA_AVERAGING);//set size of image
+            img=img.getScaledInstance(266, 400, Image.SCALE_AREA_AVERAGING);//set size of image
             ImageIcon icon = new ImageIcon(img);
             JLabel imgLabel = new JLabel();
             imgLabel.setIcon(icon);
@@ -734,7 +740,7 @@ public class MainWindow extends JDialog {
 
         MainWindow dialog = new MainWindow();
         dialog.setTitle("Book manager");
-        dialog.setSize(1000,550);
+        dialog.setSize(1300,700);
         dialog.setLocationRelativeTo(null);
         dialog.setVisible(true);
 
