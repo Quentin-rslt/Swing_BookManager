@@ -1,6 +1,7 @@
 package Sources;
 
 import Sources.Dialogs.*;
+import Themes.DarkTheme.DarkTheme;
 
 import javax.swing.*;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
@@ -726,13 +727,7 @@ public class MainWindow extends JDialog {
 
     public static void main(String[] args) {
         try {
-//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-//                if ("Windows".equals(info.getName())) {
-//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-//                }
-//                UIManager.getLookAndFeel();
-//            }
-            UIManager.setLookAndFeel(new NimbusLookAndFeel());
+            UIManager.setLookAndFeel(new DarkTheme());
         }catch( Exception ex ) {
             System.err.println( "Failed to initialize LaF" );
         }

@@ -275,13 +275,16 @@
                         <preferred-size width="350" height="150"/>
                       </grid>
                     </constraints>
-                    <properties/>
+                    <properties>
+                      <enabled value="false"/>
+                    </properties>
                     <border type="none"/>
                     <children>
                       <component id="8ed25" class="javax.swing.JTextPane" binding="BookSummary">
                         <constraints/>
                         <properties>
                           <autoscrolls value="false"/>
+                          <background color="-983553"/>
                           <dragEnabled value="false"/>
                           <editable value="false"/>
                           <enabled value="true"/>
