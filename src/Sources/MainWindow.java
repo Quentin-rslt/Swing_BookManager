@@ -690,6 +690,7 @@ public class MainWindow extends JDialog {
         FiltersBookBtn.setEnabled(false);
         BookPhotoPanel.removeAll();
         contentPane.updateUI();
+        contentPane.setBorder(null);
     }
     public int getIdReading(String title, String author) {
         int i =0;

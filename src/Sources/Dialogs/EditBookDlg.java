@@ -51,6 +51,7 @@ public class EditBookDlg extends JDialog {
         setModal(true);
         setOldTitle(title);
         setOldAuthor(author);
+
         loadDB(getOldTitle(), getOldAuthor());
         AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),3,25);
         BookSummaryTextPane.setBorder(roundBrd);
@@ -96,6 +97,9 @@ public class EditBookDlg extends JDialog {
                 BookSummaryTextPane.setBorder(roundBrd);
             }
         });
+    }
+
+    private void initComponents() {
     }
 
     public String getOldTitle() {
