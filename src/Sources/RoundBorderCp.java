@@ -9,7 +9,7 @@ public class RoundBorderCp extends AbstractBorder {
     private Color color;
     private int thickness = 4;
     private int radii = 8;
-    private int pointerSize = 5;
+    private int pointerSize = 4;
     private Insets insets = null;
     private BasicStroke stroke = null;
     private int strokePad;
@@ -53,13 +53,7 @@ public class RoundBorderCp extends AbstractBorder {
 
         int bottomLineY = height - thickness - pointerSize;
 
-        RoundRectangle2D.Double bubble = new RoundRectangle2D.Double(
-                0 + strokePad,
-                0 + strokePad,
-                width - thickness,
-                bottomLineY,
-                radii,
-                radii);
+        RoundRectangle2D.Double bubble = new RoundRectangle2D.Double(strokePad, strokePad, width - thickness, bottomLineY, radii, radii);
 
         Area area = new Area(bubble);
         g2.setRenderingHints(hints);

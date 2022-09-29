@@ -19,7 +19,7 @@ public class Tag extends JLabel {
         setColor(stringToHex(tag));setBackground(new Color(getColor()));
         setText(tag);
         m_tag= tag;
-        AbstractBorder roundBrd = new RoundBorderCp(new Color(getColor()),3,10);
+        AbstractBorder roundBrd = new RoundBorderCp(new Color(getColor()),3,13);
         setBorder(roundBrd);
     }
 
@@ -51,11 +51,11 @@ public class Tag extends JLabel {
     public void initComponent(String tag){
         Dimension d;
         if(getSizeText(tag)<6)
-            d = new Dimension(getSizeText(tag)*13,25);
+            d = new Dimension(getSizeText(tag)*13,23);
         else if(getSizeText(tag)<10)
-            d = new Dimension(getSizeText(tag)*11,25);
+            d = new Dimension(getSizeText(tag)*12,23);
         else
-            d = new Dimension(getSizeText(tag)*7,25);
+            d = new Dimension(getSizeText(tag)*9,23);
         setHorizontalAlignment(JLabel.CENTER);
         setOpaque(true);
         setMinimumSize(d);

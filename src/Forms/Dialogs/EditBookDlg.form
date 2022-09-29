@@ -136,7 +136,7 @@
             </constraints>
             <properties/>
           </component>
-          <scrollpane id="be9a7">
+          <scrollpane id="be9a7" binding="JsPane">
             <constraints>
               <grid row="6" column="1" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false">
                 <minimum-size width="350" height="150"/>

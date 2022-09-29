@@ -10,7 +10,7 @@
     </properties>
     <border type="none"/>
     <children>
-      <grid id="439b8" binding="LeftPanel" layout-manager="GridLayoutManager" row-count="14" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+      <grid id="439b8" binding="LeftPanel" layout-manager="GridLayoutManager" row-count="14" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="1">
         <margin top="10" left="10" bottom="10" right="10"/>
         <constraints>
           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -192,19 +192,24 @@
             </constraints>
             <properties/>
           </component>
-          <scrollpane id="b3e69">
+          <scrollpane id="b3e69" binding="JsPane">
             <constraints>
               <grid row="9" column="1" row-span="1" col-span="2" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false">
                 <minimum-size width="350" height="150"/>
                 <preferred-size width="350" height="150"/>
               </grid>
             </constraints>
-            <properties/>
+            <properties>
+              <enabled value="true"/>
+              <focusable value="true"/>
+            </properties>
             <border type="none"/>
             <children>
               <component id="af212" class="javax.swing.JTextPane" binding="BookSummaryTextPane">
                 <constraints/>
-                <properties/>
+                <properties>
+                  <focusable value="true"/>
+                </properties>
               </component>
             </children>
           </scrollpane>
@@ -282,8 +287,8 @@
           <grid id="362b8" binding="PreviewPhotoPanel" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
             <constraints>
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
-                <minimum-size width="200" height="300"/>
-                <preferred-size width="200" height="300"/>
+                <minimum-size width="266" height="400"/>
+                <preferred-size width="266" height="400"/>
               </grid>
             </constraints>
             <properties/>

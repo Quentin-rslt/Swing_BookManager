@@ -7,6 +7,8 @@ import javax.swing.border.AbstractBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -37,6 +39,7 @@ public class EditBookDlg extends JDialog {
     private JButton BookOkBtn;
     private JButton BookCancelBtn;
     private JPanel BookPhotoPanel;
+    private JScrollPane JsPane;
 
     private String m_oldTitle;
     private String m_oldAuthor;
@@ -49,8 +52,9 @@ public class EditBookDlg extends JDialog {
         setOldTitle(title);
         setOldAuthor(author);
         loadDB(getOldTitle(), getOldAuthor());
-        AbstractBorder roundBrd = new RoundBorderCp(BookSummaryTextPane.getBackground(),3,10);
+        AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),3,25);
         BookSummaryTextPane.setBorder(roundBrd);
+        JsPane.setBorder(null);
 
         BookOkBtn.addActionListener(new ActionListener() {
             @Override
@@ -75,6 +79,21 @@ public class EditBookDlg extends JDialog {
                     setNewURL(path);
                     addImageToPanel(path);
                 }
+            }
+        });
+        BookSummaryTextPane.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                super.focusGained(e);
+                RoundBorderCp roundBrd = new RoundBorderCp(JsPane.getBackground(),2,25);
+                BookSummaryTextPane.setBorder(roundBrd);
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                super.focusLost(e);
+                RoundBorderCp roundBrd = new RoundBorderCp(contentPane.getBackground(),2,25);
+                BookSummaryTextPane.setBorder(roundBrd);
             }
         });
     }

@@ -1,6 +1,9 @@
 package Sources.Dialogs;
 
+import Sources.RoundBorderCp;
+
 import javax.swing.*;
+import javax.swing.border.AbstractBorder;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
@@ -230,6 +233,5 @@ public class AddReading extends JDialog {
         ReadingNewEndDateSpin.setModel(NewBookEndReadingSpinModel);
         JSpinner.DateEditor endEditor = new JSpinner.DateEditor(ReadingNewEndDateSpin,"yyyy-MM-dd");//set the display of the JSpinner of release date
         ReadingNewEndDateSpin.setEditor(endEditor);
-
     }
 }

@@ -9,10 +9,7 @@ import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.html.StyleSheet;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.io.File;
 import java.sql.*;
 import java.time.LocalDate;
@@ -75,8 +72,10 @@ public class MainWindow extends JDialog {
         connectionDB();
         loadDB(false);
 
-        AbstractBorder roundBrd = new RoundBorderCp(BookSummary.getBackground(),3,10);
+        AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),3,25);
         BookSummary.setBorder(roundBrd);
+        contentPane.getRootPane().setDefaultButton(CancelFiltersBtn);
+        JSpane.setBorder(null);
 
         m_popup = new JPopupMenu();//Create a popup menu to delete a reading an edit this reading
         File fileAdd = new File("Ressource/Icons/add.png");
@@ -383,7 +382,7 @@ public class MainWindow extends JDialog {
             public void actionPerformed(ActionEvent e) {
                 m_diag = new FiltersDlg();
                 m_diag.setTitle("Filter la liste");
-                m_diag.setSize(400,200);
+                m_diag.setSize(500,230);
                 m_diag.setLocationRelativeTo(null);
                 m_diag.setVisible(true);
                 contentPane.updateUI();
@@ -414,6 +413,17 @@ public class MainWindow extends JDialog {
                 setAuthor(m_bookListTable.getValueAt(0, 1).toString());
                 loadComponents(getMTitle(), getAuthor());
                 m_bookListTable.setRowSelectionInterval(getRowSelected(getMTitle(),getAuthor()), getRowSelected(getMTitle(),getAuthor()));
+            }
+        });
+        BookSummary.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                super.focusGained(e);
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                super.focusLost(e);
             }
         });
     }
@@ -528,16 +538,16 @@ public class MainWindow extends JDialog {
 
                 m_tableModel.setColumnIdentifiers(header);//Create the header
                 m_tableModel.addRow(data);//add to tablemodel the data
-
-                m_bookListTable.setModel(m_tableModel);
-                m_bookListTable.setFocusable(false);
-
-                m_pane = new JScrollPane(m_bookListTable);//Create a scrollpane with the Jtable for the error that did not display the header
-                AbstractBorder roundBrd = new RoundBorderCp(m_pane.getBackground(),3,10);
-                m_pane.setBorder(roundBrd);
-
-                BookListPanel.add(m_pane);//add the scrolpane to our Jpanel
             }
+            m_bookListTable.setModel(m_tableModel);
+            m_bookListTable.setFocusable(false);
+
+            m_pane = new JScrollPane(m_bookListTable);//Create a scrollpane with the Jtable for the error that did not display the header
+//            AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),3,10);
+//            m_bookListTable.setBorder(roundBrd);
+
+            BookListPanel.add(m_pane);//add the scrolpane to our Jpanel
+
             rs.close();
             conn.close();
             m_statement.close();
@@ -555,10 +565,6 @@ public class MainWindow extends JDialog {
             //Title label
             ResultSet titleQry = m_statement.executeQuery("SELECT Title FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
             TitleLabel.setText(titleQry.getString(1));
-
-            //Author label
-            ResultSet authorQry = m_statement.executeQuery("SELECT Author FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
-            AuthorLabel.setText("Auteur : "+authorQry.getString(1));
 
             //Tags Label
             ResultSet tagsQry = m_statement.executeQuery("SELECT Tag,Color FROM Tags JOIN Tagging on Tags.ID=Tagging.IdTag " +
@@ -670,7 +676,6 @@ public class MainWindow extends JDialog {
     }
     public void initComponents(){
         TitleLabel.setText("Titre livre");
-        AuthorLabel.setText("Auteur :");
         ReleaseYearLAbel.setText("Année de sortie :");
         NumberPageLabel.setText("Nombre de page :");
         BookTimeAverageLabel.setText("Temps moyen de lecture : ");
@@ -736,12 +741,12 @@ public class MainWindow extends JDialog {
         try {
             UIManager.setLookAndFeel(new DarkTheme());
         }catch( Exception ex ) {
-            System.err.println( "Failed to initialize LaF" );
+            System.err.println( "Failed to load darkTheme" );
         }
 
         MainWindow dialog = new MainWindow();
         dialog.setTitle("Book manager");
-        dialog.setSize(1300,700);
+        dialog.setSize(1310,700);
         dialog.setLocationRelativeTo(null);
         dialog.setVisible(true);
 

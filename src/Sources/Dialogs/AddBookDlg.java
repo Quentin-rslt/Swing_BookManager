@@ -52,6 +52,7 @@ public class AddBookDlg extends JDialog {
     private JComboBox BookTagsCB;
     private JLabel BookTagsLabel;
     private JPanel BookTagsPanel;
+    private JScrollPane JsPane;
     private String m_URL="";
     private boolean m_isValide = false;//Useful for determinate if the input are good
     private Connection m_connection;
@@ -67,8 +68,6 @@ public class AddBookDlg extends JDialog {
         setModal(true);
         initComponents();
         initComponents(true);
-        AbstractBorder roundBrd = new RoundBorderCp(BookSummaryTextPane.getBackground(),3,10);
-        BookSummaryTextPane.setBorder(roundBrd);
 
         m_popup = new JPopupMenu();//Create a popup menu to delete a reading an edit this reading
         File fileRemove = new File("Ressource/Icons/remove.png");
@@ -282,6 +281,21 @@ public class AddBookDlg extends JDialog {
 
             }
         });
+        BookSummaryTextPane.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                super.focusGained(e);
+                RoundBorderCp roundBrd = new RoundBorderCp(JsPane.getBackground(),2,25);
+                BookSummaryTextPane.setBorder(roundBrd);
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                super.focusLost(e);
+                RoundBorderCp roundBrd = new RoundBorderCp(contentPane.getBackground(),2,25);
+                BookSummaryTextPane.setBorder(roundBrd);
+            }
+        });
     }
 
     public String getNewBookTitle(){//Get the new book title from JtextField
@@ -351,7 +365,7 @@ public class AddBookDlg extends JDialog {
     }
     public void addImageToPanel(String path){//Apply to our panel an image with path
         Image img = Toolkit.getDefaultToolkit().getImage(path);
-        img=img.getScaledInstance(233, 350, Image.SCALE_AREA_AVERAGING);
+        img=img.getScaledInstance(266, 400, Image.SCALE_AREA_AVERAGING);
         ImageIcon icon = new ImageIcon(img);
         JLabel imgLabel = new JLabel();
         imgLabel.setIcon(icon);
@@ -398,6 +412,9 @@ public class AddBookDlg extends JDialog {
         BookBrowseBtn.setEnabled(bool);
         PreviewPhotoPanel.updateUI();
         PreviewPhotoPanel.removeAll();
+        AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),2,25);
+        BookSummaryTextPane.setBorder(roundBrd);
+        JsPane.setBorder(null);
     }
     public void setURL(String url){
         m_URL= url;

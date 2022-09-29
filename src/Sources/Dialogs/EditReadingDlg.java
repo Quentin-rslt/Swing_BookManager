@@ -1,6 +1,9 @@
 package Sources.Dialogs;
 
+import Sources.RoundBorderCp;
+
 import javax.swing.*;
+import javax.swing.border.AbstractBorder;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
