@@ -533,7 +533,8 @@ public class MainWindow extends JDialog {
                 m_bookListTable.setFocusable(false);
 
                 m_pane = new JScrollPane(m_bookListTable);//Create a scrollpane with the Jtable for the error that did not display the header
-
+                AbstractBorder roundBrd = new RoundBorderCp(m_pane.getBackground(),3,10);
+                m_pane.setBorder(roundBrd);
 
                 BookListPanel.add(m_pane);//add the scrolpane to our Jpanel
             }
