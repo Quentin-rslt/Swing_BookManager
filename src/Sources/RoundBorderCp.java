@@ -9,17 +9,17 @@ public class RoundBorderCp extends AbstractBorder {
     private Color color;
     private int thickness = 4;
     private int radii = 8;
-    private int pointerSize = 4;
     private Insets insets = null;
     private BasicStroke stroke = null;
     private int strokePad;
+    int h= 0;
     RenderingHints hints;
 
-    public RoundBorderCp(Color color, int thickness, int radii) {
+    public RoundBorderCp(Color color, int thickness, int radii, int height) {
         this.thickness = thickness;
         this.radii = radii;
         this.color = color;
-
+        this.h = height;
         stroke = new BasicStroke(thickness);
         strokePad = thickness / 2;
 
@@ -28,7 +28,7 @@ public class RoundBorderCp extends AbstractBorder {
                 RenderingHints.VALUE_ANTIALIAS_ON);
 
         int pad = radii + strokePad;
-        int bottomPad = pad + pointerSize + strokePad;
+        int bottomPad = pad + strokePad;
         insets = new Insets(pad, pad, bottomPad, pad);
     }
 
@@ -43,17 +43,13 @@ public class RoundBorderCp extends AbstractBorder {
     }
 
     @Override
-    public void paintBorder(
-            Component c,
-            Graphics g,
-            int x, int y,
-            int width, int height) {
+    public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
 
         Graphics2D g2 = (Graphics2D) g;
 
-        int bottomLineY = height - thickness - pointerSize;
+        int bottomLineY = height - thickness;
 
-        RoundRectangle2D.Double bubble = new RoundRectangle2D.Double(strokePad, strokePad, width - thickness, bottomLineY, radii, radii);
+        RoundRectangle2D.Double bubble = new RoundRectangle2D.Double(strokePad, strokePad, width - thickness, bottomLineY+h, radii, radii);
 
         Area area = new Area(bubble);
         g2.setRenderingHints(hints);
@@ -63,12 +59,12 @@ public class RoundBorderCp extends AbstractBorder {
         Component parent  = c.getParent();
         if (parent!=null) {
             Color bg = parent.getBackground();
-            Rectangle rect = new Rectangle(0,0,width, height);
+            Rectangle rect = new Rectangle(0,0,width, height+h);
             Area borderRegion = new Area(rect);
             borderRegion.subtract(area);
             g2.setClip(borderRegion);
             g2.setColor(bg);
-            g2.fillRect(0, 0, width, height);
+            g2.fillRect(0, 0, width, height+h);
             g2.setClip(null);
         }
 

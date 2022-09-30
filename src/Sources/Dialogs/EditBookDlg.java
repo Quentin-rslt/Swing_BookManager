@@ -53,7 +53,7 @@ public class EditBookDlg extends JDialog {
         setOldAuthor(author);
 
         loadDB(getOldTitle(), getOldAuthor());
-        AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),3,25);
+        AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),2,28,0);
         BookSummaryTextPane.setBorder(roundBrd);
         JsPane.setBorder(null);
 
@@ -86,14 +86,14 @@ public class EditBookDlg extends JDialog {
             @Override
             public void focusGained(FocusEvent e) {
                 super.focusGained(e);
-                RoundBorderCp roundBrd = new RoundBorderCp(JsPane.getBackground(),2,25);
+                RoundBorderCp roundBrd = new RoundBorderCp(JsPane.getBackground(),2,28,0);
                 BookSummaryTextPane.setBorder(roundBrd);
             }
 
             @Override
             public void focusLost(FocusEvent e) {
                 super.focusLost(e);
-                RoundBorderCp roundBrd = new RoundBorderCp(contentPane.getBackground(),2,25);
+                RoundBorderCp roundBrd = new RoundBorderCp(contentPane.getBackground(),2,28,0);
                 BookSummaryTextPane.setBorder(roundBrd);
             }
         });

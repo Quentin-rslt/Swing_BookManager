@@ -278,21 +278,25 @@ public class AddBookDlg extends JDialog {
         edit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-
+                EditTagDlg diag = new EditTagDlg();
+                diag.setTitle("Gérer les lectures");
+                diag.setSize(500,200);
+                diag.setLocationRelativeTo(null);
+                diag.setVisible(true);
             }
         });
         BookSummaryTextPane.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
                 super.focusGained(e);
-                RoundBorderCp roundBrd = new RoundBorderCp(JsPane.getBackground(),2,25);
+                RoundBorderCp roundBrd = new RoundBorderCp(JsPane.getBackground(),2,30,0);
                 BookSummaryTextPane.setBorder(roundBrd);
             }
 
             @Override
             public void focusLost(FocusEvent e) {
                 super.focusLost(e);
-                RoundBorderCp roundBrd = new RoundBorderCp(contentPane.getBackground(),2,25);
+                RoundBorderCp roundBrd = new RoundBorderCp(contentPane.getBackground(),2,30,0);
                 BookSummaryTextPane.setBorder(roundBrd);
             }
         });
@@ -412,7 +416,7 @@ public class AddBookDlg extends JDialog {
         BookBrowseBtn.setEnabled(bool);
         PreviewPhotoPanel.updateUI();
         PreviewPhotoPanel.removeAll();
-        AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),2,25);
+        AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),2,30,0);
         BookSummaryTextPane.setBorder(roundBrd);
         JsPane.setBorder(null);
     }

@@ -1,6 +1,9 @@
 package Sources.Dialogs;
 
+import Sources.RoundBorderCp;
+
 import javax.swing.*;
+import javax.swing.border.AbstractBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -141,7 +144,7 @@ public class ManageReadingDlg extends JDialog {
                 imgEdit = imgEdit.getScaledInstance(18,18,Image.SCALE_AREA_AVERAGING);
                 diag.setIconImage(imgEdit);
                 diag.setTitle("Modifier une lecture");
-                diag.setSize(500,200);
+                diag.setSize(500,210);
                 diag.setLocationRelativeTo(null);
                 diag.setVisible(true);
 
@@ -291,6 +294,10 @@ public class ManageReadingDlg extends JDialog {
                 m_bookListTable.setModel(m_tableModel);
                 m_bookListTable.setFocusable(false);
                 m_pane = new JScrollPane(m_bookListTable);//Create a scrollpane with the Jtable for the error that did not display the header
+                AbstractBorder roundHeader = new RoundBorderCp(contentPane.getBackground(),1,30,0);
+                AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),1,30, 128-(m_bookListTable.getRowCount()*m_bookListTable.getRowHeight()));
+                m_bookListTable.getTableHeader().setBorder(roundHeader);
+                m_bookListTable.setBorder(roundBrd);
 
                 BookListPanel.add(m_pane);//add the scrolpane to our Jpanel
             }
