@@ -18,11 +18,9 @@ import java.time.temporal.ChronoUnit;
 public class ManageReadingDlg extends JDialog {
     private JPanel contentPane;
     private JPanel BookListPanel;
-    private JPanel BookBtnPanel;
     private JButton CancelBtn;
     private JLabel ManageTitleLabel;
     private JLabel ManageAuthorLabel;
-    private JPanel ListPanel;
 
 
     private Statement m_statement;
@@ -294,8 +292,8 @@ public class ManageReadingDlg extends JDialog {
                 m_bookListTable.setModel(m_tableModel);
                 m_bookListTable.setFocusable(false);
                 m_pane = new JScrollPane(m_bookListTable);//Create a scrollpane with the Jtable for the error that did not display the header
-                AbstractBorder roundHeader = new RoundBorderCp(contentPane.getBackground(),1,30,0);
-                AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),1,30, 128-(m_bookListTable.getRowCount()*m_bookListTable.getRowHeight()));
+                AbstractBorder roundHeader = new RoundBorderCp(contentPane.getBackground(),1,30,0,0);
+                AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),1,30, 128-(m_bookListTable.getRowCount()*m_bookListTable.getRowHeight()),0);
                 m_bookListTable.getTableHeader().setBorder(roundHeader);
                 m_bookListTable.setBorder(roundBrd);
 

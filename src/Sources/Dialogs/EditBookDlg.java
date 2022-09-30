@@ -17,27 +17,15 @@ import java.util.Objects;
 
 public class EditBookDlg extends JDialog {
     private JPanel contentPane;
-    private JPanel LeftPanel;
-    private JLabel NameLabel;
     private JTextField BookTitleTextField;
-    private JLabel AuthorLabel;
     private JTextField BookAuthorTextField;
-    private JLabel ReleaseYearLabel;
-    private JLabel PersonalNoteLabel;
     private JSpinner BookPersonalNoteSpin;
-    private JLabel PhotoLabel;
     private JButton BookBrowseBtn;
-    private JLabel NoteBblLabel;
     private JSpinner BookNoteBblSpin;
-    private JLabel SummaryLabel;
     private JTextPane BookSummaryTextPane;
     private JSpinner BookReleaseYearSpin;
-    private JLabel NumberOPLabel;
     private JSpinner BookNumberOPSpin;
-    private JPanel RightPanel;
-    private JPanel BookBtnPanel;
     private JButton BookOkBtn;
-    private JButton BookCancelBtn;
     private JPanel BookPhotoPanel;
     private JScrollPane JsPane;
 
@@ -53,7 +41,7 @@ public class EditBookDlg extends JDialog {
         setOldAuthor(author);
 
         loadDB(getOldTitle(), getOldAuthor());
-        AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),2,28,0);
+        AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),2,28,0,3);
         BookSummaryTextPane.setBorder(roundBrd);
         JsPane.setBorder(null);
 
@@ -86,14 +74,14 @@ public class EditBookDlg extends JDialog {
             @Override
             public void focusGained(FocusEvent e) {
                 super.focusGained(e);
-                RoundBorderCp roundBrd = new RoundBorderCp(JsPane.getBackground(),2,28,0);
+                RoundBorderCp roundBrd = new RoundBorderCp(JsPane.getBackground(),2,28,0,3);
                 BookSummaryTextPane.setBorder(roundBrd);
             }
 
             @Override
             public void focusLost(FocusEvent e) {
                 super.focusLost(e);
-                RoundBorderCp roundBrd = new RoundBorderCp(contentPane.getBackground(),2,28,0);
+                RoundBorderCp roundBrd = new RoundBorderCp(contentPane.getBackground(),2,28,0,3);
                 BookSummaryTextPane.setBorder(roundBrd);
             }
         });

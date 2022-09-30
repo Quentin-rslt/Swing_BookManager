@@ -19,37 +19,24 @@ import java.util.Objects;
 
 public class MainWindow extends JDialog {
     private JPanel contentPane;
-    private JPanel LeftPanel;
-    private JPanel LeftPanelSouth;
     private JLabel PersonalNoteLabel;
     private JLabel FirstReadingLabel;
     private JLabel LastReadingLabel;
-    private JPanel LeftPanelWest;
     private JPanel BookPhotoPanel;
-    private JPanel BookExtractPanel;
     private JButton ManageReadingsBtn;
     private JLabel TitleLabel;
-    private JPanel LeftPanelCenter;
-    private JPanel BookInfoGlobalPanel;
-    private JLabel AuthorLabel;
     private JLabel NumberPageLabel;
     private JLabel NoteLabel;
-    private JPanel BookSummaryPanel;
     private JTextPane BookSummary;
-    private JLabel ExtractLabel;
-    private JPanel RightPanel;
     private JPanel BookListPanel;
-    private JPanel BookEditListPanel;
     private JButton AddBookBtn;
     private JButton FiltersBookBtn;
     private JButton CancelFiltersBtn;
     private JLabel CountReadingLabel;
-    private JToolBar Menubar;
     private JLabel ReleaseYearLAbel;
     private JLabel BookTimeAverageLabel;
     private JPanel BookTagsPanel;
     private JScrollPane JSpane;
-    private JLabel TagsLabel;
 
     private JTable  m_bookListTable = new JTable(){//Create a Jtable with the tablemodel not editable
         public boolean isCellEditable(int rowIndex, int colIndex) {
@@ -73,7 +60,7 @@ public class MainWindow extends JDialog {
         connectionDB();
         loadDB(false);
 
-        AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),3,30,0);
+        AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),3,30,0,0);
         BookSummary.setBorder(roundBrd);
         contentPane.getRootPane().setDefaultButton(CancelFiltersBtn);
         JSpane.setBorder(null);
@@ -544,8 +531,8 @@ public class MainWindow extends JDialog {
             m_bookListTable.setFocusable(false);
 
             m_pane = new JScrollPane(m_bookListTable);//Create a scrollpane with the Jtable for the error that did not display the header
-            AbstractBorder roundHeader = new RoundBorderCp(contentPane.getBackground(),1,30,0);
-            AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),1,30, 549-(m_bookListTable.getRowCount()*m_bookListTable.getRowHeight()));
+            AbstractBorder roundHeader = new RoundBorderCp(contentPane.getBackground(),1,30,0,0);
+            AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),1,30, 549-(m_bookListTable.getRowCount()*m_bookListTable.getRowHeight()),0);
             m_bookListTable.getTableHeader().setBorder(roundHeader);
             m_bookListTable.setBorder(roundBrd);
 

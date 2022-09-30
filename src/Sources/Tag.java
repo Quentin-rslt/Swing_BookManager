@@ -9,7 +9,6 @@ import java.nio.charset.StandardCharsets;
 public class Tag extends JLabel {
     String m_tag;
     int m_color;
-    int radius;
 
     public Tag(){
         m_tag="";
@@ -19,7 +18,7 @@ public class Tag extends JLabel {
         setColor(stringToHex(tag));setBackground(new Color(getColor()));
         setText(tag);
         m_tag= tag;
-        AbstractBorder roundBrd = new RoundBorderCp(new Color(getColor()),3,13,0);
+        AbstractBorder roundBrd = new RoundBorderCp(new Color(getColor()),3,13,0,0);
         setBorder(roundBrd);
     }
 

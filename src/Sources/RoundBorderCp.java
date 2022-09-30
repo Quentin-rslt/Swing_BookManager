@@ -13,13 +13,15 @@ public class RoundBorderCp extends AbstractBorder {
     private BasicStroke stroke = null;
     private int strokePad;
     int h= 0;
+    int gap = 0;
     RenderingHints hints;
 
-    public RoundBorderCp(Color color, int thickness, int radii, int height) {
+    public RoundBorderCp(Color color, int thickness, int radii, int height, int gap) {
         this.thickness = thickness;
         this.radii = radii;
         this.color = color;
         this.h = height;
+        this.gap=gap;
         stroke = new BasicStroke(thickness);
         strokePad = thickness / 2;
 
@@ -47,9 +49,9 @@ public class RoundBorderCp extends AbstractBorder {
 
         Graphics2D g2 = (Graphics2D) g;
 
-        int bottomLineY = height - thickness;
+        int bottomLineY = height - thickness-gap;
 
-        RoundRectangle2D.Double bubble = new RoundRectangle2D.Double(strokePad, strokePad, width - thickness, bottomLineY+h, radii, radii);
+        RoundRectangle2D.Double bubble = new RoundRectangle2D.Double(strokePad, strokePad, width - (thickness+gap), bottomLineY+h, radii, radii);
 
         Area area = new Area(bubble);
         g2.setRenderingHints(hints);

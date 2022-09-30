@@ -14,19 +14,14 @@ import java.util.Objects;
 
 public class AddReading extends JDialog {
     private JPanel contentPane;
-    private JPanel ReadingInfoPanel;
     private JButton ReadingOkBtn;
     private JButton ReadingConcelBtn;
-    private JPanel ReadingPhotoPanel;
     private JLabel ReadingTitleLabel;
     private JLabel ReadingAuthorLabel;
-    private JLabel ReadingStartDateLabel;
-    private JLabel ReadingEndDateLabel;
     private JSpinner ReadingNewStartDateSpin;
     private JSpinner ReadingNewEndDateSpin;
     private JCheckBox ReadingUnknownCheckBox;
     private JCheckBox ReadingNotDoneCheckBox;
-    private JLabel ReadingAddLabel;
 
     private String m_title;
     private String m_author;

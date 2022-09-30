@@ -21,36 +21,20 @@ public class AddBookDlg extends JDialog {
     private JPanel contentPane;
     private JButton ValidateBtn;
     private JButton CancelBtn;
-    private JPanel BtnPanel;
     private JPanel PreviewPhotoPanel;
-    private JLabel NewBookLabel;
-    private JLabel NameLabel;
     private JTextField BookNameTextField;
     private JTextField BookAuthorTextField;
-    private JLabel AuthorLabel;
-    private JLabel ReleaseYearLabel;
-    private JLabel PersonalNoteLabel;
     private JSpinner BookPersonalNoteSpin;
-    private JLabel StartReadingLabel;
     private JCheckBox BookUnknownReadDateChecbox;
-    private JPanel DateReadPanel;
-    private JPanel RightPanel;
-    private JLabel PhotoLabel;
     private JButton BookBrowseBtn;
-    private JLabel NoteBblLabel;
     private JSpinner BookNoteBblSpin;
-    private JLabel SummaryLabel;
     private JTextPane BookSummaryTextPane;
     private JSpinner BookReleaseYearSpin;
     private JSpinner BookEndReadingSpin;
     private JSpinner BookNumberOPSpin;
-    private JLabel NumberOPLabel;
-    private JPanel LeftPanel;
     private JCheckBox BookNotDoneReadChecbox;
-    private JLabel EndReadingLabel;
     private JSpinner BookStartReadingSpin;
     private JComboBox BookTagsCB;
-    private JLabel BookTagsLabel;
     private JPanel BookTagsPanel;
     private JScrollPane JsPane;
     private String m_URL="";
@@ -289,14 +273,14 @@ public class AddBookDlg extends JDialog {
             @Override
             public void focusGained(FocusEvent e) {
                 super.focusGained(e);
-                RoundBorderCp roundBrd = new RoundBorderCp(JsPane.getBackground(),2,30,0);
+                RoundBorderCp roundBrd = new RoundBorderCp(JsPane.getBackground(),2,30,0,3);
                 BookSummaryTextPane.setBorder(roundBrd);
             }
 
             @Override
             public void focusLost(FocusEvent e) {
                 super.focusLost(e);
-                RoundBorderCp roundBrd = new RoundBorderCp(contentPane.getBackground(),2,30,0);
+                RoundBorderCp roundBrd = new RoundBorderCp(contentPane.getBackground(),2,30,0,3);
                 BookSummaryTextPane.setBorder(roundBrd);
             }
         });
@@ -416,7 +400,7 @@ public class AddBookDlg extends JDialog {
         BookBrowseBtn.setEnabled(bool);
         PreviewPhotoPanel.updateUI();
         PreviewPhotoPanel.removeAll();
-        AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),2,30,0);
+        AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),3,30,0,3);
         BookSummaryTextPane.setBorder(roundBrd);
         JsPane.setBorder(null);
     }
