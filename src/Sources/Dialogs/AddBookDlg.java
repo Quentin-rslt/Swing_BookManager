@@ -13,6 +13,7 @@ import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.sql.*;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
@@ -218,14 +219,16 @@ public class AddBookDlg extends JDialog {
                         }
                         if(!tagFind){
                             boolean isInCB = false;
+                            ArrayList<String> listOfCb = new ArrayList<>();
                             for(int j = 0; j<BookTagsCB.getItemCount();j++){
+                                listOfCb.add(BookTagsCB.getItemAt(j).toString());
                                 if(BookTagsCB.getSelectedItem().toString().equals(BookTagsCB.getItemAt(j).toString())){
                                     isInCB=true;
                                 }
                             }
                             //if the tag don't exist open editTagTagWindow to configure the color or the text
                             if(!isInCB){
-                                EditTagDlg diag = new EditTagDlg(BookTagsCB.getSelectedItem().toString(), getTags());
+                                EditTagDlg diag = new EditTagDlg(BookTagsCB.getSelectedItem().toString(), listOfCb);
                                 diag.setTitle("Créer un tag");
                                 diag.setSize(750,550);
                                 diag.setLocationRelativeTo(null);
