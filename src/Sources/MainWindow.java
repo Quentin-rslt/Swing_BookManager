@@ -5,10 +5,7 @@ import Themes.DarkTheme.DarkTheme;
 
 import javax.swing.*;
 import javax.swing.border.AbstractBorder;
-import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellEditor;
-import javax.swing.text.html.StyleSheet;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
@@ -37,6 +34,7 @@ public class MainWindow extends JDialog {
     private JLabel BookTimeAverageLabel;
     private JPanel BookTagsPanel;
     private JScrollPane JSpane;
+    private JButton BookManageTagsBtn;
 
     private JTable  m_bookListTable = new JTable(){//Create a Jtable with the tablemodel not editable
         public boolean isCellEditable(int rowIndex, int colIndex) {
@@ -425,6 +423,21 @@ public class MainWindow extends JDialog {
             @Override
             public void focusLost(FocusEvent e) {
                 super.focusLost(e);
+            }
+        });
+        BookManageTagsBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ManageTagsDlg diag = new ManageTagsDlg();
+                diag.setTitle("Gérer les tags");
+                diag.setSize(500,570);
+                diag.setLocationRelativeTo(null);
+                diag.setVisible(true);
+                contentPane.updateUI();
+                BookListPanel.removeAll();//refresh the table of book
+                loadDB(false);
+                m_bookListTable.setRowSelectionInterval(getRowSelected(getMTitle(),getAuthor()),getRowSelected(getMTitle(),getAuthor()));//focus on the book where you have managed your readings
+                loadComponents(getMTitle(), getAuthor());
             }
         });
     }

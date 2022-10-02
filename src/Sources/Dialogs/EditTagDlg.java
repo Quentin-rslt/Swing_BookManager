@@ -87,7 +87,6 @@ public class EditTagDlg extends JDialog {
                     System.out.println(s);
                     if (s.equals(getNewTextTag())) {
                         isInCB = true;
-
                     }
                 }
                 if(!isInCB){
