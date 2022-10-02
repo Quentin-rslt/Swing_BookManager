@@ -223,9 +223,10 @@ public class AddBookDlg extends JDialog {
                                     isInCB=true;
                                 }
                             }
+                            //if the tag don't exist open editTagTagWindow to configure the color or the text
                             if(!isInCB){
                                 EditTagDlg diag = new EditTagDlg(BookTagsCB.getSelectedItem().toString(), getTags());
-                                diag.setTitle("Modifier le tag");
+                                diag.setTitle("Créer un tag");
                                 diag.setSize(750,550);
                                 diag.setLocationRelativeTo(null);
                                 diag.setVisible(true);

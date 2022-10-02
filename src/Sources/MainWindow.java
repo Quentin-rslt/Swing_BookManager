@@ -187,11 +187,22 @@ public class MainWindow extends JDialog {
                         ReadingPstmt.executeUpdate();//Insert the new reading
 
                         for(int i=0; i<diag.getTags().getSizeTags(); i++){
-                            String TagsQry = "INSERT INTO Tags (Tag,Color)" +
-                                    " SELECT '"+ diag.getTags().getTag(i).getTextTag() +"', '"+diag.getTags().getTag(i).getColor()+"'" +
-                                    " WHERE NOT EXISTS(SELECT * FROM Tags WHERE Tag='" + diag.getTags().getTag(i).getTextTag() + "' AND Color='" + diag.getTags().getTag(i).getColor() + "')";
-                            PreparedStatement TagsPstmt = conn.prepareStatement(TagsQry);
-                            TagsPstmt.executeUpdate();
+                            String TagsQry = "";
+                            if(!diag.tagIsUpdate()){
+                                TagsQry = "INSERT INTO Tags (Tag,Color)" +
+                                        " SELECT '"+ diag.getTags().getTag(i).getTextTag() +"', '"+diag.getTags().getTag(i).getColor()+"'" +
+                                        " WHERE NOT EXISTS(SELECT * FROM Tags WHERE Tag='" + diag.getTags().getTag(i).getTextTag() + "' AND Color='" + diag.getTags().getTag(i).getColor() + "')";
+                                PreparedStatement TagsPstmt = conn.prepareStatement(TagsQry);
+                                TagsPstmt.executeUpdate();
+                            }
+                            //Just change the colour of an existing tag in the database if you have just edited the colour and not the text
+                            else{
+                                TagsQry = "UPDATE Tags SET Color=?"+
+                                        "WHERE Tag='"+diag.getTags().getTag(i).getTextTag()+"'";
+                                PreparedStatement TagsPstmt = conn.prepareStatement(TagsQry);
+                                TagsPstmt.setInt(1, diag.getTags().getTag(i).getColor());
+                                TagsPstmt.executeUpdate();
+                            }
 
                             TaggingPstmt.setInt(1, getIdBook(diag.getNewBookTitle(), diag.getNewBookAuthor()));
                             TaggingPstmt.setInt(2, getIdTag(diag.getTags().getTag(i).getTextTag(), diag.getTags().getTag(i).getColor()));
