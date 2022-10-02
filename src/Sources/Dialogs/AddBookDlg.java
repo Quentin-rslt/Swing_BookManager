@@ -1,6 +1,7 @@
 package Sources.Dialogs;
 
 import Sources.RoundBorderCp;
+import Sources.Tag;
 import Sources.Tags;
 
 import javax.swing.*;
@@ -8,10 +9,9 @@ import javax.swing.border.AbstractBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
+import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -39,9 +39,10 @@ public class AddBookDlg extends JDialog {
     private JScrollPane JsPane;
     private String m_URL="";
     private boolean m_isValide = false;//Useful for determinate if the input are good
+    private boolean m_tagIsUpdate = false;
     private Connection m_connection;
     private Statement m_statement;
-    final Tags m_tags;
+    private Tags m_tags;
     private JPopupMenu m_popup;
 
 
@@ -204,14 +205,6 @@ public class AddBookDlg extends JDialog {
             @Override
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 if (!Objects.equals(BookTagsCB.getSelectedItem(), "")) {
-//                    System.out.println(evt.getKeyCode());
-//                    if(evt.getKeyCode()<100 && evt.getKeyCode()>10) {
-//                        for(int i = 0; i<BookTagsCB.getItemCount();i++){
-//                            if(BookTagsCB.getEditor().getItem().toString().contains(BookTagsCB.getItemAt(i).toString())){
-//                                BookTagsCB.showPopup();
-//                            }
-//                        }
-//                    }
                     if (evt.getKeyCode()==KeyEvent.VK_ENTER){
                         boolean tagFind = false;
                         int i = 0;
@@ -224,10 +217,50 @@ public class AddBookDlg extends JDialog {
                             else i++;
                         }
                         if(!tagFind){
-                            getTags().createTag(Objects.requireNonNull(BookTagsCB.getSelectedItem()).toString());
-                            for (int j = 0; j<getTags().getSizeTags(); j++){
-                                BookTagsPanel.add(getTags().getTag(j));
-                                BookTagsCB.setSelectedIndex(0);
+                            boolean isInCB = false;
+                            for(int j = 0; j<BookTagsCB.getItemCount();j++){
+                                if(BookTagsCB.getSelectedItem().toString().equals(BookTagsCB.getItemAt(j).toString())){
+                                    isInCB=true;
+                                }
+                            }
+                            if(!isInCB){
+                                EditTagDlg diag = new EditTagDlg(BookTagsCB.getSelectedItem().toString(), getTags());
+                                diag.setTitle("Modifier le tag");
+                                diag.setSize(750,550);
+                                diag.setLocationRelativeTo(null);
+                                diag.setVisible(true);
+
+                                if(diag.isValide()){
+                                    Tag tag = new Tag(diag.getNewTextTag());
+                                    tag.setColor(diag.getNewColorTag().getRGB());
+                                    getTags().addTag(tag);
+
+                                    for(int j=0; j<getTags().getSizeTags();j++){
+                                        BookTagsPanel.add(getTags().getTag(j));
+                                    }
+                                    BookTagsPanel.updateUI();
+                                }
+                            }
+                            else{
+                                String sql = "SELECT Color FROM Tags WHERE Tag='"+BookTagsCB.getSelectedItem().toString()+ "'";
+                                try {
+                                    Class.forName("org.sqlite.JDBC");
+                                    m_connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
+                                    m_statement = m_connection.createStatement();
+                                    ResultSet tagsQry = m_statement.executeQuery(sql);
+
+                                    getTags().createTag(Objects.requireNonNull(BookTagsCB.getSelectedItem()).toString());
+                                    getTags().getTag(getTags().getSizeTags() - 1).setColor(tagsQry.getInt(1));
+                                    for (int j = 0; j < getTags().getSizeTags(); j++) {
+                                        BookTagsPanel.add(getTags().getTag(j));
+                                        BookTagsCB.setSelectedIndex(0);
+                                    }
+                                    m_connection.close();
+                                    m_statement.close();
+                                }catch (Exception e ){
+                                    System.exit(0);
+                                    System.out.println(e.getMessage());
+                                }
                             }
                         }
                     }
@@ -262,30 +295,55 @@ public class AddBookDlg extends JDialog {
         edit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                EditTagDlg diag = new EditTagDlg();
-                diag.setTitle("Gérer les lectures");
-                diag.setSize(500,200);
+                Component[] componentList = BookTagsPanel.getComponents();
+                //j is the index of tags where we wan't to edit
+                int j = 0;
+                for(int i = 0; i<getTags().getSizeTags();i++){
+                    if(componentList[i]==m_popup.getInvoker()){
+                        j = i;
+                    }
+                }
+
+                EditTagDlg diag = new EditTagDlg(getTags().getTag(j));
+                diag.setTitle("Modifier le tag");
+                diag.setSize(750,550);
                 diag.setLocationRelativeTo(null);
                 diag.setVisible(true);
+
+                if(diag.isValide()){
+                    setTagIsUpdate(diag.isUpdate());
+                    Tag tag = new Tag(diag.getNewTextTag());
+                    tag.setColor(diag.getNewColorTag().getRGB());
+                    getTags().addTag(tag);
+                    BookTagsPanel.remove(componentList[j]);
+                    getTags().getTags().remove(j);
+
+                    for(int i=0; i<getTags().getSizeTags();i++){
+                        BookTagsPanel.add(getTags().getTag(i));
+                    }
+                    BookTagsPanel.updateUI();
+                }
             }
         });
         BookSummaryTextPane.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
                 super.focusGained(e);
-                RoundBorderCp roundBrd = new RoundBorderCp(JsPane.getBackground(),2,30,0,3);
+                RoundBorderCp roundBrd = new RoundBorderCp(JsPane.getBackground(),2,25,0,3);
                 BookSummaryTextPane.setBorder(roundBrd);
             }
 
             @Override
             public void focusLost(FocusEvent e) {
                 super.focusLost(e);
-                RoundBorderCp roundBrd = new RoundBorderCp(contentPane.getBackground(),2,30,0,3);
+                RoundBorderCp roundBrd = new RoundBorderCp(contentPane.getBackground(),2,25,0,3);
                 BookSummaryTextPane.setBorder(roundBrd);
             }
         });
     }
-
+    public boolean tagIsUpdate(){
+        return this.m_tagIsUpdate;
+    }
     public String getNewBookTitle(){//Get the new book title from JtextField
         return BookNameTextField.getText();
     }
@@ -333,7 +391,7 @@ public class AddBookDlg extends JDialog {
     }
     public Tags loadTags(){
         Tags tags = new Tags();
-        String sql = "SELECT Tag FROM Tags";
+        String sql = "SELECT Tag,Color FROM Tags";
         try {
             Class.forName("org.sqlite.JDBC");
             m_connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
@@ -341,6 +399,7 @@ public class AddBookDlg extends JDialog {
             ResultSet tagsQry = m_statement.executeQuery(sql);
             while (tagsQry.next()){
                 tags.createTag(tagsQry.getString(1));
+                tags.getTag(tags.getSizeTags()-1).setColor(tagsQry.getInt(2));
             }
             m_connection.close();
             m_statement.close();
@@ -350,6 +409,10 @@ public class AddBookDlg extends JDialog {
         }
 
         return tags;
+    }
+
+    public void setTagIsUpdate(boolean update){
+        this.m_tagIsUpdate = update;
     }
     public void addImageToPanel(String path){//Apply to our panel an image with path
         Image img = Toolkit.getDefaultToolkit().getImage(path);
@@ -400,7 +463,7 @@ public class AddBookDlg extends JDialog {
         BookBrowseBtn.setEnabled(bool);
         PreviewPhotoPanel.updateUI();
         PreviewPhotoPanel.removeAll();
-        AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),3,30,0,3);
+        AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),3,25,0,3);
         BookSummaryTextPane.setBorder(roundBrd);
         JsPane.setBorder(null);
     }

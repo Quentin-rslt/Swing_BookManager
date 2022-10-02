@@ -252,10 +252,12 @@ public class MainWindow extends JDialog {
                         pstmt.executeUpdate();
                         pstmt2.executeUpdate();
                         taggingPstmt.executeUpdate();
-                        initComponents();
                         BookListPanel.removeAll();
                         loadDB(false);
-
+                        m_bookListTable.setRowSelectionInterval(0, 0);
+                        setMTitle(m_bookListTable.getValueAt(0, 0).toString());
+                        setAuthor(m_bookListTable.getValueAt(0, 1).toString());
+                        loadComponents(getMTitle(), getAuthor());
                     } catch (SQLException e) {
                         System.out.println(e.getMessage());
                     }
@@ -272,7 +274,7 @@ public class MainWindow extends JDialog {
                 Image imgEdit = Toolkit.getDefaultToolkit().getImage(pathEdit);
                 imgEdit = imgEdit.getScaledInstance(16,16,Image.SCALE_AREA_AVERAGING);
                 diag.setIconImage(imgEdit);
-                diag.setSize(800,500);
+                diag.setSize(850,600);
                 diag.setLocationRelativeTo(null);
                 diag.setVisible(true);
                 if (diag.isValid()){

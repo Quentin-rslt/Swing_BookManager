@@ -41,7 +41,7 @@ public class EditBookDlg extends JDialog {
         setOldAuthor(author);
 
         loadDB(getOldTitle(), getOldAuthor());
-        AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),2,28,0,3);
+        AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),2,25,0,3);
         BookSummaryTextPane.setBorder(roundBrd);
         JsPane.setBorder(null);
 
@@ -74,14 +74,14 @@ public class EditBookDlg extends JDialog {
             @Override
             public void focusGained(FocusEvent e) {
                 super.focusGained(e);
-                RoundBorderCp roundBrd = new RoundBorderCp(JsPane.getBackground(),2,28,0,3);
+                RoundBorderCp roundBrd = new RoundBorderCp(JsPane.getBackground(),2,25,0,3);
                 BookSummaryTextPane.setBorder(roundBrd);
             }
 
             @Override
             public void focusLost(FocusEvent e) {
                 super.focusLost(e);
-                RoundBorderCp roundBrd = new RoundBorderCp(contentPane.getBackground(),2,28,0,3);
+                RoundBorderCp roundBrd = new RoundBorderCp(contentPane.getBackground(),2,25,0,3);
                 BookSummaryTextPane.setBorder(roundBrd);
             }
         });
@@ -199,7 +199,7 @@ public class EditBookDlg extends JDialog {
     }
     public void addImageToPanel(String path){//Apply to our panel an image with path
         Image img = Toolkit.getDefaultToolkit().getImage(path);
-        img=img.getScaledInstance(200, 300, Image.SCALE_AREA_AVERAGING);
+        img=img.getScaledInstance(266, 400, Image.SCALE_AREA_AVERAGING);
         ImageIcon icon = new ImageIcon(img);
         JLabel imgLabel = new JLabel();
         imgLabel.setIcon(icon);

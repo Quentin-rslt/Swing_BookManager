@@ -15,11 +15,8 @@ public class Tag extends JLabel {
     }
     public Tag(String tag){
         initComponent(tag);
-        setColor(stringToHex(tag));setBackground(new Color(getColor()));
-        setText(tag);
         m_tag= tag;
-        AbstractBorder roundBrd = new RoundBorderCp(new Color(getColor()),3,13,0,0);
-        setBorder(roundBrd);
+        setText(tag);
     }
 
     public String getTextTag(){
@@ -31,30 +28,32 @@ public class Tag extends JLabel {
             size++;
         return size;
     }
-    public int stringToHex(String tag){
-        byte[] getBytesFromString = tag.getBytes(StandardCharsets.UTF_8);
-        BigInteger bigInteger = new BigInteger(1, getBytesFromString);
-
-        return bigInteger.pow(2).intValue();
-    }
     public int getColor(){
         return this.m_color;
     }
-
     public void setColor(int color){
         this.m_color = color;
+        setBackground(new Color(m_color));
+        AbstractBorder roundBrd = new RoundBorderCp(new Color(m_color),3,13,0,0);
+        setBorder(roundBrd);
     }
     public void setTextTag(String tag){
         this.m_tag=tag;
     }
     public void initComponent(String tag){
         Dimension d;
-        if(getSizeText(tag)<6)
-            d = new Dimension(getSizeText(tag)*13,21);
+        if(getSizeText(tag)<2)
+            d = new Dimension(getSizeText(tag)+40,22);
+        else if(getSizeText(tag)<3)
+            d = new Dimension(getSizeText(tag)+50,22);
+        else if(getSizeText(tag)<4)
+            d = new Dimension(getSizeText(tag)+60,22);
+        else if(getSizeText(tag)<6)
+            d = new Dimension(getSizeText(tag)+70,22);
         else if(getSizeText(tag)<10)
-            d = new Dimension(getSizeText(tag)*12,21);
+            d = new Dimension(getSizeText(tag)+80,22);
         else
-            d = new Dimension(getSizeText(tag)*9,21);
+            d = new Dimension(getSizeText(tag)*9,22);
         setHorizontalAlignment(JLabel.CENTER);
         setOpaque(true);
         setMinimumSize(d);
