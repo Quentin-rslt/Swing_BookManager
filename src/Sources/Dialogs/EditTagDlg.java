@@ -20,6 +20,7 @@ public class EditTagDlg extends JDialog {
     private JPanel TagColorPanel;
     private JColorChooser m_ColorChooser = new JColorChooser();
     private Tag m_tag;
+    private Tags m_tags;
     private boolean m_isValid =false;
     private boolean m_isUpdate = false;
 
@@ -40,6 +41,7 @@ public class EditTagDlg extends JDialog {
         TagOkBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                System.out.println(getNewColorTag());
                 if (!Objects.equals(getNewTextTag(), "") && !textTagFind()){
                     setIsUpdate(false);
                     setIsValid(true);
@@ -63,9 +65,10 @@ public class EditTagDlg extends JDialog {
             }
         });
     }
-    public EditTagDlg(String tag, ArrayList<String> listOfCb) {
+    public EditTagDlg(String tag, ArrayList<String> listOfCb, Tags tags) {
         setContentPane(contentPane);
         setModal(true);
+        this.m_tags = tags;
         this.m_tag = new Tag();
         this.m_tag.setTextTag(tag);
         initComponents();
@@ -81,41 +84,57 @@ public class EditTagDlg extends JDialog {
         TagOkBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                //check if the tag is present in the list of tags (avoids duplication)
+                boolean tagFind = false;
+                int i = 0;
+                while(!tagFind && i<getTags().getSizeTags()){
+                    if(Objects.equals(getNewTextTag(), getTags().getTag(i).getTextTag())){
+                        JFrame jFrame = new JFrame();
+                        JOptionPane.showMessageDialog(jFrame, "Le tag existe déjà !");
+                        tagFind =true;
+                    }
+                    else i++;
+                }
                 boolean isInCB = false;
                 //check if the tag is present in the comboBox (avoids duplication)
                 for (String s : listOfCb) {
-                    System.out.println(s);
                     if (s.equals(getNewTextTag())) {
                         isInCB = true;
                     }
                 }
-                if(!isInCB){
-                    if (!Objects.equals(getNewTextTag(), "") && !textTagFind()){
-                        setIsUpdate(false);
-                        setIsValid(true);
-                        setVisible(false);
-                        dispose();
+                if(!tagFind){
+                    if(!isInCB){
+                        if (!Objects.equals(getNewTextTag(), "") && !textTagFind()){
+                            setIsUpdate(false);
+                            setIsValid(true);
+                            setVisible(false);
+                            dispose();
+                        }
+                        else if(!Objects.equals(getNewTextTag(), "") && textTagFind() && !colorTagFind()){
+                            setIsUpdate(true);
+                            setIsValid(true);
+                            setVisible(false);
+                            dispose();
+                        }
+                        else if(textTagFind() && colorTagFind()){
+                            JFrame jFrame = new JFrame();
+                            JOptionPane.showMessageDialog(jFrame, "Ce tag existe déjà !");
+                        }
+                        else if(Objects.equals(getNewTextTag(), "")){
+                            JFrame jFrame = new JFrame();
+                            JOptionPane.showMessageDialog(jFrame, "Veuillez remplir tous les champs !");
+                        }
                     }
-                    else if(!Objects.equals(getNewTextTag(), "") && textTagFind() && !colorTagFind()){
-                        setIsUpdate(true);
-                        setIsValid(true);
-                        setVisible(false);
-                        dispose();
-                    }
-                    else if(textTagFind() && colorTagFind()){
-                        JFrame jFrame = new JFrame();
-                        JOptionPane.showMessageDialog(jFrame, "Ce tag existe déjà !");
-                    }
-                    else if(Objects.equals(getNewTextTag(), "")){
-                        JFrame jFrame = new JFrame();
-                        JOptionPane.showMessageDialog(jFrame, "Veuillez remplir tous les champs !");
-                    }
-                }else {
+                }
+                else{
                     JFrame jFrame = new JFrame();
                     JOptionPane.showMessageDialog(jFrame, "Ce tag existe déjà !");
                 }
             }
         });
+    }
+    public Tags getTags(){
+        return this.m_tags;
     }
     public Tag getTag(){
         return this.m_tag;

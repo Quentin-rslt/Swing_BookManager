@@ -7,6 +7,8 @@ import javax.swing.*;
 import javax.swing.border.AbstractBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -29,6 +31,13 @@ public class ManageTagsDlg extends JDialog {
         setModal(true);
         this.m_tags = new Tags();
         fillTagsList();
+        TagCancelBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setVisible(false);
+                dispose();
+            }
+        });
     }
 
     private Connection connect() {
@@ -57,7 +66,6 @@ public class ManageTagsDlg extends JDialog {
 
                 getTags().createTag(textTag);
                 getTags().getTag(getTags().getSizeTags()-1).setColor(colorTag);
-
 
                 String[] header = {"Tags"};
                 Object[] data = {getTags().getTag(qry.getRow()-1).getTextTag()};
