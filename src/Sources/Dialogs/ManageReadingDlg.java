@@ -91,7 +91,7 @@ public class ManageReadingDlg extends JDialog {
                 String BookQry = "DELETE FROM Book WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";//Delete in bdd the item that we want delete
                 String TaggingQry = "DELETE FROM Tagging WHERE IdBook='"+getIdBook(getMTitle(),getAuthor())+"'";
                 if(m_bookListTable.getRowCount()>1){//If there is more than one reading you don't need to know if the person really wants to delete the book
-                    try (Connection conn = connect(); PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry, 1); PreparedStatement BookPstmt = conn.prepareStatement(BookQry)) {
+                    try (Connection conn = connect(); PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry)) {
                         ReadingPstmt.executeUpdate();
                         contentPane.updateUI();
                         BookListPanel.removeAll();
