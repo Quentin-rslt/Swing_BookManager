@@ -41,7 +41,6 @@ public class MainWindow extends JDialog {
             return false; //Disallow the editing of any cell
         }
     };
-    private JScrollPane m_pane;
     private DefaultTableModel m_tableModel = new DefaultTableModel();
     private Statement m_statement = null;
     private String m_title;
@@ -227,7 +226,7 @@ public class MainWindow extends JDialog {
             public void actionPerformed(ActionEvent e) {
                 ManageReadingDlg diag = new ManageReadingDlg(getMTitle(), getAuthor());
                 diag.setTitle("Gérer les lectures");
-                diag.setSize(500,300);
+                diag.setSize(500,570);
                 diag.setLocationRelativeTo(null);
                 diag.setVisible(true);
                 contentPane.updateUI();
@@ -556,13 +555,14 @@ public class MainWindow extends JDialog {
             m_bookListTable.setModel(m_tableModel);
             m_bookListTable.setFocusable(false);
 
-            m_pane = new JScrollPane(m_bookListTable);//Create a scrollpane with the Jtable for the error that did not display the header
+            JScrollPane pane = new JScrollPane(m_bookListTable);
+            pane.getViewport().setPreferredSize(new Dimension(440, 541));
             AbstractBorder roundHeader = new RoundBorderCp(contentPane.getBackground(),1,30,0,0);
-            AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),1,30, 549-(m_bookListTable.getRowCount()*m_bookListTable.getRowHeight()),0);
+            AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),1,30, 541-(m_bookListTable.getRowCount()*m_bookListTable.getRowHeight()),11);
             m_bookListTable.getTableHeader().setBorder(roundHeader);
             m_bookListTable.setBorder(roundBrd);
 
-            BookListPanel.add(m_pane);//add the scrolpane to our Jpanel
+            BookListPanel.add(pane);//add the scrolpane to our Jpanel
 
             rs.close();
             conn.close();

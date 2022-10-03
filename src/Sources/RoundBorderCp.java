@@ -49,9 +49,9 @@ public class RoundBorderCp extends AbstractBorder {
 
         Graphics2D g2 = (Graphics2D) g;
 
-        int bottomLineY = height - thickness-gap;
+        int bottomLineY = height - thickness;
 
-        RoundRectangle2D.Double bubble = new RoundRectangle2D.Double(strokePad, strokePad, width - (thickness+gap), bottomLineY+h, radii, radii);
+        RoundRectangle2D.Double bubble = new RoundRectangle2D.Double(strokePad+gap, strokePad, width - (thickness+(2*gap)), bottomLineY+h, radii, radii);
 
         Area area = new Area(bubble);
         g2.setRenderingHints(hints);

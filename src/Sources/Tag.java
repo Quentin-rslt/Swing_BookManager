@@ -34,6 +34,12 @@ public class Tag extends JLabel {
     public void setColor(int color){
         this.m_color = color;
         setBackground(new Color(m_color));
+
+        if(color<(-16777216/2)){
+            setForeground(new Color(232,208,208));
+        }else
+            setForeground(new Color(38,34,34));
+
         AbstractBorder roundBrd = new RoundBorderCp(new Color(m_color),3,13,0,0);
         setBorder(roundBrd);
     }
