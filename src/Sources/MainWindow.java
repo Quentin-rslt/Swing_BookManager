@@ -57,7 +57,7 @@ public class MainWindow extends JDialog {
         connectionDB();
         loadDB(false);
 
-        AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),3,30,0,0);
+        AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),3,30,0,0,0);
         BookSummary.setBorder(roundBrd);
         contentPane.getRootPane().setDefaultButton(CancelFiltersBtn);
         JSpane.setBorder(null);
@@ -557,8 +557,8 @@ public class MainWindow extends JDialog {
 
             JScrollPane pane = new JScrollPane(m_bookListTable);
             pane.getViewport().setPreferredSize(new Dimension(440, 541));
-            AbstractBorder roundHeader = new RoundBorderCp(contentPane.getBackground(),1,30,0,0);
-            AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),1,30, 541-(m_bookListTable.getRowCount()*m_bookListTable.getRowHeight()),11);
+            AbstractBorder roundHeader = new RoundBorderCp(contentPane.getBackground(),1,30,0,0,0);
+            AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),1,30, 541-(m_bookListTable.getRowCount()*m_bookListTable.getRowHeight()),11,0);
             m_bookListTable.getTableHeader().setBorder(roundHeader);
             m_bookListTable.setBorder(roundBrd);
 

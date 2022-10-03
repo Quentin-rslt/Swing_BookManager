@@ -44,6 +44,7 @@ public class ManageReadingDlg extends JDialog {
         setMTitle(title);
         setAuthor(author);
         fillBookList();
+        m_bookListTable.setRowSelectionInterval(0, 0);
 
         m_popup = new JPopupMenu();//Create a popup menu to delete a reading an edit this reading
         File fileRemove = new File("Ressource/Icons/remove.png");
@@ -97,6 +98,7 @@ public class ManageReadingDlg extends JDialog {
                         BookListPanel.removeAll();
                         fillBookList();
                         resetIdReading(getMTitle(), getAuthor(), getRowCount());//refresh all ID in the table ReadingDate
+                        m_bookListTable.setRowSelectionInterval(0, 0);
                         conn.close();
                         ReadingPstmt.close();
 
@@ -294,8 +296,8 @@ public class ManageReadingDlg extends JDialog {
 
                 JScrollPane pane = new JScrollPane(m_bookListTable);
                 pane.getViewport().setPreferredSize(new Dimension(450, 395));
-                AbstractBorder roundHeader = new RoundBorderCp(contentPane.getBackground(),1,30,0,0);
-                AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),1,30, 395-(m_bookListTable.getRowCount()*m_bookListTable.getRowHeight()),0);
+                AbstractBorder roundHeader = new RoundBorderCp(contentPane.getBackground(),1,30,0,0,0);
+                AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),1,30, 395-(m_bookListTable.getRowCount()*m_bookListTable.getRowHeight()),0,0);
                 m_bookListTable.getTableHeader().setBorder(roundHeader);
                 m_bookListTable.setBorder(roundBrd);
 

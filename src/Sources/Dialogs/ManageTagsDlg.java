@@ -36,6 +36,7 @@ public class ManageTagsDlg extends JDialog {
         setModal(true);
         this.m_tags = new Tags();
         fillTagsList();
+        m_tagsListTable.setRowSelectionInterval(0, 0);
 
         m_popup = new JPopupMenu();//Create a popup menu to delete a reading an edit this reading
         File fileRemove = new File("Ressource/Icons/remove.png");
@@ -81,8 +82,7 @@ public class ManageTagsDlg extends JDialog {
                     TaggingPstmt.executeUpdate();
                     TagsListPanel.removeAll();
                     fillTagsList();
-                    for(int i = 0; i<getTags().getSizeTags();i++)
-                        System.out.println(getTags().getTag(i).getTextTag());
+                    m_tagsListTable.setRowSelectionInterval(0, 0);
                     contentPane.updateUI();
                     conn.close();
                     TagsPstmt.close();
@@ -160,8 +160,8 @@ public class ManageTagsDlg extends JDialog {
             m_tagsListTable.setModel(m_tableModel);
             m_tagsListTable.setFocusable(false);
             JScrollPane pane = new JScrollPane(m_tagsListTable);//Create a scrollpane with the Jtable for the error that did not display the header
-            AbstractBorder roundHeader = new RoundBorderCp(contentPane.getBackground(),1,30,0,0);
-            AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),1,30, 400-(m_tagsListTable.getRowCount()*m_tagsListTable.getRowHeight()),0);
+            AbstractBorder roundHeader = new RoundBorderCp(contentPane.getBackground(),1,30,0,0,0);
+            AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),1,30, 400-(m_tagsListTable.getRowCount()*m_tagsListTable.getRowHeight()),0,0);
             m_tagsListTable.getTableHeader().setBorder(roundHeader);
             m_tagsListTable.setBorder(roundBrd);
 
