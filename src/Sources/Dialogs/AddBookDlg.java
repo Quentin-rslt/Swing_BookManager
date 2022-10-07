@@ -310,7 +310,7 @@ public class AddBookDlg extends JDialog {
 
                 EditTagDlg diag = new EditTagDlg(getTags().getTag(j));
                 diag.setTitle("Modifier le tag");
-                diag.setSize(750,550);
+                diag.setSize(780,550);
                 diag.setLocationRelativeTo(null);
                 diag.setVisible(true);
 

@@ -55,8 +55,10 @@ public class EditTagDlg extends JDialog {
                     dispose();
                 }
                 else if(textTagFind() && colorTagFind()){
-                    JFrame jFrame = new JFrame();
-                    JOptionPane.showMessageDialog(jFrame, "Ce tag existe déjà !");
+                    setIsUpdate(false);
+                    setIsValid(true);
+                    setVisible(false);
+                    dispose();
                 }
                 else if(Objects.equals(getNewTextTag(), "")){
                     JFrame jFrame = new JFrame();

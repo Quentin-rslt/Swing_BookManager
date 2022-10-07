@@ -763,7 +763,7 @@ public class MainWindow extends JDialog {
 
         MainWindow dialog = new MainWindow();
         dialog.setTitle("Book manager");
-        dialog.setSize(1310,700);
+        dialog.setSize(1290,700);
         dialog.setLocationRelativeTo(null);
         dialog.setVisible(true);
 
