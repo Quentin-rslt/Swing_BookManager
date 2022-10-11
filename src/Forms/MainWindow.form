@@ -320,7 +320,7 @@
         <properties/>
         <border type="none"/>
         <children>
-          <grid id="fc317" binding="BookListPanel" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+          <grid id="fc317" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
             <constraints>
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -328,7 +328,26 @@
               <focusable value="false"/>
             </properties>
             <border type="none"/>
-            <children/>
+            <children>
+              <scrollpane id="c7ba7" binding="jsPane">
+                <constraints/>
+                <properties>
+                  <enabled value="false"/>
+                  <focusable value="false"/>
+                </properties>
+                <border type="none"/>
+                <children>
+                  <component id="74b3c" class="javax.swing.JTable" binding="BooksTable">
+                    <constraints/>
+                    <properties>
+                      <editingRow value="0"/>
+                      <focusable value="false"/>
+                      <requestFocusEnabled value="false"/>
+                    </properties>
+                  </component>
+                </children>
+              </scrollpane>
+            </children>
           </grid>
           <grid id="60f70" layout-manager="FlowLayout" hgap="10" vgap="4" flow-align="1">
             <constraints>
