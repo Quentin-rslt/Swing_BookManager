@@ -17,20 +17,20 @@ import java.time.temporal.ChronoUnit;
 
 public class ManageReadingDlg extends JDialog {
     private JPanel contentPane;
-    private JPanel BookListPanel;
     private JButton CancelBtn;
     private JLabel ManageTitleLabel;
     private JLabel ManageAuthorLabel;
+    private JTable ReadingsTable;
 
 
     private Statement m_statement;
-    private JTable  m_bookListTable = new JTable(){//Create a Jtable with the tablemodel not editable
-        public boolean isCellEditable(int rowIndex, int colIndex) {
-            return false; //Disallow the editing of any cell
+    private DefaultTableModel m_tableModel = new DefaultTableModel(){
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            //all cells false
+            return false;
         }
     };
-    private JScrollPane m_pane;
-    private DefaultTableModel m_tableModel = new DefaultTableModel();
     private String m_title = "";
     private String m_author = "";
     private String m_startReading = "";
@@ -44,7 +44,7 @@ public class ManageReadingDlg extends JDialog {
         setMTitle(title);
         setAuthor(author);
         fillBookList();
-        m_bookListTable.setRowSelectionInterval(0, 0);
+        ReadingsTable.setRowSelectionInterval(0, 0);
 
         m_popup = new JPopupMenu();//Create a popup menu to delete a reading an edit this reading
         File fileRemove = new File("Ressource/Icons/remove.png");
@@ -65,7 +65,7 @@ public class ManageReadingDlg extends JDialog {
         CancelBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(m_bookListTable.getRowCount()>0)
+                if(ReadingsTable.getRowCount()>0)
                     setIsEmpty(false);
                 else
                     setIsEmpty(true);
@@ -73,15 +73,15 @@ public class ManageReadingDlg extends JDialog {
                 dispose();
             }
         });
-        m_bookListTable.addMouseListener(new MouseAdapter() {
+        ReadingsTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent evt) {
-                setRow(m_bookListTable.rowAtPoint(evt.getPoint()));
-                setStartReading(m_startReading = m_bookListTable.getValueAt(getRow(), 0).toString());
-                setEndReading(m_endReading = m_bookListTable.getValueAt(getRow(), 1).toString());
+                setRow(ReadingsTable.rowAtPoint(evt.getPoint()));
+                setStartReading(m_startReading = ReadingsTable.getValueAt(getRow(), 0).toString());
+                setEndReading(m_endReading = ReadingsTable.getValueAt(getRow(), 1).toString());
                 if(evt.getButton() == MouseEvent.BUTTON3) {
-                    m_bookListTable.setRowSelectionInterval(getRow(), getRow());//we focus the row when we right on the item
-                    m_popup.show(BookListPanel, evt.getX(), evt.getY());//show a popup to edit the reading
+                    ReadingsTable.setRowSelectionInterval(getRow(), getRow());//we focus the row when we right on the item
+                    m_popup.show(ReadingsTable, evt.getX(), evt.getY());//show a popup to edit the reading
                 }
             }
         });
@@ -91,14 +91,13 @@ public class ManageReadingDlg extends JDialog {
                 String ReadingQry = "DELETE FROM Reading WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"' AND ID='"+getRow()+"'";//Delete in bdd the item that we want delete
                 String BookQry = "DELETE FROM Book WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";//Delete in bdd the item that we want delete
                 String TaggingQry = "DELETE FROM Tagging WHERE IdBook='"+getIdBook(getMTitle(),getAuthor())+"'";
-                if(m_bookListTable.getRowCount()>1){//If there is more than one reading you don't need to know if the person really wants to delete the book
+                if(ReadingsTable.getRowCount()>1){//If there is more than one reading you don't need to know if the person really wants to delete the book
                     try (Connection conn = connect(); PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry)) {
                         ReadingPstmt.executeUpdate();
                         contentPane.updateUI();
-                        BookListPanel.removeAll();
                         fillBookList();
                         resetIdReading(getMTitle(), getAuthor(), getRowCount());//refresh all ID in the table ReadingDate
-                        m_bookListTable.setRowSelectionInterval(0, 0);
+                        ReadingsTable.setRowSelectionInterval(0, 0);
                         conn.close();
                         ReadingPstmt.close();
 
@@ -157,9 +156,8 @@ public class ManageReadingDlg extends JDialog {
                         pstmt.setString(2, diag.getNewEndReading());
                         pstmt.executeUpdate();
                         contentPane.updateUI();
-                        BookListPanel.removeAll();
                         fillBookList();
-                        m_bookListTable.setRowSelectionInterval(getRow(), getRow());//Focus on the reading that we edit
+                        ReadingsTable.setRowSelectionInterval(getRow(), getRow());//Focus on the reading that we edit
                         conn.close();
                         pstmt.close();
                     } catch (SQLException e) {
@@ -199,7 +197,7 @@ public class ManageReadingDlg extends JDialog {
         return m_row;
     }
     public int getRowCount(){
-        return m_bookListTable.getRowCount();
+        return ReadingsTable.getRowCount();
     }
     public int getIdBook(String title, String author) {
         int i =0;
@@ -245,8 +243,8 @@ public class ManageReadingDlg extends JDialog {
                 InsetrPstmt.setInt(1, i);
                 InsetrPstmt.setString(2, title);
                 InsetrPstmt.setString(3, author);
-                InsetrPstmt.setString(4, m_bookListTable.getValueAt(i, 0).toString());
-                InsetrPstmt.setString(5, m_bookListTable.getValueAt(i, 1).toString());
+                InsetrPstmt.setString(4, ReadingsTable.getValueAt(i, 0).toString());
+                InsetrPstmt.setString(5, ReadingsTable.getValueAt(i, 1).toString());
                 InsetrPstmt.executeUpdate();
             }
             conn.close();
@@ -290,19 +288,15 @@ public class ManageReadingDlg extends JDialog {
 
                 m_tableModel.setColumnIdentifiers(header);//Create the header
                 m_tableModel.addRow(data);//add to tablemodel the data
-
-                m_bookListTable.setModel(m_tableModel);
-                m_bookListTable.setFocusable(false);
-
-                JScrollPane pane = new JScrollPane(m_bookListTable);
-                pane.getViewport().setPreferredSize(new Dimension(450, 395));
-                AbstractBorder roundHeader = new RoundBorderCp(contentPane.getBackground(),1,30,0,0,0);
-                AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),1,30, 395-(m_bookListTable.getRowCount()*m_bookListTable.getRowHeight()),0,0);
-                m_bookListTable.getTableHeader().setBorder(roundHeader);
-                m_bookListTable.setBorder(roundBrd);
-
-                BookListPanel.add(pane);//add the scrolpane to our Jpanel
             }
+            ReadingsTable.setModel(m_tableModel);
+            AbstractBorder roundBrdMax = new RoundBorderCp(contentPane.getBackground(),1,30, 0,0,0);
+            AbstractBorder roundBrdMin = new RoundBorderCp(contentPane.getBackground(),1,30, 400-(ReadingsTable.getRowCount()*ReadingsTable.getRowHeight()),0,0);
+            if(ReadingsTable.getRowCount()>11)
+                ReadingsTable.setBorder(roundBrdMax);
+            else
+                ReadingsTable.setBorder(roundBrdMin);
+
             qry.close();
             conn.close();
             m_statement.close();
