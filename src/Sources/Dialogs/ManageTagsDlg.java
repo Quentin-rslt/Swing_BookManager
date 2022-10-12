@@ -1,6 +1,7 @@
 package Sources.Dialogs;
 
 import Sources.RoundBorderCp;
+import Sources.Tag;
 import Sources.Tags;
 
 import javax.swing.*;
@@ -77,13 +78,38 @@ public class ManageTagsDlg extends JDialog {
                     TagsPstmt.executeUpdate();
                     TaggingPstmt.executeUpdate();
                     fillTagsList();
-                    TagsTable.setRowSelectionInterval(0, 0);
                     contentPane.updateUI();
                     conn.close();
                     TagsPstmt.close();
                     TaggingPstmt.close();
                 } catch (SQLException e) {
                     System.out.println(e.getMessage());
+                }
+            }
+        });
+
+        edit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                EditTagDlg diag = new EditTagDlg(getTags().getTag(TagsTable.getSelectedRow()));
+                diag.setTitle("Modifier le tag");
+                diag.setSize(780,550);
+                diag.setLocationRelativeTo(null);
+                diag.setVisible(true);
+
+                if(diag.isValide()){
+                    String TagsUpdateQry = "UPDATE Tags SET Tag=?,Color=?"+
+                            "WHERE Tag='"+getTags().getTag(TagsTable.getSelectedRow()).getTextTag()+"'";
+
+                    try (Connection conn = connect(); PreparedStatement TagsUpdatePstmt = conn.prepareStatement(TagsUpdateQry)) {
+                        TagsUpdatePstmt.setString(1, diag.getNewTextTag());
+                        TagsUpdatePstmt.setInt(2, diag.getNewColorTag().getRGB());
+                        TagsUpdatePstmt.executeUpdate();
+
+                        fillTagsList();
+                    }catch (SQLException e) {
+                        System.out.println(e.getMessage());
+                    }
                 }
             }
         });
@@ -159,7 +185,7 @@ public class ManageTagsDlg extends JDialog {
                 TagsTable.setBorder(roundBrdMax);
             else
                 TagsTable.setBorder(roundBrdMin);
-
+            TagsTable.setRowSelectionInterval(0, 0);
             qry.close();
             conn.close();
             statement.close();

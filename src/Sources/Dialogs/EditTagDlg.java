@@ -150,9 +150,6 @@ public class EditTagDlg extends JDialog {
     public boolean isValide(){
         return this.m_isValid;
     }
-    public boolean isUpdate(){
-        return this.m_isUpdate;
-    }
     public boolean textTagFind(){
         boolean tagFind = false;
         int i = 0;
