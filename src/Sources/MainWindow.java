@@ -113,7 +113,7 @@ public class MainWindow extends JDialog {
                 if(evt.getClickCount() == 2 && evt.getButton() == MouseEvent.BUTTON1){
                     ManageReadingDlg diag = new ManageReadingDlg(getMTitle(), getAuthor());
                     diag.setTitle("Gérer les lectures");
-                    diag.setSize(500,300);
+                    diag.setSize(500,570);
                     diag.setLocationRelativeTo(null);
                     diag.setVisible(true);
                     contentPane.updateUI();
@@ -150,7 +150,7 @@ public class MainWindow extends JDialog {
 
                     contentPane.updateUI();
                     try (Connection conn = connect(); PreparedStatement BookPstmt = conn.prepareStatement(BookQry); PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry);
-                         PreparedStatement TaggingPstmt = conn.prepareStatement(TaggingQry); ) {
+                         PreparedStatement TaggingPstmt = conn.prepareStatement(TaggingQry)) {
                         m_statement = conn.createStatement();
 
                         ReadingPstmt.setInt(1, getIdReading(diag.getNewBookTitle(), diag.getNewBookAuthor()));
@@ -181,22 +181,17 @@ public class MainWindow extends JDialog {
                         ReadingPstmt.executeUpdate();//Insert the new reading
 
                         for(int i=0; i<diag.getTags().getSizeTags(); i++){
-                            String TagsQry = "";
-                            if(!diag.tagIsUpdate()){
-                                TagsQry = "INSERT INTO Tags (Tag,Color)" +
-                                        " SELECT '"+ diag.getTags().getTag(i).getTextTag() +"', '"+diag.getTags().getTag(i).getColor()+"'" +
-                                        " WHERE NOT EXISTS(SELECT * FROM Tags WHERE Tag='" + diag.getTags().getTag(i).getTextTag() + "' AND Color='" + diag.getTags().getTag(i).getColor() + "')";
-                                PreparedStatement TagsPstmt = conn.prepareStatement(TagsQry);
-                                TagsPstmt.executeUpdate();
-                            }
-                            //Just change the colour of an existing tag in the database if you have just edited the colour and not the text
-                            else{
-                                TagsQry = "UPDATE Tags SET Color=?"+
-                                        "WHERE Tag='"+diag.getTags().getTag(i).getTextTag()+"'";
-                                PreparedStatement TagsPstmt = conn.prepareStatement(TagsQry);
-                                TagsPstmt.setInt(1, diag.getTags().getTag(i).getColor());
-                                TagsPstmt.executeUpdate();
-                            }
+                            String TagsUpdateQry = "UPDATE Tags SET Color=?"+
+                                    "WHERE Tag='"+diag.getTags().getTag(i).getTextTag()+"'";
+                            PreparedStatement TagsUpdatePstmt = conn.prepareStatement(TagsUpdateQry);
+                            TagsUpdatePstmt.setInt(1, diag.getTags().getTag(i).getColor());
+                            TagsUpdatePstmt.executeUpdate();
+
+                            String TagsInsertQry = "INSERT INTO Tags (Tag,Color)" +
+                                    " SELECT '"+ diag.getTags().getTag(i).getTextTag() +"', '"+diag.getTags().getTag(i).getColor()+"'" +
+                                    " WHERE NOT EXISTS(SELECT * FROM Tags WHERE Tag='" + diag.getTags().getTag(i).getTextTag() + "' AND Color='" + diag.getTags().getTag(i).getColor() + "')";
+                            PreparedStatement TagsInsertPstmt = conn.prepareStatement(TagsInsertQry);
+                            TagsInsertPstmt.executeUpdate();
 
                             TaggingPstmt.setInt(1, getIdBook(diag.getNewBookTitle(), diag.getNewBookAuthor()));
                             TaggingPstmt.setInt(2, getIdTag(diag.getTags().getTag(i).getTextTag(), diag.getTags().getTag(i).getColor()));
@@ -285,7 +280,11 @@ public class MainWindow extends JDialog {
                             "WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";//Edit in bdd the book that we want to change
                     String ReadingQry = "UPDATE Reading SET Title=?, Author=?"+
                             "WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";//Edit in bdd the book that we want to change
-                    try (Connection conn = connect(); PreparedStatement BookPstmt = conn.prepareStatement(BookQry); PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry)) {
+                    String TaggingQry = "INSERT INTO Tagging (IdBook,IdTag) " +
+                            "VALUES (?,?);";
+                    String DeleteTaggingQry = "DELETE FROM Tagging WHERE IdBook='"+getIdBook(getMTitle(),getAuthor())+"'";
+                    try (Connection conn = connect(); PreparedStatement BookPstmt = conn.prepareStatement(BookQry); PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry);
+                         PreparedStatement TaggingPstmt = conn.prepareStatement(TaggingQry); PreparedStatement DeleteTaggingPstmt = conn.prepareStatement(DeleteTaggingQry)) {
                         // execute the uptdate statement
                         ReadingPstmt.setString(1, diag.getNewTitle());
                         ReadingPstmt.setString(2, diag.getNewAuthor());
@@ -299,6 +298,25 @@ public class MainWindow extends JDialog {
                         BookPstmt.setString(8, diag.getNewSummary());
                         BookPstmt.executeUpdate();
                         ReadingPstmt.executeUpdate();
+                        DeleteTaggingPstmt.executeUpdate();
+
+                        for(int i=0; i<diag.getTags().getSizeTags(); i++){
+                            String TagsUpdateQry = "UPDATE Tags SET Color=?"+
+                                    "WHERE Tag='"+diag.getTags().getTag(i).getTextTag()+"'";
+                            PreparedStatement TagsUpdatePstmt = conn.prepareStatement(TagsUpdateQry);
+                            TagsUpdatePstmt.setInt(1, diag.getTags().getTag(i).getColor());
+                            TagsUpdatePstmt.executeUpdate();
+
+                            String TagsInsertQry = "INSERT INTO Tags (Tag,Color)" +
+                                        " SELECT '"+ diag.getTags().getTag(i).getTextTag() +"', '"+diag.getTags().getTag(i).getColor()+"'" +
+                                        " WHERE NOT EXISTS(SELECT * FROM Tags WHERE Tag='" + diag.getTags().getTag(i).getTextTag() + "' AND Color='" + diag.getTags().getTag(i).getColor() + "')";
+                            PreparedStatement TagsInsertPstmt = conn.prepareStatement(TagsInsertQry);
+                            TagsInsertPstmt.executeUpdate();
+
+                            TaggingPstmt.setInt(1, getIdBook(diag.getNewTitle(), diag.getNewAuthor()));
+                            TaggingPstmt.setInt(2, getIdTag(diag.getTags().getTag(i).getTextTag(), diag.getTags().getTag(i).getColor()));
+                            TaggingPstmt.executeUpdate();
+                        }
 
                         contentPane.updateUI();
                         loadDB(false);
