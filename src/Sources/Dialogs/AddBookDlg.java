@@ -8,9 +8,12 @@ import javax.swing.*;
 import javax.swing.border.AbstractBorder;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
+import java.io.*;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -146,8 +149,7 @@ public class AddBookDlg extends JDialog {
                         }
                         if(Objects.equals(getURL(), "")){
                             File file = new File("Ressource/Image/Default.jpg");
-                            String path = file.getAbsolutePath();
-                            setURL(path);
+                            setURL(file.getName());
                         }
                         m_connection.close();
                         m_statement.close();
@@ -167,9 +169,13 @@ public class AddBookDlg extends JDialog {
             public void actionPerformed(ActionEvent e) {
                 JFileChooser jf= new JFileChooser();
                 if (JFileChooser.APPROVE_OPTION == jf.showOpenDialog(PreviewPhotoPanel)){ //Opens the file panel to select an image
-                    String path = jf.getSelectedFile().getPath();//Sélection image
-                    setURL(path);
-                    addImageToPanel(path, PreviewPhotoPanel);
+                    File file2 = new File("Ressource/Image/");
+                    File file = new File(jf.getSelectedFile().getName());
+
+
+
+                    setURL(jf.getSelectedFile().getName());
+                    addImageToPanel(getURL(), PreviewPhotoPanel);
                 }
             }
         });

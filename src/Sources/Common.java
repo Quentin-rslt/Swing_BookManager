@@ -9,7 +9,10 @@ import java.sql.*;
 import java.util.Objects;
 
 public class Common {
-    public static void addImageToPanel(String path,JPanel panel){//Apply to our panel an image with path
+    public static void addImageToPanel(String nom,JPanel panel){//Apply to our panel an image with path
+        File file = new File("Ressource/Image/"+nom);
+        String path = file.getAbsolutePath();
+
         Image img = Toolkit.getDefaultToolkit().getImage(path);
         img=img.getScaledInstance(266, 400, Image.SCALE_AREA_AVERAGING);
         ImageIcon icon = new ImageIcon(img);
