@@ -4,6 +4,7 @@ import Sources.Tag;
 import Sources.Tags;
 
 import javax.swing.*;
+import javax.swing.colorchooser.AbstractColorChooserPanel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -211,8 +212,18 @@ public class EditTagDlg extends JDialog {
         this.m_isUpdate = update;
     }
     public void initComponents(){
-        TagColorPanel.add(this.m_ColorChooser);
+
+        //TagColorPanel.add(this.m_ColorChooser);
         m_ColorChooser.setColor(getTag().getBackground());
+        AbstractColorChooserPanel[] panels = m_ColorChooser.getChooserPanels();
+        for (AbstractColorChooserPanel panel: panels)
+        {
+            if ("HSL".equals(panel.getDisplayName()))
+            {
+                TagColorPanel.add(panel);
+            }
+        }
+        TagColorPanel.add(m_ColorChooser.getPreviewPanel());
         TagNameTextField.setText(getTag().getTextTag());
     }
 }
