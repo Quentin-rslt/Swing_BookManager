@@ -1,23 +1,22 @@
 package Sources;
 
 import javax.swing.*;
+import javax.swing.border.*;
 import java.awt.*;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 
 public class Tag extends JLabel {
     String m_tag;
+    int m_color;
 
     public Tag(){
         m_tag="";
     }
     public Tag(String tag){
         initComponent(tag);
-
-
-        setBackground(new Color(stringToHex(tag)));
-        setText(tag);
         m_tag= tag;
+        setText(tag);
     }
 
     public String getTextTag(){
@@ -29,22 +28,40 @@ public class Tag extends JLabel {
             size++;
         return size;
     }
-    public int stringToHex(String tag){
-        byte[] getBytesFromString = tag.getBytes(StandardCharsets.UTF_8);
-        BigInteger bigInteger = new BigInteger(1, getBytesFromString);
-
-        return bigInteger.pow(2).intValue();
+    public int getColor(){
+        return this.m_color;
     }
+    public void setColor(int color){
+        this.m_color = color;
+        Color col = new Color(m_color);
+        double darkness = 1-(0.299*col.getRed() + 0.587*col.getGreen() + 0.114*col.getBlue())/255;
+        setBackground(new Color(m_color));
 
+        if(darkness>0.5){
+            setForeground(new Color(232,208,208));
+        }else
+            setForeground(new Color(38,34,34));
+
+        AbstractBorder roundBrd = new RoundBorderCp(new Color(m_color),3,13,0,0,0);
+        setBorder(roundBrd);
+    }
     public void setTextTag(String tag){
         this.m_tag=tag;
     }
     public void initComponent(String tag){
         Dimension d;
-        if(getSizeText(tag)<10)
-            d = new Dimension(getSizeText(tag)*10,22);
+        if(getSizeText(tag)<2)
+            d = new Dimension(getSizeText(tag)+40,22);
+        else if(getSizeText(tag)<3)
+            d = new Dimension(getSizeText(tag)+50,22);
+        else if(getSizeText(tag)<4)
+            d = new Dimension(getSizeText(tag)+60,22);
+        else if(getSizeText(tag)<6)
+            d = new Dimension(getSizeText(tag)+70,22);
+        else if(getSizeText(tag)<10)
+            d = new Dimension(getSizeText(tag)+80,22);
         else
-            d = new Dimension(getSizeText(tag)*7,22);
+            d = new Dimension(getSizeText(tag)*9,22);
         setHorizontalAlignment(JLabel.CENTER);
         setOpaque(true);
         setMinimumSize(d);

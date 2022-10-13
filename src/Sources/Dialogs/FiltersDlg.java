@@ -1,6 +1,9 @@
 package Sources.Dialogs;
 
+import Sources.RoundBorderCp;
+
 import javax.swing.*;
+import javax.swing.border.AbstractBorder;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
@@ -9,13 +12,9 @@ import java.util.Date;
 
 public class FiltersDlg extends JDialog {
     private JPanel contentPane;
-    private JPanel FiltersBtnPanel;
     private JButton FiltersOkBtn;
     private JButton FiltersCancelBtn;
-    private JPanel FiltersPanel;
-    private JLabel FiltersTitleLabel;
     private JTextField FiltersTitleTextField;
-    private JLabel FiltersAuthorLabel;
     private JTextField FiltersAuthorTextField;
     private JSpinner FiltersFirstReleaseYearSpin;
     private JSpinner FiltersLastReleaseYearSpin;

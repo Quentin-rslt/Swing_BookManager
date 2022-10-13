@@ -1,6 +1,9 @@
 package Sources.Dialogs;
 
+import Sources.RoundBorderCp;
+
 import javax.swing.*;
+import javax.swing.border.AbstractBorder;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
@@ -9,21 +12,18 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 
+import static Sources.Common.connect;
+
 public class AddReading extends JDialog {
     private JPanel contentPane;
-    private JPanel ReadingInfoPanel;
     private JButton ReadingOkBtn;
     private JButton ReadingConcelBtn;
-    private JPanel ReadingPhotoPanel;
     private JLabel ReadingTitleLabel;
     private JLabel ReadingAuthorLabel;
-    private JLabel ReadingStartDateLabel;
-    private JLabel ReadingEndDateLabel;
     private JSpinner ReadingNewStartDateSpin;
     private JSpinner ReadingNewEndDateSpin;
     private JCheckBox ReadingUnknownCheckBox;
     private JCheckBox ReadingNotDoneCheckBox;
-    private JLabel ReadingAddLabel;
 
     private String m_title;
     private String m_author;
@@ -142,16 +142,6 @@ public class AddReading extends JDialog {
         });
     }
 
-    private Connection connect() {
-        Connection connection = null;
-        String url = "jdbc:sqlite:BookManager.db";
-        try {
-            connection = DriverManager.getConnection(url);
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        return connection;
-    }
     public String getMtitle() {
         return m_title;
     }
@@ -230,6 +220,5 @@ public class AddReading extends JDialog {
         ReadingNewEndDateSpin.setModel(NewBookEndReadingSpinModel);
         JSpinner.DateEditor endEditor = new JSpinner.DateEditor(ReadingNewEndDateSpin,"yyyy-MM-dd");//set the display of the JSpinner of release date
         ReadingNewEndDateSpin.setEditor(endEditor);
-
     }
 }

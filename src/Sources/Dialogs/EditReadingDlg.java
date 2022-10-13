@@ -1,6 +1,9 @@
 package Sources.Dialogs;
 
+import Sources.RoundBorderCp;
+
 import javax.swing.*;
+import javax.swing.border.AbstractBorder;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
@@ -18,16 +21,10 @@ public class EditReadingDlg extends JDialog {
     private JButton CancelBtn;
     private JLabel BookTitleLable;
     private JLabel BookAuthorLabel;
-    private JLabel BookEndReadingLabel;
     private JSpinner BookNewEndReadingSpin;
     private JCheckBox BookUnknownDateReadingCheckBox;
     private JCheckBox BookNotDoneReadChecbox;
     private JSpinner BookNewStartReadingSpin;
-    private JPanel Cont;
-    private JPanel BookPanel;
-    private JPanel BookInfoPanel;
-    private JLabel BookStartReadingLabel;
-    private JPanel BookBtnPanel;
 
 
     private String m_title;
