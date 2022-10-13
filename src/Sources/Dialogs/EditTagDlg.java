@@ -42,7 +42,7 @@ public class EditTagDlg extends JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println(getNewColorTag());
-                if (!Objects.equals(getNewTextTag(), "") && !textTagFind()){
+                if (!Objects.equals(getNewTextTag(), "") && !textTagFind() && !colorTagFind()){
                     setIsUpdate(false);
                     setIsValid(true);
                     setVisible(false);
@@ -199,6 +199,9 @@ public class EditTagDlg extends JDialog {
             System.out.println(e.getMessage());
         }
         return connection;
+    }
+    public boolean isUpdate(){
+        return this.m_isUpdate;
     }
 
     public void setIsValid(boolean valid){

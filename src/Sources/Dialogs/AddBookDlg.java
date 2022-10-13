@@ -317,7 +317,7 @@ public class AddBookDlg extends JDialog {
                 diag.setVisible(true);
 
                 if(diag.isValide()){
-
+                    setTagIsUpdate(diag.isUpdate());
                     Tag tag = new Tag(diag.getNewTextTag());
                     tag.setColor(diag.getNewColorTag().getRGB());
 
@@ -416,6 +416,9 @@ public class AddBookDlg extends JDialog {
         }
 
         return tags;
+    }
+    public boolean getTagIsUpdate() {
+        return this.m_tagIsUpdate;
     }
 
     public void setTagIsUpdate(boolean update){

@@ -31,7 +31,7 @@ public class EditBookDlg extends JDialog {
     private JScrollPane JsPane;
     private JComboBox BookTagsCB;
     private JPanel BookTagsPanel;
-
+    private boolean m_isUpdate;
     private String m_oldTitle;
     private String m_oldAuthor;
     private String m_newURL;
@@ -221,6 +221,7 @@ public class EditBookDlg extends JDialog {
                 diag.setVisible(true);
 
                 if(diag.isValide()){
+                    setTagIsUpdate(diag.isUpdate());
                     Tag tag = new Tag(diag.getNewTextTag());
                     tag.setColor(diag.getNewColorTag().getRGB());
 
@@ -335,7 +336,13 @@ public class EditBookDlg extends JDialog {
         }
         return i;
     }
+    public boolean getTagIsUpdate() {
+        return m_isUpdate;
+    }
 
+    public void setTagIsUpdate(boolean m_isUpdate) {
+        this.m_isUpdate = m_isUpdate;
+    }
     public void setOldTitle(String oldTitle) {
         this.m_oldTitle = oldTitle;
     }

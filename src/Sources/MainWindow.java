@@ -181,11 +181,13 @@ public class MainWindow extends JDialog {
                         ReadingPstmt.executeUpdate();//Insert the new reading
 
                         for(int i=0; i<diag.getTags().getSizeTags(); i++){
-                            String TagsUpdateQry = "UPDATE Tags SET Color=?"+
-                                    "WHERE Tag='"+diag.getTags().getTag(i).getTextTag()+"'";
-                            PreparedStatement TagsUpdatePstmt = conn.prepareStatement(TagsUpdateQry);
-                            TagsUpdatePstmt.setInt(1, diag.getTags().getTag(i).getColor());
-                            TagsUpdatePstmt.executeUpdate();
+                            if(diag.getTagIsUpdate()){
+                                String TagsUpdateQry = "UPDATE Tags SET Color=?"+
+                                        "WHERE Tag='"+diag.getTags().getTag(i).getTextTag()+"'";
+                                PreparedStatement TagsUpdatePstmt = conn.prepareStatement(TagsUpdateQry);
+                                TagsUpdatePstmt.setInt(1, diag.getTags().getTag(i).getColor());
+                                TagsUpdatePstmt.executeUpdate();
+                            }
 
                             String TagsInsertQry = "INSERT INTO Tags (Tag,Color)" +
                                     " SELECT '"+ diag.getTags().getTag(i).getTextTag() +"', '"+diag.getTags().getTag(i).getColor()+"'" +
@@ -301,11 +303,13 @@ public class MainWindow extends JDialog {
                         DeleteTaggingPstmt.executeUpdate();
 
                         for(int i=0; i<diag.getTags().getSizeTags(); i++){
-                            String TagsUpdateQry = "UPDATE Tags SET Color=?"+
-                                    "WHERE Tag='"+diag.getTags().getTag(i).getTextTag()+"'";
-                            PreparedStatement TagsUpdatePstmt = conn.prepareStatement(TagsUpdateQry);
-                            TagsUpdatePstmt.setInt(1, diag.getTags().getTag(i).getColor());
-                            TagsUpdatePstmt.executeUpdate();
+                            if(diag.getTagIsUpdate()){
+                                String TagsUpdateQry = "UPDATE Tags SET Color=?"+
+                                        "WHERE Tag='"+diag.getTags().getTag(i).getTextTag()+"'";
+                                PreparedStatement TagsUpdatePstmt = conn.prepareStatement(TagsUpdateQry);
+                                TagsUpdatePstmt.setInt(1, diag.getTags().getTag(i).getColor());
+                                TagsUpdatePstmt.executeUpdate();
+                            }
 
                             String TagsInsertQry = "INSERT INTO Tags (Tag,Color)" +
                                         " SELECT '"+ diag.getTags().getTag(i).getTextTag() +"', '"+diag.getTags().getTag(i).getColor()+"'" +

@@ -26,3 +26,5 @@ hs_err_pid*
 BookManager.iml
 *.txt
 *.db
+/out/production/BookManager/Themes/DarkTheme/DarkTheme.properties
+/out/production/BookManager/Themes/flatlaf-2.4.jar
