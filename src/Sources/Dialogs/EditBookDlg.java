@@ -134,7 +134,6 @@ public class EditBookDlg extends JDialog {
                             if(!isInCB){
                                 EditTagDlg diag = new EditTagDlg(BookTagsCB.getSelectedItem().toString(), listOfCb, getTags());
                                 diag.setTitle("Créer un tag");
-                                diag.setSize(750,550);
                                 diag.setLocationRelativeTo(null);
                                 diag.setVisible(true);
 
@@ -216,7 +215,6 @@ public class EditBookDlg extends JDialog {
 
                 EditTagDlg diag = new EditTagDlg(getTags().getTag(j));
                 diag.setTitle("Modifier le tag");
-                diag.setSize(780,550);
                 diag.setLocationRelativeTo(null);
                 diag.setVisible(true);
 

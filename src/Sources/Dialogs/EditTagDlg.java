@@ -30,6 +30,7 @@ public class EditTagDlg extends JDialog {
         setModal(true);
         this.m_tag = tag;
         initComponents();
+        setSize(780,480);
 
         TagCancelBtn.addActionListener(new ActionListener() {
             @Override

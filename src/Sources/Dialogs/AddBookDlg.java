@@ -106,7 +106,7 @@ public class AddBookDlg extends JDialog {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 String sql = "SELECT Title, Author, StartReading, EndReading FROM Reading";
-                if(!getTags().isEmpty() && !Objects.equals(getNewBookAuthor(), "") && !Objects.equals(getNewBookTitle(), "") && !Objects.equals(getNewBookSummary(), "")){//Verif if the input are good to quit the dlg and recovered the data for bdd
+                if(!Objects.equals(getNewBookAuthor(), "") && !Objects.equals(getNewBookTitle(), "") && !Objects.equals(getNewBookSummary(), "")){//Verif if the input are good to quit the dlg and recovered the data for bdd
                     try{//Can add a new reading if the book already exist
                         Class.forName("org.sqlite.JDBC");
                         m_connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
@@ -230,7 +230,6 @@ public class AddBookDlg extends JDialog {
                             if(!isInCB){
                                 EditTagDlg diag = new EditTagDlg(BookTagsCB.getSelectedItem().toString(), listOfCb, getTags());
                                 diag.setTitle("Créer un tag");
-                                diag.setSize(750,550);
                                 diag.setLocationRelativeTo(null);
                                 diag.setVisible(true);
 
@@ -312,7 +311,6 @@ public class AddBookDlg extends JDialog {
 
                 EditTagDlg diag = new EditTagDlg(getTags().getTag(j));
                 diag.setTitle("Modifier le tag");
-                diag.setSize(780,550);
                 diag.setLocationRelativeTo(null);
                 diag.setVisible(true);
 

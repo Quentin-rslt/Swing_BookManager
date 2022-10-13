@@ -93,7 +93,6 @@ public class ManageTagsDlg extends JDialog {
             public void actionPerformed(ActionEvent evt) {
                 EditTagDlg diag = new EditTagDlg(getTags().getTag(TagsTable.getSelectedRow()));
                 diag.setTitle("Modifier le tag");
-                diag.setSize(780,550);
                 diag.setLocationRelativeTo(null);
                 diag.setVisible(true);
 

@@ -31,7 +31,7 @@
               <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text value="Nom du livre"/>
+              <text value="Nom du livre *"/>
             </properties>
           </component>
           <component id="21875" class="javax.swing.JTextField" binding="BookNameTextField">
@@ -47,7 +47,7 @@
               <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text value="Auteur"/>
+              <text value="Auteur *"/>
             </properties>
           </component>
           <component id="5a55b" class="javax.swing.JTextField" binding="BookAuthorTextField">
@@ -65,7 +65,7 @@
               <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text value="Année de sortie"/>
+              <text value="Année de sortie *"/>
             </properties>
           </component>
           <component id="99132" class="javax.swing.JLabel">
@@ -73,7 +73,7 @@
               <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text value="Ma note"/>
+              <text value="Ma note *"/>
             </properties>
           </component>
           <component id="e2407" class="javax.swing.JSpinner" binding="BookPersonalNoteSpin">
@@ -87,7 +87,7 @@
               <grid row="10" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text value="Début de lecture"/>
+              <text value="Début de lecture *"/>
             </properties>
           </component>
           <grid id="42d66" layout-manager="GridLayoutManager" row-count="2" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="1">
@@ -150,7 +150,7 @@
               <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text value="Note Babelio "/>
+              <text value="Note Babelio *"/>
             </properties>
           </component>
           <component id="35123" class="javax.swing.JSpinner" binding="BookNoteBblSpin">
@@ -164,7 +164,7 @@
               <grid row="9" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text value="Résumé "/>
+              <text value="Résumé *"/>
             </properties>
           </component>
           <component id="2a434" class="javax.swing.JSpinner" binding="BookReleaseYearSpin">
@@ -178,7 +178,7 @@
               <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text value="Nombre de page"/>
+              <text value="Nombre de page *"/>
             </properties>
           </component>
           <component id="68b33" class="javax.swing.JSpinner" binding="BookNumberOPSpin">
@@ -213,7 +213,7 @@
               <grid row="11" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text value="Fin de lecture"/>
+              <text value="Fin de lecture *"/>
             </properties>
           </component>
           <component id="47a8" class="javax.swing.JComboBox" binding="BookTagsCB">
