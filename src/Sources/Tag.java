@@ -33,9 +33,11 @@ public class Tag extends JLabel {
     }
     public void setColor(int color){
         this.m_color = color;
+        Color col = new Color(m_color);
+        double darkness = 1-(0.299*col.getRed() + 0.587*col.getGreen() + 0.114*col.getBlue())/255;
         setBackground(new Color(m_color));
 
-        if(color<(-16777216/2)){
+        if(darkness>0.5){
             setForeground(new Color(232,208,208));
         }else
             setForeground(new Color(38,34,34));
