@@ -277,7 +277,7 @@ public class AddBookDlg extends JDialog {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                if(BookTagsPanel.getComponents().length>0){
+                if(!e.getComponent().getComponentAt(e.getX(),e.getY()).equals(BookTagsPanel)){
                     if(e.getButton() == MouseEvent.BUTTON3) {
                         m_popup.show(BookTagsPanel, e.getX(), e.getY());//show a popup to edit the reading
                         m_popup.setInvoker(e.getComponent().getComponentAt(e.getX(),e.getY()));
