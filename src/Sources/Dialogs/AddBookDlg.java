@@ -18,6 +18,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 
+import static Sources.Common.*;
+import static Sources.Common.getImageEdit;
+
 public class AddBookDlg extends JDialog {
     private JPanel contentPane;
     private JButton ValidateBtn;
@@ -56,17 +59,8 @@ public class AddBookDlg extends JDialog {
         initComponents(true);
 
         m_popup = new JPopupMenu();//Create a popup menu to delete a reading an edit this reading
-        File fileRemove = new File("Ressource/Icons/remove.png");
-        String pathRemove = fileRemove.getAbsolutePath();
-        Image imgRemove = Toolkit.getDefaultToolkit().getImage(pathRemove);
-        imgRemove = imgRemove.getScaledInstance(18,18,Image.SCALE_AREA_AVERAGING);
-        JMenuItem cut = new JMenuItem("Supprimer", new ImageIcon(imgRemove));
-
-        File fileEdit = new File("Ressource/Icons/edit.png");
-        String pathEdit = fileEdit.getAbsolutePath();
-        Image imgEdit = Toolkit.getDefaultToolkit().getImage(pathEdit);
-        imgEdit = imgEdit.getScaledInstance(18,18,Image.SCALE_AREA_AVERAGING);
-        JMenuItem edit = new JMenuItem("Modifier", new ImageIcon(imgEdit));
+        JMenuItem cut = new JMenuItem("Supprimer", new ImageIcon(getImageCut()));
+        JMenuItem edit = new JMenuItem("Modifier", new ImageIcon(getImageEdit()));
         m_popup.add(cut);
         m_popup.add(edit);
 
@@ -125,37 +119,8 @@ public class AddBookDlg extends JDialog {
                                 JOptionPane.showMessageDialog(jFrame, "Le livre existe déjà !");
                                 bookFind = true;//If you have found a book, you are out of the loop
                             }
-                            else
-                                bookFind = false;
                         }
-                        if (!bookFind && Objects.equals(getURL(), "") && !Objects.equals(getNewBookStartReading(), getNewBookEndReading()) && !isDateUnknown() && !isNotDOne()
-                                && startDate.compareTo(enDate)<0){
-                            //If a book has not been found in the database when leaving the loop, then the book typed is valid
-                            File file = new File("Ressource/Image/Default.jpg");
-                            String path = file.getAbsolutePath();
-                            setURL(path);//create default image if we did'nt choice an image
-                            m_isValide=true;
-                            setVisible(false);
-                            dispose();
-                        } else if (!bookFind && Objects.equals(getURL(), "") && !Objects.equals(getNewBookStartReading(), getNewBookEndReading()) && !isDateUnknown() && !isNotDOne()
-                                && startDate.compareTo(enDate)>0) {
-                            JFrame jFrame = new JFrame();
-                            JOptionPane.showMessageDialog(jFrame, "La date de début de lecture ne peut pas être après à la fin de lecture !");
-                        } else if (!bookFind && Objects.equals(getURL(), "") && !isDateUnknown() && isNotDOne()) {
-                            File file = new File("Ressource/Image/Default.jpg");
-                            String path = file.getAbsolutePath();
-                            setURL(path);
-                            m_isValide=true;
-                            setVisible(false);
-                            dispose();
-                        } else if (!bookFind && isDateUnknown()&& !isNotDOne() && Objects.equals(getURL(), "")) {
-                            File file = new File("Ressource/Image/Default.jpg");
-                            String path = file.getAbsolutePath();
-                            setURL(path);
-                            m_isValide=true;
-                            setVisible(false);
-                            dispose();
-                        } else if (!bookFind && isDateUnknown()&& !isNotDOne() && !Objects.equals(getURL(), "")){
+                        if (!bookFind && isDateUnknown()&& !isNotDOne() && !Objects.equals(getURL(), "")){
                             m_isValide=true;
                             setVisible(false);
                             dispose();
@@ -168,6 +133,9 @@ public class AddBookDlg extends JDialog {
                             m_isValide=true;
                             setVisible(false);
                             dispose();
+                        } else if(Objects.equals(getNewBookAuthor(), getNewBookTitle()) && !Objects.equals(getNewBookAuthor(), "")){
+                            JFrame jFrame = new JFrame();
+                            JOptionPane.showMessageDialog(jFrame, "Le nom de l'auteur et le titre d'un livre ne peut pas être identique ! ");
                         } else if (!bookFind && !Objects.equals(getURL(), "") && !Objects.equals(getNewBookStartReading(), getNewBookEndReading()) && !isDateUnknown() && !isNotDOne()
                                 && startDate.compareTo(enDate)>0) {
                             JFrame jFrame = new JFrame();
@@ -176,16 +144,17 @@ public class AddBookDlg extends JDialog {
                             JFrame jFrame = new JFrame();
                             JOptionPane.showMessageDialog(jFrame, "La date de début de lecture ne peut être identique à la fin de lecture !");
                         }
+                        if(Objects.equals(getURL(), "")){
+                            File file = new File("Ressource/Image/Default.jpg");
+                            String path = file.getAbsolutePath();
+                            setURL(path);
+                        }
                         m_connection.close();
                         m_statement.close();
                     } catch ( Exception e ) {
                         System.err.println( e.getClass().getName() + ": " + e.getMessage() );
                         System.exit(0);
                     }
-                }
-                else if(Objects.equals(getNewBookAuthor(), getNewBookTitle())){
-                    JFrame jFrame = new JFrame();
-                    JOptionPane.showMessageDialog(jFrame, "Le nom de l'auteur et le titre d'un livre ne peut pas être identique ! ");
                 }
                 else{
                     JFrame jFrame = new JFrame();
@@ -200,7 +169,7 @@ public class AddBookDlg extends JDialog {
                 if (JFileChooser.APPROVE_OPTION == jf.showOpenDialog(PreviewPhotoPanel)){ //Opens the file panel to select an image
                     String path = jf.getSelectedFile().getPath();//Sélection image
                     setURL(path);
-                    addImageToPanel(path);
+                    addImageToPanel(path, PreviewPhotoPanel);
                 }
             }
         });
@@ -210,63 +179,7 @@ public class AddBookDlg extends JDialog {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 if (!Objects.equals(BookTagsCB.getSelectedItem(), "")) {
                     if (evt.getKeyCode()==KeyEvent.VK_ENTER){
-                        boolean tagFind = false;
-                        int i = 0;
-                        while(!tagFind && i<getTags().getSizeTags()){
-                            if(Objects.equals(BookTagsCB.getSelectedItem(), getTags().getTag(i).getTextTag())){
-                                JFrame jFrame = new JFrame();
-                                JOptionPane.showMessageDialog(jFrame, "Vous avez déjà sélectionné ce tag !");
-                                tagFind =true;
-                            }
-                            else i++;
-                        }
-                        if(!tagFind){
-                            boolean isInCB = false;
-                            for(int j = 0; j<BookTagsCB.getItemCount();j++){
-                                if(BookTagsCB.getSelectedItem().toString().equals(BookTagsCB.getItemAt(j).toString())){
-                                    isInCB=true;
-                                }
-                            }
-                            //if the tag don't exist open editTagTagWindow to configure the color or the text
-                            if(!isInCB){
-                                EditTagDlg diag = new EditTagDlg(new Tag(Objects.requireNonNull(BookTagsCB.getSelectedItem()).toString()));
-                                diag.setTitle("Créer un tag");
-                                diag.setLocationRelativeTo(null);
-                                diag.setVisible(true);
-
-                                if(diag.isValide()){
-                                    Tag tag = new Tag(diag.getNewTextTag());
-                                    tag.setColor(diag.getNewColorTag().getRGB());
-                                    getTags().addTag(tag);
-
-                                    for(int j=0; j<getTags().getSizeTags();j++){
-                                        BookTagsPanel.add(getTags().getTag(j));
-                                    }
-                                    BookTagsPanel.updateUI();
-                                }
-                            }
-                            else{
-                                String sql = "SELECT Color FROM Tags WHERE Tag='"+BookTagsCB.getSelectedItem().toString()+ "'";
-                                try {
-                                    Class.forName("org.sqlite.JDBC");
-                                    m_connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
-                                    m_statement = m_connection.createStatement();
-                                    ResultSet tagsQry = m_statement.executeQuery(sql);
-
-                                    getTags().createTag(Objects.requireNonNull(BookTagsCB.getSelectedItem()).toString());
-                                    getTags().getTag(getTags().getSizeTags() - 1).setColor(tagsQry.getInt(1));
-                                    for (int j = 0; j < getTags().getSizeTags(); j++) {
-                                        BookTagsPanel.add(getTags().getTag(j));
-                                        BookTagsCB.setSelectedIndex(0);
-                                    }
-                                    m_connection.close();
-                                    m_statement.close();
-                                }catch (Exception e ){
-                                    System.exit(0);
-                                    System.out.println(e.getMessage());
-                                }
-                            }
-                        }
+                        fillPaneTags(getTags(), BookTagsPanel, BookTagsCB);
                     }
                 }
                 BookTagsPanel.updateUI();
@@ -347,9 +260,7 @@ public class AddBookDlg extends JDialog {
             }
         });
     }
-    public boolean tagIsUpdate(){
-        return this.m_tagIsUpdate;
-    }
+
     public String getNewBookTitle(){//Get the new book title from JtextField
         return BookNameTextField.getText();
     }
@@ -422,17 +333,6 @@ public class AddBookDlg extends JDialog {
 
     public void setTagIsUpdate(boolean update){
         this.m_tagIsUpdate = update;
-    }
-    public void addImageToPanel(String path){//Apply to our panel an image with path
-        Image img = Toolkit.getDefaultToolkit().getImage(path);
-        img=img.getScaledInstance(266, 400, Image.SCALE_AREA_AVERAGING);
-        ImageIcon icon = new ImageIcon(img);
-        JLabel imgLabel = new JLabel();
-        imgLabel.setIcon(icon);
-
-        PreviewPhotoPanel.updateUI();//reload the panel
-        PreviewPhotoPanel.removeAll();
-        PreviewPhotoPanel.add(imgLabel);
     }
     public void initComponents(){
         SpinnerModel BookPersonalNotelSM = new SpinnerNumberModel(5, 0, 5, 0.5);//Set a default and max value for spinner Note

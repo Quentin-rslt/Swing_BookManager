@@ -33,8 +33,4 @@ public class Tags extends Tag {
     public void addTag(Tag tag){
         this.m_tags.add(tag);
     }
-    public void setTag(Tag tag, int i){
-        this.m_tags.get(i).setTextTag(tag.getTextTag());
-        this.m_tags.get(i).setColor(tag.getColor());
-    }
 }

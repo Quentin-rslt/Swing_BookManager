@@ -12,6 +12,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import static Sources.Common.connect;
+
 public class EditTagDlg extends JDialog {
     private JPanel contentPane;
     private JPanel TagBtnPanel;
@@ -101,16 +103,6 @@ public class EditTagDlg extends JDialog {
             System.exit(0);
         }
         return tagFind;
-    }
-    private Connection connect() {
-        Connection connection = null;
-        String url = "jdbc:sqlite:BookManager.db";
-        try {
-            connection = DriverManager.getConnection(url);
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        return connection;
     }
     public boolean isUpdate(){
         return this.m_isUpdate;

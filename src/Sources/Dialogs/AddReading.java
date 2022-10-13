@@ -12,6 +12,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 
+import static Sources.Common.connect;
+
 public class AddReading extends JDialog {
     private JPanel contentPane;
     private JButton ReadingOkBtn;
@@ -140,16 +142,6 @@ public class AddReading extends JDialog {
         });
     }
 
-    private Connection connect() {
-        Connection connection = null;
-        String url = "jdbc:sqlite:BookManager.db";
-        try {
-            connection = DriverManager.getConnection(url);
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        return connection;
-    }
     public String getMtitle() {
         return m_title;
     }

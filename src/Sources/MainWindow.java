@@ -14,6 +14,8 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
+import static Sources.Common.*;
+
 public class MainWindow extends JDialog {
     private JPanel contentPane;
     private JLabel PersonalNoteLabel;
@@ -36,7 +38,7 @@ public class MainWindow extends JDialog {
     private JButton BookManageTagsBtn;
     private JTable BooksTable;
     private JScrollPane jsPane;
-    private DefaultTableModel m_tableModel = new DefaultTableModel(){//Create a Jtable with the tablemodel not editable
+    private final DefaultTableModel m_tableModel = new DefaultTableModel(){//Create a Jtable with the tablemodel not editable
         public boolean isCellEditable(int rowIndex, int colIndex) {
             return false; //Disallow the editing of any cell
         }
@@ -62,24 +64,9 @@ public class MainWindow extends JDialog {
         JSpane.setBorder(null);
 
         m_popup = new JPopupMenu();//Create a popup menu to delete a reading an edit this reading
-        File fileAdd = new File("Ressource/Icons/add.png");
-        String pathAdd = fileAdd.getAbsolutePath();
-        Image imgAdd = Toolkit.getDefaultToolkit().getImage(pathAdd);
-        imgAdd = imgAdd.getScaledInstance(18,18,Image.SCALE_AREA_AVERAGING);
-        JMenuItem add = new JMenuItem("Ajouter une lecture", new ImageIcon(imgAdd));
-
-        File fileRemove = new File("Ressource/Icons/remove.png");
-        String pathRemove = fileRemove.getAbsolutePath();
-        Image imgRemove = Toolkit.getDefaultToolkit().getImage(pathRemove);
-        imgRemove = imgRemove.getScaledInstance(18,18,Image.SCALE_AREA_AVERAGING);
-        JMenuItem cut = new JMenuItem("Supprimer", new ImageIcon(imgRemove));
-
-        File fileEdit = new File("Ressource/Icons/edit.png");
-        String pathEdit = fileEdit.getAbsolutePath();
-        Image imgEdit = Toolkit.getDefaultToolkit().getImage(pathEdit);
-        imgEdit = imgEdit.getScaledInstance(18,18,Image.SCALE_AREA_AVERAGING);
-        JMenuItem edit = new JMenuItem("Modifier", new ImageIcon(imgEdit));
-
+        JMenuItem add = new JMenuItem("Ajouter une lecture", new ImageIcon(getImageAdd()));
+        JMenuItem cut = new JMenuItem("Supprimer", new ImageIcon(getImageCut()));
+        JMenuItem edit = new JMenuItem("Modifier", new ImageIcon(getImageEdit()));
         m_popup.add(add);
         m_popup.add(cut);
         m_popup.add(edit);
@@ -452,16 +439,7 @@ public class MainWindow extends JDialog {
             }
         });
     }
-    private Connection connect() {
-        Connection connection = null;
-        String url = "jdbc:sqlite:BookManager.db";
-        try {
-            connection = DriverManager.getConnection(url);
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        return connection;
-    }
+
     public String getMTitle(){
         return m_title;
     }
@@ -491,7 +469,7 @@ public class MainWindow extends JDialog {
         m_author=author;
     }
     public void connectionDB(){
-        try (Connection conn = this.connect()) {
+        try (Connection conn = connect()) {
             Class.forName("org.sqlite.JDBC");
             m_statement = conn.createStatement();
 
@@ -538,7 +516,7 @@ public class MainWindow extends JDialog {
     public void loadDB(boolean isFiltered){
         m_tableModel.setRowCount(0);
         CancelFiltersBtn.setEnabled(isFiltered);
-        try(Connection conn = this.connect()){
+        try(Connection conn = connect()){
             m_statement = conn.createStatement();
             System.out.println("Table connexion successfully");
             ResultSet rs = null;
@@ -683,14 +661,7 @@ public class MainWindow extends JDialog {
             //Image
             ResultSet ImageQry = m_statement.executeQuery("SELECT Image FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
 
-            Image img = Toolkit.getDefaultToolkit().getImage(ImageQry.getString(1));
-            img=img.getScaledInstance(266, 400, Image.SCALE_AREA_AVERAGING);//set size of image
-            ImageIcon icon = new ImageIcon(img);
-            JLabel imgLabel = new JLabel();
-            imgLabel.setIcon(icon);
-
-            BookPhotoPanel.removeAll();//clean the panel before to add an image
-            BookPhotoPanel.add(imgLabel);
+            addImageToPanel(ImageQry.getString(1),BookPhotoPanel);
 
             conn.close();
             m_statement.close();
@@ -718,36 +689,7 @@ public class MainWindow extends JDialog {
         contentPane.updateUI();
         contentPane.setBorder(null);
     }
-    public int getIdReading(String title, String author) {
-        int i =0;
-        try (Connection conn = connect()) {
-            m_statement = conn.createStatement();
-            ResultSet rs = m_statement.executeQuery("SELECT COUNT(*) FROM Reading WHERE Title='"+title+"' AND Author='"+author+ "'");
-            i=rs.getInt(1);
-            rs.close();
-            conn.close();
-            m_statement.close();
-        }catch (Exception e){
-            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-            System.exit(0);
-        }
-        return i;
-    }
-    public int getIdBook(String title, String author) {
-        int i =0;
-        try (Connection conn = connect()) {
-            Statement statement = conn.createStatement();
-            ResultSet idBook = statement.executeQuery("SELECT ID FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
-            i=idBook.getInt(1);
-            idBook.close();
-            conn.close();
-            statement.close();
-        }catch (Exception e){
-            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-            System.exit(0);
-        }
-        return i;
-    }
+
     public int getIdTag(String tag, int color) {
         int i =0;
         try (Connection conn = connect()) {

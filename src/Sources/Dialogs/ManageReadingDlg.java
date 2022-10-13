@@ -15,6 +15,8 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
+import static Sources.Common.*;
+
 public class ManageReadingDlg extends JDialog {
     private JPanel contentPane;
     private JButton CancelBtn;
@@ -47,17 +49,8 @@ public class ManageReadingDlg extends JDialog {
         ReadingsTable.setRowSelectionInterval(0, 0);
 
         m_popup = new JPopupMenu();//Create a popup menu to delete a reading an edit this reading
-        File fileRemove = new File("Ressource/Icons/remove.png");
-        String pathRemove = fileRemove.getAbsolutePath();
-        Image imgRemove = Toolkit.getDefaultToolkit().getImage(pathRemove);
-        imgRemove = imgRemove.getScaledInstance(18,18,Image.SCALE_AREA_AVERAGING);
-        JMenuItem cut = new JMenuItem("Supprimer", new ImageIcon(imgRemove));
-
-        File fileEdit = new File("Ressource/Icons/edit.png");
-        String pathEdit = fileEdit.getAbsolutePath();
-        Image imgEdit = Toolkit.getDefaultToolkit().getImage(pathEdit);
-        imgEdit = imgEdit.getScaledInstance(18,18,Image.SCALE_AREA_AVERAGING);
-        JMenuItem edit = new JMenuItem("Modifier", new ImageIcon(imgEdit));
+        JMenuItem cut = new JMenuItem("Supprimer", new ImageIcon(getImageCut()));
+        JMenuItem edit = new JMenuItem("Modifier", new ImageIcon(getImageEdit()));
         m_popup.add(cut);
         m_popup.add(edit);
 
@@ -168,16 +161,7 @@ public class ManageReadingDlg extends JDialog {
         });
     }
 
-    private Connection connect() {
-        Connection connection = null;
-        String url = "jdbc:sqlite:BookManager.db";
-        try {
-            connection = DriverManager.getConnection(url);
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        return connection;
-    }
+
     public String getAuthor() {
         return m_author;
     }
@@ -198,21 +182,6 @@ public class ManageReadingDlg extends JDialog {
     }
     public int getRowCount(){
         return ReadingsTable.getRowCount();
-    }
-    public int getIdBook(String title, String author) {
-        int i =0;
-        try (Connection conn = connect()) {
-            Statement statement = conn.createStatement();
-            ResultSet idBook = statement.executeQuery("SELECT ID FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
-            i=idBook.getInt(1);
-            idBook.close();
-            conn.close();
-            statement.close();
-        }catch (Exception e){
-            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-            System.exit(0);
-        }
-        return i;
     }
 
     public void setAuthor(String m_author) {

@@ -1,19 +1,18 @@
 package Sources.Dialogs;
 
 import Sources.RoundBorderCp;
-import Sources.Tag;
 import Sources.Tags;
 
 import javax.swing.*;
 import javax.swing.border.AbstractBorder;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.File;
 import java.sql.*;
+
+import static Sources.Common.*;
 
 public class ManageTagsDlg extends JDialog {
     private JPanel contentPane;
@@ -36,17 +35,8 @@ public class ManageTagsDlg extends JDialog {
         TagsTable.setRowSelectionInterval(0, 0);
 
         m_popup = new JPopupMenu();//Create a popup menu to delete a reading an edit this reading
-        File fileRemove = new File("Ressource/Icons/remove.png");
-        String pathRemove = fileRemove.getAbsolutePath();
-        Image imgRemove = Toolkit.getDefaultToolkit().getImage(pathRemove);
-        imgRemove = imgRemove.getScaledInstance(18,18,Image.SCALE_AREA_AVERAGING);
-        JMenuItem cut = new JMenuItem("Supprimer", new ImageIcon(imgRemove));
-
-        File fileEdit = new File("Ressource/Icons/edit.png");
-        String pathEdit = fileEdit.getAbsolutePath();
-        Image imgEdit = Toolkit.getDefaultToolkit().getImage(pathEdit);
-        imgEdit = imgEdit.getScaledInstance(18,18,Image.SCALE_AREA_AVERAGING);
-        JMenuItem edit = new JMenuItem("Modifier", new ImageIcon(imgEdit));
+        JMenuItem cut = new JMenuItem("Supprimer", new ImageIcon(getImageCut()));
+        JMenuItem edit = new JMenuItem("Modifier", new ImageIcon(getImageEdit()));
         m_popup.add(cut);
         m_popup.add(edit);
 
@@ -117,36 +107,9 @@ public class ManageTagsDlg extends JDialog {
     public int getRow() {
         return m_row;
     }
-    public int getRowCount(){
-        return TagsTable.getRowCount();
-    }
-    private Connection connect() {
-        Connection connection = null;
-        String url = "jdbc:sqlite:BookManager.db";
-        try {
-            connection = DriverManager.getConnection(url);
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        return connection;
-    }
+
     public Tags getTags(){
         return this.m_tags;
-    }
-    public int getIdTag(String tag, int color) {
-        int i =0;
-        try (Connection conn = connect()) {
-            Statement statement = conn.createStatement();
-            ResultSet idBook = statement.executeQuery("SELECT ID FROM Tags WHERE Tag='"+tag+"' AND Color='"+color+ "'");
-            i=idBook.getInt(1);
-            idBook.close();
-            conn.close();
-            statement.close();
-        }catch (Exception e){
-            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-            System.exit(0);
-        }
-        return i;
     }
 
     public void setTags(Tags tags){

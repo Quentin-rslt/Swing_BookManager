@@ -8,13 +8,13 @@ import javax.swing.*;
 import javax.swing.border.AbstractBorder;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
 import java.sql.*;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
+
+import static Sources.Common.*;
 
 public class EditBookDlg extends JDialog {
     private JPanel contentPane;
@@ -46,17 +46,8 @@ public class EditBookDlg extends JDialog {
         setOldAuthor(author);
 
         m_popup = new JPopupMenu();//Create a popup menu to delete a reading an edit this reading
-        File fileRemove = new File("Ressource/Icons/remove.png");
-        String pathRemove = fileRemove.getAbsolutePath();
-        Image imgRemove = Toolkit.getDefaultToolkit().getImage(pathRemove);
-        imgRemove = imgRemove.getScaledInstance(18,18,Image.SCALE_AREA_AVERAGING);
-        JMenuItem cut = new JMenuItem("Supprimer", new ImageIcon(imgRemove));
-
-        File fileEdit = new File("Ressource/Icons/edit.png");
-        String pathEdit = fileEdit.getAbsolutePath();
-        Image imgEdit = Toolkit.getDefaultToolkit().getImage(pathEdit);
-        imgEdit = imgEdit.getScaledInstance(18,18,Image.SCALE_AREA_AVERAGING);
-        JMenuItem edit = new JMenuItem("Modifier", new ImageIcon(imgEdit));
+        JMenuItem cut = new JMenuItem("Supprimer", new ImageIcon(getImageCut()));
+        JMenuItem edit = new JMenuItem("Modifier", new ImageIcon(getImageEdit()));
         m_popup.add(cut);
         m_popup.add(edit);
 
@@ -86,7 +77,7 @@ public class EditBookDlg extends JDialog {
                 if (JFileChooser.APPROVE_OPTION == jf.showOpenDialog(BookPhotoPanel)){ //Opens the file panel to select an image
                     String path = jf.getSelectedFile().getPath();//Sélection image
                     setNewURL(path);
-                    addImageToPanel(path);
+                    addImageToPanel(path,BookPhotoPanel);
                 }
             }
         });
@@ -111,63 +102,7 @@ public class EditBookDlg extends JDialog {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 if (!Objects.equals(BookTagsCB.getSelectedItem(), "")) {
                     if (evt.getKeyCode()== KeyEvent.VK_ENTER){
-                        boolean tagFind = false;
-                        int i = 0;
-                        while(!tagFind && i<getTags().getSizeTags()){
-                            if(Objects.equals(BookTagsCB.getSelectedItem(), getTags().getTag(i).getTextTag())){
-                                JFrame jFrame = new JFrame();
-                                JOptionPane.showMessageDialog(jFrame, "Vous avez déjà sélectionné ce tag !");
-                                tagFind =true;
-                            }
-                            else i++;
-                        }
-                        if(!tagFind){
-                            boolean isInCB = false;
-                            for(int j = 0; j<BookTagsCB.getItemCount();j++){
-                                if(BookTagsCB.getSelectedItem().toString().equals(BookTagsCB.getItemAt(j).toString())){
-                                    isInCB=true;
-                                }
-                            }
-                            //if the tag don't exist open editTagTagWindow to configure the color or the text
-                            if(!isInCB){
-                                EditTagDlg diag = new EditTagDlg(new Tag(BookTagsCB.getSelectedItem().toString()));
-                                diag.setTitle("Créer un tag");
-                                diag.setLocationRelativeTo(null);
-                                diag.setVisible(true);
-
-                                if(diag.isValide()){
-                                    Tag tag = new Tag(diag.getNewTextTag());
-                                    tag.setColor(diag.getNewColorTag().getRGB());
-                                    getTags().addTag(tag);
-
-                                    for(int j=0; j<getTags().getSizeTags();j++){
-                                        BookTagsPanel.add(getTags().getTag(j));
-                                    }
-                                    BookTagsPanel.updateUI();
-                                }
-                            }
-                            else{
-                                String sql = "SELECT Color FROM Tags WHERE Tag='"+BookTagsCB.getSelectedItem().toString()+ "'";
-                                try {
-                                    Class.forName("org.sqlite.JDBC");
-                                    Connection connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
-                                    Statement statement = connection.createStatement();
-                                    ResultSet tagsQry = statement.executeQuery(sql);
-
-                                    getTags().createTag(Objects.requireNonNull(BookTagsCB.getSelectedItem()).toString());
-                                    getTags().getTag(getTags().getSizeTags() - 1).setColor(tagsQry.getInt(1));
-                                    for (int j = 0; j < getTags().getSizeTags(); j++) {
-                                        BookTagsPanel.add(getTags().getTag(j));
-                                        BookTagsCB.setSelectedIndex(0);
-                                    }
-                                    connection.close();
-                                    statement.close();
-                                }catch (Exception e ){
-                                    System.exit(0);
-                                    System.out.println(e.getMessage());
-                                }
-                            }
-                        }
+                        fillPaneTags(getTags(), BookTagsPanel, BookTagsCB);
                     }
                 }
                 BookTagsPanel.updateUI();
@@ -268,16 +203,7 @@ public class EditBookDlg extends JDialog {
     public boolean isValid() {
         return isValid;
     }
-    private Connection connect() {
-        Connection connection = null;
-        String url = "jdbc:sqlite:BookManager.db";
-        try {
-            connection = DriverManager.getConnection(url);
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        return connection;
-    }
+
     public Tags getTags(){
         return this.m_tags;
     }
@@ -301,36 +227,6 @@ public class EditBookDlg extends JDialog {
         }
 
         return tags;
-    }
-    public int getIdReading(String title, String author) {
-        int i =0;
-        try (Connection conn = connect()) {
-            Statement statement = conn.createStatement();
-            ResultSet rs = statement.executeQuery("SELECT COUNT(*) FROM Reading WHERE Title='"+title+"' AND Author='"+author+ "'");
-            i=rs.getInt(1);
-            rs.close();
-            conn.close();
-            statement.close();
-        }catch (Exception e){
-            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-            System.exit(0);
-        }
-        return i;
-    }
-    public int getIdBook(String title, String author) {
-        int i =0;
-        try (Connection conn = connect()) {
-            Statement statement = conn.createStatement();
-            ResultSet idBook = statement.executeQuery("SELECT ID FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
-            i=idBook.getInt(1);
-            idBook.close();
-            conn.close();
-            statement.close();
-        }catch (Exception e){
-            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-            System.exit(0);
-        }
-        return i;
     }
     public boolean getTagIsUpdate() {
         return m_isUpdate;
@@ -404,7 +300,7 @@ public class EditBookDlg extends JDialog {
 
             //Image
             ResultSet ImageQry = statement.executeQuery("SELECT Image FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
-            addImageToPanel(ImageQry.getString(1));
+            addImageToPanel(ImageQry.getString(1),BookPhotoPanel);
             setNewURL(ImageQry.getString(1));
             fillThemeCB();
             conn.close();
@@ -414,17 +310,7 @@ public class EditBookDlg extends JDialog {
             System.exit(0);
         }
     }
-    public void addImageToPanel(String path){//Apply to our panel an image with path
-        Image img = Toolkit.getDefaultToolkit().getImage(path);
-        img=img.getScaledInstance(266, 400, Image.SCALE_AREA_AVERAGING);
-        ImageIcon icon = new ImageIcon(img);
-        JLabel imgLabel = new JLabel();
-        imgLabel.setIcon(icon);
 
-        BookPhotoPanel.updateUI();//reload the panel
-        BookPhotoPanel.removeAll();
-        BookPhotoPanel.add(imgLabel);
-    }
     public void fillThemeCB(){
         this.BookTagsCB.addItem("");
         for (int i = 0; i<loadTags().getSizeTags(); i++){
