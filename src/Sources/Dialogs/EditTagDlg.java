@@ -25,11 +25,10 @@ public class EditTagDlg extends JDialog {
     private boolean m_isValid =false;
     private boolean m_isUpdate = false;
 
-    public EditTagDlg(Tag tag, Tags tags) {
+    public EditTagDlg(Tag tag) {
         setContentPane(contentPane);
         setModal(true);
         this.m_tag = tag;
-        this.m_tags = tags;
         initComponents();
         setSize(780,480);
 
@@ -44,37 +43,19 @@ public class EditTagDlg extends JDialog {
         TagOkBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
-                boolean tagSelect = false;
-                if(getTags() != null){
-                    int i = 0;
-                    while(!tagSelect && i<getTags().getSizeTags()){
-                        if(Objects.equals(getNewTextTag(), getTags().getTag(i).getTextTag())){
-                            tagSelect =true;
-                        }
-                        else i++;
-                    }
-                }
-
-                if(!tagSelect){//si le tag n'a pas été sélectionné
-                    if(!textTagFind()){//n'est pas dans la bdd
-                        if (!Objects.equals(getNewTextTag(), "")){
-                            setIsUpdate(false);
-                            setIsValid(true);
-                            setVisible(false);
-                            dispose();
-                        }
-                        else{
-                            JFrame jFrame = new JFrame();
-                            JOptionPane.showMessageDialog(jFrame, "Veuillez remplir tous les champs !");
-                        }
+                if(!textTagFind()){//n'est pas dans la bdd
+                    if (!Objects.equals(getNewTextTag(), "")){
+                        setIsUpdate(false);
+                        setIsValid(true);
+                        setVisible(false);
+                        dispose();
                     }
                     else{
                         JFrame jFrame = new JFrame();
-                        JOptionPane.showMessageDialog(jFrame, "Ce tag existe déjà !");
+                        JOptionPane.showMessageDialog(jFrame, "Veuillez remplir tous les champs !");
                     }
                 }
-                else if(getTag().getTextTag().equals(getNewTextTag()) && !colorTagFind()){//if we wan't to just edit the color of a tag
+                else if(getTag().getTextTag().equals(getNewTextTag())){//if we want to just edit the color of a tag
                     setIsUpdate(true);
                     setIsValid(true);
                     setVisible(false);
@@ -104,7 +85,6 @@ public class EditTagDlg extends JDialog {
     }
     public boolean textTagFind(){
         boolean tagFind = false;
-        int i = 0;
         String sql = "SELECT Tag FROM Tags";
         try (Connection conn = connect()){
             Statement statement = conn.createStatement();
@@ -114,26 +94,6 @@ public class EditTagDlg extends JDialog {
                     tagFind=true;
                 }
             }
-            conn.close();
-            statement.close();
-        }catch (Exception e){
-            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-            System.exit(0);
-        }
-        return tagFind;
-    }
-    public boolean colorTagFind(){
-        boolean tagFind = false;
-        int i = 0;
-        String sql = "SELECT Color FROM Tags WHERE Tag='"+getNewTextTag()+ "'";
-        try (Connection conn = connect()){
-            Statement statement = conn.createStatement();
-            ResultSet tagsQry = statement.executeQuery(sql);
-
-            if(getNewColorTag().getRGB()==tagsQry.getInt(1)){
-                tagFind=true;
-            }
-
             conn.close();
             statement.close();
         }catch (Exception e){

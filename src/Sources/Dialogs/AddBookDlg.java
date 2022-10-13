@@ -73,25 +73,28 @@ public class AddBookDlg extends JDialog {
         BookUnknownReadDateChecbox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(BookUnknownReadDateChecbox.isSelected()){//Hide the possibility to add a reading date when we don't know when you read it
+                if (BookUnknownReadDateChecbox.isSelected()){
+                    BookNotDoneReadChecbox.setSelected(false);
                     BookEndReadingSpin.setEnabled(false);
                     BookStartReadingSpin.setEnabled(false);
-                    BookNotDoneReadChecbox.setEnabled(false);
                 }
                 else{
                     BookEndReadingSpin.setEnabled(true);
                     BookStartReadingSpin.setEnabled(true);
-                    BookNotDoneReadChecbox.setEnabled(true);
                 }
             }
         });
         BookNotDoneReadChecbox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (BookNotDoneReadChecbox.isSelected())
+                if (BookNotDoneReadChecbox.isSelected()){
+                    BookUnknownReadDateChecbox.setSelected(false);
+                    BookStartReadingSpin.setEnabled(true);
                     BookEndReadingSpin.setEnabled(false);
-                else
+                }
+                else{
                     BookEndReadingSpin.setEnabled(true);
+                }
             }
         });
         CancelBtn.addActionListener(new ActionListener() {
@@ -226,7 +229,7 @@ public class AddBookDlg extends JDialog {
                             }
                             //if the tag don't exist open editTagTagWindow to configure the color or the text
                             if(!isInCB){
-                                EditTagDlg diag = new EditTagDlg(new Tag(BookTagsCB.getSelectedItem().toString()), getTags());
+                                EditTagDlg diag = new EditTagDlg(new Tag(Objects.requireNonNull(BookTagsCB.getSelectedItem()).toString()));
                                 diag.setTitle("Créer un tag");
                                 diag.setLocationRelativeTo(null);
                                 diag.setVisible(true);
@@ -307,7 +310,7 @@ public class AddBookDlg extends JDialog {
                     }
                 }
 
-                EditTagDlg diag = new EditTagDlg(getTags().getTag(j), getTags());
+                EditTagDlg diag = new EditTagDlg(getTags().getTag(j));
                 diag.setTitle("Modifier le tag");
                 diag.setLocationRelativeTo(null);
                 diag.setVisible(true);

@@ -130,7 +130,7 @@ public class EditBookDlg extends JDialog {
                             }
                             //if the tag don't exist open editTagTagWindow to configure the color or the text
                             if(!isInCB){
-                                EditTagDlg diag = new EditTagDlg(new Tag(BookTagsCB.getSelectedItem().toString()), getTags());
+                                EditTagDlg diag = new EditTagDlg(new Tag(BookTagsCB.getSelectedItem().toString()));
                                 diag.setTitle("Créer un tag");
                                 diag.setLocationRelativeTo(null);
                                 diag.setVisible(true);
@@ -203,7 +203,7 @@ public class EditBookDlg extends JDialog {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 Component[] componentList = BookTagsPanel.getComponents();
-                //j is the index of tags where we wan't to edit
+                //j is the index of tags where we want to edit
                 int j = 0;
                 for(int i = 0; i<getTags().getSizeTags();i++){
                     if(componentList[i]==m_popup.getInvoker()){
@@ -211,7 +211,7 @@ public class EditBookDlg extends JDialog {
                     }
                 }
 
-                EditTagDlg diag = new EditTagDlg(getTags().getTag(j),getTags());
+                EditTagDlg diag = new EditTagDlg(getTags().getTag(j));
                 diag.setTitle("Modifier le tag");
                 diag.setLocationRelativeTo(null);
                 diag.setVisible(true);
