@@ -123,16 +123,14 @@ public class EditBookDlg extends JDialog {
                         }
                         if(!tagFind){
                             boolean isInCB = false;
-                            ArrayList<String> listOfCb = new ArrayList<>();
                             for(int j = 0; j<BookTagsCB.getItemCount();j++){
-                                listOfCb.add(BookTagsCB.getItemAt(j).toString());
                                 if(BookTagsCB.getSelectedItem().toString().equals(BookTagsCB.getItemAt(j).toString())){
                                     isInCB=true;
                                 }
                             }
                             //if the tag don't exist open editTagTagWindow to configure the color or the text
                             if(!isInCB){
-                                EditTagDlg diag = new EditTagDlg(BookTagsCB.getSelectedItem().toString(), listOfCb, getTags());
+                                EditTagDlg diag = new EditTagDlg(new Tag(BookTagsCB.getSelectedItem().toString()), getTags());
                                 diag.setTitle("Créer un tag");
                                 diag.setLocationRelativeTo(null);
                                 diag.setVisible(true);
@@ -213,7 +211,7 @@ public class EditBookDlg extends JDialog {
                     }
                 }
 
-                EditTagDlg diag = new EditTagDlg(getTags().getTag(j));
+                EditTagDlg diag = new EditTagDlg(getTags().getTag(j),getTags());
                 diag.setTitle("Modifier le tag");
                 diag.setLocationRelativeTo(null);
                 diag.setVisible(true);

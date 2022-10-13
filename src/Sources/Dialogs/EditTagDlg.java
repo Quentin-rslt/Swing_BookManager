@@ -25,10 +25,11 @@ public class EditTagDlg extends JDialog {
     private boolean m_isValid =false;
     private boolean m_isUpdate = false;
 
-    public EditTagDlg(Tag tag) {
+    public EditTagDlg(Tag tag, Tags tags) {
         setContentPane(contentPane);
         setModal(true);
         this.m_tag = tag;
+        this.m_tags = tags;
         initComponents();
         setSize(780,480);
 
@@ -43,92 +44,41 @@ public class EditTagDlg extends JDialog {
         TagOkBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println(getNewColorTag());
-                if (!Objects.equals(getNewTextTag(), "") && !textTagFind() && !colorTagFind()){
-                    setIsUpdate(false);
-                    setIsValid(true);
-                    setVisible(false);
-                    dispose();
-                }
-                else if(!Objects.equals(getNewTextTag(), "") && textTagFind() && !colorTagFind()){
-                    setIsUpdate(true);
-                    setIsValid(true);
-                    setVisible(false);
-                    dispose();
-                }
-                else if(textTagFind() && colorTagFind()){
-                    setIsUpdate(false);
-                    setIsValid(true);
-                    setVisible(false);
-                    dispose();
-                }
-                else if(Objects.equals(getNewTextTag(), "")){
-                    JFrame jFrame = new JFrame();
-                    JOptionPane.showMessageDialog(jFrame, "Veuillez remplir tous les champs !");
-                }
-            }
-        });
-    }
-    public EditTagDlg(String tag, ArrayList<String> listOfCb, Tags tags) {
-        setContentPane(contentPane);
-        setModal(true);
-        this.m_tags = tags;
-        this.m_tag = new Tag();
-        this.m_tag.setTextTag(tag);
-        initComponents();
 
-        TagCancelBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {//Quit dlg without taking into account the input
-                setIsValid(false);
-                setVisible(false);
-                dispose();
-            }
-        });
-        TagOkBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //check if the tag is present in the list of tags (avoids duplication)
-                boolean tagFind = false;
-                int i = 0;
-                while(!tagFind && i<getTags().getSizeTags()){
-                    if(Objects.equals(getNewTextTag(), getTags().getTag(i).getTextTag())){
-                        JFrame jFrame = new JFrame();
-                        JOptionPane.showMessageDialog(jFrame, "Le tag existe déjà !");
-                        tagFind =true;
-                    }
-                    else i++;
-                }
-                boolean isInCB = false;
-                //check if the tag is present in the comboBox (avoids duplication)
-                for (String s : listOfCb) {
-                    if (s.equals(getNewTextTag())) {
-                        isInCB = true;
+                boolean tagSelect = false;
+                if(getTags() != null){
+                    int i = 0;
+                    while(!tagSelect && i<getTags().getSizeTags()){
+                        if(Objects.equals(getNewTextTag(), getTags().getTag(i).getTextTag())){
+                            tagSelect =true;
+                        }
+                        else i++;
                     }
                 }
-                if(!tagFind){
-                    if(!isInCB){
-                        if (!Objects.equals(getNewTextTag(), "") && !textTagFind()){
+
+                if(!tagSelect){//si le tag n'a pas été sélectionné
+                    if(!textTagFind()){//n'est pas dans la bdd
+                        if (!Objects.equals(getNewTextTag(), "")){
                             setIsUpdate(false);
                             setIsValid(true);
                             setVisible(false);
                             dispose();
                         }
-                        else if(!Objects.equals(getNewTextTag(), "") && textTagFind() && !colorTagFind()){
-                            setIsUpdate(true);
-                            setIsValid(true);
-                            setVisible(false);
-                            dispose();
-                        }
-                        else if(textTagFind() && colorTagFind()){
-                            JFrame jFrame = new JFrame();
-                            JOptionPane.showMessageDialog(jFrame, "Ce tag existe déjà !");
-                        }
-                        else if(Objects.equals(getNewTextTag(), "")){
+                        else{
                             JFrame jFrame = new JFrame();
                             JOptionPane.showMessageDialog(jFrame, "Veuillez remplir tous les champs !");
                         }
                     }
+                    else{
+                        JFrame jFrame = new JFrame();
+                        JOptionPane.showMessageDialog(jFrame, "Ce tag existe déjà !");
+                    }
+                }
+                else if(getTag().getTextTag().equals(getNewTextTag()) && !colorTagFind()){//if we wan't to just edit the color of a tag
+                    setIsUpdate(true);
+                    setIsValid(true);
+                    setVisible(false);
+                    dispose();
                 }
                 else{
                     JFrame jFrame = new JFrame();

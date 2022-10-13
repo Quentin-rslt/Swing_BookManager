@@ -91,7 +91,7 @@ public class ManageTagsDlg extends JDialog {
         edit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                EditTagDlg diag = new EditTagDlg(getTags().getTag(TagsTable.getSelectedRow()));
+                EditTagDlg diag = new EditTagDlg(getTags().getTag(TagsTable.getSelectedRow()),null);
                 diag.setTitle("Modifier le tag");
                 diag.setLocationRelativeTo(null);
                 diag.setVisible(true);
