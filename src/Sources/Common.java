@@ -16,6 +16,8 @@ import java.sql.*;
 import java.util.Objects;
 
 public class Common {
+    static JFileChooser jf= new JFileChooser();
+    static String name="";
     public static void addImageToPanel(String nom,JPanel panel){//Apply to our panel an image with path
         File file = new File("Ressource/Image/"+nom);
         String path = file.getAbsolutePath();
@@ -30,21 +32,21 @@ public class Common {
         panel.removeAll();
         panel.add(imgLabel);
     }
-    public static String addImageToRessource(JPanel panel){
-        String name="";
-        JFileChooser jf= new JFileChooser();
+    public static String setNameOfBook(JPanel panel){
         if (JFileChooser.APPROVE_OPTION == jf.showOpenDialog(panel)){ //Opens the file panel to select an image
             name = "1.jpg";
-            Path sourcepath = Paths.get(jf.getSelectedFile().getAbsolutePath());
-            Path destinationepath = Paths.get("Ressource/Image/"+name);
-
-            try {
-                    Files.copy(sourcepath, destinationepath, StandardCopyOption.REPLACE_EXISTING);
-            } catch (Exception e) {
-                    throw new RuntimeException(e.getMessage(), e);
-            }
         }
         return name;
+    }
+    public static void addImageToRessource(){
+        Path sourcepath = Paths.get(jf.getSelectedFile().getAbsolutePath());
+        Path destinationepath = Paths.get("Ressource/Image/"+name);
+
+        try {
+            Files.copy(sourcepath, destinationepath, StandardCopyOption.REPLACE_EXISTING);
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
     }
     public static void fillPaneTags(Tags tags, JPanel panel, JComboBox cb){
         boolean tagFind = false;

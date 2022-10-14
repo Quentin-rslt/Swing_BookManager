@@ -134,12 +134,6 @@ public class MainWindow extends JDialog {
                             "VALUES (?,?,?,?,?);";
                     String TaggingQry = "INSERT INTO Tagging (IdBook,IdTag) " +
                             "VALUES (?,?);";
-                    Path destinationepath = Paths.get("Ressource/Image/1.jpg");
-                    try {
-                        Files.delete(destinationepath);
-                    } catch (Exception e) {
-                        throw new RuntimeException(e.getMessage(), e);
-                    }
                     contentPane.updateUI();
                     try (Connection conn = connect(); PreparedStatement BookPstmt = conn.prepareStatement(BookQry); PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry);
                          PreparedStatement TaggingPstmt = conn.prepareStatement(TaggingQry)) {
@@ -239,6 +233,13 @@ public class MainWindow extends JDialog {
                     String boolQry = "DELETE FROM Book WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";//sql to delete the book in table book when we right click
                     String ReadingQry = "DELETE FROM Reading WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";
                     String TaggingQry = "DELETE FROM Tagging WHERE IdBook='"+getIdBook(getMTitle(),getAuthor())+"'";
+
+                    Path destinationepath = Paths.get("Ressource/Image/"+getBookName(getMTitle(), getAuthor()));//delete the image of the deleted book
+                    try {
+                        Files.delete(destinationepath);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e.getMessage(), e);
+                    }
                     try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(boolQry); PreparedStatement pstmt2 = conn.prepareStatement(ReadingQry);
                          PreparedStatement taggingPstmt = conn.prepareStatement(TaggingQry)) {
                         // execute the delete statement
@@ -709,6 +710,21 @@ public class MainWindow extends JDialog {
             System.exit(0);
         }
         return i;
+    }
+    public String getBookName(String title, String author) {
+        String name ="";
+        try (Connection conn = connect()) {
+            m_statement = conn.createStatement();
+            ResultSet ImageQry = m_statement.executeQuery("SELECT Image FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
+            name=ImageQry.getString(1);
+            ImageQry.close();
+            conn.close();
+            m_statement.close();
+        }catch (Exception e){
+            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+            System.exit(0);
+        }
+        return name;
     }
 
     public static void main(String[] args) {

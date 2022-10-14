@@ -124,15 +124,18 @@ public class AddBookDlg extends JDialog {
                             }
                         }
                         if (!bookFind && isDateUnknown()&& !isNotDOne() && !Objects.equals(getURL(), "")){
+                            addImageToRessource();
                             m_isValide=true;
                             setVisible(false);
                             dispose();
                         } else if (!bookFind && !Objects.equals(getURL(), "") && !isDateUnknown() && isNotDOne()) {
+                            addImageToRessource();
                             m_isValide=true;
                             setVisible(false);
                             dispose();
                         } else if (!bookFind && !Objects.equals(getURL(), "") && !Objects.equals(getNewBookStartReading(), getNewBookEndReading()) && !isDateUnknown() && !isNotDOne()
                                 && startDate.compareTo(enDate)<0) {
+                            addImageToRessource();
                             m_isValide=true;
                             setVisible(false);
                             dispose();
@@ -169,7 +172,7 @@ public class AddBookDlg extends JDialog {
         BookBrowseBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                setURL(addImageToRessource(PreviewPhotoPanel));
+                setURL(setNameOfBook(PreviewPhotoPanel));
                 addImageToPanel(getURL(), PreviewPhotoPanel);
             }
         });
