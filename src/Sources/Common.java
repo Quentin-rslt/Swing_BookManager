@@ -5,6 +5,13 @@ import Sources.Dialogs.EditTagDlg;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.sql.*;
 import java.util.Objects;
 
@@ -26,9 +33,14 @@ public class Common {
     public static JFileChooser addImageToRessource(JPanel panel){
         JFileChooser jf= new JFileChooser();
         if (JFileChooser.APPROVE_OPTION == jf.showOpenDialog(panel)){ //Opens the file panel to select an image
-            File file2 = new File("Ressource/Image/");
-            File file = new File(jf.getSelectedFile().getName());
+            Path sourcepath = Paths.get(jf.getSelectedFile().getAbsolutePath());
+            Path destinationepath = Paths.get("Ressource/Image/"+jf.getSelectedFile().getName());
 
+            try {
+                    Files.copy(sourcepath, destinationepath, StandardCopyOption.REPLACE_EXISTING);
+            } catch (Exception e) {
+                    throw new RuntimeException(e.getMessage(), e);
+            }
         }
         return jf;
     }
