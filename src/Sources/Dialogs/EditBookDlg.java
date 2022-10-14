@@ -8,6 +8,9 @@ import javax.swing.*;
 import javax.swing.border.AbstractBorder;
 import java.awt.*;
 import java.awt.event.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -60,7 +63,9 @@ public class EditBookDlg extends JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!Objects.equals(getNewTitle(), "") && !Objects.equals(getNewAuthor(), "") && !Objects.equals(getNewSummary(), "") && !Objects.equals(getNewURL(), "")){
+                    deleteImageToRessource(getNewTitle(), getNewAuthor());
                     setIsValid(true);
+                    addImageToRessource();
                     setVisible(false);
                     dispose();
                 }
@@ -74,7 +79,6 @@ public class EditBookDlg extends JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 setNewURL(setNameOfBook(BookPhotoPanel));
-                addImageToPanel(getNewURL(), BookPhotoPanel);
             }
         });
         BookSummaryTextPane.addFocusListener(new FocusAdapter() {

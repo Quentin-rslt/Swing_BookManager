@@ -173,7 +173,6 @@ public class AddBookDlg extends JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 setURL(setNameOfBook(PreviewPhotoPanel));
-                addImageToPanel(getURL(), PreviewPhotoPanel);
             }
         });
         BookTagsCB.getEditor().getEditorComponent().addKeyListener(new java.awt.event.KeyAdapter() {

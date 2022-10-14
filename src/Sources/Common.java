@@ -5,9 +5,6 @@ import Sources.Dialogs.EditTagDlg;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -34,18 +31,38 @@ public class Common {
     }
     public static String setNameOfBook(JPanel panel){
         if (JFileChooser.APPROVE_OPTION == jf.showOpenDialog(panel)){ //Opens the file panel to select an image
-            name = "1.jpg";
+            name = "2.jpg";
+            String path = jf.getSelectedFile().getPath();
+
+            Image img = Toolkit.getDefaultToolkit().getImage(path);
+            img=img.getScaledInstance(266, 400, Image.SCALE_AREA_AVERAGING);
+            ImageIcon icon = new ImageIcon(img);
+            JLabel imgLabel = new JLabel();
+            imgLabel.setIcon(icon);
+
+            panel.updateUI();//reload the panel
+            panel.removeAll();
+            panel.add(imgLabel);
         }
         return name;
     }
     public static void addImageToRessource(){
-        Path sourcepath = Paths.get(jf.getSelectedFile().getAbsolutePath());
-        Path destinationepath = Paths.get("Ressource/Image/"+name);
-
+        Path src = Paths.get(jf.getSelectedFile().getAbsolutePath());
+        Path dest = Paths.get("Ressource/Image/"+name);
         try {
-            Files.copy(sourcepath, destinationepath, StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage(), e);
+        }
+    }
+    public static void deleteImageToRessource(String title, String author){
+        if(!getBookName(title, author).equals("Default.jpg")){
+            Path dest = Paths.get("Ressource/Image/"+getBookName(title, author));//delete the image of the deleted book
+            try {
+                Files.delete(dest);
+            } catch (Exception evt) {
+                throw new RuntimeException(evt.getMessage(), evt);
+            }
         }
     }
     public static void fillPaneTags(Tags tags, JPanel panel, JComboBox cb){
@@ -186,5 +203,20 @@ public class Common {
             System.exit(0);
         }
         return i;
+    }
+    public static String getBookName(String title, String author) {
+        String name ="";
+        try (Connection conn = connect()) {
+            Statement statement = conn.createStatement();
+            ResultSet ImageQry = statement.executeQuery("SELECT Image FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
+            name=ImageQry.getString(1);
+            ImageQry.close();
+            conn.close();
+            statement.close();
+        }catch (Exception e){
+            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+            System.exit(0);
+        }
+        return name;
     }
 }
