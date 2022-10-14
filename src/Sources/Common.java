@@ -23,6 +23,15 @@ public class Common {
         panel.removeAll();
         panel.add(imgLabel);
     }
+    public static JFileChooser addImageToRessource(JPanel panel){
+        JFileChooser jf= new JFileChooser();
+        if (JFileChooser.APPROVE_OPTION == jf.showOpenDialog(panel)){ //Opens the file panel to select an image
+            File file2 = new File("Ressource/Image/");
+            File file = new File(jf.getSelectedFile().getName());
+
+        }
+        return jf;
+    }
     public static void fillPaneTags(Tags tags, JPanel panel, JComboBox cb){
         boolean tagFind = false;
         int i = 0;

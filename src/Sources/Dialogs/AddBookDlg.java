@@ -148,8 +148,10 @@ public class AddBookDlg extends JDialog {
                             JOptionPane.showMessageDialog(jFrame, "La date de début de lecture ne peut être identique à la fin de lecture !");
                         }
                         if(Objects.equals(getURL(), "")){
-                            File file = new File("Ressource/Image/Default.jpg");
-                            setURL(file.getName());
+                            setURL("Default.jpg");
+                            m_isValide=true;
+                            setVisible(false);
+                            dispose();
                         }
                         m_connection.close();
                         m_statement.close();
@@ -167,16 +169,8 @@ public class AddBookDlg extends JDialog {
         BookBrowseBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JFileChooser jf= new JFileChooser();
-                if (JFileChooser.APPROVE_OPTION == jf.showOpenDialog(PreviewPhotoPanel)){ //Opens the file panel to select an image
-                    File file2 = new File("Ressource/Image/");
-                    File file = new File(jf.getSelectedFile().getName());
-
-
-
-                    setURL(jf.getSelectedFile().getName());
-                    addImageToPanel(getURL(), PreviewPhotoPanel);
-                }
+                setURL(addImageToRessource(PreviewPhotoPanel).getSelectedFile().getName());
+                addImageToPanel(getURL(), PreviewPhotoPanel);
             }
         });
         BookTagsCB.getEditor().getEditorComponent().addKeyListener(new java.awt.event.KeyAdapter() {
