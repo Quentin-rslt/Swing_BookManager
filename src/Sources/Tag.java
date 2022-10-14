@@ -14,7 +14,8 @@ public class Tag extends JLabel {
         m_tag="";
     }
     public Tag(String tag){
-        initComponent(tag);
+        JLabel sizelbl = new JLabel(tag);
+        initComponent(tag,sizelbl);
         m_tag= tag;
         setText(tag);
     }
@@ -41,30 +42,21 @@ public class Tag extends JLabel {
             setForeground(new Color(232,208,208));
         }else
             setForeground(new Color(38,34,34));
-
-        AbstractBorder roundBrd = new RoundBorderCp(new Color(m_color),3,13,0,0,0);
+//        new Color(m_color)
+        AbstractBorder roundBrd = new RoundBorderCp(new Color(38,34,34),3,23,0,0,0);
         setBorder(roundBrd);
     }
     public void setTextTag(String tag){
         this.m_tag=tag;
     }
-    public void initComponent(String tag){
+    public void initComponent(String tag, JLabel lbl){
         Dimension d;
-        if(getSizeText(tag)<2)
-            d = new Dimension(getSizeText(tag)+40,22);
-        else if(getSizeText(tag)<3)
-            d = new Dimension(getSizeText(tag)+50,22);
-        else if(getSizeText(tag)<4)
-            d = new Dimension(getSizeText(tag)+60,22);
-        else if(getSizeText(tag)<6)
-            d = new Dimension(getSizeText(tag)+70,22);
-        else if(getSizeText(tag)<10)
-            d = new Dimension(getSizeText(tag)+80,22);
-        else
-            d = new Dimension(getSizeText(tag)*9,22);
-        setHorizontalAlignment(JLabel.CENTER);
-        setOpaque(true);
+
+        d = new Dimension((int) lbl.getPreferredSize().getWidth()+50,27);
         setMinimumSize(d);
         setPreferredSize(d);
+
+        setHorizontalAlignment(JLabel.CENTER);
+        setOpaque(true);
     }
 }

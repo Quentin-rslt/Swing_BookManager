@@ -11,10 +11,11 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.sql.*;
 import java.util.Objects;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Common {
     static JFileChooser jf= new JFileChooser();
-    static String name="";
+    static String m_name="";
     public static void addImageToPanel(String nom,JPanel panel){//Apply to our panel an image with path
         File file = new File("Ressource/Image/"+nom);
         String path = file.getAbsolutePath();
@@ -29,34 +30,29 @@ public class Common {
         panel.removeAll();
         panel.add(imgLabel);
     }
-    public static String setNameOfBook(JPanel panel){
-        if (JFileChooser.APPROVE_OPTION == jf.showOpenDialog(panel)){ //Opens the file panel to select an image
-            name = "2.jpg";
-            String path = jf.getSelectedFile().getPath();
-
-            Image img = Toolkit.getDefaultToolkit().getImage(path);
-            img=img.getScaledInstance(266, 400, Image.SCALE_AREA_AVERAGING);
-            ImageIcon icon = new ImageIcon(img);
-            JLabel imgLabel = new JLabel();
-            imgLabel.setIcon(icon);
-
-            panel.updateUI();//reload the panel
-            panel.removeAll();
-            panel.add(imgLabel);
-        }
-        return name;
-    }
     public static void addImageToRessource(){
-        Path src = Paths.get(jf.getSelectedFile().getAbsolutePath());
-        Path dest = Paths.get("Ressource/Image/"+name);
-        try {
-            Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage(), e);
+        if(jf.getSelectedFile()!=null && !getNameOfBook().equals("Default.jpg")){
+            Path src = Paths.get(jf.getSelectedFile().getAbsolutePath());
+            Path dest = Paths.get("Ressource/Image/"+getNameOfBook());
+            try {
+                Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
+            } catch (Exception e) {
+                throw new RuntimeException(e.getMessage(), e);
+            }
         }
     }
-    public static void deleteImageToRessource(String title, String author){
+    public static void deleteImageMainRessource(String title, String author){
         if(!getBookName(title, author).equals("Default.jpg")){
+            Path dest = Paths.get("Ressource/Image/"+getBookName(title, author));//delete the image of the deleted book
+            try {
+                Files.delete(dest);
+            } catch (Exception evt) {
+                throw new RuntimeException(evt.getMessage(), evt);
+            }
+        }
+    }
+    public static void deleteImageRessource(String title, String author){
+        if(jf.getSelectedFile()!=null && !getBookName(title, author).equals("")){
             Path dest = Paths.get("Ressource/Image/"+getBookName(title, author));//delete the image of the deleted book
             try {
                 Files.delete(dest);
@@ -124,7 +120,61 @@ public class Common {
             }
         }
     }
+    public static void setNameOfBook(String name){
+        m_name = name;
+    }
 
+    public static String selectNameOfBook(JPanel panel){
+        if (JFileChooser.APPROVE_OPTION == jf.showOpenDialog(panel)){ //Opens the file panel to select an image
+            setNameOfBook(randomNameOfBook(jf.getSelectedFile().getName()));
+            String path = jf.getSelectedFile().getPath();
+
+            Image img = Toolkit.getDefaultToolkit().getImage(path);
+            img=img.getScaledInstance(266, 400, Image.SCALE_AREA_AVERAGING);
+            ImageIcon icon = new ImageIcon(img);
+            JLabel imgLabel = new JLabel();
+            imgLabel.setIcon(icon);
+
+            panel.updateUI();//reload the panel
+            panel.removeAll();
+            panel.add(imgLabel);
+        }
+        return getNameOfBook();
+    }
+    public static String randomNameOfBook(String oldName){
+        String name="";
+        try (Connection conn = connect()) {
+            boolean find;
+            Statement statement = conn.createStatement();
+            int randomNumber;
+            do{ // we go through each line again until we find the name of the boo
+                randomNumber = ThreadLocalRandom.current().nextInt(0, 999999999 + 1);
+                ResultSet ImageQry = statement.executeQuery("SELECT Image FROM Book");
+
+                String[] nameWithoutFormat;
+
+                find=true;//if wwe find a name of book
+                while (ImageQry.next()){//new random if the number already exist
+                    nameWithoutFormat = ImageQry.getString(1).split("\\.");
+                    if(nameWithoutFormat[0].equals(Integer.toString(randomNumber))){
+                        find = false;
+                        break;
+                    }
+                }
+            } while (!find);
+            name = randomNumber+"."+getFormat(oldName);
+            conn.close();
+            statement.close();
+        }catch (Exception e){
+            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+            System.exit(0);
+        }
+        return name;
+    }
+    public static String getFormat(String name){
+        String[] format = name.split("\\.");
+        return format[1];
+    }
     public static Image getImageAdd(){
         File fileAdd = new File("Ressource/Icons/add.png");
         String pathAdd = fileAdd.getAbsolutePath();
@@ -218,5 +268,8 @@ public class Common {
             System.exit(0);
         }
         return name;
+    }
+    public static String getNameOfBook(){
+        return m_name;
     }
 }

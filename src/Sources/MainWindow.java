@@ -121,6 +121,8 @@ public class MainWindow extends JDialog {
         });
         AddBookBtn.addActionListener(new ActionListener() {//open the dlg for add a reading
             public void actionPerformed(ActionEvent evt) {
+                setNameOfBook("");
+
                 AddBookDlg diag = new AddBookDlg();
                 diag.setTitle("Ajouter un livre");
                 diag.setIconImage(getImageAdd());
@@ -145,7 +147,7 @@ public class MainWindow extends JDialog {
 
                         BookPstmt.setString(1, diag.getNewBookTitle());
                         BookPstmt.setString(2, diag.getNewBookAuthor());
-                        BookPstmt.setString(3, diag.getURL());
+                        BookPstmt.setString(3, getNameOfBook());
                         BookPstmt.setString(4, diag.getNewBookNumberOP());
                         BookPstmt.setString(5, diag.getNewBookPersonalNote());
                         BookPstmt.setString(6, diag.getNewBookBBLNote());
@@ -234,7 +236,7 @@ public class MainWindow extends JDialog {
                     String ReadingQry = "DELETE FROM Reading WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";
                     String TaggingQry = "DELETE FROM Tagging WHERE IdBook='"+getIdBook(getMTitle(),getAuthor())+"'";
 
-                    deleteImageToRessource(getMTitle(), getAuthor());
+                    deleteImageMainRessource(getMTitle(), getAuthor());
                     try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(boolQry); PreparedStatement pstmt2 = conn.prepareStatement(ReadingQry);
                          PreparedStatement taggingPstmt = conn.prepareStatement(TaggingQry)) {
                         // execute the delete statement
@@ -257,12 +259,8 @@ public class MainWindow extends JDialog {
             public void actionPerformed(ActionEvent evt) {
                 EditBookDlg diag = new EditBookDlg(getMTitle(), getAuthor());
                 diag.setTitle("Modifier un livre");
-                File fileEdit = new File("Ressource/Icons/edit.png");
-                String pathEdit = fileEdit.getAbsolutePath();
-                Image imgEdit = Toolkit.getDefaultToolkit().getImage(pathEdit);
-                imgEdit = imgEdit.getScaledInstance(16,16,Image.SCALE_AREA_AVERAGING);
-                diag.setIconImage(imgEdit);
-                diag.setSize(850,600);
+                diag.setIconImage(getImageEdit());
+                diag.setSize(900,610);
                 diag.setLocationRelativeTo(null);
                 diag.setVisible(true);
                 if (diag.isValid()){
@@ -280,7 +278,7 @@ public class MainWindow extends JDialog {
                         ReadingPstmt.setString(2, diag.getNewAuthor());
                         BookPstmt.setString(1, diag.getNewTitle());
                         BookPstmt.setString(2, diag.getNewAuthor());
-                        BookPstmt.setString(3, diag.getNewURL());
+                        BookPstmt.setString(3, getNameOfBook());
                         BookPstmt.setString(4, diag.getNewNumberPage());
                         BookPstmt.setString(5, diag.getNewPersonnalNote());
                         BookPstmt.setString(6, diag.getNewBBLNote());

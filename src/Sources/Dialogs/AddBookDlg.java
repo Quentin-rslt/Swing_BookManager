@@ -44,7 +44,6 @@ public class AddBookDlg extends JDialog {
     private JComboBox BookTagsCB;
     private JPanel BookTagsPanel;
     private JScrollPane JsPane;
-    private String m_URL="";
     private boolean m_isValide = false;//Useful for determinate if the input are good
     private boolean m_tagIsUpdate = false;
     private Connection m_connection;
@@ -123,17 +122,20 @@ public class AddBookDlg extends JDialog {
                                 bookFind = true;//If you have found a book, you are out of the loop
                             }
                         }
-                        if (!bookFind && isDateUnknown()&& !isNotDOne() && !Objects.equals(getURL(), "")){
+                        if(getNameOfBook().equals("")){
+                            setNameOfBook("Default.jpg");
+                        }
+                        if (!bookFind && isDateUnknown()&& !isNotDOne()){
                             addImageToRessource();
                             m_isValide=true;
                             setVisible(false);
                             dispose();
-                        } else if (!bookFind && !Objects.equals(getURL(), "") && !isDateUnknown() && isNotDOne()) {
+                        } else if (!bookFind && !isDateUnknown() && isNotDOne()) {
                             addImageToRessource();
                             m_isValide=true;
                             setVisible(false);
                             dispose();
-                        } else if (!bookFind && !Objects.equals(getURL(), "") && !Objects.equals(getNewBookStartReading(), getNewBookEndReading()) && !isDateUnknown() && !isNotDOne()
+                        } else if (!bookFind && !Objects.equals(getNewBookStartReading(), getNewBookEndReading()) && !isDateUnknown() && !isNotDOne()
                                 && startDate.compareTo(enDate)<0) {
                             addImageToRessource();
                             m_isValide=true;
@@ -142,19 +144,12 @@ public class AddBookDlg extends JDialog {
                         } else if(Objects.equals(getNewBookAuthor(), getNewBookTitle()) && !Objects.equals(getNewBookAuthor(), "")){
                             JFrame jFrame = new JFrame();
                             JOptionPane.showMessageDialog(jFrame, "Le nom de l'auteur et le titre d'un livre ne peut pas être identique ! ");
-                        } else if (!bookFind && !Objects.equals(getURL(), "") && !Objects.equals(getNewBookStartReading(), getNewBookEndReading()) && !isDateUnknown() && !isNotDOne()
-                                && startDate.compareTo(enDate)>0) {
+                        } else if (!Objects.equals(getNewBookStartReading(), getNewBookEndReading()) && !isDateUnknown() && !isNotDOne() && startDate.compareTo(enDate)>0) {
                             JFrame jFrame = new JFrame();
                             JOptionPane.showMessageDialog(jFrame, "La date de début de lecture ne peut pas être après à la fin de lecture !");
                         } else if(!bookFind && Objects.equals(getNewBookStartReading(), getNewBookEndReading()) && !isDateUnknown() && !isNotDOne()){
                             JFrame jFrame = new JFrame();
                             JOptionPane.showMessageDialog(jFrame, "La date de début de lecture ne peut être identique à la fin de lecture !");
-                        }
-                        if(Objects.equals(getURL(), "")){
-                            setURL("Default.jpg");
-                            m_isValide=true;
-                            setVisible(false);
-                            dispose();
                         }
                         m_connection.close();
                         m_statement.close();
@@ -172,7 +167,7 @@ public class AddBookDlg extends JDialog {
         BookBrowseBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                setURL(setNameOfBook(PreviewPhotoPanel));
+                selectNameOfBook(PreviewPhotoPanel);
             }
         });
         BookTagsCB.getEditor().getEditorComponent().addKeyListener(new java.awt.event.KeyAdapter() {
@@ -302,9 +297,6 @@ public class AddBookDlg extends JDialog {
     public boolean isValide(){
         return m_isValide;
     }
-    public String getURL(){
-        return m_URL;
-    }
     public Tags getTags(){
         return this.m_tags;
     }
@@ -377,9 +369,6 @@ public class AddBookDlg extends JDialog {
         AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),3,25,0,0,3);
         BookSummaryTextPane.setBorder(roundBrd);
         JsPane.setBorder(null);
-    }
-    public void setURL(String url){
-        m_URL= url;
     }
     public void fillThemeCB(){
         this.BookTagsCB.addItem("");

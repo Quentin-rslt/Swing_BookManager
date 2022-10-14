@@ -37,7 +37,6 @@ public class EditBookDlg extends JDialog {
     private boolean m_isUpdate;
     private String m_oldTitle;
     private String m_oldAuthor;
-    private String m_newURL;
     private boolean isValid = false;
     private JPopupMenu m_popup;
     private Tags m_tags = new Tags();
@@ -62,8 +61,8 @@ public class EditBookDlg extends JDialog {
         BookOkBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!Objects.equals(getNewTitle(), "") && !Objects.equals(getNewAuthor(), "") && !Objects.equals(getNewSummary(), "") && !Objects.equals(getNewURL(), "")){
-                    deleteImageToRessource(getNewTitle(), getNewAuthor());
+                if (!Objects.equals(getNewTitle(), "") && !Objects.equals(getNewAuthor(), "") && !Objects.equals(getNewSummary(), "")){
+                    deleteImageRessource(getOldTitle(), getOldAuthor());
                     setIsValid(true);
                     addImageToRessource();
                     setVisible(false);
@@ -78,7 +77,7 @@ public class EditBookDlg extends JDialog {
         BookBrowseBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                setNewURL(setNameOfBook(BookPhotoPanel));
+                selectNameOfBook(BookPhotoPanel);
             }
         });
         BookSummaryTextPane.addFocusListener(new FocusAdapter() {
@@ -197,9 +196,6 @@ public class EditBookDlg extends JDialog {
     public String getNewSummary() {
         return BookSummaryTextPane.getText();
     }
-    public String getNewURL() {
-        return m_newURL;
-    }
     public boolean isValid() {
         return isValid;
     }
@@ -240,9 +236,6 @@ public class EditBookDlg extends JDialog {
     }
     public void setOldAuthor(String oldAuthor) {
         this.m_oldAuthor = oldAuthor;
-    }
-    public void setNewURL(String newURL) {
-        this.m_newURL = newURL;
     }
     public void setIsValid(boolean valid) {
         isValid = valid;
@@ -301,7 +294,7 @@ public class EditBookDlg extends JDialog {
             //Image
             ResultSet ImageQry = statement.executeQuery("SELECT Image FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
             addImageToPanel(ImageQry.getString(1),BookPhotoPanel);
-            setNewURL(ImageQry.getString(1));
+            setNameOfBook(ImageQry.getString(1));
             fillThemeCB();
             conn.close();
             statement.close();
