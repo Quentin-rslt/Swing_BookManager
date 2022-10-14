@@ -169,7 +169,7 @@ public class AddBookDlg extends JDialog {
         BookBrowseBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                setURL(addImageToRessource(PreviewPhotoPanel).getSelectedFile().getName());
+                setURL(addImageToRessource(PreviewPhotoPanel));
                 addImageToPanel(getURL(), PreviewPhotoPanel);
             }
         });

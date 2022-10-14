@@ -30,11 +30,13 @@ public class Common {
         panel.removeAll();
         panel.add(imgLabel);
     }
-    public static JFileChooser addImageToRessource(JPanel panel){
+    public static String addImageToRessource(JPanel panel){
+        String name="";
         JFileChooser jf= new JFileChooser();
         if (JFileChooser.APPROVE_OPTION == jf.showOpenDialog(panel)){ //Opens the file panel to select an image
+            name = "1.jpg";
             Path sourcepath = Paths.get(jf.getSelectedFile().getAbsolutePath());
-            Path destinationepath = Paths.get("Ressource/Image/"+jf.getSelectedFile().getName());
+            Path destinationepath = Paths.get("Ressource/Image/"+name);
 
             try {
                     Files.copy(sourcepath, destinationepath, StandardCopyOption.REPLACE_EXISTING);
@@ -42,7 +44,7 @@ public class Common {
                     throw new RuntimeException(e.getMessage(), e);
             }
         }
-        return jf;
+        return name;
     }
     public static void fillPaneTags(Tags tags, JPanel panel, JComboBox cb){
         boolean tagFind = false;

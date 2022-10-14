@@ -9,6 +9,10 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -119,11 +123,7 @@ public class MainWindow extends JDialog {
             public void actionPerformed(ActionEvent evt) {
                 AddBookDlg diag = new AddBookDlg();
                 diag.setTitle("Ajouter un livre");
-                File fileAdd = new File("Ressource/Icons/add.png");
-                String pathAdd = fileAdd.getAbsolutePath();
-                Image imgAdd = Toolkit.getDefaultToolkit().getImage(pathAdd);
-                imgAdd = imgAdd.getScaledInstance(16,16,Image.SCALE_AREA_AVERAGING);
-                diag.setIconImage(imgAdd);
+                diag.setIconImage(getImageAdd());
                 diag.setSize(900,610);
                 diag.setLocationRelativeTo(null);
                 diag.setVisible(true);
@@ -134,7 +134,12 @@ public class MainWindow extends JDialog {
                             "VALUES (?,?,?,?,?);";
                     String TaggingQry = "INSERT INTO Tagging (IdBook,IdTag) " +
                             "VALUES (?,?);";
-
+                    Path destinationepath = Paths.get("Ressource/Image/1.jpg");
+                    try {
+                        Files.delete(destinationepath);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e.getMessage(), e);
+                    }
                     contentPane.updateUI();
                     try (Connection conn = connect(); PreparedStatement BookPstmt = conn.prepareStatement(BookQry); PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry);
                          PreparedStatement TaggingPstmt = conn.prepareStatement(TaggingQry)) {

@@ -73,12 +73,8 @@ public class EditBookDlg extends JDialog {
         BookBrowseBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JFileChooser jf= new JFileChooser();
-                if (JFileChooser.APPROVE_OPTION == jf.showOpenDialog(BookPhotoPanel)){ //Opens the file panel to select an image
-                    String path = jf.getSelectedFile().getPath();//Sélection image
-                    setNewURL(path);
-                    addImageToPanel(path,BookPhotoPanel);
-                }
+                setNewURL(addImageToRessource(BookPhotoPanel));
+                addImageToPanel(getNewURL(), BookPhotoPanel);
             }
         });
         BookSummaryTextPane.addFocusListener(new FocusAdapter() {
