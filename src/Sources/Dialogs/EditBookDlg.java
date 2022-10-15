@@ -64,7 +64,7 @@ public class EditBookDlg extends JDialog {
                 if (!Objects.equals(getNewTitle(), "") && !Objects.equals(getNewAuthor(), "") && !Objects.equals(getNewSummary(), "")){
                     deleteImageRessource(getOldTitle(), getOldAuthor());
                     setIsValid(true);
-                    addImageToRessource();
+                    updateImageToRessource(getOldTitle(), getOldAuthor());
                     setVisible(false);
                     dispose();
                 }
