@@ -14,16 +14,16 @@ public class RoundBorderCp extends AbstractBorder {
     private int strokePad;
     int h= 0;
     int gap = 0;
-    int bookSum;
+    int pad;
     RenderingHints hints;
 
-    public RoundBorderCp(Color color, int thickness, int radii, int height, int gap,int bookSum) {
+    public RoundBorderCp(Color color, int thickness, int radii, int height, int gap,int pad) {
         this.thickness = thickness;
         this.radii = radii;
         this.color = color;
         this.h = height;
         this.gap=gap;
-        this.bookSum = bookSum;
+        this.pad = pad;
         stroke = new BasicStroke(thickness);
         strokePad = thickness / 2;
 
@@ -31,9 +31,8 @@ public class RoundBorderCp extends AbstractBorder {
                 RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
 
-        int pad = radii + strokePad;
         int bottomPad = pad + strokePad;
-        insets = new Insets(pad, pad, bottomPad, pad);
+        insets = new Insets(pad, pad, bottomPad-1, pad+1);
     }
 
     @Override
@@ -51,9 +50,9 @@ public class RoundBorderCp extends AbstractBorder {
 
         Graphics2D g2 = (Graphics2D) g;
 
-        int bottomLineY = height - thickness-bookSum;
+        int bottomLineY = height - thickness-pad;
 
-        RoundRectangle2D.Double bubble = new RoundRectangle2D.Double(strokePad+gap, strokePad, width - (thickness+(gap*2))-bookSum, bottomLineY+h, radii, radii);
+        RoundRectangle2D.Double bubble = new RoundRectangle2D.Double(strokePad+gap, strokePad, width - (thickness+(gap*2))-pad, bottomLineY+h, radii, radii);
 
         Area area = new Area(bubble);
         g2.setRenderingHints(hints);

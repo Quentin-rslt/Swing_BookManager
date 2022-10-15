@@ -245,14 +245,14 @@ public class AddBookDlg extends JDialog {
             @Override
             public void focusGained(FocusEvent e) {
                 super.focusGained(e);
-                RoundBorderCp roundBrd = new RoundBorderCp(JsPane.getBackground(),2,25,0,0,3);
+                RoundBorderCp roundBrd = new RoundBorderCp(JsPane.getBackground(),2,25,18,0,20);
                 BookSummaryTextPane.setBorder(roundBrd);
             }
 
             @Override
             public void focusLost(FocusEvent e) {
                 super.focusLost(e);
-                RoundBorderCp roundBrd = new RoundBorderCp(contentPane.getBackground(),2,25,0,0,3);
+                RoundBorderCp roundBrd = new RoundBorderCp(contentPane.getBackground(),2,25,18,0,20);
                 BookSummaryTextPane.setBorder(roundBrd);
             }
         });
@@ -366,7 +366,7 @@ public class AddBookDlg extends JDialog {
         BookBrowseBtn.setEnabled(bool);
         PreviewPhotoPanel.updateUI();
         PreviewPhotoPanel.removeAll();
-        AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),3,25,0,0,3);
+        AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),3,25,18,0,20);
         BookSummaryTextPane.setBorder(roundBrd);
         JsPane.setBorder(null);
     }

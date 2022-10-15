@@ -51,7 +51,7 @@ public class MainWindow extends JDialog {
     private String m_title;
     private String m_author;
     private int m_rowSelected = 0;
-    private JPopupMenu m_popup;
+    final JPopupMenu m_popup;
     private FiltersDlg m_diag;
 
 
@@ -62,7 +62,7 @@ public class MainWindow extends JDialog {
         connectionDB();
         loadDB(false);
 
-        AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),3,30,0,0,0);
+        AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),3,30,0,0,20);
         BookSummary.setBorder(roundBrd);
         contentPane.getRootPane().setDefaultButton(CancelFiltersBtn);
         JSpane.setBorder(null);

@@ -15,19 +15,13 @@ public class Tag extends JLabel {
     }
     public Tag(String tag){
         JLabel sizelbl = new JLabel(tag);
-        initComponent(tag,sizelbl);
+        initComponent(sizelbl);
         m_tag= tag;
         setText(tag);
     }
 
     public String getTextTag(){
         return m_tag;
-    }
-    public int getSizeText(String tag){
-        int size=0;
-        for(int i=0; i<tag.length();i++)
-            size++;
-        return size;
     }
     public int getColor(){
         return this.m_color;
@@ -42,17 +36,16 @@ public class Tag extends JLabel {
             setForeground(new Color(232,208,208));
         }else
             setForeground(new Color(38,34,34));
-//        new Color(m_color)
-        AbstractBorder roundBrd = new RoundBorderCp(new Color(38,34,34),3,23,0,0,0);
+        AbstractBorder roundBrd = new RoundBorderCp(new Color(38,34,34),3,25,0,0,0);
         setBorder(roundBrd);
     }
     public void setTextTag(String tag){
         this.m_tag=tag;
     }
-    public void initComponent(String tag, JLabel lbl){
+    public void initComponent(JLabel lbl){
         Dimension d;
 
-        d = new Dimension((int) lbl.getPreferredSize().getWidth()+50,27);
+        d = new Dimension((int) lbl.getPreferredSize().getWidth()+35,30);
         setMinimumSize(d);
         setPreferredSize(d);
 

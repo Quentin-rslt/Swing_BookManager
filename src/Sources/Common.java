@@ -3,8 +3,10 @@ package Sources;
 import Sources.Dialogs.EditTagDlg;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -17,7 +19,10 @@ public class Common {
     static JFileChooser jf= new JFileChooser();
     static String m_name="";
     public static void addImageToPanel(String nom,JPanel panel){//Apply to our panel an image with path
-        File file = new File("Ressource/Image/"+nom);
+        Path folder = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(),"BookManager");
+        File file = new File(folder+"/"+nom);
+        if(nom.equals("Default.jpg"))
+            file = new File("Ressource/Image/"+nom);
         String path = file.getAbsolutePath();
 
         Image img = Toolkit.getDefaultToolkit().getImage(path);
@@ -33,7 +38,13 @@ public class Common {
     public static void addImageToRessource(){
         if(jf.getSelectedFile()!=null && !getNameOfBook().equals("Default.jpg")){
             Path src = Paths.get(jf.getSelectedFile().getAbsolutePath());
-            Path dest = Paths.get("Ressource/Image/"+getNameOfBook());
+            Path folder = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(),"BookManager");
+            Path dest = Paths.get(folder+"/"+getNameOfBook());
+            try {
+                Files.createDirectories(folder);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
             try {
                 Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
             } catch (Exception e) {
@@ -43,7 +54,8 @@ public class Common {
     }
     public static void deleteImageMainRessource(String title, String author){
         if(!getBookName(title, author).equals("Default.jpg")){
-            Path dest = Paths.get("Ressource/Image/"+getBookName(title, author));//delete the image of the deleted book
+            Path folder = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(),"BookManager");
+            Path dest = Paths.get(folder+"/"+getBookName(title, author));//delete the image of the deleted book
             try {
                 Files.delete(dest);
             } catch (Exception evt) {
@@ -53,7 +65,8 @@ public class Common {
     }
     public static void deleteImageRessource(String title, String author){
         if(jf.getSelectedFile()!=null && !getBookName(title, author).equals("")){
-            Path dest = Paths.get("Ressource/Image/"+getBookName(title, author));//delete the image of the deleted book
+            Path folder = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(),"BookManager");
+            Path dest = Paths.get(folder+"/"+getBookName(title, author));//delete the image of the deleted book
             try {
                 Files.delete(dest);
             } catch (Exception evt) {
@@ -124,7 +137,7 @@ public class Common {
         m_name = name;
     }
 
-    public static String selectNameOfBook(JPanel panel){
+    public static void selectNameOfBook(JPanel panel){
         if (JFileChooser.APPROVE_OPTION == jf.showOpenDialog(panel)){ //Opens the file panel to select an image
             setNameOfBook(randomNameOfBook(jf.getSelectedFile().getName()));
             String path = jf.getSelectedFile().getPath();
@@ -139,7 +152,6 @@ public class Common {
             panel.removeAll();
             panel.add(imgLabel);
         }
-        return getNameOfBook();
     }
     public static String randomNameOfBook(String oldName){
         String name="";
