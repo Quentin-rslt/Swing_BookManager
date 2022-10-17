@@ -2,7 +2,10 @@ package Sources;
 
 import Sources.Dialogs.EditTagDlg;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
 import java.io.File;
@@ -54,7 +57,7 @@ public class Common {
         }
     }
     public static void updateImageToRessource(String title, String author){
-        if(jf.getSelectedFile()!=null && !getNameOfBook().equals(getBookName(title, author))){
+        if(jf.getSelectedFile()!=null && !getNameOfBook().equals(getBookNameBdd(title, author))){
             System.out.println(getNameOfBook());
             Path src = Paths.get(jf.getSelectedFile().getAbsolutePath());
             Path folder = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(),"BookManager");
@@ -72,9 +75,9 @@ public class Common {
         }
     }
     public static void deleteImageMainRessource(String title, String author){
-        if(!getBookName(title, author).equals("Default.jpg")){
+        if(!getBookNameBdd(title, author).equals("Default.jpg")){
             Path folder = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(),"BookManager");
-            Path dest = Paths.get(folder+"/"+getBookName(title, author));//delete the image of the deleted book
+            Path dest = Paths.get(folder+"/"+getBookNameBdd(title, author));//delete the image of the deleted book
             try {
                 Files.delete(dest);
             } catch (Exception evt) {
@@ -83,9 +86,9 @@ public class Common {
         }
     }
     public static void deleteImageRessource(String title, String author){
-        if(jf.getSelectedFile()!=null && !getBookName(title, author).equals("Default.jpg") && !getNameOfBook().equals(getBookName(title, author))){
+        if(jf.getSelectedFile()!=null && !getNameOfBook().equals(getBookNameBdd(title, author))){
             Path folder = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(),"BookManager");
-            Path dest = Paths.get(folder+"/"+getBookName(title, author));//delete the image of the deleted book
+            Path dest = Paths.get(folder+"/"+getBookNameBdd(title, author));//delete the image of the deleted book
             try {
                 Files.delete(dest);
             } catch (Exception evt) {
@@ -157,20 +160,38 @@ public class Common {
     }
 
     public static void selectNameOfBook(JPanel panel){
-        if (JFileChooser.APPROVE_OPTION == jf.showOpenDialog(panel)){ //Opens the file panel to select an image
-            setNameOfBook(randomNameOfBook(jf.getSelectedFile().getName()));
-            String path = jf.getSelectedFile().getPath();
+        FileFilter imageFilter = new FileNameExtensionFilter("Image files", ImageIO.getReaderFileSuffixes());
+        jf.setFileFilter(imageFilter);
+        int rVal;
+        do{
+            rVal = jf.showOpenDialog(panel);
+            if (JFileChooser.APPROVE_OPTION == rVal){ //Opens the file panel to select an image
+                setNameOfBook(randomNameOfBook(jf.getSelectedFile().getName()));
+                String path = jf.getSelectedFile().getPath();
+                if (accept(jf.getSelectedFile())){
+                    Image img = Toolkit.getDefaultToolkit().getImage(path);
+                    img=img.getScaledInstance(266, 400, Image.SCALE_AREA_AVERAGING);
+                    ImageIcon icon = new ImageIcon(img);
+                    JLabel imgLabel = new JLabel();
+                    imgLabel.setIcon(icon);
 
-            Image img = Toolkit.getDefaultToolkit().getImage(path);
-            img=img.getScaledInstance(266, 400, Image.SCALE_AREA_AVERAGING);
-            ImageIcon icon = new ImageIcon(img);
-            JLabel imgLabel = new JLabel();
-            imgLabel.setIcon(icon);
-
-            panel.updateUI();//reload the panel
-            panel.removeAll();
-            panel.add(imgLabel);
+                    panel.updateUI();//reload the panel
+                    panel.removeAll();
+                    panel.add(imgLabel);
+                }else{
+                    JFrame jFrame = new JFrame();
+                    JOptionPane.showMessageDialog(jFrame, "Veuillez choisir un format jpg ou png ou jpeg !");
+                }
+            }
+        } while (!accept(jf.getSelectedFile()) && rVal==0);
+    }
+    public static boolean accept(File pathname) {
+        boolean isAccept = true;
+        if(pathname!=null){
+            String filename = pathname.getName();
+            isAccept= filename.endsWith("jpg") || filename.endsWith("jpeg") || filename.endsWith("png");
         }
+        return isAccept;
     }
     public static String randomNameOfBook(String oldName){
         String name="";
@@ -285,7 +306,7 @@ public class Common {
         }
         return i;
     }
-    public static String getBookName(String title, String author) {
+    public static String getBookNameBdd(String title, String author) {
         String name ="";
         try (Connection conn = connect()) {
             Statement statement = conn.createStatement();
