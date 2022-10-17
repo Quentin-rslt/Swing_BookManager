@@ -125,18 +125,18 @@ public class AddBookDlg extends JDialog {
                         if(getNameOfBook().equals("")){
                             setNameOfBook("Default.jpg");
                         }
-                        if (!bookFind && isDateUnknown()&& !isNotDOne()){
+                        if (!bookFind && isDateUnknown()&& !isNotDOne() && !Objects.equals(getNewBookAuthor(), getNewBookTitle())){
                             addImageToResource();
                             m_isValide=true;
                             setVisible(false);
                             dispose();
-                        } else if (!bookFind && !isDateUnknown() && isNotDOne()) {
+                        } else if (!bookFind && !isDateUnknown() && isNotDOne() && !Objects.equals(getNewBookAuthor(), getNewBookTitle())) {
                             addImageToResource();
                             m_isValide=true;
                             setVisible(false);
                             dispose();
                         } else if (!bookFind && !Objects.equals(getNewBookStartReading(), getNewBookEndReading()) && !isDateUnknown() && !isNotDOne()
-                                && startDate.compareTo(enDate)<0) {
+                                && startDate.compareTo(enDate)<0 && !Objects.equals(getNewBookAuthor(), getNewBookTitle())) {
                             addImageToResource();
                             m_isValide=true;
                             setVisible(false);

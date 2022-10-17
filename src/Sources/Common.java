@@ -159,6 +159,7 @@ public class Common {
     public static void selectNameOfBook(JPanel panel){
         FileFilter imageFilter = new FileNameExtensionFilter("Image files", ImageIO.getReaderFileSuffixes());
         jf.setFileFilter(imageFilter);
+        jf.setPreferredSize(new Dimension(850,600));
         int rVal;
         do{
             rVal = jf.showOpenDialog(panel);
