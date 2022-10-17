@@ -91,7 +91,7 @@ public class EditBookDlg extends JDialog {
             @Override
             public void focusLost(FocusEvent e) {
                 super.focusLost(e);
-                RoundBorderCp roundBrd = new RoundBorderCp(contentPane.getBackground(),2,25,18,0,2);
+                RoundBorderCp roundBrd = new RoundBorderCp(contentPane.getBackground(),2,25,18,0,20);
                 BookSummaryTextPane.setBorder(roundBrd);
             }
         });

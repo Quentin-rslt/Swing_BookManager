@@ -8,6 +8,7 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -29,7 +30,7 @@ public class Common {
         String path = file.getAbsolutePath();
 
         Image img = Toolkit.getDefaultToolkit().getImage(path);
-        img=img.getScaledInstance(266, 400, Image.SCALE_AREA_AVERAGING);
+        img=img.getScaledInstance(rescaleImage(file).width, rescaleImage(file).height, Image.SCALE_AREA_AVERAGING);
         ImageIcon icon = new ImageIcon(img);
         JLabel imgLabel = new JLabel();
         imgLabel.setIcon(icon);
@@ -123,6 +124,7 @@ public class Common {
 
                     for(int j=0; j<tags.getSizeTags();j++){
                         panel.add(tags.getTag(j));
+                        cb.setSelectedIndex(0);
                     }
                     panel.updateUI();
                 }
@@ -165,7 +167,7 @@ public class Common {
                 String path = jf.getSelectedFile().getPath();
                 if (accept(jf.getSelectedFile())){
                     Image img = Toolkit.getDefaultToolkit().getImage(path);
-                    img=img.getScaledInstance(266, 400, Image.SCALE_AREA_AVERAGING);
+                    img=img.getScaledInstance(rescaleImage(jf.getSelectedFile()).width, rescaleImage(jf.getSelectedFile()).height, Image.SCALE_AREA_AVERAGING);
                     ImageIcon icon = new ImageIcon(img);
                     JLabel imgLabel = new JLabel();
                     imgLabel.setIcon(icon);
@@ -179,6 +181,26 @@ public class Common {
                 }
             }
         } while (!accept(jf.getSelectedFile()) && rVal==0);
+    }
+    public static Dimension rescaleImage(File file){
+        Dimension size;
+        BufferedImage image;
+        try {
+            image = ImageIO.read(file);
+            double height = image.getHeight();
+            double width = image.getWidth();
+            double ratio = width/height;
+            if(ratio>1){
+                size = new Dimension(266, (int) (266/ratio));
+            }else{
+                size = new Dimension(266,400);
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return size;
     }
     public static boolean accept(File pathname) {
         boolean isAccept = true;
@@ -219,7 +241,6 @@ public class Common {
         return name;
     }
     public static String getFormat(String name){
-        System.out.println(name.substring(name.lastIndexOf('.')+1));
         return name.substring(name.lastIndexOf('.')+1);
     }
     public static Image getImageAdd(){
