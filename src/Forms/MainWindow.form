@@ -19,35 +19,65 @@
         <border type="none"/>
         <children>
           <grid id="fff73" layout-manager="GridLayoutManager" row-count="1" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="5">
-            <margin top="13" left="15" bottom="13" right="0"/>
+            <margin top="0" left="15" bottom="13" right="0"/>
             <constraints border-constraint="South"/>
             <properties/>
             <border type="none"/>
             <children>
-              <component id="a94f3" class="javax.swing.JLabel" binding="PersonalNoteLabel">
+              <grid id="10928" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                <margin top="0" left="0" bottom="0" right="0"/>
                 <constraints>
-                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false"/>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                 </constraints>
-                <properties>
-                  <text value="Ma note : "/>
-                </properties>
-              </component>
-              <component id="5bd28" class="javax.swing.JLabel" binding="FirstReadingLabel">
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="a94f3" class="javax.swing.JLabel" binding="PersonalNoteLabel">
+                    <constraints>
+                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text value="Ma note : "/>
+                    </properties>
+                  </component>
+                </children>
+              </grid>
+              <grid id="1c649" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                <margin top="0" left="0" bottom="0" right="0"/>
                 <constraints>
-                  <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                  <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                 </constraints>
-                <properties>
-                  <text value="Première lecture : "/>
-                </properties>
-              </component>
-              <component id="375ad" class="javax.swing.JLabel" binding="LastReadingLabel">
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="5bd28" class="javax.swing.JLabel" binding="FirstReadingLabel">
+                    <constraints>
+                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text value="Première lecture : "/>
+                    </properties>
+                  </component>
+                </children>
+              </grid>
+              <grid id="1dbe2" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                <margin top="0" left="0" bottom="0" right="0"/>
                 <constraints>
-                  <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                  <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                 </constraints>
-                <properties>
-                  <text value="Dernière lecture : "/>
-                </properties>
-              </component>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="375ad" class="javax.swing.JLabel" binding="LastReadingLabel">
+                    <constraints>
+                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text value="Dernière lecture : "/>
+                    </properties>
+                  </component>
+                </children>
+              </grid>
             </children>
           </grid>
           <grid id="547a5" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
@@ -130,7 +160,7 @@
             <border type="none"/>
             <children>
               <grid id="b2cf" layout-manager="GridLayoutManager" row-count="6" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-                <margin top="0" left="0" bottom="50" right="0"/>
+                <margin top="17" left="0" bottom="40" right="0"/>
                 <constraints>
                   <grid row="0" column="0" row-span="1" col-span="2" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -231,7 +261,7 @@
                     <margin top="0" left="0" bottom="0" right="0"/>
                     <constraints>
                       <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
-                        <maximum-size width="-1" height="27"/>
+                        <maximum-size width="-1" height="30"/>
                       </grid>
                     </constraints>
                     <properties/>
@@ -240,9 +270,9 @@
                       <grid id="e781a" binding="BookTagsPanel" layout-manager="FlowLayout" hgap="5" vgap="0" flow-align="0">
                         <constraints>
                           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
-                            <minimum-size width="-1" height="27"/>
-                            <preferred-size width="-1" height="27"/>
-                            <maximum-size width="-1" height="27"/>
+                            <minimum-size width="-1" height="30"/>
+                            <preferred-size width="-1" height="30"/>
+                            <maximum-size width="-1" height="30"/>
                           </grid>
                         </constraints>
                         <properties>
@@ -258,7 +288,7 @@
                 </children>
               </grid>
               <grid id="16e2b" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-                <margin top="0" left="0" bottom="5" right="0"/>
+                <margin top="0" left="0" bottom="0" right="0"/>
                 <constraints>
                   <grid row="1" column="0" row-span="1" col-span="2" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                 </constraints>

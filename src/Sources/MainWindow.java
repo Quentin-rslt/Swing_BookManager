@@ -236,7 +236,7 @@ public class MainWindow extends JDialog {
                     String ReadingQry = "DELETE FROM Reading WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";
                     String TaggingQry = "DELETE FROM Tagging WHERE IdBook='"+getIdBook(getMTitle(),getAuthor())+"'";
 
-                    deleteImageMainRessource(getMTitle(), getAuthor());
+                    deleteImageMainResource(getMTitle(), getAuthor());
                     try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(boolQry); PreparedStatement pstmt2 = conn.prepareStatement(ReadingQry);
                          PreparedStatement taggingPstmt = conn.prepareStatement(TaggingQry)) {
                         // execute the delete statement
@@ -595,7 +595,7 @@ public class MainWindow extends JDialog {
             ResultSet CountReadingQry = statement.executeQuery("SELECT COUNT(*) FROM Reading WHERE Title='"+title+"' AND Author='"+author+ "'");
             CountReadingLabel.setText("Nombre de lecture : "+CountReadingQry.getString(1));
 
-            //Average time lable
+            //Average time label
             String sql = "SELECT StartReading, EndReading FROM Reading WHERE Title='"+title+"' AND Author='"+author+"'";
             ResultSet qry = m_statement.executeQuery(sql);
             long days = 0;

@@ -36,7 +36,7 @@ public class Tag extends JLabel {
             setForeground(new Color(232,208,208));
         }else
             setForeground(new Color(38,34,34));
-        AbstractBorder roundBrd = new RoundBorderCp(new Color(38,34,34),3,25,0,0,0);
+        AbstractBorder roundBrd = new RoundBorderCp(new Color(38,34,34),3,29,0,0,0);
         setBorder(roundBrd);
     }
     public void setTextTag(String tag){

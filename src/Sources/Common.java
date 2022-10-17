@@ -38,25 +38,20 @@ public class Common {
         panel.removeAll();
         panel.add(imgLabel);
     }
-    public static void addImageToRessource(){
+    public static void addImageToResource(){
         if(jf.getSelectedFile()!=null && !getNameOfBook().equals("Default.jpg")){
-            System.out.println(getNameOfBook());
             Path src = Paths.get(jf.getSelectedFile().getAbsolutePath());
             Path folder = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(),"BookManager");
             Path dest = Paths.get(folder+"/"+getNameOfBook());
             try {
                 Files.createDirectories(folder);
+                Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            try {
-                Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
-            } catch (Exception e) {
-                throw new RuntimeException(e.getMessage(), e);
-            }
         }
     }
-    public static void updateImageToRessource(String title, String author){
+    public static void updateImageToResource(String title, String author){
         if(jf.getSelectedFile()!=null && !getNameOfBook().equals(getBookNameBdd(title, author))){
             System.out.println(getNameOfBook());
             Path src = Paths.get(jf.getSelectedFile().getAbsolutePath());
@@ -74,7 +69,7 @@ public class Common {
             }
         }
     }
-    public static void deleteImageMainRessource(String title, String author){
+    public static void deleteImageMainResource(String title, String author){
         if(!getBookNameBdd(title, author).equals("Default.jpg")){
             Path folder = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(),"BookManager");
             Path dest = Paths.get(folder+"/"+getBookNameBdd(title, author));//delete the image of the deleted book
@@ -85,7 +80,7 @@ public class Common {
             }
         }
     }
-    public static void deleteImageRessource(String title, String author){
+    public static void deleteImageResource(String title, String author){
         if(jf.getSelectedFile()!=null && !getNameOfBook().equals(getBookNameBdd(title, author))){
             Path folder = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(),"BookManager");
             Path dest = Paths.get(folder+"/"+getBookNameBdd(title, author));//delete the image of the deleted book
@@ -189,7 +184,7 @@ public class Common {
         boolean isAccept = true;
         if(pathname!=null){
             String filename = pathname.getName();
-            isAccept= filename.endsWith("jpg") || filename.endsWith("jpeg") || filename.endsWith("png");
+            isAccept = filename.endsWith("jpg") || filename.endsWith("jpeg") || filename.endsWith("png");
         }
         return isAccept;
     }
@@ -224,8 +219,8 @@ public class Common {
         return name;
     }
     public static String getFormat(String name){
-        String[] format = name.split("\\.");
-        return format[1];
+        System.out.println(name.substring(name.lastIndexOf('.')+1));
+        return name.substring(name.lastIndexOf('.')+1);
     }
     public static Image getImageAdd(){
         File fileAdd = new File("Ressource/Icons/add.png");

@@ -62,9 +62,9 @@ public class EditBookDlg extends JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!Objects.equals(getNewTitle(), "") && !Objects.equals(getNewAuthor(), "") && !Objects.equals(getNewSummary(), "")){
-                    deleteImageRessource(getOldTitle(), getOldAuthor());
+                    deleteImageResource(getOldTitle(), getOldAuthor());
                     setIsValid(true);
-                    updateImageToRessource(getOldTitle(), getOldAuthor());
+                    updateImageToResource(getOldTitle(), getOldAuthor());
                     setVisible(false);
                     dispose();
                 }
