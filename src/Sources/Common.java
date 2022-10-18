@@ -163,10 +163,10 @@ public class Common {
             rVal = jf.showOpenDialog(panel);
             if (JFileChooser.APPROVE_OPTION == rVal){ //Opens the file panel to select an image
                 setNameOfBook(randomNameOfBook(jf.getSelectedFile().getName()));
-                //String path = jf.getSelectedFile().getPath();
+                String path = jf.getSelectedFile().getPath();
                 if (accept(jf.getSelectedFile())){
-                    Image img = previewRescaleResolutionImage(jf.getSelectedFile());
-//                    Image img = Toolkit.getDefaultToolkit().getImage(path);
+                    //Image img = previewRescaleResolutionImage(jf.getSelectedFile());
+                    Image img = Toolkit.getDefaultToolkit().getImage(path);
                     img=img.getScaledInstance(rescaleImage(jf.getSelectedFile()).width, rescaleImage(jf.getSelectedFile()).height, Image.SCALE_AREA_AVERAGING);
                     ImageIcon icon = new ImageIcon(img);
                     JLabel imgLabel = new JLabel();
@@ -191,9 +191,9 @@ public class Common {
             double width = image.getWidth();
             double ratio = width/height;
             if(ratio>1){
-                size = new Dimension(266, (int) (266/ratio));
+                size = new Dimension(305, (int) (305/ratio));
             }else{
-                size = new Dimension(266,400);
+                size = new Dimension(305,500);
             }
 
         } catch (IOException e) {

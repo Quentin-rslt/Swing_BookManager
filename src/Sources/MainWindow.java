@@ -542,10 +542,10 @@ public class MainWindow extends JDialog {
                 m_tableModel.addRow(data);//add to tablemodel the data
             }
             BooksTable.setModel(m_tableModel);
-            jsPane.setPreferredSize(new Dimension(440,585));
+            jsPane.setPreferredSize(new Dimension(470,647));
 
             AbstractBorder roundBrdMax = new RoundBorderCp(contentPane.getBackground(),1,30, 0,0,0);
-            AbstractBorder roundBrdMin = new RoundBorderCp(contentPane.getBackground(),1,30, 542-(BooksTable.getRowCount()*BooksTable.getRowHeight()),11,0);
+            AbstractBorder roundBrdMin = new RoundBorderCp(contentPane.getBackground(),1,30, 605-(BooksTable.getRowCount()*BooksTable.getRowHeight()),11,0);
             if(BooksTable.getRowCount()>20)
                 BooksTable.setBorder(roundBrdMax);
             else
@@ -714,7 +714,7 @@ public class MainWindow extends JDialog {
 
         MainWindow dialog = new MainWindow();
         dialog.setTitle("Book manager");
-        dialog.setSize(1290,700);
+        dialog.setSize(1350,760);
         dialog.setLocationRelativeTo(null);
         dialog.setVisible(true);
 
