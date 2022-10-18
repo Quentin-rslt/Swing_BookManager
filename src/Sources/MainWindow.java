@@ -126,7 +126,7 @@ public class MainWindow extends JDialog {
                 AddBookDlg diag = new AddBookDlg();
                 diag.setTitle("Ajouter un livre");
                 diag.setIconImage(getImageAdd());
-                diag.setSize(900,610);
+                diag.setSize(840,610);
                 diag.setLocationRelativeTo(null);
                 diag.setVisible(true);
                 if (diag.isValide()){
@@ -260,7 +260,7 @@ public class MainWindow extends JDialog {
                 EditBookDlg diag = new EditBookDlg(getMTitle(), getAuthor());
                 diag.setTitle("Modifier un livre");
                 diag.setIconImage(getImageEdit());
-                diag.setSize(900,610);
+                diag.setSize(840,610);
                 diag.setLocationRelativeTo(null);
                 diag.setVisible(true);
                 if (diag.isValid()){

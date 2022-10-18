@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.sql.*;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
@@ -30,7 +29,8 @@ public class Common {
         String path = file.getAbsolutePath();
 
         Image img = Toolkit.getDefaultToolkit().getImage(path);
-        img=img.getScaledInstance(rescaleImage(file).width, rescaleImage(file).height, Image.SCALE_AREA_AVERAGING);
+        Dimension d = rescaleImage(file);
+        img=img.getScaledInstance(d.width, d.height, Image.SCALE_AREA_AVERAGING);
         ImageIcon icon = new ImageIcon(img);
         JLabel imgLabel = new JLabel();
         imgLabel.setIcon(icon);
@@ -165,9 +165,9 @@ public class Common {
                 setNameOfBook(randomNameOfBook(jf.getSelectedFile().getName()));
                 String path = jf.getSelectedFile().getPath();
                 if (accept(jf.getSelectedFile())){
-                    //Image img = previewRescaleResolutionImage(jf.getSelectedFile());
                     Image img = Toolkit.getDefaultToolkit().getImage(path);
-                    img=img.getScaledInstance(rescaleImage(jf.getSelectedFile()).width, rescaleImage(jf.getSelectedFile()).height, Image.SCALE_AREA_AVERAGING);
+                    Dimension d = rescaleImage(jf.getSelectedFile());
+                    img=img.getScaledInstance(d.width, d.height, Image.SCALE_AREA_AVERAGING);
                     ImageIcon icon = new ImageIcon(img);
                     JLabel imgLabel = new JLabel();
                     imgLabel.setIcon(icon);
@@ -182,6 +182,27 @@ public class Common {
             }
         } while (!accept(jf.getSelectedFile()) && rVal==0);
     }
+    public static void rescaleResolutionImage(File file){
+        BufferedImage image;
+        BufferedImage outputImage;
+        try {
+            image = ImageIO.read(file);
+            if(image.getWidth()>700){
+                Image resultingImage = image.getScaledInstance(611, 1000, Image.SCALE_DEFAULT);
+                outputImage = new BufferedImage(611, 1000, BufferedImage.TYPE_INT_RGB);
+                outputImage.getGraphics().drawImage(resultingImage, 0, 0, null);
+                ImageIO.write(outputImage, getFormat(file.getName()), file);
+            }else{
+                Image resultingImage = image.getScaledInstance(image.getWidth(), image.getHeight(), Image.SCALE_DEFAULT);
+                outputImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB);
+                outputImage.getGraphics().drawImage(resultingImage, 0, 0, null);
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static Dimension rescaleImage(File file){
         Dimension size;
         BufferedImage image;
@@ -201,46 +222,6 @@ public class Common {
         }
 
         return size;
-    }
-    public static void rescaleResolutionImage(File file){
-        BufferedImage image;
-        BufferedImage outputImage;
-        try {
-            image = ImageIO.read(file);
-            if(image.getWidth()>700){
-                Image resultingImage = image.getScaledInstance(image.getWidth()/2, image.getHeight()/2, Image.SCALE_DEFAULT);
-                outputImage = new BufferedImage(image.getWidth()/2, image.getHeight()/2, BufferedImage.TYPE_INT_RGB);
-                outputImage.getGraphics().drawImage(resultingImage, 0, 0, null);
-                ImageIO.write(outputImage, getFormat(file.getName()), file);
-            }else{
-                Image resultingImage = image.getScaledInstance(image.getWidth(), image.getHeight(), Image.SCALE_DEFAULT);
-                outputImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB);
-                outputImage.getGraphics().drawImage(resultingImage, 0, 0, null);
-            }
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-    public static Image previewRescaleResolutionImage(File file){
-        BufferedImage image;
-        BufferedImage outputImage;
-        try {
-            image = ImageIO.read(file);
-            if(image.getWidth()>700){
-                Image resultingImage = image.getScaledInstance(image.getWidth()/2, image.getHeight()/2, Image.SCALE_DEFAULT);
-                outputImage = new BufferedImage(image.getWidth()/2, image.getHeight()/2, BufferedImage.TYPE_INT_RGB);
-                outputImage.getGraphics().drawImage(resultingImage, 0, 0, null);
-            }else{
-                Image resultingImage = image.getScaledInstance(image.getWidth(), image.getHeight(), Image.SCALE_DEFAULT);
-                outputImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB);
-                outputImage.getGraphics().drawImage(resultingImage, 0, 0, null);
-            }
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return outputImage;
     }
     public static boolean accept(File pathname) {
         boolean isAccept = true;
