@@ -46,7 +46,8 @@ public class Common {
             Path dest = Paths.get(folder+"/"+getNameOfBook());
             try {
                 Files.createDirectories(folder);
-                Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
+                Files.copy(src, dest);
+                rescaleResolutionImage(dest.toFile());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -60,13 +61,10 @@ public class Common {
             Path dest = Paths.get(folder+"/"+getNameOfBook());
             try {
                 Files.createDirectories(folder);
+                Files.copy(src, dest);
+                rescaleResolutionImage(dest.toFile());
             } catch (IOException e) {
                 throw new RuntimeException(e);
-            }
-            try {
-                Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
-            } catch (Exception e) {
-                throw new RuntimeException(e.getMessage(), e);
             }
         }
     }
@@ -82,7 +80,7 @@ public class Common {
         }
     }
     public static void deleteImageResource(String title, String author){
-        if(jf.getSelectedFile()!=null && !getNameOfBook().equals(getBookNameBdd(title, author))){
+        if(jf.getSelectedFile()!=null && !getNameOfBook().equals(getBookNameBdd(title, author)) && !getBookNameBdd(title, author).equals("Default.jpg")){
             Path folder = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(),"BookManager");
             Path dest = Paths.get(folder+"/"+getBookNameBdd(title, author));//delete the image of the deleted book
             try {
@@ -165,11 +163,10 @@ public class Common {
             rVal = jf.showOpenDialog(panel);
             if (JFileChooser.APPROVE_OPTION == rVal){ //Opens the file panel to select an image
                 setNameOfBook(randomNameOfBook(jf.getSelectedFile().getName()));
-                String path = jf.getSelectedFile().getPath();
+                //String path = jf.getSelectedFile().getPath();
                 if (accept(jf.getSelectedFile())){
-                    Image img = rescaleResolutionImage(jf.getSelectedFile());
-                    System.out.println(img.getWidth(null));
-                    //Image img = Toolkit.getDefaultToolkit().getImage(path);
+                    Image img = previewRescaleResolutionImage(jf.getSelectedFile());
+//                    Image img = Toolkit.getDefaultToolkit().getImage(path);
                     img=img.getScaledInstance(rescaleImage(jf.getSelectedFile()).width, rescaleImage(jf.getSelectedFile()).height, Image.SCALE_AREA_AVERAGING);
                     ImageIcon icon = new ImageIcon(img);
                     JLabel imgLabel = new JLabel();
@@ -205,19 +202,41 @@ public class Common {
 
         return size;
     }
-    public static BufferedImage rescaleResolutionImage(File file){
+    public static void rescaleResolutionImage(File file){
         BufferedImage image;
         BufferedImage outputImage;
         try {
             image = ImageIO.read(file);
-            outputImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB);
             if(image.getWidth()>700){
                 Image resultingImage = image.getScaledInstance(image.getWidth()/2, image.getHeight()/2, Image.SCALE_DEFAULT);
-
                 outputImage = new BufferedImage(image.getWidth()/2, image.getHeight()/2, BufferedImage.TYPE_INT_RGB);
                 outputImage.getGraphics().drawImage(resultingImage, 0, 0, null);
-                System.out.println(outputImage.getWidth(null));
+                ImageIO.write(outputImage, getFormat(file.getName()), file);
+            }else{
+                Image resultingImage = image.getScaledInstance(image.getWidth(), image.getHeight(), Image.SCALE_DEFAULT);
+                outputImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB);
+                outputImage.getGraphics().drawImage(resultingImage, 0, 0, null);
             }
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public static Image previewRescaleResolutionImage(File file){
+        BufferedImage image;
+        BufferedImage outputImage;
+        try {
+            image = ImageIO.read(file);
+            if(image.getWidth()>700){
+                Image resultingImage = image.getScaledInstance(image.getWidth()/2, image.getHeight()/2, Image.SCALE_DEFAULT);
+                outputImage = new BufferedImage(image.getWidth()/2, image.getHeight()/2, BufferedImage.TYPE_INT_RGB);
+                outputImage.getGraphics().drawImage(resultingImage, 0, 0, null);
+            }else{
+                Image resultingImage = image.getScaledInstance(image.getWidth(), image.getHeight(), Image.SCALE_DEFAULT);
+                outputImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB);
+                outputImage.getGraphics().drawImage(resultingImage, 0, 0, null);
+            }
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
