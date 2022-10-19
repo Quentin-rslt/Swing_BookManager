@@ -441,15 +441,13 @@
           </grid>
         </children>
       </grid>
-      <toolbar id="83c72">
+      <toolbar id="f83eb" binding="BookToolBar">
         <constraints>
           <grid row="0" column="0" row-span="1" col-span="3" vsize-policy="0" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false">
             <preferred-size width="-1" height="20"/>
           </grid>
         </constraints>
-        <properties>
-          <floatable value="false"/>
-        </properties>
+        <properties/>
         <border type="none"/>
         <children/>
       </toolbar>

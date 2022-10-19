@@ -9,16 +9,13 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 import static Sources.Common.*;
+import static Sources.ToolBar.createToolBar;
 
 public class MainWindow extends JDialog {
     private JPanel contentPane;
@@ -42,6 +39,8 @@ public class MainWindow extends JDialog {
     private JButton BookManageTagsBtn;
     private JTable BooksTable;
     private JScrollPane jsPane;
+    private JPanel BookToolBarPanel;
+    private JToolBar BookToolBar;
     private final DefaultTableModel m_tableModel = new DefaultTableModel(){//Create a Jtable with the tablemodel not editable
         public boolean isCellEditable(int rowIndex, int colIndex) {
             return false; //Disallow the editing of any cell
@@ -687,6 +686,7 @@ public class MainWindow extends JDialog {
         BookPhotoPanel.removeAll();
         contentPane.updateUI();
         contentPane.setBorder(null);
+        createToolBar(BookToolBar);
     }
 
     public int getIdTag(String tag, int color) {

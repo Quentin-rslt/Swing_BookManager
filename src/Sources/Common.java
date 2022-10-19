@@ -188,11 +188,12 @@ public class Common {
             image = ImageIO.read(file);
             float width = image.getWidth();
             float height = image.getHeight();
-            if(width>700){
+            int sizeW = 1200;
+            if(width>sizeW){
                 float ratio = (width/height);
-                int h = (int) (611/ratio); //rescale the height of the image with a maximum width of 611px
-                Image resultingImage = image.getScaledInstance(611, h, Image.SCALE_DEFAULT);
-                outputImage = new BufferedImage(611, h, BufferedImage.TYPE_INT_RGB);
+                int h = (int) (sizeW/ratio); //rescale the height of the image with a maximum width of 611px
+                Image resultingImage = image.getScaledInstance(sizeW, h, Image.SCALE_DEFAULT);
+                outputImage = new BufferedImage(sizeW, h, BufferedImage.TYPE_INT_RGB);
                 outputImage.getGraphics().drawImage(resultingImage, 0, 0, null);
                 ImageIO.write(outputImage, getFormat(file.getName()), file);
             }else{
