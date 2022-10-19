@@ -505,10 +505,10 @@ public class MainWindow extends JDialog {
                 m_tableModel.addRow(data);//add to tablemodel the data
             }
             BooksTable.setModel(m_tableModel);
-            jsPane.setPreferredSize(new Dimension(470,647));
+            jsPane.setPreferredSize(new Dimension(470,671));
 
             AbstractBorder roundBrdMax = new RoundBorderCp(contentPane.getBackground(),1,30, 0,0,0);
-            AbstractBorder roundBrdMin = new RoundBorderCp(contentPane.getBackground(),1,30, 605-(BooksTable.getRowCount()*BooksTable.getRowHeight()),11,0);
+            AbstractBorder roundBrdMin = new RoundBorderCp(contentPane.getBackground(),1,30, 628-(BooksTable.getRowCount()*BooksTable.getRowHeight()),11,0);
             if(BooksTable.getRowCount()>20)
                 BooksTable.setBorder(roundBrdMax);
             else

@@ -332,10 +332,13 @@
                     </properties>
                     <border type="none"/>
                     <children>
-                      <component id="88f4" class="javax.swing.JTextPane" binding="BookSummary">
+                      <component id="5c39f" class="javax.swing.JTextPane" binding="BookSummary">
                         <constraints/>
                         <properties>
-                          <editable value="false"/>
+                          <editable value="true"/>
+                          <enabled value="true"/>
+                          <focusable value="false"/>
+                          <opaque value="true"/>
                         </properties>
                       </component>
                     </children>
