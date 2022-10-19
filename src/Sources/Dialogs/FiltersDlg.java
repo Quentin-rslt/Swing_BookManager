@@ -1,11 +1,7 @@
 package Sources.Dialogs;
 
-import Sources.RoundBorderCp;
-
 import javax.swing.*;
-import javax.swing.border.AbstractBorder;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -27,21 +23,15 @@ public class FiltersDlg extends JDialog {
         setContentPane(contentPane);
         setModal(true);
         initComponents();
-        FiltersOkBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setIsValid(true);
-                setVisible(false);
-                dispose();
-            }
+        FiltersOkBtn.addActionListener((ActionEvent e)-> {
+            setIsValid(true);
+            setVisible(false);
+            dispose();
         });
-        FiltersCancelBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setIsValid(false);
-                setVisible(false);
-                dispose();
-            }
+        FiltersCancelBtn.addActionListener((ActionEvent e)-> {
+            setIsValid(false);
+            setVisible(false);
+            dispose();
         });
     }
 
@@ -52,12 +42,12 @@ public class FiltersDlg extends JDialog {
         return FiltersAuthorTextField.getText();
     }
     public String getFirstDatRelease(){
-        SimpleDateFormat formater = new SimpleDateFormat("yyyy");//set the date format returned to have the day, month and year
-        return formater.format(FiltersFirstReleaseYearSpin.getValue());
+        SimpleDateFormat format = new SimpleDateFormat("yyyy");//set the date format returned to have the day, month and year
+        return format.format(FiltersFirstReleaseYearSpin.getValue());
     }
     public String getLastDateRelease(){
-        SimpleDateFormat formater = new SimpleDateFormat("yyyy");//set the date format returned to have the day, month and year
-        return formater.format(FiltersLastReleaseYearSpin.getValue());
+        SimpleDateFormat format = new SimpleDateFormat("yyyy");//set the date format returned to have the day, month and year
+        return format.format(FiltersLastReleaseYearSpin.getValue());
     }
     public String getFirstNote(){
         return FiltersFirstNoteSpin.getValue().toString();

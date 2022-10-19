@@ -1,11 +1,7 @@
 package Sources.Dialogs;
 
-import Sources.RoundBorderCp;
-
 import javax.swing.*;
-import javax.swing.border.AbstractBorder;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -27,8 +23,6 @@ public class AddReading extends JDialog {
 
     private String m_title;
     private String m_author;
-    private String m_newEndReading;
-    private String m_newStartReading;
     private boolean m_isValid = false;
 
     public AddReading(String title, String author) {
@@ -37,9 +31,7 @@ public class AddReading extends JDialog {
         setMtitle(title);
         setAuthor(author);
         initComponents();
-        ReadingUnknownCheckBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        ReadingUnknownCheckBox.addActionListener((ActionEvent e) ->{
                 if (isDateUnknown()){
                     ReadingNotDoneCheckBox.setSelected(false);
                     ReadingNewStartDateSpin.setEnabled(false);
@@ -49,11 +41,8 @@ public class AddReading extends JDialog {
                     ReadingNewStartDateSpin.setEnabled(true);
                     ReadingNewEndDateSpin.setEnabled(true);
                 }
-            }
-        });
-        ReadingNotDoneCheckBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+            });
+        ReadingNotDoneCheckBox.addActionListener((ActionEvent e)-> {
                 if (isNotDone()) {
                     ReadingUnknownCheckBox.setSelected(false);
                     ReadingNewStartDateSpin.setEnabled(true);
@@ -62,19 +51,13 @@ public class AddReading extends JDialog {
                 else{
                     ReadingNewEndDateSpin.setEnabled(true);
                 }
-            }
-        });
-        ReadingConcelBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+            });
+        ReadingConcelBtn.addActionListener((ActionEvent e)-> {
                 setIsValid(false);
                 setVisible(false);
                 dispose();
-            }
-        });
-        ReadingOkBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
+            });
+        ReadingOkBtn.addActionListener((ActionEvent evt)-> {
                 //System.out.println(getNewStartReading()+" - "+getNewEndReading());
                 String sql = "SELECT Title, Author, StartReading, EndReading FROM Reading";
                 try (Connection conn = connect()){
@@ -106,8 +89,6 @@ public class AddReading extends JDialog {
                             JFrame jFrame = new JFrame();
                             JOptionPane.showMessageDialog(jFrame, "La date de fin de lecture existe déjà !");
                             readingFound = true;//
-                        } else{
-                            readingFound = false;
                         }
                     }
                     if (!readingFound && isDateUnknown()){
@@ -138,8 +119,7 @@ public class AddReading extends JDialog {
                     System.err.println( e.getClass().getName() + ": " + e.getMessage() );
                     System.exit(0);
                 }
-            }
-        });
+            });
     }
 
     public String getMtitle() {
@@ -178,16 +158,10 @@ public class AddReading extends JDialog {
         return m_isValid;
     }
     public boolean isDateUnknown(){
-        if (ReadingUnknownCheckBox.isSelected())
-            return true;
-        else
-            return false;
+        return ReadingUnknownCheckBox.isSelected();
     }
     public boolean isNotDone(){
-        if (ReadingNotDoneCheckBox.isSelected())
-            return true;
-        else
-            return false;
+        return ReadingNotDoneCheckBox.isSelected();
     }
 
     public void setMtitle(String m_title) {
@@ -195,12 +169,6 @@ public class AddReading extends JDialog {
     }
     public void setAuthor(String m_author) {
         this.m_author = m_author;
-    }
-    public void setNewEndReading(String m_newEndReading) {
-        this.m_newEndReading = m_newEndReading;
-    }
-    public void setNewStartReading(String m_newStartReading) {
-        this.m_newStartReading = m_newStartReading;
     }
     public void setIsValid(boolean bool){
         this.m_isValid = bool;

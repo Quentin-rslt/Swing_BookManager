@@ -8,9 +8,6 @@ import javax.swing.*;
 import javax.swing.border.AbstractBorder;
 import java.awt.*;
 import java.awt.event.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -38,8 +35,8 @@ public class EditBookDlg extends JDialog {
     private String m_oldTitle;
     private String m_oldAuthor;
     private boolean isValid = false;
-    private JPopupMenu m_popup;
-    private Tags m_tags = new Tags();
+    final JPopupMenu m_popup;
+    final Tags m_tags = new Tags();
 
     public EditBookDlg(String title, String author) {
         setContentPane(contentPane);
@@ -58,9 +55,7 @@ public class EditBookDlg extends JDialog {
         BookSummaryTextPane.setBorder(roundBrd);
         JsPane.setBorder(null);
 
-        BookOkBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        BookOkBtn.addActionListener((ActionEvent e) ->{
                 if (!Objects.equals(getNewTitle(), "") && !Objects.equals(getNewAuthor(), "") && !Objects.equals(getNewSummary(), "")){
                     deleteImageResource(getOldTitle(), getOldAuthor());
                     setIsValid(true);
@@ -72,14 +67,8 @@ public class EditBookDlg extends JDialog {
                     JFrame jFrame = new JFrame();
                     JOptionPane.showMessageDialog(jFrame, "Veuillez remplir tous les champs !");
                 }
-            }
-        });
-        BookBrowseBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                selectNameOfBook(BookPhotoPanel);
-            }
-        });
+            });
+        BookBrowseBtn.addActionListener((ActionEvent e)->selectNameOfBook(BookPhotoPanel));
         BookSummaryTextPane.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
@@ -120,22 +109,17 @@ public class EditBookDlg extends JDialog {
                 }
             }
         });
-        cut.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
+        cut.addActionListener((ActionEvent evt) ->{
                 Component[] componentList = BookTagsPanel.getComponents();
                 for(int i = 0; i<getTags().getSizeTags();i++){
                     if(componentList[i]==m_popup.getInvoker()){
                         BookTagsPanel.remove(componentList[i]);
-                        getTags().getTags().remove(i);
+                        getTags().removeTag(i);
                     }
                 }
                 BookTagsPanel.updateUI();
-            }
-        });
-        edit.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
+            });
+        edit.addActionListener((ActionEvent evt)-> {
                 Component[] componentList = BookTagsPanel.getComponents();
                 //j is the index of tags where we want to edit
                 int j = 0;
@@ -164,8 +148,7 @@ public class EditBookDlg extends JDialog {
                     }
                     BookTagsPanel.updateUI();
                 }
-            }
-        });
+            });
     }
 
     public String getOldTitle() {

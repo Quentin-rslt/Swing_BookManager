@@ -6,15 +6,15 @@ import java.awt.geom.Area;
 import java.awt.geom.RoundRectangle2D;
 
 public class RoundBorderCp extends AbstractBorder {
-    private Color color;
-    private int thickness = 4;
-    private int radii = 8;
-    private Insets insets = null;
-    private BasicStroke stroke = null;
-    private int strokePad;
-    int h= 0;
-    int gap = 0;
-    int pad;
+    final Color color;
+    final int thickness;
+    final int radii;
+    final Insets insets;
+    final BasicStroke stroke;
+    final int strokePad;
+    final int h;
+    final int gap;
+    final int pad;
     RenderingHints hints;
 
     public RoundBorderCp(Color color, int thickness, int radii, int height, int gap,int pad) {

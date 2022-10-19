@@ -3,8 +3,6 @@ package Sources;
 import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
-import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
 
 public class Tag extends JLabel {
     String m_tag;
@@ -38,9 +36,6 @@ public class Tag extends JLabel {
             setForeground(new Color(38,34,34));
         AbstractBorder roundBrd = new RoundBorderCp(new Color(38,34,34),3,29,0,0,0);
         setBorder(roundBrd);
-    }
-    public void setTextTag(String tag){
-        this.m_tag=tag;
     }
     public void initComponent(JLabel lbl){
         Dimension d;

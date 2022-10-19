@@ -15,7 +15,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 import static Sources.Common.*;
-import static Sources.ToolBar.createToolBar;
+import static Sources.MenuBar.createMenuBar;
 
 public class MainWindow extends JDialog {
     private JPanel contentPane;
@@ -39,8 +39,6 @@ public class MainWindow extends JDialog {
     private JButton BookManageTagsBtn;
     private JTable BooksTable;
     private JScrollPane jsPane;
-    private JPanel BookToolBarPanel;
-    private JToolBar BookToolBar;
     private final DefaultTableModel m_tableModel = new DefaultTableModel(){//Create a Jtable with the tablemodel not editable
         public boolean isCellEditable(int rowIndex, int colIndex) {
             return false; //Disallow the editing of any cell
@@ -118,8 +116,7 @@ public class MainWindow extends JDialog {
                 }
             }
         });
-        AddBookBtn.addActionListener(new ActionListener() {//open the dlg for add a reading
-            public void actionPerformed(ActionEvent evt) {
+        AddBookBtn.addActionListener((ActionEvent evt) -> {
                 setNameOfBook("");
 
                 AddBookDlg diag = new AddBookDlg();
@@ -155,7 +152,8 @@ public class MainWindow extends JDialog {
 
                         if(!diag.isDateUnknown() && !diag.isNotDOne()){
                             ReadingPstmt.setString(4, diag.getNewBookStartReading());
-                            ReadingPstmt.setString(5, diag.getNewBookEndReading());;
+                            ReadingPstmt.setString(5, diag.getNewBookEndReading());
+
                         } else if (!diag.isDateUnknown() && diag.isNotDOne()) {
                             ReadingPstmt.setString(4, diag.getNewBookStartReading());
                             ReadingPstmt.setString(5, "Pas fini");
@@ -200,11 +198,8 @@ public class MainWindow extends JDialog {
                         System.out.println(e.getMessage());
                     }
                 }
-            }
-        });
-        ManageReadingsBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+            });
+        ManageReadingsBtn.addActionListener((ActionEvent e) ->{
                 ManageReadingDlg diag = new ManageReadingDlg(getMTitle(), getAuthor());
                 diag.setTitle("Gérer les lectures");
                 diag.setSize(500,570);
@@ -219,11 +214,8 @@ public class MainWindow extends JDialog {
                     BooksTable.setRowSelectionInterval(getRowSelected(getMTitle(),getAuthor()),getRowSelected(getMTitle(),getAuthor()));//focus on the book where you have managed your readings
                     loadComponents(getMTitle(), getAuthor());
                 }
-            }
-        });
-        cut.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
+            });
+        cut.addActionListener((ActionEvent evt) -> {
                 JFrame jFrame = new JFrame();
                 int n = JOptionPane.showConfirmDialog(//Open a optionPane to verify if the user really want to delete the book return 0 il they want and 1 if they refuse
                         jFrame,
@@ -251,11 +243,8 @@ public class MainWindow extends JDialog {
                         System.out.println(e.getMessage());
                     }
                 }
-            }
-        });
-        edit.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
+            });
+        edit.addActionListener((ActionEvent evt) -> {
                 EditBookDlg diag = new EditBookDlg(getMTitle(), getAuthor());
                 diag.setTitle("Modifier un livre");
                 diag.setIconImage(getImageEdit());
@@ -311,18 +300,12 @@ public class MainWindow extends JDialog {
                         loadDB(false);
                         loadComponents(diag.getNewTitle(), diag.getNewAuthor());//reload changes made to the book
                         BooksTable.setRowSelectionInterval(getRowSelected(diag.getNewTitle(), diag.getNewAuthor()), getRowSelected(diag.getNewTitle(), diag.getNewAuthor()));//focus on the edited book
-                        conn.close();
-                        ReadingPstmt.close();
-                        BookPstmt.close();
                     } catch (SQLException e) {
                         System.out.println(e.getMessage());
                     }
                 }
-            }
-        });
-        add.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
+            });
+        add.addActionListener((ActionEvent evt) -> {
                 AddReading diag = new AddReading(getMTitle(), getAuthor());
                 diag.setTitle("Ajouter une lecture");
                 diag.setSize(550,250);
@@ -373,44 +356,28 @@ public class MainWindow extends JDialog {
                         System.exit(0);
                     }
                 }
-            }
-        });
-        FiltersBookBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+            });
+        FiltersBookBtn.addActionListener((ActionEvent e)-> {
                 m_diag = new FiltersDlg();
                 m_diag.setTitle("Filter la liste");
                 m_diag.setSize(500,230);
                 m_diag.setLocationRelativeTo(null);
                 m_diag.setVisible(true);
                 contentPane.updateUI();
-                if(m_diag.getIsValid()){
-                    loadDB(true);
-                    setMTitle(BooksTable.getValueAt(0, 0).toString());
-                    setAuthor(BooksTable.getValueAt(0, 1).toString());
-                    loadComponents(getMTitle(), getAuthor());
-                    BooksTable.setRowSelectionInterval(getRowSelected(getMTitle(),getAuthor()), getRowSelected(getMTitle(),getAuthor()));
-                }
-                else{
-                    loadDB(false);
-                    setMTitle(BooksTable.getValueAt(0, 0).toString());
-                    setAuthor(BooksTable.getValueAt(0, 1).toString());
-                    loadComponents(getMTitle(), getAuthor());
-                    BooksTable.setRowSelectionInterval(getRowSelected(getMTitle(),getAuthor()), getRowSelected(getMTitle(),getAuthor()));
-                }
-            }
-        });
-        CancelFiltersBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+                loadDB(m_diag.getIsValid());
+                setMTitle(BooksTable.getValueAt(0, 0).toString());
+                setAuthor(BooksTable.getValueAt(0, 1).toString());
+                loadComponents(getMTitle(), getAuthor());
+                BooksTable.setRowSelectionInterval(getRowSelected(getMTitle(),getAuthor()), getRowSelected(getMTitle(),getAuthor()));
+            });
+        CancelFiltersBtn.addActionListener((ActionEvent e) -> {
                 contentPane.updateUI();
                 loadDB(false);
                 setMTitle(BooksTable.getValueAt(0, 0).toString());
                 setAuthor(BooksTable.getValueAt(0, 1).toString());
                 loadComponents(getMTitle(), getAuthor());
                 BooksTable.setRowSelectionInterval(getRowSelected(getMTitle(),getAuthor()), getRowSelected(getMTitle(),getAuthor()));
-            }
-        });
+            });
         BookSummary.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
@@ -422,19 +389,16 @@ public class MainWindow extends JDialog {
                 super.focusLost(e);
             }
         });
-        BookManageTagsBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ManageTagsDlg diag = new ManageTagsDlg();
-                diag.setTitle("Gérer les tags");
-                diag.setSize(500,570);
-                diag.setLocationRelativeTo(null);
-                diag.setVisible(true);
-                contentPane.updateUI();
-                loadDB(false);
-                BooksTable.setRowSelectionInterval(getRowSelected(getMTitle(),getAuthor()),getRowSelected(getMTitle(),getAuthor()));//focus on the book where you have managed your readings
-                loadComponents(getMTitle(), getAuthor());
-            }
+        BookManageTagsBtn.addActionListener((ActionEvent e) -> {
+            ManageTagsDlg diag = new ManageTagsDlg();
+            diag.setTitle("Gérer les tags");
+            diag.setSize(500,570);
+            diag.setLocationRelativeTo(null);
+            diag.setVisible(true);
+            contentPane.updateUI();
+            loadDB(false);
+            BooksTable.setRowSelectionInterval(getRowSelected(getMTitle(),getAuthor()),getRowSelected(getMTitle(),getAuthor()));//focus on the book where you have managed your readings
+            loadComponents(getMTitle(), getAuthor());
         });
     }
 
@@ -517,7 +481,7 @@ public class MainWindow extends JDialog {
         try(Connection conn = connect()){
             m_statement = conn.createStatement();
             System.out.println("Table connexion successfully");
-            ResultSet rs = null;
+            ResultSet rs;
             if(isFiltered){
                 String qry = "SELECT Title, Author FROM Book " +
                         "WHERE Title LIKE '%" + m_diag.getMTitle() + "%'"+
@@ -600,14 +564,13 @@ public class MainWindow extends JDialog {
             long days = 0;
             int dateValid = 0;
             while (qry.next()){
-                if((qry.getString(1).equals("Inconnu") && qry.getString(2).equals("Inconnu")) ||
-                        (qry.getString(1).equals("Inconnu") && qry.getString(2).equals("Pas fini"))){
-                } else if((!qry.getString(1).equals("Inconnu") && qry.getString(2).equals("Inconnu")) ||
-                        (!qry.getString(1).equals("Inconnu") && qry.getString(2).equals("Pas fini"))){
-                } else if((qry.getString(1).equals("Inconnu") && !qry.getString(2).equals("Inconnu")) ||
-                        ((qry.getString(1).equals("Inconnu") && !qry.getString(2).equals("Pas fini")))){
-                }
-                else{
+                boolean isOk = ((qry.getString(1).equals("Inconnu") && qry.getString(2).equals("Inconnu")) ||
+                        (qry.getString(1).equals("Inconnu") && qry.getString(2).equals("Pas fini")))
+                        ||((!qry.getString(1).equals("Inconnu") && qry.getString(2).equals("Inconnu")) ||
+                        (!qry.getString(1).equals("Inconnu") && qry.getString(2).equals("Pas fini")))
+                        ||((qry.getString(1).equals("Inconnu") && !qry.getString(2).equals("Inconnu")) ||
+                        (qry.getString(1).equals("Inconnu") && !qry.getString(2).equals("Pas fini")));
+                if(!isOk){
                     dateValid++;
                     LocalDate start = LocalDate.parse(qry.getString(1)) ;
                     LocalDate stop = LocalDate.parse(qry.getString(2)) ;
@@ -686,7 +649,6 @@ public class MainWindow extends JDialog {
         BookPhotoPanel.removeAll();
         contentPane.updateUI();
         contentPane.setBorder(null);
-        createToolBar(BookToolBar);
     }
 
     public int getIdTag(String tag, int color) {
@@ -714,10 +676,10 @@ public class MainWindow extends JDialog {
 
         MainWindow dialog = new MainWindow();
         dialog.setTitle("Book manager");
+        dialog.setJMenuBar(createMenuBar());
         dialog.setSize(1350,760);
         dialog.setLocationRelativeTo(null);
         dialog.setVisible(true);
-
         System.exit(0);
     }
 }

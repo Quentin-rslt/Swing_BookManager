@@ -8,15 +8,8 @@ import javax.swing.*;
 import javax.swing.border.AbstractBorder;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.*;
-import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.*;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
@@ -48,8 +41,8 @@ public class AddBookDlg extends JDialog {
     private boolean m_tagIsUpdate = false;
     private Connection m_connection;
     private Statement m_statement;
-    private Tags m_tags;
-    private JPopupMenu m_popup;
+    final Tags m_tags;
+    final JPopupMenu m_popup;
 
 
     public AddBookDlg() {
@@ -66,9 +59,7 @@ public class AddBookDlg extends JDialog {
         m_popup.add(cut);
         m_popup.add(edit);
 
-        BookUnknownReadDateChecbox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        BookUnknownReadDateChecbox.addActionListener((ActionEvent e) -> {
                 if (BookUnknownReadDateChecbox.isSelected()){
                     BookNotDoneReadChecbox.setSelected(false);
                     BookEndReadingSpin.setEnabled(false);
@@ -78,11 +69,8 @@ public class AddBookDlg extends JDialog {
                     BookEndReadingSpin.setEnabled(true);
                     BookStartReadingSpin.setEnabled(true);
                 }
-            }
-        });
-        BookNotDoneReadChecbox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+            });
+        BookNotDoneReadChecbox.addActionListener((ActionEvent e) -> {
                 if (BookNotDoneReadChecbox.isSelected()){
                     BookUnknownReadDateChecbox.setSelected(false);
                     BookStartReadingSpin.setEnabled(true);
@@ -91,19 +79,13 @@ public class AddBookDlg extends JDialog {
                 else{
                     BookEndReadingSpin.setEnabled(true);
                 }
-            }
-        });
-        CancelBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {//Quit dlg without taking into account the input
+            });
+        CancelBtn.addActionListener((ActionEvent e) -> {//Quit dlg without taking into account the input
                 m_isValide = false;
                 setVisible(false);
                 dispose();
-            }
-        });
-        ValidateBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
+            });
+        ValidateBtn.addActionListener((ActionEvent evt) -> {
                 String sql = "SELECT Title, Author, StartReading, EndReading FROM Reading";
                 if(!Objects.equals(getNewBookAuthor(), "") && !Objects.equals(getNewBookTitle(), "") && !Objects.equals(getNewBookSummary(), "")){//Verif if the input are good to quit the dlg and recovered the data for bdd
                     try{//Can add a new reading if the book already exist
@@ -162,14 +144,8 @@ public class AddBookDlg extends JDialog {
                     JFrame jFrame = new JFrame();
                     JOptionPane.showMessageDialog(jFrame, "Veuillez remplir tous les champs !");
                 }
-            }
-        });
-        BookBrowseBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                selectNameOfBook(PreviewPhotoPanel);
-            }
-        });
+            });
+        BookBrowseBtn.addActionListener((ActionEvent e)->selectNameOfBook(PreviewPhotoPanel));
         BookTagsCB.getEditor().getEditorComponent().addKeyListener(new java.awt.event.KeyAdapter() {
 
             @Override
@@ -195,22 +171,17 @@ public class AddBookDlg extends JDialog {
                 }
             }
         });
-        cut.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
+        cut.addActionListener((ActionEvent evt)-> {
                 Component[] componentList = BookTagsPanel.getComponents();
                 for(int i = 0; i<getTags().getSizeTags();i++){
                     if(componentList[i]==m_popup.getInvoker()){
                         BookTagsPanel.remove(componentList[i]);
-                        getTags().getTags().remove(i);
+                        getTags().removeTag(i);
                     }
                 }
                 BookTagsPanel.updateUI();
-            }
-        });
-        edit.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
+            });
+        edit.addActionListener((ActionEvent evt)-> {
                 Component[] componentList = BookTagsPanel.getComponents();
                 //j is the index of tags where we wan't to edit
                 int j = 0;
@@ -239,8 +210,7 @@ public class AddBookDlg extends JDialog {
                     }
                     BookTagsPanel.updateUI();
                 }
-            }
-        });
+            });
         BookSummaryTextPane.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
@@ -370,6 +340,7 @@ public class AddBookDlg extends JDialog {
         BookSummaryTextPane.setBorder(roundBrd);
         JsPane.setBorder(null);
     }
+    @SuppressWarnings("unchecked")
     public void fillThemeCB(){
         this.BookTagsCB.addItem("");
         for (int i = 0; i<loadTags().getSizeTags(); i++){

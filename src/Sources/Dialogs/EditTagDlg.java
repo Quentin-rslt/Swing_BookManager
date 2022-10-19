@@ -1,29 +1,25 @@
 package Sources.Dialogs;
 
 import Sources.Tag;
-import Sources.Tags;
 
 import javax.swing.*;
 import javax.swing.colorchooser.AbstractColorChooserPanel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.Objects;
 
 import static Sources.Common.connect;
 
 public class EditTagDlg extends JDialog {
     private JPanel contentPane;
-    private JPanel TagBtnPanel;
     private JButton TagOkBtn;
     private JButton TagCancelBtn;
     private JTextField TagNameTextField;
     private JPanel TagColorPanel;
-    private JColorChooser m_ColorChooser = new JColorChooser();
-    private Tag m_tag;
-    private Tags m_tags;
+    final JColorChooser m_ColorChooser = new JColorChooser();
+    final Tag m_tag;
+
     private boolean m_isValid =false;
     private boolean m_isUpdate = false;
 
@@ -34,44 +30,35 @@ public class EditTagDlg extends JDialog {
         initComponents();
         setSize(780,480);
 
-        TagCancelBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {//Quit dlg without taking into account the input
-                setIsValid(false);
-                setVisible(false);
-                dispose();
-            }
+        TagCancelBtn.addActionListener((ActionEvent e)-> {//Quit dlg without taking into account the input
+            setIsValid(false);
+            setVisible(false);
+            dispose();
         });
-        TagOkBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(!textTagFind()){//n'est pas dans la bdd
-                    if (!Objects.equals(getNewTextTag(), "")){
-                        setIsUpdate(false);
-                        setIsValid(true);
-                        setVisible(false);
-                        dispose();
-                    }
-                    else{
-                        JFrame jFrame = new JFrame();
-                        JOptionPane.showMessageDialog(jFrame, "Veuillez remplir tous les champs !");
-                    }
-                }
-                else if(getTag().getTextTag().equals(getNewTextTag())){//if we want to just edit the color of a tag
-                    setIsUpdate(true);
+        TagOkBtn.addActionListener((ActionEvent e) ->{
+            if(!textTagFind()){//is not in DB
+                if (!Objects.equals(getNewTextTag(), "")){
+                    setIsUpdate(false);
                     setIsValid(true);
                     setVisible(false);
                     dispose();
                 }
                 else{
                     JFrame jFrame = new JFrame();
-                    JOptionPane.showMessageDialog(jFrame, "Ce tag existe déjà !");
+                    JOptionPane.showMessageDialog(jFrame, "Veuillez remplir tous les champs !");
                 }
             }
+            else if(getTag().getTextTag().equals(getNewTextTag())){//if we want to just edit the color of a tag
+                setIsUpdate(true);
+                setIsValid(true);
+                setVisible(false);
+                dispose();
+            }
+            else{
+                JFrame jFrame = new JFrame();
+                JOptionPane.showMessageDialog(jFrame, "Ce tag existe déjà !");
+            }
         });
-    }
-    public Tags getTags(){
-        return this.m_tags;
     }
     public Tag getTag(){
         return this.m_tag;

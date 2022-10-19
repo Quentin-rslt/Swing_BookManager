@@ -7,7 +7,6 @@ import javax.swing.*;
 import javax.swing.border.AbstractBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.*;
@@ -18,13 +17,13 @@ public class ManageTagsDlg extends JDialog {
     private JPanel contentPane;
     private JButton TagCancelBtn;
     private JTable TagsTable;
-    private DefaultTableModel m_tableModel = new DefaultTableModel(){//Create a Jtable with the tablemodel not editable
+    final DefaultTableModel m_tableModel = new DefaultTableModel(){//Create a Jtable with the tablemodel not editable
         public boolean isCellEditable(int rowIndex, int colIndex) {
             return false; //Disallow the editing of any cell
         }
     };
     private Tags m_tags;
-    private JPopupMenu m_popup;
+    final JPopupMenu m_popup;
     private int m_row;
 
     public ManageTagsDlg() {
@@ -40,12 +39,9 @@ public class ManageTagsDlg extends JDialog {
         m_popup.add(cut);
         m_popup.add(edit);
 
-        TagCancelBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setVisible(false);
-                dispose();
-            }
+        TagCancelBtn.addActionListener((ActionEvent e)-> {
+            setVisible(false);
+            dispose();
         });
 
         TagsTable.addMouseListener(new MouseAdapter() {
@@ -59,46 +55,37 @@ public class ManageTagsDlg extends JDialog {
             }
         });
 
-        cut.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                String Tags = "DELETE FROM Tags WHERE Tag='"+getTags().getTag(getRow()).getTextTag()+"'";
-                String TaggingQry = "DELETE FROM Tagging WHERE IdTag='"+getIdTag(getTags().getTag(getRow()).getTextTag(), getTags().getTag(getRow()).getColor())+"'";
-                try (Connection conn = connect(); PreparedStatement TaggingPstmt = conn.prepareStatement(Tags); PreparedStatement TagsPstmt = conn.prepareStatement(TaggingQry)) {
-                    TagsPstmt.executeUpdate();
-                    TaggingPstmt.executeUpdate();
-                    fillTagsList();
-                    contentPane.updateUI();
-                    conn.close();
-                    TagsPstmt.close();
-                    TaggingPstmt.close();
-                } catch (SQLException e) {
-                    System.out.println(e.getMessage());
-                }
+        cut.addActionListener((ActionEvent evt)-> {
+            String Tags = "DELETE FROM Tags WHERE Tag='"+getTags().getTag(getRow()).getTextTag()+"'";
+            String TaggingQry = "DELETE FROM Tagging WHERE IdTag='"+getIdTag(getTags().getTag(getRow()).getTextTag(), getTags().getTag(getRow()).getColor())+"'";
+            try (Connection conn = connect(); PreparedStatement TaggingPstmt = conn.prepareStatement(Tags); PreparedStatement TagsPstmt = conn.prepareStatement(TaggingQry)) {
+                TagsPstmt.executeUpdate();
+                TaggingPstmt.executeUpdate();
+                fillTagsList();
+                contentPane.updateUI();
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
             }
         });
 
-        edit.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                EditTagDlg diag = new EditTagDlg(getTags().getTag(TagsTable.getSelectedRow()));
-                diag.setTitle("Modifier le tag");
-                diag.setLocationRelativeTo(null);
-                diag.setVisible(true);
+        edit.addActionListener((ActionEvent evt) ->{
+            EditTagDlg diag = new EditTagDlg(getTags().getTag(TagsTable.getSelectedRow()));
+            diag.setTitle("Modifier le tag");
+            diag.setLocationRelativeTo(null);
+            diag.setVisible(true);
 
-                if(diag.isValide()){
-                    String TagsUpdateQry = "UPDATE Tags SET Tag=?,Color=?"+
-                            "WHERE Tag='"+getTags().getTag(TagsTable.getSelectedRow()).getTextTag()+"'";
+            if(diag.isValide()){
+                String TagsUpdateQry = "UPDATE Tags SET Tag=?,Color=?"+
+                        "WHERE Tag='"+getTags().getTag(TagsTable.getSelectedRow()).getTextTag()+"'";
 
-                    try (Connection conn = connect(); PreparedStatement TagsUpdatePstmt = conn.prepareStatement(TagsUpdateQry)) {
-                        TagsUpdatePstmt.setString(1, diag.getNewTextTag());
-                        TagsUpdatePstmt.setInt(2, diag.getNewColorTag().getRGB());
-                        TagsUpdatePstmt.executeUpdate();
+                try (Connection conn = connect(); PreparedStatement TagsUpdatePstmt = conn.prepareStatement(TagsUpdateQry)) {
+                    TagsUpdatePstmt.setString(1, diag.getNewTextTag());
+                    TagsUpdatePstmt.setInt(2, diag.getNewColorTag().getRGB());
+                    TagsUpdatePstmt.executeUpdate();
 
-                        fillTagsList();
-                    }catch (SQLException e) {
-                        System.out.println(e.getMessage());
-                    }
+                    fillTagsList();
+                }catch (SQLException e) {
+                    System.out.println(e.getMessage());
                 }
             }
         });

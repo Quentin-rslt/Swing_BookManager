@@ -1,6 +1,5 @@
 package Sources;
 
-import java.awt.*;
 import java.util.ArrayList;
 
 public class Tags extends Tag {
@@ -19,9 +18,6 @@ public class Tags extends Tag {
     public int getSizeTags(){
         return this.m_tags.size();
     }
-    public boolean isEmpty(){
-        return this.m_tags.isEmpty();
-    }
 
     public void setTags(ArrayList<Tag> tag){
         this.m_tags = tag;
@@ -29,6 +25,9 @@ public class Tags extends Tag {
     public void createTag(String strTag){
         Tag tag = new Tag(strTag);
         this.m_tags.add(tag);
+    }
+    public void removeTag(int i){
+        this.m_tags.remove(i);
     }
     public void addTag(Tag tag){
         this.m_tags.add(tag);

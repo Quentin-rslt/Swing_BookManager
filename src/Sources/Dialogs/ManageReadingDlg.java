@@ -7,7 +7,6 @@ import javax.swing.border.AbstractBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -25,8 +24,7 @@ public class ManageReadingDlg extends JDialog {
     private JTable ReadingsTable;
 
 
-    private Statement m_statement;
-    private DefaultTableModel m_tableModel = new DefaultTableModel(){
+    final DefaultTableModel m_tableModel = new DefaultTableModel(){
         @Override
         public boolean isCellEditable(int row, int column) {
             //all cells false
@@ -37,7 +35,7 @@ public class ManageReadingDlg extends JDialog {
     private String m_author = "";
     private String m_startReading = "";
     private String m_endReading = "";
-    private JPopupMenu m_popup;
+    final JPopupMenu m_popup;
     private boolean m_isEmpty = false;
     private int m_row;
 
@@ -55,16 +53,10 @@ public class ManageReadingDlg extends JDialog {
         m_popup.add(edit);
 
         setModal(true);
-        CancelBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(ReadingsTable.getRowCount()>0)
-                    setIsEmpty(false);
-                else
-                    setIsEmpty(true);
-                setVisible(false);
-                dispose();
-            }
+        CancelBtn.addActionListener((ActionEvent e)-> {
+            setIsEmpty(ReadingsTable.getRowCount() <= 0);
+            setVisible(false);
+            dispose();
         });
         ReadingsTable.addMouseListener(new MouseAdapter() {
             @Override
@@ -78,84 +70,69 @@ public class ManageReadingDlg extends JDialog {
                 }
             }
         });
-        cut.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                String ReadingQry = "DELETE FROM Reading WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"' AND ID='"+getRow()+"'";//Delete in bdd the item that we want delete
-                String BookQry = "DELETE FROM Book WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";//Delete in bdd the item that we want delete
-                String TaggingQry = "DELETE FROM Tagging WHERE IdBook='"+getIdBook(getMTitle(),getAuthor())+"'";
-                if(ReadingsTable.getRowCount()>1){//If there is more than one reading you don't need to know if the person really wants to delete the book
-                    try (Connection conn = connect(); PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry)) {
+        cut.addActionListener((ActionEvent evt) ->{
+            String ReadingQry = "DELETE FROM Reading WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"' AND ID='"+getRow()+"'";//Delete in bdd the item that we want delete
+            String BookQry = "DELETE FROM Book WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";//Delete in bdd the item that we want delete
+            String TaggingQry = "DELETE FROM Tagging WHERE IdBook='"+getIdBook(getMTitle(),getAuthor())+"'";
+            if(ReadingsTable.getRowCount()>1){//If there is more than one reading you don't need to know if the person really wants to delete the book
+                try (Connection conn = connect(); PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry)) {
+                    ReadingPstmt.executeUpdate();
+                    contentPane.updateUI();
+                    fillBookList();
+                    resetIdReading(getMTitle(), getAuthor(), getRowCount());//refresh all ID in the table ReadingDate
+                    ReadingsTable.setRowSelectionInterval(0, 0);
+                } catch (SQLException e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+            else{
+                JFrame jFrame = new JFrame();
+                int n = JOptionPane.showConfirmDialog(//Open a optionPane to verify if the user really want to delete the book return 0 il they want and 1 if they refuse
+                        jFrame,
+                        "Cette acion supprimeras complétement le livre et sera irréversible. \n"+"Etes-vous sûr de vouloir le faire ?",
+                        "An Inane Question",
+                        JOptionPane.YES_NO_OPTION);
+                if(n==0){
+                    try (Connection conn = connect(); PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry); PreparedStatement BookPstmt = conn.prepareStatement(BookQry);
+                         PreparedStatement TaggingPstmt = conn.prepareStatement(TaggingQry)) {
                         ReadingPstmt.executeUpdate();
-                        contentPane.updateUI();
+                        BookPstmt.executeUpdate();
+                        TaggingPstmt.executeUpdate();
                         fillBookList();
-                        resetIdReading(getMTitle(), getAuthor(), getRowCount());//refresh all ID in the table ReadingDate
-                        ReadingsTable.setRowSelectionInterval(0, 0);
-                        conn.close();
-                        ReadingPstmt.close();
-
+                        ManageTitleLabel.setText("Lectures du livre : ");
+                        ManageAuthorLabel.setText("Ecrit par : ");
+                        contentPane.updateUI();
                     } catch (SQLException e) {
                         System.out.println(e.getMessage());
-                    }
-                }
-                else{
-                    JFrame jFrame = new JFrame();
-                    int n = JOptionPane.showConfirmDialog(//Open a optionPane to verify if the user really want to delete the book return 0 il they want and 1 if they refuse
-                            jFrame,
-                            "Cette acion supprimeras complétement le livre et sera irréversible. \n"+"Etes-vous sûr de vouloir le faire ?",
-                            "An Inane Question",
-                            JOptionPane.YES_NO_OPTION);
-                    if(n==0){
-                        try (Connection conn = connect(); PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry); PreparedStatement BookPstmt = conn.prepareStatement(BookQry);
-                             PreparedStatement TaggingPstmt = conn.prepareStatement(TaggingQry)) {
-                            ReadingPstmt.executeUpdate();
-                            BookPstmt.executeUpdate();
-                            TaggingPstmt.executeUpdate();
-                            fillBookList();
-                            ManageTitleLabel.setText("Lectures du livre : ");
-                            ManageAuthorLabel.setText("Ecrit par : ");
-                            contentPane.updateUI();
-                            conn.close();
-                            BookPstmt.close();
-                            ReadingPstmt.close();
-
-                        } catch (SQLException e) {
-                            System.out.println(e.getMessage());
-                        }
                     }
                 }
             }
         });
-        edit.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                EditReadingDlg diag = new EditReadingDlg(getMTitle(), getAuthor(),getStartReading(), getEndReading());//Open a dialog where we can edit the date reading
-                File fileEdit = new File("Ressource/Icons/edit.png");
-                String pathEdit = fileEdit.getAbsolutePath();
-                Image imgEdit = Toolkit.getDefaultToolkit().getImage(pathEdit);
-                imgEdit = imgEdit.getScaledInstance(18,18,Image.SCALE_AREA_AVERAGING);
-                diag.setIconImage(imgEdit);
-                diag.setTitle("Modifier une lecture");
-                diag.setSize(500,210);
-                diag.setLocationRelativeTo(null);
-                diag.setVisible(true);
+        edit.addActionListener((ActionEvent evt) ->{
+            EditReadingDlg diag = new EditReadingDlg(getMTitle(), getAuthor(),getStartReading(), getEndReading());//Open a dialog where we can edit the date reading
+            File fileEdit = new File("Ressource/Icons/edit.png");
+            String pathEdit = fileEdit.getAbsolutePath();
+            Image imgEdit = Toolkit.getDefaultToolkit().getImage(pathEdit);
+            imgEdit = imgEdit.getScaledInstance(18,18,Image.SCALE_AREA_AVERAGING);
+            diag.setIconImage(imgEdit);
+            diag.setTitle("Modifier une lecture");
+            diag.setSize(500,210);
+            diag.setLocationRelativeTo(null);
+            diag.setVisible(true);
 
-                if(diag.isValid()){
-                    String sql = "UPDATE Reading SET StartReading=?, EndReading=?" +
-                            "WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"' AND ID='"+getRow()+"'";//Edit in bdd the item that we want to change the reading date
-                    try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-                        // execute the uptdate statement
-                        pstmt.setString(1, diag.getNewStartReading());
-                        pstmt.setString(2, diag.getNewEndReading());
-                        pstmt.executeUpdate();
-                        contentPane.updateUI();
-                        fillBookList();
-                        ReadingsTable.setRowSelectionInterval(getRow(), getRow());//Focus on the reading that we edit
-                        conn.close();
-                        pstmt.close();
-                    } catch (SQLException e) {
-                        System.out.println(e.getMessage());
-                    }
+            if(diag.isValid()){
+                String sql = "UPDATE Reading SET StartReading=?, EndReading=?" +
+                        "WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"' AND ID='"+getRow()+"'";//Edit in bdd the item that we want to change the reading date
+                try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                    // execute the uptdate statement
+                    pstmt.setString(1, diag.getNewStartReading());
+                    pstmt.setString(2, diag.getNewEndReading());
+                    pstmt.executeUpdate();
+                    contentPane.updateUI();
+                    fillBookList();
+                    ReadingsTable.setRowSelectionInterval(getRow(), getRow());//Focus on the reading that we edit
+                } catch (SQLException e) {
+                    System.out.println(e.getMessage());
                 }
             }
         });
@@ -216,9 +193,6 @@ public class ManageReadingDlg extends JDialog {
                 InsetrPstmt.setString(5, ReadingsTable.getValueAt(i, 1).toString());
                 InsetrPstmt.executeUpdate();
             }
-            conn.close();
-            ReadingPstmt.close();
-            InsetrPstmt.close();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -229,23 +203,22 @@ public class ManageReadingDlg extends JDialog {
         ManageAuthorLabel.setText("Ecrit par : "+getAuthor());
         m_tableModel.setRowCount(0);
         try(Connection conn = connect()){
-            m_statement = conn.createStatement();
+            Statement m_statement = conn.createStatement();
             ResultSet qry = m_statement.executeQuery("SELECT StartReading, EndReading FROM Reading WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+ "'");
 
             while (qry.next()){
                 String startReading = qry.getString("StartReading");
                 String endReading = qry.getString("EndReading");
 
-                long days = 0;
+                long days;
                 String StdDays="";
-                if((qry.getString("StartReading").equals("Inconnu") && qry.getString("EndReading").equals("Inconnu")) ||
-                        (qry.getString("StartReading").equals("Inconnu") && qry.getString("EndReading").equals("Pas fini"))){
-                } else if((!qry.getString("StartReading").equals("Inconnu") && qry.getString("EndReading").equals("Inconnu")) ||
-                        (!qry.getString("StartReading").equals("Inconnu") && qry.getString("EndReading").equals("Pas fini"))){
-                } else if((qry.getString("StartReading").equals("Inconnu") && !qry.getString("EndReading").equals("Inconnu")) ||
-                        ((qry.getString("StartReading").equals("Inconnu") && !qry.getString("EndReading").equals("Pas fini")))){
-                }
-                else{
+                boolean isOk = ((qry.getString("StartReading").equals("Inconnu") && qry.getString("EndReading").equals("Inconnu")) ||
+                        (qry.getString("StartReading").equals("Inconnu") && qry.getString("EndReading").equals("Pas fini")))
+                        ||((!qry.getString("StartReading").equals("Inconnu") && qry.getString("EndReading").equals("Inconnu")) ||
+                        (!qry.getString("StartReading").equals("Inconnu") && qry.getString("EndReading").equals("Pas fini")))
+                        ||((qry.getString("StartReading").equals("Inconnu") && !qry.getString("EndReading").equals("Inconnu")) ||
+                        (qry.getString("StartReading").equals("Inconnu") && !qry.getString("EndReading").equals("Pas fini")));
+                if(!isOk){
                     LocalDate start = LocalDate.parse(qry.getString("StartReading")) ;
                     LocalDate stop = LocalDate.parse(qry.getString("EndReading")) ;
                     days = ChronoUnit.DAYS.between(start , stop);
