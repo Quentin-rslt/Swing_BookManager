@@ -55,7 +55,6 @@ public class Common {
     }
     public static void updateImageToResource(String title, String author){
         if(jf.getSelectedFile()!=null && !getNameOfBook().equals(getBookNameBdd(title, author))){
-            System.out.println(getNameOfBook());
             Path src = Paths.get(jf.getSelectedFile().getAbsolutePath());
             Path folder = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(),"BookManager");
             Path dest = Paths.get(folder+"/"+getNameOfBook());
@@ -187,9 +186,13 @@ public class Common {
         BufferedImage outputImage;
         try {
             image = ImageIO.read(file);
-            if(image.getWidth()>700){
-                Image resultingImage = image.getScaledInstance(611, 1000, Image.SCALE_DEFAULT);
-                outputImage = new BufferedImage(611, 1000, BufferedImage.TYPE_INT_RGB);
+            float width = image.getWidth();
+            float height = image.getHeight();
+            if(width>700){
+                float ratio = (width/height);
+                int h = (int) (611/ratio); //rescale the height of the image with a maximum width of 611px
+                Image resultingImage = image.getScaledInstance(611, h, Image.SCALE_DEFAULT);
+                outputImage = new BufferedImage(611, h, BufferedImage.TYPE_INT_RGB);
                 outputImage.getGraphics().drawImage(resultingImage, 0, 0, null);
                 ImageIO.write(outputImage, getFormat(file.getName()), file);
             }else{
