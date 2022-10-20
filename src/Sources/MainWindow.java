@@ -15,6 +15,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 import static Sources.Common.*;
+import static Sources.Dialogs.OpenDialog.*;
 import static Sources.MenuBar.createMenuBar;
 
 public class MainWindow extends JDialog {
@@ -45,8 +46,8 @@ public class MainWindow extends JDialog {
         }
     };
     private Statement m_statement = null;
-    private String m_title;
-    private String m_author;
+    private static String m_title;
+    private static String m_author;
     private int m_rowSelected = 0;
     final JPopupMenu m_popup;
     private FiltersDlg m_diag;
@@ -76,6 +77,7 @@ public class MainWindow extends JDialog {
             setMTitle(BooksTable.getValueAt(0, 0).toString());
             setAuthor(BooksTable.getValueAt(0, 1).toString());
             loadComponents(getMTitle(), getAuthor());
+            setJMenuBar(createMenuBar(getMTitle(),getAuthor()));
             BooksTable.setRowSelectionInterval(getRowSelected(getMTitle(), getAuthor()), getRowSelected(getMTitle(), getAuthor()));
             ManageReadingsBtn.setEnabled(true);
             FiltersBookBtn.setEnabled(true);
@@ -99,11 +101,7 @@ public class MainWindow extends JDialog {
                     m_popup.show(BooksTable, evt.getX(), evt.getY());
                 }
                 if(evt.getClickCount() == 2 && evt.getButton() == MouseEvent.BUTTON1){
-                    ManageReadingDlg diag = new ManageReadingDlg(getMTitle(), getAuthor());
-                    diag.setTitle("Gérer les lectures");
-                    diag.setSize(500,570);
-                    diag.setLocationRelativeTo(null);
-                    diag.setVisible(true);
+                    ManageReadingDlg diag = openManageReadingDlg(getMTitle(), getAuthor());
                     contentPane.updateUI();
                     loadDB(false);
                     if(diag.isEmpty()){
@@ -119,12 +117,7 @@ public class MainWindow extends JDialog {
         AddBookBtn.addActionListener((ActionEvent evt) -> {
                 setNameOfBook("");
 
-                AddBookDlg diag = new AddBookDlg();
-                diag.setTitle("Ajouter un livre");
-                diag.setIconImage(getImageAdd());
-                diag.setSize(840,610);
-                diag.setLocationRelativeTo(null);
-                diag.setVisible(true);
+                AddBookDlg diag = openAddBookDlg();
                 if (diag.isValide()){
                     String BookQry = "INSERT INTO Book (Title,Author,Image,NumberOP,NotePerso,NoteBabelio,ReleaseYear,Summary) " +
                             "VALUES (?,?,?,?,?,?,?,?);";
@@ -200,11 +193,7 @@ public class MainWindow extends JDialog {
                 }
             });
         ManageReadingsBtn.addActionListener((ActionEvent e) ->{
-                ManageReadingDlg diag = new ManageReadingDlg(getMTitle(), getAuthor());
-                diag.setTitle("Gérer les lectures");
-                diag.setSize(500,570);
-                diag.setLocationRelativeTo(null);
-                diag.setVisible(true);
+                ManageReadingDlg diag = openManageReadingDlg(getMTitle(),getAuthor());
                 contentPane.updateUI();
                 loadDB(false);
                 if(diag.isEmpty()){
@@ -245,12 +234,7 @@ public class MainWindow extends JDialog {
                 }
             });
         edit.addActionListener((ActionEvent evt) -> {
-                EditBookDlg diag = new EditBookDlg(getMTitle(), getAuthor());
-                diag.setTitle("Modifier un livre");
-                diag.setIconImage(getImageEdit());
-                diag.setSize(840,610);
-                diag.setLocationRelativeTo(null);
-                diag.setVisible(true);
+                EditBookDlg diag = openEditBookDlg(getMTitle(),getAuthor());
                 if (diag.isValid()){
                     String BookQry = "UPDATE Book SET Title=?, Author=?, Image=?, NumberOP=?, NotePerso=?, NoteBabelio=?, ReleaseYear=?, Summary=?"+
                             "WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";//Edit in bdd the book that we want to change
@@ -306,16 +290,7 @@ public class MainWindow extends JDialog {
                 }
             });
         add.addActionListener((ActionEvent evt) -> {
-                AddReading diag = new AddReading(getMTitle(), getAuthor());
-                diag.setTitle("Ajouter une lecture");
-                diag.setSize(550,250);
-                File fileAdd = new File("Ressource/Icons/add.png");
-                String pathAdd = fileAdd.getAbsolutePath();
-                Image imgAdd = Toolkit.getDefaultToolkit().getImage(pathAdd);
-                imgAdd = imgAdd.getScaledInstance(16,16,Image.SCALE_AREA_AVERAGING);
-                diag.setIconImage(imgAdd);
-                diag.setLocationRelativeTo(null);
-                diag.setVisible(true);
+                AddReading diag = openAddReadingDlg(getMTitle(),getAuthor());
 
                 if (diag.getIsValid()){
                     String ReadingQry = "INSERT INTO Reading (ID,Title,Author,StartReading, EndReading) " +
@@ -358,11 +333,7 @@ public class MainWindow extends JDialog {
                 }
             });
         FiltersBookBtn.addActionListener((ActionEvent e)-> {
-                m_diag = new FiltersDlg();
-                m_diag.setTitle("Filter la liste");
-                m_diag.setSize(500,230);
-                m_diag.setLocationRelativeTo(null);
-                m_diag.setVisible(true);
+                m_diag = openFilterDlg();
                 contentPane.updateUI();
                 loadDB(m_diag.getIsValid());
                 setMTitle(BooksTable.getValueAt(0, 0).toString());
@@ -390,11 +361,7 @@ public class MainWindow extends JDialog {
             }
         });
         BookManageTagsBtn.addActionListener((ActionEvent e) -> {
-            ManageTagsDlg diag = new ManageTagsDlg();
-            diag.setTitle("Gérer les tags");
-            diag.setSize(500,570);
-            diag.setLocationRelativeTo(null);
-            diag.setVisible(true);
+            openManageTagsDlg();
             contentPane.updateUI();
             loadDB(false);
             BooksTable.setRowSelectionInterval(getRowSelected(getMTitle(),getAuthor()),getRowSelected(getMTitle(),getAuthor()));//focus on the book where you have managed your readings
@@ -402,10 +369,10 @@ public class MainWindow extends JDialog {
         });
     }
 
-    public String getMTitle(){
+    public static String getMTitle(){
         return m_title;
     }
-    public String getAuthor(){
+    public static String getAuthor(){
         return m_author;
     }
     public int getRowSelected() {
@@ -623,7 +590,7 @@ public class MainWindow extends JDialog {
             ResultSet ImageQry = m_statement.executeQuery("SELECT Image FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
 
             addImageToPanel(ImageQry.getString(1),BookPhotoPanel);
-
+            setJMenuBar(createMenuBar(getMTitle(), getAuthor()));
             conn.close();
             m_statement.close();
             statement.close();
@@ -676,7 +643,7 @@ public class MainWindow extends JDialog {
 
         MainWindow dialog = new MainWindow();
         dialog.setTitle("Book manager");
-        dialog.setJMenuBar(createMenuBar());
+        dialog.setJMenuBar(createMenuBar(getMTitle(), getAuthor()));
         dialog.setSize(1350,760);
         dialog.setLocationRelativeTo(null);
         dialog.setVisible(true);
