@@ -16,6 +16,7 @@ import java.util.Objects;
 
 import static Sources.Common.*;
 import static Sources.Common.getImageEdit;
+import static Sources.Dialogs.OpenDialog.openEditTagDlg;
 
 public class AddBookDlg extends JDialog {
     private JPanel contentPane;
@@ -172,45 +173,46 @@ public class AddBookDlg extends JDialog {
             }
         });
         cut.addActionListener((ActionEvent evt)-> {
-                Component[] componentList = BookTagsPanel.getComponents();
-                for(int i = 0; i<getTags().getSizeTags();i++){
-                    if(componentList[i]==m_popup.getInvoker()){
-                        BookTagsPanel.remove(componentList[i]);
-                        getTags().removeTag(i);
-                    }
+            Component[] componentList = BookTagsPanel.getComponents();
+            int i = 0;
+            while (i<getTags().getSizeTags()) {
+                if(componentList[i]==m_popup.getInvoker()){
+                    BookTagsPanel.remove(componentList[i]);
+                    getTags().removeTag(i);
+                    break;
                 }
-                BookTagsPanel.updateUI();
-            });
+                i++;
+            }
+            BookTagsPanel.updateUI();
+        });
         edit.addActionListener((ActionEvent evt)-> {
-                Component[] componentList = BookTagsPanel.getComponents();
-                //j is the index of tags where we wan't to edit
-                int j = 0;
-                for(int i = 0; i<getTags().getSizeTags();i++){
-                    if(componentList[i]==m_popup.getInvoker()){
-                        j = i;
+            Component[] componentList = BookTagsPanel.getComponents();
+
+            int i = 0;
+            while (i<getTags().getSizeTags()) {
+                if(componentList[i]==m_popup.getInvoker()){
+                    EditTagDlg diag = openEditTagDlg(getTags().getTag(i));
+
+                    if(diag.isValide()){
+                        setTagIsUpdate(diag.isUpdate());
+                        Tag tag = new Tag(diag.getNewTextTag());
+                        tag.setColor(diag.getNewColorTag().getRGB());
+
+                        getTags().addTag(tag);
+                        BookTagsPanel.remove(componentList[i]);
+                        getTags().getTags().remove(i);
+
+                        for(int j=0; j<getTags().getSizeTags();j++){
+                            BookTagsPanel.add(getTags().getTag(j));
+                        }
+                        BookTagsPanel.updateUI();
+                        break;
                     }
                 }
+                i++;
+            }
 
-                EditTagDlg diag = new EditTagDlg(getTags().getTag(j));
-                diag.setTitle("Modifier le tag");
-                diag.setLocationRelativeTo(null);
-                diag.setVisible(true);
-
-                if(diag.isValide()){
-                    setTagIsUpdate(diag.isUpdate());
-                    Tag tag = new Tag(diag.getNewTextTag());
-                    tag.setColor(diag.getNewColorTag().getRGB());
-
-                    getTags().addTag(tag);
-                    BookTagsPanel.remove(componentList[j]);
-                    getTags().getTags().remove(j);
-
-                    for(int i=0; i<getTags().getSizeTags();i++){
-                        BookTagsPanel.add(getTags().getTag(i));
-                    }
-                    BookTagsPanel.updateUI();
-                }
-            });
+        });
         BookSummaryTextPane.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {

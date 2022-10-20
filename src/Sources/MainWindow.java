@@ -8,7 +8,6 @@ import javax.swing.border.AbstractBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -588,8 +587,8 @@ public class MainWindow extends JDialog {
 
             //Image
             ResultSet ImageQry = m_statement.executeQuery("SELECT Image FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
-
             addImageToPanel(ImageQry.getString(1),BookPhotoPanel);
+
             setJMenuBar(createMenuBar(getMTitle(), getAuthor()));
             conn.close();
             m_statement.close();
@@ -643,7 +642,6 @@ public class MainWindow extends JDialog {
 
         MainWindow dialog = new MainWindow();
         dialog.setTitle("Book manager");
-        dialog.setJMenuBar(createMenuBar(getMTitle(), getAuthor()));
         dialog.setSize(1350,760);
         dialog.setLocationRelativeTo(null);
         dialog.setVisible(true);

@@ -8,7 +8,16 @@
     <properties/>
     <border type="none"/>
     <children>
-      <grid id="55f04" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+      <component id="360ab" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Liste des tags"/>
+        </properties>
+      </component>
+      <grid id="5b1" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="0" vgap="0">
+        <margin top="0" left="0" bottom="0" right="0"/>
         <constraints>
           <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
         </constraints>
@@ -16,21 +25,23 @@
         <border type="none"/>
         <children>
           <scrollpane id="d4bef">
-            <constraints/>
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+            </constraints>
             <properties>
               <enabled value="false"/>
               <focusable value="false"/>
             </properties>
             <border type="none"/>
             <children>
-              <component id="2ef53" class="javax.swing.JTable" binding="TagsTable">
+              <grid id="e7d14" binding="TagsPanel" layout-manager="FlowLayout" hgap="5" vgap="10" flow-align="1">
                 <constraints/>
                 <properties>
-                  <editingRow value="0"/>
-                  <focusable value="false"/>
-                  <requestFocusEnabled value="false"/>
+                  <maximumSize width="10" height="10"/>
                 </properties>
-              </component>
+                <border type="none"/>
+                <children/>
+              </grid>
             </children>
           </scrollpane>
         </children>
@@ -54,14 +65,6 @@
           </component>
         </children>
       </grid>
-      <component id="360ab" class="javax.swing.JLabel">
-        <constraints>
-          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text value="Liste des tags"/>
-        </properties>
-      </component>
     </children>
   </grid>
 </form>

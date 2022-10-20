@@ -28,7 +28,6 @@ public class EditTagDlg extends JDialog {
         setModal(true);
         this.m_tag = tag;
         initComponents();
-        setSize(780,480);
 
         TagCancelBtn.addActionListener((ActionEvent e)-> {//Quit dlg without taking into account the input
             setIsValid(false);

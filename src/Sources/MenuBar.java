@@ -1,18 +1,19 @@
 package Sources;
 
-import jdk.jfr.Event;
-
 import javax.swing.*;
-import java.awt.event.KeyEvent;
-
 import static Sources.Dialogs.OpenDialog.*;
 
 public class MenuBar {
     public static JMenuBar createMenuBar(String title, String author) {
+        JMenu helpMenu = new JMenu("Aide");
+        JMenuItem aboutMenuItem = new JMenuItem("A propos");
+        helpMenu.add(aboutMenuItem);
+
         JMenuBar menuBar = new JMenuBar();
         menuBar.add(createFileMenu());
         menuBar.add(createEditMenu(title, author));
         menuBar.add(createViewMenu());
+        menuBar.add(helpMenu);
 
         return menuBar;
     }
@@ -59,6 +60,7 @@ public class MenuBar {
         addReadingMenuItem.addActionListener((e->openAddReadingDlg(title, author)));
         addMenu.add(addBookMenuItem);
         addMenu.add(addReadingMenuItem);
+
         //Manage menu
         JMenu manageMenu = new JMenu("Gérer ");
         JMenuItem manageTagMenuItem = new JMenuItem("Les tags");
@@ -67,13 +69,17 @@ public class MenuBar {
         manageReadingMenuItem.addActionListener((e->openManageReadingDlg(title, author)));
         manageMenu.add(manageTagMenuItem);
         manageMenu.add(manageReadingMenuItem);
+
         //Edit book
         JMenuItem editBookMenuItem = new JMenuItem("Modifier le livre");
         editBookMenuItem.addActionListener((e->openEditBookDlg(title, author)));
+
         //Delete book
         JMenuItem supprBookMenuItem = new JMenuItem("Supprimer le livre");
+
         //Filters book
         JMenuItem filterMenuItem = new JMenuItem("Filtrer");
+
         //Edit Menu
         JMenu editMenu = new JMenu("Editer");
         editMenu.add(addMenu);
@@ -87,11 +93,9 @@ public class MenuBar {
         return editMenu;
     }
     public static JMenu createViewMenu(){
-        JMenu viewMenu = new JMenu("Voir");
+        JMenu viewMenu = new JMenu("Affichage");
         JMenuItem logMenuItem = new JMenuItem("Log");
-        JMenuItem aboutMenuItem = new JMenuItem("A propos");
         viewMenu.add(logMenuItem);
-        viewMenu.add(aboutMenuItem);
 
         return viewMenu;
     }

@@ -40,7 +40,7 @@
         </children>
       </grid>
       <grid id="7a6ee" layout-manager="GridLayoutManager" row-count="1" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-        <margin top="0" left="20" bottom="20" right="20"/>
+        <margin top="0" left="20" bottom="10" right="20"/>
         <constraints border-constraint="South"/>
         <properties/>
         <border type="none"/>

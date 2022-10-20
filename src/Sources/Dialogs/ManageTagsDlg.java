@@ -5,23 +5,19 @@ import Sources.Tags;
 
 import javax.swing.*;
 import javax.swing.border.AbstractBorder;
-import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.*;
 
 import static Sources.Common.*;
+import static Sources.Dialogs.OpenDialog.openEditTagDlg;
 
 public class ManageTagsDlg extends JDialog {
     private JPanel contentPane;
     private JButton TagCancelBtn;
-    private JTable TagsTable;
-    final DefaultTableModel m_tableModel = new DefaultTableModel(){//Create a Jtable with the tablemodel not editable
-        public boolean isCellEditable(int rowIndex, int colIndex) {
-            return false; //Disallow the editing of any cell
-        }
-    };
+    private JPanel TagsPanel;
     private Tags m_tags;
     final JPopupMenu m_popup;
     private int m_row;
@@ -31,7 +27,9 @@ public class ManageTagsDlg extends JDialog {
         setModal(true);
         this.m_tags = new Tags();
         fillTagsList();
-        TagsTable.setRowSelectionInterval(0, 0);
+        AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),3,30,0,0,0);
+        TagsPanel.setBackground(new Color(51,45,45));
+        TagsPanel.setBorder(roundBrd);
 
         m_popup = new JPopupMenu();//Create a popup menu to delete a reading an edit this reading
         JMenuItem cut = new JMenuItem("Supprimer", new ImageIcon(getImageCut()));
@@ -44,49 +42,63 @@ public class ManageTagsDlg extends JDialog {
             dispose();
         });
 
-        TagsTable.addMouseListener(new MouseAdapter() {
+        TagsPanel.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseReleased(MouseEvent evt) {
-                setRow(TagsTable.rowAtPoint(evt.getPoint()));
-                if(evt.getButton() == MouseEvent.BUTTON3) {
-                    TagsTable.setRowSelectionInterval(getRow(), getRow());//we focus the row when we right on the item
-                    m_popup.show(TagsTable, evt.getX(), evt.getY());//show a popup to edit the reading
+            public void mouseClicked(MouseEvent e) {
+            super.mouseClicked(e);
+            if(!e.getComponent().getComponentAt(e.getX(),e.getY()).equals(TagsPanel)){
+                if(e.getButton() == MouseEvent.BUTTON3) {
+                    m_popup.show(TagsPanel, e.getX(), e.getY());//show a popup to edit the reading
+                    m_popup.setInvoker(e.getComponent().getComponentAt(e.getX(),e.getY()));
                 }
+            }
             }
         });
 
         cut.addActionListener((ActionEvent evt)-> {
-            String Tags = "DELETE FROM Tags WHERE Tag='"+getTags().getTag(getRow()).getTextTag()+"'";
-            String TaggingQry = "DELETE FROM Tagging WHERE IdTag='"+getIdTag(getTags().getTag(getRow()).getTextTag(), getTags().getTag(getRow()).getColor())+"'";
-            try (Connection conn = connect(); PreparedStatement TaggingPstmt = conn.prepareStatement(Tags); PreparedStatement TagsPstmt = conn.prepareStatement(TaggingQry)) {
-                TagsPstmt.executeUpdate();
-                TaggingPstmt.executeUpdate();
-                fillTagsList();
-                contentPane.updateUI();
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
+            Component[] componentList = TagsPanel.getComponents();
+            int i = 0;
+            while (i<getTags().getSizeTags()) {
+                if(componentList[i]==m_popup.getInvoker()){
+                    String Tags = "DELETE FROM Tags WHERE Tag='"+getTags().getTag(i).getTextTag()+"'";
+                    String TaggingQry = "DELETE FROM Tagging WHERE IdTag='"+getIdTag(getTags().getTag(i).getTextTag(), getTags().getTag(i).getColor())+"'";
+                    try (Connection conn = connect(); PreparedStatement TaggingPstmt = conn.prepareStatement(Tags); PreparedStatement TagsPstmt = conn.prepareStatement(TaggingQry)) {
+                        TagsPstmt.executeUpdate();
+                        TaggingPstmt.executeUpdate();
+                        fillTagsList();
+                        contentPane.updateUI();
+                        break;
+                    } catch (SQLException e) {
+                        System.out.println(e.getMessage());
+                    }
+                }
+                i++;
             }
         });
 
         edit.addActionListener((ActionEvent evt) ->{
-            EditTagDlg diag = new EditTagDlg(getTags().getTag(TagsTable.getSelectedRow()));
-            diag.setTitle("Modifier le tag");
-            diag.setLocationRelativeTo(null);
-            diag.setVisible(true);
+            Component[] componentList = TagsPanel.getComponents();
+            int i = 0;
+            while (i<getTags().getSizeTags()) {
+                if(componentList[i]==m_popup.getInvoker()){
+                    EditTagDlg diag = openEditTagDlg(getTags().getTag(i));
+                    if(diag.isValide()){
+                        String TagsUpdateQry = "UPDATE Tags SET Tag=?,Color=?"+
+                                "WHERE Tag='"+getTags().getTag(i).getTextTag()+"'";
 
-            if(diag.isValide()){
-                String TagsUpdateQry = "UPDATE Tags SET Tag=?,Color=?"+
-                        "WHERE Tag='"+getTags().getTag(TagsTable.getSelectedRow()).getTextTag()+"'";
-
-                try (Connection conn = connect(); PreparedStatement TagsUpdatePstmt = conn.prepareStatement(TagsUpdateQry)) {
-                    TagsUpdatePstmt.setString(1, diag.getNewTextTag());
-                    TagsUpdatePstmt.setInt(2, diag.getNewColorTag().getRGB());
-                    TagsUpdatePstmt.executeUpdate();
-
-                    fillTagsList();
-                }catch (SQLException e) {
-                    System.out.println(e.getMessage());
+                        try (Connection conn = connect(); PreparedStatement TagsUpdatePstmt = conn.prepareStatement(TagsUpdateQry)) {
+                            TagsUpdatePstmt.setString(1, diag.getNewTextTag());
+                            TagsUpdatePstmt.setInt(2, diag.getNewColorTag().getRGB());
+                            TagsUpdatePstmt.executeUpdate();
+                            fillTagsList();
+                            contentPane.updateUI();
+                            break;
+                        }catch (SQLException e) {
+                            System.out.println(e.getMessage());
+                        }
+                    }
                 }
+                i++;
             }
         });
     }
@@ -106,8 +118,9 @@ public class ManageTagsDlg extends JDialog {
         this.m_row = m_row;
     }
     public void fillTagsList(){
-        m_tableModel.setRowCount(0);
+        TagsPanel.removeAll();
         Tags tags = new Tags();
+        TagsPanel.setPreferredSize(new Dimension(50, 170));
         try(Connection conn = connect()){
             Statement statement = conn.createStatement();
             ResultSet qry = statement.executeQuery("SELECT Tag, Color FROM Tags");
@@ -118,23 +131,12 @@ public class ManageTagsDlg extends JDialog {
 
                 tags.createTag(textTag);
                 tags.getTag(tags.getSizeTags()-1).setColor(colorTag);
+                tags.getTag(tags.getSizeTags()-1).setBorderColor(new Color(51,45,45));
 
-                String[] header = {"Tags"};
-                Object[] data = {tags.getTag(qry.getRow()-1).getTextTag()};
-
-                m_tableModel.setColumnIdentifiers(header);//Create the header
-                m_tableModel.addRow(data);//add to tablemodel the data
+                TagsPanel.add(tags.getTag(tags.getSizeTags()-1));
             }
             setTags(tags);
 
-            TagsTable.setModel(m_tableModel);
-            AbstractBorder roundBrdMax = new RoundBorderCp(contentPane.getBackground(),1,30, 0,0,0);
-            AbstractBorder roundBrdMin = new RoundBorderCp(contentPane.getBackground(),1,30, 400-(TagsTable.getRowCount()*TagsTable.getRowHeight()),0,0);
-            if(TagsTable.getRowCount()>11)
-                TagsTable.setBorder(roundBrdMax);
-            else
-                TagsTable.setBorder(roundBrdMin);
-            TagsTable.setRowSelectionInterval(0, 0);
             qry.close();
             conn.close();
             statement.close();

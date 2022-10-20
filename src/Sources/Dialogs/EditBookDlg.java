@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.Objects;
 
 import static Sources.Common.*;
+import static Sources.Dialogs.OpenDialog.openEditTagDlg;
 
 public class EditBookDlg extends JDialog {
     private JPanel contentPane;
@@ -120,35 +121,31 @@ public class EditBookDlg extends JDialog {
                 BookTagsPanel.updateUI();
             });
         edit.addActionListener((ActionEvent evt)-> {
-                Component[] componentList = BookTagsPanel.getComponents();
-                //j is the index of tags where we want to edit
-                int j = 0;
-                for(int i = 0; i<getTags().getSizeTags();i++){
-                    if(componentList[i]==m_popup.getInvoker()){
-                        j = i;
-                    }
+            Component[] componentList = BookTagsPanel.getComponents();
+            //j is the index of tags where we want to edit
+            int j = 0;
+            for(int i = 0; i<getTags().getSizeTags();i++){
+                if(componentList[i]==m_popup.getInvoker()){
+                    j = i;
                 }
+            }
+            EditTagDlg diag = openEditTagDlg(getTags().getTag(j));
 
-                EditTagDlg diag = new EditTagDlg(getTags().getTag(j));
-                diag.setTitle("Modifier le tag");
-                diag.setLocationRelativeTo(null);
-                diag.setVisible(true);
+            if(diag.isValide()){
+                setTagIsUpdate(diag.isUpdate());
+                Tag tag = new Tag(diag.getNewTextTag());
+                tag.setColor(diag.getNewColorTag().getRGB());
 
-                if(diag.isValide()){
-                    setTagIsUpdate(diag.isUpdate());
-                    Tag tag = new Tag(diag.getNewTextTag());
-                    tag.setColor(diag.getNewColorTag().getRGB());
+                getTags().addTag(tag);
+                BookTagsPanel.remove(componentList[j]);
+                getTags().getTags().remove(j);
 
-                    getTags().addTag(tag);
-                    BookTagsPanel.remove(componentList[j]);
-                    getTags().getTags().remove(j);
-
-                    for(int i=0; i<getTags().getSizeTags();i++){
-                        BookTagsPanel.add(getTags().getTag(i));
-                    }
-                    BookTagsPanel.updateUI();
+                for(int i=0; i<getTags().getSizeTags();i++){
+                    BookTagsPanel.add(getTags().getTag(i));
                 }
-            });
+                BookTagsPanel.updateUI();
+            }
+        });
     }
 
     public String getOldTitle() {

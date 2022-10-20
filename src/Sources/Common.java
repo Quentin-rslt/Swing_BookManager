@@ -152,7 +152,6 @@ public class Common {
     public static void setNameOfBook(String name){
         m_name = name;
     }
-
     public static void selectNameOfBook(JPanel panel){
         FileFilter imageFilter = new FileNameExtensionFilter("Image files", ImageIO.getReaderFileSuffixes());
         jf.setFileFilter(imageFilter);
@@ -188,12 +187,12 @@ public class Common {
             image = ImageIO.read(file);
             float width = image.getWidth();
             float height = image.getHeight();
-            int sizeW = 1200;
-            if(width>sizeW){
+            int maxWidht = 1200;
+            if(width>maxWidht){
                 float ratio = (width/height);
-                int h = (int) (sizeW/ratio); //rescale the height of the image with a maximum width of 611px
-                Image resultingImage = image.getScaledInstance(sizeW, h, Image.SCALE_DEFAULT);
-                outputImage = new BufferedImage(sizeW, h, BufferedImage.TYPE_INT_RGB);
+                int maxHeight = (int) (maxWidht/ratio); //rescale the height of the image with a maximum width of 611px
+                Image resultingImage = image.getScaledInstance(maxWidht, maxHeight, Image.SCALE_DEFAULT);
+                outputImage = new BufferedImage(maxWidht, maxHeight, BufferedImage.TYPE_INT_RGB);
                 outputImage.getGraphics().drawImage(resultingImage, 0, 0, null);
                 ImageIO.write(outputImage, getFormat(file.getName()), file);
             }else{

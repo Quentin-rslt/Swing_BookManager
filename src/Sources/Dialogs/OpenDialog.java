@@ -1,5 +1,7 @@
 package Sources.Dialogs;
 
+import Sources.Tag;
+
 import static Sources.Common.getImageAdd;
 import static Sources.Common.getImageEdit;
 
@@ -55,8 +57,17 @@ public class OpenDialog {
     public static void openManageTagsDlg(){
         ManageTagsDlg diag = new ManageTagsDlg();
         diag.setTitle("Gérer les tags");
-        diag.setSize(500,570);
+        diag.setSize(500,300);
         diag.setLocationRelativeTo(null);
         diag.setVisible(true);
+    }
+    public static EditTagDlg openEditTagDlg(Tag tag){
+        EditTagDlg diag = new EditTagDlg(tag);
+        diag.setSize(780,490);
+        diag.setTitle("Modifier le tag");
+        diag.setLocationRelativeTo(null);
+        diag.setVisible(true);
+
+        return diag;
     }
 }
