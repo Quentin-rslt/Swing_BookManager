@@ -16,6 +16,9 @@ public class FiltersDlg extends JDialog {
     private JSpinner FiltersLastReleaseYearSpin;
     private JSpinner FiltersFirstNoteSpin;
     private JSpinner FiltersLastNoteSpin;
+    private JRadioButton ordreCroissantRadioButton;
+    private JRadioButton ordreDécroissantRadioButton;
+    private JComboBox comboBox1;
 
     private boolean m_isValid;
 
