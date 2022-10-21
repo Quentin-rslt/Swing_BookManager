@@ -499,7 +499,7 @@ public class MainWindow extends JDialog {
                         "WHERE Tags.Tag='"+getTextag()+"'";
                 rs = m_statement.executeQuery(qry);
             } else{
-                rs = m_statement.executeQuery("SELECT * FROM Book;");//Execute a Query to retrieve all the values from the database by grouping the duplicates
+                rs = m_statement.executeQuery("SELECT * FROM Book ORDER BY Title ASC;");//Execute a Query to retrieve all the values from the database by grouping the duplicates
             }
             // (with their name and author)
             while (rs.next()) {//Fill in the table of the list of Book
@@ -542,7 +542,7 @@ public class MainWindow extends JDialog {
 
             //Tags Label
             ResultSet tagsQry = m_statement.executeQuery("SELECT Tag,Color FROM Tags JOIN Tagging on Tags.ID=Tagging.IdTag " +
-                    "WHERE Tagging.IdBook='"+getIdBook(title, author)+"'");
+                    "WHERE Tagging.IdBook='"+getIdBook(title, author)+"' ORDER BY Tag ASC");
             BookTagsPanel.removeAll();
             while (tagsQry.next()){
                 tags.createTag(tagsQry.getString(1));
@@ -633,6 +633,7 @@ public class MainWindow extends JDialog {
             addImageToPanel(ImageQry.getString(1),BookPhotoPanel);
 
             setJMenuBar(createMenuBar(getMTitle(), getAuthor()));
+
             conn.close();
             m_statement.close();
             statement.close();

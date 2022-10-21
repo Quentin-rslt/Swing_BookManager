@@ -120,10 +120,10 @@ public class ManageTagsDlg extends JDialog {
     public void fillTagsList(){
         TagsPanel.removeAll();
         Tags tags = new Tags();
-        TagsPanel.setPreferredSize(new Dimension(50, 170));
+        TagsPanel.setPreferredSize(new Dimension(300, 170));
         try(Connection conn = connect()){
             Statement statement = conn.createStatement();
-            ResultSet qry = statement.executeQuery("SELECT Tag, Color FROM Tags");
+            ResultSet qry = statement.executeQuery("SELECT Tag, Color FROM Tags ORDER BY Tag ASC");
 
             while (qry.next()){
                 String textTag = qry.getString(1);

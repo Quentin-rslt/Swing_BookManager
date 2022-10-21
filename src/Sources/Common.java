@@ -18,6 +18,10 @@ import java.sql.*;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static Sources.Dialogs.OpenDialog.openEditTagDlg;
+import static Sources.MainWindow.getAuthor;
+import static Sources.MainWindow.getMTitle;
+
 public class Common {
     static JFileChooser jf= new JFileChooser();
     static String m_name="";
@@ -109,10 +113,7 @@ public class Common {
             }
             //if the tag don't exist open editTagTagWindow to configure the color or the text
             if(!isInCB){
-                EditTagDlg diag = new EditTagDlg(new Tag(Objects.requireNonNull(cb.getSelectedItem()).toString()));
-                diag.setTitle("Créer un tag");
-                diag.setLocationRelativeTo(null);
-                diag.setVisible(true);
+                EditTagDlg diag = openEditTagDlg(new Tag(Objects.requireNonNull(cb.getSelectedItem()).toString()));
 
                 if(diag.isValide()){
                     Tag tag = new Tag(diag.getNewTextTag());
@@ -363,5 +364,29 @@ public class Common {
     }
     public static String getNameOfBook(){
         return m_name;
+    }
+    public static void deleteBook(String title, String author){
+        JFrame jFrame = new JFrame();
+        int n = JOptionPane.showConfirmDialog(//Open a optionPane to verify if the user really want to delete the book return 0 il they want and 1 if they refuse
+                jFrame,
+                "Etes-vous sûr de vouloir supprimer définitivement le livre ?\n"+"Cette acion sera irréversible !",
+                "An Inane Question",
+                JOptionPane.YES_NO_OPTION);
+        if(n == 0){
+            String boolQry = "DELETE FROM Book WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";//sql to delete the book in table book when we right click
+            String ReadingQry = "DELETE FROM Reading WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";
+            String TaggingQry = "DELETE FROM Tagging WHERE IdBook='"+getIdBook(getMTitle(),getAuthor())+"'";
+
+            deleteImageMainResource(getMTitle(), getAuthor());
+            try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(boolQry); PreparedStatement pstmt2 = conn.prepareStatement(ReadingQry);
+                 PreparedStatement taggingPstmt = conn.prepareStatement(TaggingQry)) {
+                // execute the delete statement
+                pstmt.executeUpdate();
+                pstmt2.executeUpdate();
+                taggingPstmt.executeUpdate();
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+        }
     }
 }
