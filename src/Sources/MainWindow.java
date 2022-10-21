@@ -50,14 +50,15 @@ public class MainWindow extends JDialog {
     private int m_rowSelected = 0;
     final JPopupMenu m_popup;
     private FiltersDlg m_diag;
-
+    private Tags m_tags = new Tags();
+    private String m_textTag;
 
 
     public MainWindow() {
         setContentPane(contentPane);
         setModal(true);
         connectionDB();
-        loadDB(false);
+        loadDB(false,false);
 
         AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),3,30,0,0,20);
         BookSummary.setBorder(roundBrd);
@@ -102,7 +103,7 @@ public class MainWindow extends JDialog {
                 if(evt.getClickCount() == 2 && evt.getButton() == MouseEvent.BUTTON1){
                     ManageReadingDlg diag = openManageReadingDlg(getMTitle(), getAuthor());
                     contentPane.updateUI();
-                    loadDB(false);
+                    loadDB(false,false);
                     if(diag.isEmpty()){
                         initComponents();
                     }
@@ -114,180 +115,180 @@ public class MainWindow extends JDialog {
             }
         });
         AddBookBtn.addActionListener((ActionEvent evt) -> {
-                setNameOfBook("");
+            setNameOfBook("");
 
-                AddBookDlg diag = openAddBookDlg();
-                if (diag.isValide()){
-                    String BookQry = "INSERT INTO Book (Title,Author,Image,NumberOP,NotePerso,NoteBabelio,ReleaseYear,Summary) " +
-                            "VALUES (?,?,?,?,?,?,?,?);";
-                    String ReadingQry = "INSERT INTO Reading (ID,Title,Author,StartReading, EndReading) " +
-                            "VALUES (?,?,?,?,?);";
-                    String TaggingQry = "INSERT INTO Tagging (IdBook,IdTag) " +
-                            "VALUES (?,?);";
-                    contentPane.updateUI();
-                    try (Connection conn = connect(); PreparedStatement BookPstmt = conn.prepareStatement(BookQry); PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry);
-                         PreparedStatement TaggingPstmt = conn.prepareStatement(TaggingQry)) {
-                        m_statement = conn.createStatement();
+            AddBookDlg diag = openAddBookDlg();
+            if (diag.isValide()){
+                String BookQry = "INSERT INTO Book (Title,Author,Image,NumberOP,NotePerso,NoteBabelio,ReleaseYear,Summary) " +
+                        "VALUES (?,?,?,?,?,?,?,?);";
+                String ReadingQry = "INSERT INTO Reading (ID,Title,Author,StartReading, EndReading) " +
+                        "VALUES (?,?,?,?,?);";
+                String TaggingQry = "INSERT INTO Tagging (IdBook,IdTag) " +
+                        "VALUES (?,?);";
+                contentPane.updateUI();
+                try (Connection conn = connect(); PreparedStatement BookPstmt = conn.prepareStatement(BookQry); PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry);
+                     PreparedStatement TaggingPstmt = conn.prepareStatement(TaggingQry)) {
+                    m_statement = conn.createStatement();
 
+                    ReadingPstmt.setInt(1, getIdReading(diag.getNewBookTitle(), diag.getNewBookAuthor()));
+                    ReadingPstmt.setString(2, diag.getNewBookTitle());
+                    ReadingPstmt.setString(3, diag.getNewBookAuthor());
+
+                    BookPstmt.setString(1, diag.getNewBookTitle());
+                    BookPstmt.setString(2, diag.getNewBookAuthor());
+                    BookPstmt.setString(3, getNameOfBook());
+                    BookPstmt.setString(4, diag.getNewBookNumberOP());
+                    BookPstmt.setString(5, diag.getNewBookPersonalNote());
+                    BookPstmt.setString(6, diag.getNewBookBBLNote());
+                    BookPstmt.setString(7, diag.getNewBookReleaseYear());
+                    BookPstmt.setString(8, diag.getNewBookSummary());
+
+                    if(!diag.isDateUnknown() && !diag.isNotDOne()){
+                        ReadingPstmt.setString(4, diag.getNewBookStartReading());
+                        ReadingPstmt.setString(5, diag.getNewBookEndReading());
+
+                    } else if (!diag.isDateUnknown() && diag.isNotDOne()) {
+                        ReadingPstmt.setString(4, diag.getNewBookStartReading());
+                        ReadingPstmt.setString(5, "Pas fini");
+                    } else {
                         ReadingPstmt.setInt(1, getIdReading(diag.getNewBookTitle(), diag.getNewBookAuthor()));
-                        ReadingPstmt.setString(2, diag.getNewBookTitle());
-                        ReadingPstmt.setString(3, diag.getNewBookAuthor());
+                        ReadingPstmt.setString(4, "Inconnu");
+                        ReadingPstmt.setString(5, "Inconnu");
+                    }
+                    BookPstmt.executeUpdate();//Insert the new Book in table Book
+                    ReadingPstmt.executeUpdate();//Insert the new reading
 
-                        BookPstmt.setString(1, diag.getNewBookTitle());
-                        BookPstmt.setString(2, diag.getNewBookAuthor());
-                        BookPstmt.setString(3, getNameOfBook());
-                        BookPstmt.setString(4, diag.getNewBookNumberOP());
-                        BookPstmt.setString(5, diag.getNewBookPersonalNote());
-                        BookPstmt.setString(6, diag.getNewBookBBLNote());
-                        BookPstmt.setString(7, diag.getNewBookReleaseYear());
-                        BookPstmt.setString(8, diag.getNewBookSummary());
-
-                        if(!diag.isDateUnknown() && !diag.isNotDOne()){
-                            ReadingPstmt.setString(4, diag.getNewBookStartReading());
-                            ReadingPstmt.setString(5, diag.getNewBookEndReading());
-
-                        } else if (!diag.isDateUnknown() && diag.isNotDOne()) {
-                            ReadingPstmt.setString(4, diag.getNewBookStartReading());
-                            ReadingPstmt.setString(5, "Pas fini");
-                        } else {
-                            ReadingPstmt.setInt(1, getIdReading(diag.getNewBookTitle(), diag.getNewBookAuthor()));
-                            ReadingPstmt.setString(4, "Inconnu");
-                            ReadingPstmt.setString(5, "Inconnu");
+                    for(int i=0; i<diag.getTags().getSizeTags(); i++){
+                        if(diag.getTagIsUpdate()){
+                            String TagsUpdateQry = "UPDATE Tags SET Color=?"+
+                                    "WHERE Tag='"+diag.getTags().getTag(i).getTextTag()+"'";
+                            PreparedStatement TagsUpdatePstmt = conn.prepareStatement(TagsUpdateQry);
+                            TagsUpdatePstmt.setInt(1, diag.getTags().getTag(i).getColor());
+                            TagsUpdatePstmt.executeUpdate();
                         }
-                        BookPstmt.executeUpdate();//Insert the new Book in table Book
-                        ReadingPstmt.executeUpdate();//Insert the new reading
 
-                        for(int i=0; i<diag.getTags().getSizeTags(); i++){
-                            if(diag.getTagIsUpdate()){
-                                String TagsUpdateQry = "UPDATE Tags SET Color=?"+
-                                        "WHERE Tag='"+diag.getTags().getTag(i).getTextTag()+"'";
-                                PreparedStatement TagsUpdatePstmt = conn.prepareStatement(TagsUpdateQry);
-                                TagsUpdatePstmt.setInt(1, diag.getTags().getTag(i).getColor());
-                                TagsUpdatePstmt.executeUpdate();
-                            }
+                        String TagsInsertQry = "INSERT INTO Tags (Tag,Color)" +
+                                " SELECT '"+ diag.getTags().getTag(i).getTextTag() +"', '"+diag.getTags().getTag(i).getColor()+"'" +
+                                " WHERE NOT EXISTS(SELECT * FROM Tags WHERE Tag='" + diag.getTags().getTag(i).getTextTag() + "' AND Color='" + diag.getTags().getTag(i).getColor() + "')";
+                        PreparedStatement TagsInsertPstmt = conn.prepareStatement(TagsInsertQry);
+                        TagsInsertPstmt.executeUpdate();
 
-                            String TagsInsertQry = "INSERT INTO Tags (Tag,Color)" +
+                        TaggingPstmt.setInt(1, getIdBook(diag.getNewBookTitle(), diag.getNewBookAuthor()));
+                        TaggingPstmt.setInt(2, getIdTag(diag.getTags().getTag(i).getTextTag(), diag.getTags().getTag(i).getColor()));
+                        TaggingPstmt.executeUpdate();
+                    }
+
+                    setMTitle(diag.getNewBookTitle());
+                    setAuthor(diag.getNewBookAuthor());
+                    loadComponents(diag.getNewBookTitle(), diag.getNewBookAuthor());
+                    loadDB(false,false);
+                    //Focus in the jtable on the book created
+                    BooksTable.setRowSelectionInterval(getRowSelected(diag.getNewBookTitle(), diag.getNewBookAuthor()), getRowSelected(diag.getNewBookTitle(), diag.getNewBookAuthor()));
+
+                    conn.close();
+                    m_statement.close();
+                } catch (SQLException e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+        });
+        ManageReadingsBtn.addActionListener((ActionEvent e) ->{
+            ManageReadingDlg diag = openManageReadingDlg(getMTitle(),getAuthor());
+            contentPane.updateUI();
+            loadDB(false,false);
+            if(diag.isEmpty()){
+                initComponents();
+            }
+            else {
+                BooksTable.setRowSelectionInterval(getRowSelected(getMTitle(),getAuthor()),getRowSelected(getMTitle(),getAuthor()));//focus on the book where you have managed your readings
+                loadComponents(getMTitle(), getAuthor());
+            }
+        });
+        cut.addActionListener((ActionEvent evt) -> {
+            JFrame jFrame = new JFrame();
+            int n = JOptionPane.showConfirmDialog(//Open a optionPane to verify if the user really want to delete the book return 0 il they want and 1 if they refuse
+                    jFrame,
+                    "Etes-vous sûr de vouloir supprimer définitivement le livre ?\n"+"Cette acion sera irréversible !",
+                    "An Inane Question",
+                    JOptionPane.YES_NO_OPTION);
+            if(n == 0){
+                String boolQry = "DELETE FROM Book WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";//sql to delete the book in table book when we right click
+                String ReadingQry = "DELETE FROM Reading WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";
+                String TaggingQry = "DELETE FROM Tagging WHERE IdBook='"+getIdBook(getMTitle(),getAuthor())+"'";
+
+                deleteImageMainResource(getMTitle(), getAuthor());
+                try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(boolQry); PreparedStatement pstmt2 = conn.prepareStatement(ReadingQry);
+                     PreparedStatement taggingPstmt = conn.prepareStatement(TaggingQry)) {
+                    // execute the delete statement
+                    pstmt.executeUpdate();
+                    pstmt2.executeUpdate();
+                    taggingPstmt.executeUpdate();
+                    loadDB(false,false);
+                    BooksTable.setRowSelectionInterval(0, 0);
+                    setMTitle(BooksTable.getValueAt(0, 0).toString());
+                    setAuthor(BooksTable.getValueAt(0, 1).toString());
+                    loadComponents(getMTitle(), getAuthor());
+                } catch (SQLException e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+        });
+        edit.addActionListener((ActionEvent evt) -> {
+            EditBookDlg diag = openEditBookDlg(getMTitle(),getAuthor());
+            if (diag.isValid()){
+                String BookQry = "UPDATE Book SET Title=?, Author=?, Image=?, NumberOP=?, NotePerso=?, NoteBabelio=?, ReleaseYear=?, Summary=?"+
+                        "WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";//Edit in bdd the book that we want to change
+                String ReadingQry = "UPDATE Reading SET Title=?, Author=?"+
+                        "WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";//Edit in bdd the book that we want to change
+                String TaggingQry = "INSERT INTO Tagging (IdBook,IdTag) " +
+                        "VALUES (?,?);";
+                String DeleteTaggingQry = "DELETE FROM Tagging WHERE IdBook='"+getIdBook(getMTitle(),getAuthor())+"'";
+                try (Connection conn = connect(); PreparedStatement BookPstmt = conn.prepareStatement(BookQry); PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry);
+                     PreparedStatement TaggingPstmt = conn.prepareStatement(TaggingQry); PreparedStatement DeleteTaggingPstmt = conn.prepareStatement(DeleteTaggingQry)) {
+                    // execute the uptdate statement
+                    ReadingPstmt.setString(1, diag.getNewTitle());
+                    ReadingPstmt.setString(2, diag.getNewAuthor());
+                    BookPstmt.setString(1, diag.getNewTitle());
+                    BookPstmt.setString(2, diag.getNewAuthor());
+                    BookPstmt.setString(3, getNameOfBook());
+                    BookPstmt.setString(4, diag.getNewNumberPage());
+                    BookPstmt.setString(5, diag.getNewPersonnalNote());
+                    BookPstmt.setString(6, diag.getNewBBLNote());
+                    BookPstmt.setString(7, diag.getNewReleaseyear());
+                    BookPstmt.setString(8, diag.getNewSummary());
+                    BookPstmt.executeUpdate();
+                    ReadingPstmt.executeUpdate();
+                    DeleteTaggingPstmt.executeUpdate();
+
+                    for(int i=0; i<diag.getTags().getSizeTags(); i++){
+                        if(diag.getTagIsUpdate()){
+                            String TagsUpdateQry = "UPDATE Tags SET Color=?"+
+                                    "WHERE Tag='"+diag.getTags().getTag(i).getTextTag()+"'";
+                            PreparedStatement TagsUpdatePstmt = conn.prepareStatement(TagsUpdateQry);
+                            TagsUpdatePstmt.setInt(1, diag.getTags().getTag(i).getColor());
+                            TagsUpdatePstmt.executeUpdate();
+                        }
+
+                        String TagsInsertQry = "INSERT INTO Tags (Tag,Color)" +
                                     " SELECT '"+ diag.getTags().getTag(i).getTextTag() +"', '"+diag.getTags().getTag(i).getColor()+"'" +
                                     " WHERE NOT EXISTS(SELECT * FROM Tags WHERE Tag='" + diag.getTags().getTag(i).getTextTag() + "' AND Color='" + diag.getTags().getTag(i).getColor() + "')";
-                            PreparedStatement TagsInsertPstmt = conn.prepareStatement(TagsInsertQry);
-                            TagsInsertPstmt.executeUpdate();
+                        PreparedStatement TagsInsertPstmt = conn.prepareStatement(TagsInsertQry);
+                        TagsInsertPstmt.executeUpdate();
 
-                            TaggingPstmt.setInt(1, getIdBook(diag.getNewBookTitle(), diag.getNewBookAuthor()));
-                            TaggingPstmt.setInt(2, getIdTag(diag.getTags().getTag(i).getTextTag(), diag.getTags().getTag(i).getColor()));
-                            TaggingPstmt.executeUpdate();
-                        }
-
-                        setMTitle(diag.getNewBookTitle());
-                        setAuthor(diag.getNewBookAuthor());
-                        loadComponents(diag.getNewBookTitle(), diag.getNewBookAuthor());
-                        loadDB(false);
-                        //Focus in the jtable on the book created
-                        BooksTable.setRowSelectionInterval(getRowSelected(diag.getNewBookTitle(), diag.getNewBookAuthor()), getRowSelected(diag.getNewBookTitle(), diag.getNewBookAuthor()));
-
-                        conn.close();
-                        m_statement.close();
-                    } catch (SQLException e) {
-                        System.out.println(e.getMessage());
+                        TaggingPstmt.setInt(1, getIdBook(diag.getNewTitle(), diag.getNewAuthor()));
+                        TaggingPstmt.setInt(2, getIdTag(diag.getTags().getTag(i).getTextTag(), diag.getTags().getTag(i).getColor()));
+                        TaggingPstmt.executeUpdate();
                     }
-                }
-            });
-        ManageReadingsBtn.addActionListener((ActionEvent e) ->{
-                ManageReadingDlg diag = openManageReadingDlg(getMTitle(),getAuthor());
-                contentPane.updateUI();
-                loadDB(false);
-                if(diag.isEmpty()){
-                    initComponents();
-                }
-                else {
-                    BooksTable.setRowSelectionInterval(getRowSelected(getMTitle(),getAuthor()),getRowSelected(getMTitle(),getAuthor()));//focus on the book where you have managed your readings
-                    loadComponents(getMTitle(), getAuthor());
-                }
-            });
-        cut.addActionListener((ActionEvent evt) -> {
-                JFrame jFrame = new JFrame();
-                int n = JOptionPane.showConfirmDialog(//Open a optionPane to verify if the user really want to delete the book return 0 il they want and 1 if they refuse
-                        jFrame,
-                        "Etes-vous sûr de vouloir supprimer définitivement le livre ?\n"+"Cette acion sera irréversible !",
-                        "An Inane Question",
-                        JOptionPane.YES_NO_OPTION);
-                if(n == 0){
-                    String boolQry = "DELETE FROM Book WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";//sql to delete the book in table book when we right click
-                    String ReadingQry = "DELETE FROM Reading WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";
-                    String TaggingQry = "DELETE FROM Tagging WHERE IdBook='"+getIdBook(getMTitle(),getAuthor())+"'";
 
-                    deleteImageMainResource(getMTitle(), getAuthor());
-                    try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(boolQry); PreparedStatement pstmt2 = conn.prepareStatement(ReadingQry);
-                         PreparedStatement taggingPstmt = conn.prepareStatement(TaggingQry)) {
-                        // execute the delete statement
-                        pstmt.executeUpdate();
-                        pstmt2.executeUpdate();
-                        taggingPstmt.executeUpdate();
-                        loadDB(false);
-                        BooksTable.setRowSelectionInterval(0, 0);
-                        setMTitle(BooksTable.getValueAt(0, 0).toString());
-                        setAuthor(BooksTable.getValueAt(0, 1).toString());
-                        loadComponents(getMTitle(), getAuthor());
-                    } catch (SQLException e) {
-                        System.out.println(e.getMessage());
-                    }
+                    contentPane.updateUI();
+                    loadDB(false,false);
+                    loadComponents(diag.getNewTitle(), diag.getNewAuthor());//reload changes made to the book
+                    BooksTable.setRowSelectionInterval(getRowSelected(diag.getNewTitle(), diag.getNewAuthor()), getRowSelected(diag.getNewTitle(), diag.getNewAuthor()));//focus on the edited book
+                } catch (SQLException e) {
+                    System.out.println(e.getMessage());
                 }
-            });
-        edit.addActionListener((ActionEvent evt) -> {
-                EditBookDlg diag = openEditBookDlg(getMTitle(),getAuthor());
-                if (diag.isValid()){
-                    String BookQry = "UPDATE Book SET Title=?, Author=?, Image=?, NumberOP=?, NotePerso=?, NoteBabelio=?, ReleaseYear=?, Summary=?"+
-                            "WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";//Edit in bdd the book that we want to change
-                    String ReadingQry = "UPDATE Reading SET Title=?, Author=?"+
-                            "WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";//Edit in bdd the book that we want to change
-                    String TaggingQry = "INSERT INTO Tagging (IdBook,IdTag) " +
-                            "VALUES (?,?);";
-                    String DeleteTaggingQry = "DELETE FROM Tagging WHERE IdBook='"+getIdBook(getMTitle(),getAuthor())+"'";
-                    try (Connection conn = connect(); PreparedStatement BookPstmt = conn.prepareStatement(BookQry); PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry);
-                         PreparedStatement TaggingPstmt = conn.prepareStatement(TaggingQry); PreparedStatement DeleteTaggingPstmt = conn.prepareStatement(DeleteTaggingQry)) {
-                        // execute the uptdate statement
-                        ReadingPstmt.setString(1, diag.getNewTitle());
-                        ReadingPstmt.setString(2, diag.getNewAuthor());
-                        BookPstmt.setString(1, diag.getNewTitle());
-                        BookPstmt.setString(2, diag.getNewAuthor());
-                        BookPstmt.setString(3, getNameOfBook());
-                        BookPstmt.setString(4, diag.getNewNumberPage());
-                        BookPstmt.setString(5, diag.getNewPersonnalNote());
-                        BookPstmt.setString(6, diag.getNewBBLNote());
-                        BookPstmt.setString(7, diag.getNewReleaseyear());
-                        BookPstmt.setString(8, diag.getNewSummary());
-                        BookPstmt.executeUpdate();
-                        ReadingPstmt.executeUpdate();
-                        DeleteTaggingPstmt.executeUpdate();
-
-                        for(int i=0; i<diag.getTags().getSizeTags(); i++){
-                            if(diag.getTagIsUpdate()){
-                                String TagsUpdateQry = "UPDATE Tags SET Color=?"+
-                                        "WHERE Tag='"+diag.getTags().getTag(i).getTextTag()+"'";
-                                PreparedStatement TagsUpdatePstmt = conn.prepareStatement(TagsUpdateQry);
-                                TagsUpdatePstmt.setInt(1, diag.getTags().getTag(i).getColor());
-                                TagsUpdatePstmt.executeUpdate();
-                            }
-
-                            String TagsInsertQry = "INSERT INTO Tags (Tag,Color)" +
-                                        " SELECT '"+ diag.getTags().getTag(i).getTextTag() +"', '"+diag.getTags().getTag(i).getColor()+"'" +
-                                        " WHERE NOT EXISTS(SELECT * FROM Tags WHERE Tag='" + diag.getTags().getTag(i).getTextTag() + "' AND Color='" + diag.getTags().getTag(i).getColor() + "')";
-                            PreparedStatement TagsInsertPstmt = conn.prepareStatement(TagsInsertQry);
-                            TagsInsertPstmt.executeUpdate();
-
-                            TaggingPstmt.setInt(1, getIdBook(diag.getNewTitle(), diag.getNewAuthor()));
-                            TaggingPstmt.setInt(2, getIdTag(diag.getTags().getTag(i).getTextTag(), diag.getTags().getTag(i).getColor()));
-                            TaggingPstmt.executeUpdate();
-                        }
-
-                        contentPane.updateUI();
-                        loadDB(false);
-                        loadComponents(diag.getNewTitle(), diag.getNewAuthor());//reload changes made to the book
-                        BooksTable.setRowSelectionInterval(getRowSelected(diag.getNewTitle(), diag.getNewAuthor()), getRowSelected(diag.getNewTitle(), diag.getNewAuthor()));//focus on the edited book
-                    } catch (SQLException e) {
-                        System.out.println(e.getMessage());
-                    }
-                }
-            });
+            }
+        });
         add.addActionListener((ActionEvent evt) -> {
                 AddReading diag = openAddReadingDlg(getMTitle(),getAuthor());
 
@@ -318,7 +319,7 @@ public class MainWindow extends JDialog {
                         setMTitle(diag.getMtitle());
                         setAuthor(diag.getAuthor());
                         loadComponents(diag.getMtitle(), diag.getAuthor());
-                        loadDB(false);
+                        loadDB(false,false);
                         //Focus in the jtable on a reading created from an existing book
                         BooksTable.setRowSelectionInterval(getRowSelected(diag.getMtitle(), diag.getAuthor()), getRowSelected(diag.getMtitle(), diag.getAuthor()));
 
@@ -334,7 +335,7 @@ public class MainWindow extends JDialog {
         FiltersBookBtn.addActionListener((ActionEvent e)-> {
                 m_diag = openFilterDlg();
                 contentPane.updateUI();
-                loadDB(m_diag.getIsValid());
+                loadDB(m_diag.getIsValid(),false);
                 setMTitle(BooksTable.getValueAt(0, 0).toString());
                 setAuthor(BooksTable.getValueAt(0, 1).toString());
                 loadComponents(getMTitle(), getAuthor());
@@ -342,7 +343,7 @@ public class MainWindow extends JDialog {
             });
         CancelFiltersBtn.addActionListener((ActionEvent e) -> {
                 contentPane.updateUI();
-                loadDB(false);
+            loadDB(false,false);
                 setMTitle(BooksTable.getValueAt(0, 0).toString());
                 setAuthor(BooksTable.getValueAt(0, 1).toString());
                 loadComponents(getMTitle(), getAuthor());
@@ -362,12 +363,41 @@ public class MainWindow extends JDialog {
         BookManageTagsBtn.addActionListener((ActionEvent e) -> {
             openManageTagsDlg();
             contentPane.updateUI();
-            loadDB(false);
+            loadDB(false,false);
             BooksTable.setRowSelectionInterval(getRowSelected(getMTitle(),getAuthor()),getRowSelected(getMTitle(),getAuthor()));//focus on the book where you have managed your readings
             loadComponents(getMTitle(), getAuthor());
         });
+        BookTagsPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+            super.mouseClicked(e);
+            if(!e.getComponent().getComponentAt(e.getX(),e.getY()).equals(BookTagsPanel)){
+                Component[] componentList = BookTagsPanel.getComponents();
+                int i = 0;
+                while (i<getTags().getSizeTags()) { //To filter with tag
+                    if(componentList[i]==e.getComponent().getComponentAt(e.getX(),e.getY())){
+                        setTextag(getTags().getTag(i).getTextTag());
+                        loadDB(false, true);
+                        CancelFiltersBtn.setEnabled(true);
+                        setMTitle(BooksTable.getValueAt(0, 0).toString());
+                        setAuthor(BooksTable.getValueAt(0, 1).toString());
+                        loadComponents(getMTitle(), getAuthor());
+                        BooksTable.setRowSelectionInterval(getRowSelected(getMTitle(),getAuthor()), getRowSelected(getMTitle(),getAuthor()));
+                        break;
+                    }
+                    i++;
+                }
+            }
+            }
+        });
     }
 
+    public String getTextag(){
+        return this.m_textTag;
+    }
+    public Tags getTags(){
+        return this.m_tags;
+    }
     public static String getMTitle(){
         return m_title;
     }
@@ -386,6 +416,13 @@ public class MainWindow extends JDialog {
                 row = i;
 
         return row;
+    }
+
+    public void setTextag(String text){
+        this.m_textTag=text;
+    }
+    public void setTags(Tags tags){
+        this.m_tags=tags;
     }
     public void setRowSelected(int m_rowSelected) {
         this.m_rowSelected = m_rowSelected;
@@ -441,22 +478,27 @@ public class MainWindow extends JDialog {
             System.exit(0);
         }
     }
-    public void loadDB(boolean isFiltered){
+    public void loadDB(boolean isFiltered, boolean tagFilters){
         m_tableModel.setRowCount(0);
         CancelFiltersBtn.setEnabled(isFiltered);
         try(Connection conn = connect()){
             m_statement = conn.createStatement();
             System.out.println("Table connexion successfully");
             ResultSet rs;
-            if(isFiltered){
+            if(isFiltered && !tagFilters){
                 String qry = "SELECT Title, Author FROM Book " +
                         "WHERE Title LIKE '%" + m_diag.getMTitle() + "%'"+
                         "AND Author LIKE '%" + m_diag.getAuthor() + "%'"+
                         "AND ReleaseYear BETWEEN '"+m_diag.getFirstDatRelease()+"' AND '"+m_diag.getLastDateRelease()+"'"+
                         "AND NotePerso BETWEEN '"+m_diag.getFirstNote()+"' AND '"+m_diag.getLastNote()+"';";
                 rs = m_statement.executeQuery(qry);
-            }
-            else{
+            } else if (tagFilters) {
+                String qry = "SELECT Title, Author FROM Book " +
+                        "INNER JOIN Tagging ON Book.ID=Tagging.IdBook "+
+                        "INNER JOIN Tags ON Tagging.idTag=Tags.ID "+
+                        "WHERE Tags.Tag='"+getTextag()+"'";
+                rs = m_statement.executeQuery(qry);
+            } else{
                 rs = m_statement.executeQuery("SELECT * FROM Book;");//Execute a Query to retrieve all the values from the database by grouping the duplicates
             }
             // (with their name and author)
@@ -505,6 +547,7 @@ public class MainWindow extends JDialog {
             while (tagsQry.next()){
                 tags.createTag(tagsQry.getString(1));
                 tags.getTag(tagsQry.getRow()-1).setColor(tagsQry.getInt(2));
+                setTags(tags);
                 for(int i=0; i<tags.getSizeTags();i++) {
                     BookTagsPanel.add(tags.getTag(i));
                 }
@@ -615,22 +658,6 @@ public class MainWindow extends JDialog {
         BookPhotoPanel.removeAll();
         contentPane.updateUI();
         contentPane.setBorder(null);
-    }
-
-    public int getIdTag(String tag, int color) {
-        int i =0;
-        try (Connection conn = connect()) {
-            m_statement = conn.createStatement();
-            ResultSet idBook = m_statement.executeQuery("SELECT ID FROM Tags WHERE Tag='"+tag+"' AND Color='"+color+ "'");
-            i=idBook.getInt(1);
-            idBook.close();
-            conn.close();
-            m_statement.close();
-        }catch (Exception e){
-            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-            System.exit(0);
-        }
-        return i;
     }
 
     public static void main(String[] args) {

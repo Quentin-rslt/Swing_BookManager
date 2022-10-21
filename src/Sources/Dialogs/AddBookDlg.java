@@ -61,115 +61,114 @@ public class AddBookDlg extends JDialog {
         m_popup.add(edit);
 
         BookUnknownReadDateChecbox.addActionListener((ActionEvent e) -> {
-                if (BookUnknownReadDateChecbox.isSelected()){
-                    BookNotDoneReadChecbox.setSelected(false);
-                    BookEndReadingSpin.setEnabled(false);
-                    BookStartReadingSpin.setEnabled(false);
-                }
-                else{
-                    BookEndReadingSpin.setEnabled(true);
-                    BookStartReadingSpin.setEnabled(true);
-                }
-            });
+            if (BookUnknownReadDateChecbox.isSelected()){
+                BookNotDoneReadChecbox.setSelected(false);
+                BookEndReadingSpin.setEnabled(false);
+                BookStartReadingSpin.setEnabled(false);
+            }
+            else{
+                BookEndReadingSpin.setEnabled(true);
+                BookStartReadingSpin.setEnabled(true);
+            }
+        });
         BookNotDoneReadChecbox.addActionListener((ActionEvent e) -> {
-                if (BookNotDoneReadChecbox.isSelected()){
-                    BookUnknownReadDateChecbox.setSelected(false);
-                    BookStartReadingSpin.setEnabled(true);
-                    BookEndReadingSpin.setEnabled(false);
-                }
-                else{
-                    BookEndReadingSpin.setEnabled(true);
-                }
-            });
+            if (BookNotDoneReadChecbox.isSelected()){
+                BookUnknownReadDateChecbox.setSelected(false);
+                BookStartReadingSpin.setEnabled(true);
+                BookEndReadingSpin.setEnabled(false);
+            }
+            else{
+                BookEndReadingSpin.setEnabled(true);
+            }
+        });
         CancelBtn.addActionListener((ActionEvent e) -> {//Quit dlg without taking into account the input
-                m_isValide = false;
-                setVisible(false);
-                dispose();
-            });
+            m_isValide = false;
+            setVisible(false);
+            dispose();
+        });
         ValidateBtn.addActionListener((ActionEvent evt) -> {
-                String sql = "SELECT Title, Author, StartReading, EndReading FROM Reading";
-                if(!Objects.equals(getNewBookAuthor(), "") && !Objects.equals(getNewBookTitle(), "") && !Objects.equals(getNewBookSummary(), "")){//Verif if the input are good to quit the dlg and recovered the data for bdd
-                    try{//Can add a new reading if the book already exist
-                        Class.forName("org.sqlite.JDBC");
-                        m_connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
-                        m_statement = m_connection.createStatement();
-                        ResultSet bookQry = m_statement.executeQuery(sql);
-                        Date enDate =new SimpleDateFormat("yyyy-MM-dd").parse(getNewBookEndReading());
-                        Date startDate = new SimpleDateFormat("yyyy-MM-dd").parse(getNewBookStartReading());
+            String sql = "SELECT Title, Author, StartReading, EndReading FROM Reading";
+            if(!Objects.equals(getNewBookAuthor(), "") && !Objects.equals(getNewBookTitle(), "") && !Objects.equals(getNewBookSummary(), "")){//Verif if the input are good to quit the dlg and recovered the data for bdd
+                try{//Can add a new reading if the book already exist
+                    Class.forName("org.sqlite.JDBC");
+                    m_connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
+                    m_statement = m_connection.createStatement();
+                    ResultSet bookQry = m_statement.executeQuery(sql);
+                    Date enDate =new SimpleDateFormat("yyyy-MM-dd").parse(getNewBookEndReading());
+                    Date startDate = new SimpleDateFormat("yyyy-MM-dd").parse(getNewBookStartReading());
 
-                        boolean bookFind =false;
-                        while (bookQry.next() && !bookFind){//We browse the database until we find a book that already exists, in relation to the book created
-                            if (Objects.equals(bookQry.getString(1), getNewBookTitle()) && Objects.equals(bookQry.getString(2), getNewBookAuthor())){//If the created book is already in the database, we exit the loop by setting an error dialog
-                                JFrame jFrame = new JFrame();
-                                JOptionPane.showMessageDialog(jFrame, "Le livre existe déjà !");
-                                bookFind = true;//If you have found a book, you are out of the loop
-                            }
-                        }
-                        if(getNameOfBook().equals("")){
-                            setNameOfBook("Default.jpg");
-                        }
-                        if (!bookFind && isDateUnknown()&& !isNotDOne() && !Objects.equals(getNewBookAuthor(), getNewBookTitle())){
-                            addImageToResource();
-                            m_isValide=true;
-                            setVisible(false);
-                            dispose();
-                        } else if (!bookFind && !isDateUnknown() && isNotDOne() && !Objects.equals(getNewBookAuthor(), getNewBookTitle())) {
-                            addImageToResource();
-                            m_isValide=true;
-                            setVisible(false);
-                            dispose();
-                        } else if (!bookFind && !Objects.equals(getNewBookStartReading(), getNewBookEndReading()) && !isDateUnknown() && !isNotDOne()
-                                && startDate.compareTo(enDate)<0 && !Objects.equals(getNewBookAuthor(), getNewBookTitle())) {
-                            addImageToResource();
-                            m_isValide=true;
-                            setVisible(false);
-                            dispose();
-                        } else if(Objects.equals(getNewBookAuthor(), getNewBookTitle()) && !Objects.equals(getNewBookAuthor(), "")){
+                    boolean bookFind =false;
+                    while (bookQry.next() && !bookFind){//We browse the database until we find a book that already exists, in relation to the book created
+                        if (Objects.equals(bookQry.getString(1), getNewBookTitle()) && Objects.equals(bookQry.getString(2), getNewBookAuthor())){//If the created book is already in the database, we exit the loop by setting an error dialog
                             JFrame jFrame = new JFrame();
-                            JOptionPane.showMessageDialog(jFrame, "Le nom de l'auteur et le titre d'un livre ne peut pas être identique ! ");
-                        } else if (!Objects.equals(getNewBookStartReading(), getNewBookEndReading()) && !isDateUnknown() && !isNotDOne() && startDate.compareTo(enDate)>0) {
-                            JFrame jFrame = new JFrame();
-                            JOptionPane.showMessageDialog(jFrame, "La date de début de lecture ne peut pas être après à la fin de lecture !");
-                        } else if(!bookFind && Objects.equals(getNewBookStartReading(), getNewBookEndReading()) && !isDateUnknown() && !isNotDOne()){
-                            JFrame jFrame = new JFrame();
-                            JOptionPane.showMessageDialog(jFrame, "La date de début de lecture ne peut être identique à la fin de lecture !");
+                            JOptionPane.showMessageDialog(jFrame, "Le livre existe déjà !");
+                            bookFind = true;//If you have found a book, you are out of the loop
                         }
-                        m_connection.close();
-                        m_statement.close();
-                    } catch ( Exception e ) {
-                        System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-                        System.exit(0);
                     }
+                    if(getNameOfBook().equals("")){
+                        setNameOfBook("Default.jpg");
+                    }
+                    if (!bookFind && isDateUnknown()&& !isNotDOne() && !Objects.equals(getNewBookAuthor(), getNewBookTitle())){
+                        addImageToResource();
+                        m_isValide=true;
+                        setVisible(false);
+                        dispose();
+                    } else if (!bookFind && !isDateUnknown() && isNotDOne() && !Objects.equals(getNewBookAuthor(), getNewBookTitle())) {
+                        addImageToResource();
+                        m_isValide=true;
+                        setVisible(false);
+                        dispose();
+                    } else if (!bookFind && !Objects.equals(getNewBookStartReading(), getNewBookEndReading()) && !isDateUnknown() && !isNotDOne()
+                            && startDate.compareTo(enDate)<0 && !Objects.equals(getNewBookAuthor(), getNewBookTitle())) {
+                        addImageToResource();
+                        m_isValide=true;
+                        setVisible(false);
+                        dispose();
+                    } else if(Objects.equals(getNewBookAuthor(), getNewBookTitle()) && !Objects.equals(getNewBookAuthor(), "")){
+                        JFrame jFrame = new JFrame();
+                        JOptionPane.showMessageDialog(jFrame, "Le nom de l'auteur et le titre d'un livre ne peut pas être identique ! ");
+                    } else if (!Objects.equals(getNewBookStartReading(), getNewBookEndReading()) && !isDateUnknown() && !isNotDOne() && startDate.compareTo(enDate)>0) {
+                        JFrame jFrame = new JFrame();
+                        JOptionPane.showMessageDialog(jFrame, "La date de début de lecture ne peut pas être après à la fin de lecture !");
+                    } else if(!bookFind && Objects.equals(getNewBookStartReading(), getNewBookEndReading()) && !isDateUnknown() && !isNotDOne()){
+                        JFrame jFrame = new JFrame();
+                        JOptionPane.showMessageDialog(jFrame, "La date de début de lecture ne peut être identique à la fin de lecture !");
+                    }
+                    m_connection.close();
+                    m_statement.close();
+                } catch ( Exception e ) {
+                    System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+                    System.exit(0);
                 }
-                else{
-                    JFrame jFrame = new JFrame();
-                    JOptionPane.showMessageDialog(jFrame, "Veuillez remplir tous les champs !");
-                }
-            });
+            }
+            else{
+                JFrame jFrame = new JFrame();
+                JOptionPane.showMessageDialog(jFrame, "Veuillez remplir tous les champs !");
+            }
+        });
         BookBrowseBtn.addActionListener((ActionEvent e)->selectNameOfBook(PreviewPhotoPanel));
         BookTagsCB.getEditor().getEditorComponent().addKeyListener(new java.awt.event.KeyAdapter() {
 
             @Override
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                if (!Objects.equals(BookTagsCB.getSelectedItem(), "")) {
-                    if (evt.getKeyCode()==KeyEvent.VK_ENTER){
-                        fillPaneTags(getTags(), BookTagsPanel, BookTagsCB);
-                    }
+            if (!Objects.equals(BookTagsCB.getSelectedItem(), "")) {
+                if (evt.getKeyCode()==KeyEvent.VK_ENTER){
+                    fillPaneTags(getTags(), BookTagsPanel, BookTagsCB);
                 }
-                BookTagsPanel.updateUI();
+            }
+            BookTagsPanel.updateUI();
             }
         });
-
         BookTagsPanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                super.mouseClicked(e);
-                if(!e.getComponent().getComponentAt(e.getX(),e.getY()).equals(BookTagsPanel)){
-                    if(e.getButton() == MouseEvent.BUTTON3) {
-                        m_popup.show(BookTagsPanel, e.getX(), e.getY());//show a popup to edit the reading
-                        m_popup.setInvoker(e.getComponent().getComponentAt(e.getX(),e.getY()));
-                    }
+            super.mouseClicked(e);
+            if(!e.getComponent().getComponentAt(e.getX(),e.getY()).equals(BookTagsPanel)){
+                if(e.getButton() == MouseEvent.BUTTON3) {
+                    m_popup.show(BookTagsPanel, e.getX(), e.getY());//show a popup to edit the reading
+                    m_popup.setInvoker(e.getComponent().getComponentAt(e.getX(),e.getY()));
                 }
+            }
             }
         });
         cut.addActionListener((ActionEvent evt)-> {
