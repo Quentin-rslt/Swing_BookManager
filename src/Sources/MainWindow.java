@@ -9,8 +9,6 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 import static Sources.Common.*;
@@ -342,14 +340,18 @@ public class MainWindow extends JDialog {
                 }
             });
         FiltersBookBtn.addActionListener((ActionEvent e)-> {
-                m_diag = openFilterDlg();
-                contentPane.updateUI();
-                loadDB(m_diag.getIsValid());
+            m_diag = openFilterDlg();
+            loadDB(m_diag.getIsValid());
+            if(BooksTable.getRowCount()>0){
                 setMTitle(BooksTable.getValueAt(0, 0).toString());
                 setAuthor(BooksTable.getValueAt(0, 1).toString());
                 loadComponents(getMTitle(), getAuthor());
                 BooksTable.setRowSelectionInterval(getRowSelected(getMTitle(),getAuthor()), getRowSelected(getMTitle(),getAuthor()));
-            });
+            }
+            else
+                initComponents();
+            contentPane.updateUI();
+        });
         CancelFiltersBtn.addActionListener((ActionEvent e) -> {
                 contentPane.updateUI();
             loadDB(false);
@@ -358,17 +360,6 @@ public class MainWindow extends JDialog {
                 loadComponents(getMTitle(), getAuthor());
                 BooksTable.setRowSelectionInterval(getRowSelected(getMTitle(),getAuthor()), getRowSelected(getMTitle(),getAuthor()));
             });
-        BookSummary.addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                super.focusGained(e);
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                super.focusLost(e);
-            }
-        });
         BookManageTagsBtn.addActionListener((ActionEvent e) -> {
             openManageTagsDlg();
             contentPane.updateUI();
@@ -468,7 +459,7 @@ public class MainWindow extends JDialog {
             System.out.println("Table connexion successfully");
             ResultSet rs;
             if(isFiltered){
-                String qry="";
+                String qry;
                 if(!m_diag.getTextSort().equals("EndReading") && !m_diag.getTextSort().equals("StartReading")) {
                     if (!m_diag.getTextTag().equals("")) {
                         qry = "SELECT Title, Author FROM Book " +
@@ -660,7 +651,6 @@ public class MainWindow extends JDialog {
         BookSummary.setText("");
         BookTagsPanel.removeAll();
         ManageReadingsBtn.setEnabled(false);
-        FiltersBookBtn.setEnabled(false);
         BookPhotoPanel.removeAll();
         contentPane.updateUI();
         contentPane.setBorder(null);
