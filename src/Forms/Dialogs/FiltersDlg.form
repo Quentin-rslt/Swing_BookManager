@@ -142,7 +142,7 @@
             <properties/>
             <border type="none"/>
             <children>
-              <component id="57c6e" class="javax.swing.JRadioButton" binding="ordreCroissantRadioButton" default-binding="true">
+              <component id="57c6e" class="javax.swing.JRadioButton" binding="FiltersorderCrossingRB">
                 <constraints/>
                 <properties>
                   <horizontalAlignment value="2"/>
@@ -150,7 +150,7 @@
                   <text value="Ordre croissant"/>
                 </properties>
               </component>
-              <component id="e27d2" class="javax.swing.JRadioButton" binding="ordreDécroissantRadioButton" default-binding="true">
+              <component id="e27d2" class="javax.swing.JRadioButton" binding="FiltersascendingOrderRB">
                 <constraints/>
                 <properties>
                   <horizontalAlignment value="2"/>
@@ -196,13 +196,13 @@
                 <properties/>
                 <border type="none"/>
                 <children>
-                  <component id="22d26" class="javax.swing.JComboBox" default-binding="true">
+                  <component id="22d26" class="javax.swing.JComboBox" binding="FiltersTagCB">
                     <constraints>
                       <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties/>
                   </component>
-                  <component id="93e30" class="javax.swing.JComboBox" binding="comboBox1" default-binding="true">
+                  <component id="93e30" class="javax.swing.JComboBox" binding="FiltersSortCB">
                     <constraints>
                       <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
                     </constraints>

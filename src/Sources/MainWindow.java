@@ -51,14 +51,13 @@ public class MainWindow extends JDialog {
     final JPopupMenu m_popup;
     private FiltersDlg m_diag;
     private Tags m_tags = new Tags();
-    private String m_textTag;
 
 
     public MainWindow() {
         setContentPane(contentPane);
         setModal(true);
         connectionDB();
-        loadDB(false,false);
+        loadDB(false);
 
         AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),3,30,0,0,20);
         BookSummary.setBorder(roundBrd);
@@ -103,7 +102,7 @@ public class MainWindow extends JDialog {
                 if(evt.getClickCount() == 2 && evt.getButton() == MouseEvent.BUTTON1){
                     ManageReadingDlg diag = openManageReadingDlg(getMTitle(), getAuthor());
                     contentPane.updateUI();
-                    loadDB(false,false);
+                    loadDB(false);
                     if(diag.isEmpty()){
                         initComponents();
                     }
@@ -125,9 +124,11 @@ public class MainWindow extends JDialog {
                         "VALUES (?,?,?,?,?);";
                 String TaggingQry = "INSERT INTO Tagging (IdBook,IdTag) " +
                         "VALUES (?,?);";
+                String AvNumQry = "UPDATE Book SET AvReadingTime=?, NumberReading=?"+
+                        "WHERE Title='"+diag.getNewBookTitle()+"' AND Author='"+diag.getNewBookAuthor()+"'";
                 contentPane.updateUI();
-                try (Connection conn = connect(); PreparedStatement BookPstmt = conn.prepareStatement(BookQry); PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry);
-                     PreparedStatement TaggingPstmt = conn.prepareStatement(TaggingQry)) {
+                try (Connection conn = connect(); PreparedStatement BookPstmt = conn.prepareStatement(BookQry); PreparedStatement AvNumPstmt = conn.prepareStatement(AvNumQry);
+                     PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry); PreparedStatement TaggingPstmt = conn.prepareStatement(TaggingQry)) {
                     m_statement = conn.createStatement();
 
                     ReadingPstmt.setInt(1, getIdReading(diag.getNewBookTitle(), diag.getNewBookAuthor()));
@@ -158,6 +159,10 @@ public class MainWindow extends JDialog {
                     BookPstmt.executeUpdate();//Insert the new Book in table Book
                     ReadingPstmt.executeUpdate();//Insert the new reading
 
+                    AvNumPstmt.setInt(1, averageTime(diag.getNewBookTitle(), diag.getNewBookAuthor()));
+                    AvNumPstmt.setInt(2, getNumberOfReading(diag.getNewBookTitle(), diag.getNewBookAuthor()));
+                    AvNumPstmt.executeUpdate();
+
                     for(int i=0; i<diag.getTags().getSizeTags(); i++){
                         if(diag.getTagIsUpdate()){
                             String TagsUpdateQry = "UPDATE Tags SET Color=?"+
@@ -181,7 +186,7 @@ public class MainWindow extends JDialog {
                     setMTitle(diag.getNewBookTitle());
                     setAuthor(diag.getNewBookAuthor());
                     loadComponents(diag.getNewBookTitle(), diag.getNewBookAuthor());
-                    loadDB(false,false);
+                    loadDB(false);
                     //Focus in the jtable on the book created
                     BooksTable.setRowSelectionInterval(getRowSelected(diag.getNewBookTitle(), diag.getNewBookAuthor()), getRowSelected(diag.getNewBookTitle(), diag.getNewBookAuthor()));
 
@@ -195,7 +200,7 @@ public class MainWindow extends JDialog {
         ManageReadingsBtn.addActionListener((ActionEvent e) ->{
             ManageReadingDlg diag = openManageReadingDlg(getMTitle(),getAuthor());
             contentPane.updateUI();
-            loadDB(false,false);
+            loadDB(false);
             if(diag.isEmpty()){
                 initComponents();
             }
@@ -223,7 +228,7 @@ public class MainWindow extends JDialog {
                     pstmt.executeUpdate();
                     pstmt2.executeUpdate();
                     taggingPstmt.executeUpdate();
-                    loadDB(false,false);
+                    loadDB(false);
                     BooksTable.setRowSelectionInterval(0, 0);
                     setMTitle(BooksTable.getValueAt(0, 0).toString());
                     setAuthor(BooksTable.getValueAt(0, 1).toString());
@@ -281,7 +286,7 @@ public class MainWindow extends JDialog {
                     }
 
                     contentPane.updateUI();
-                    loadDB(false,false);
+                    loadDB(false);
                     loadComponents(diag.getNewTitle(), diag.getNewAuthor());//reload changes made to the book
                     BooksTable.setRowSelectionInterval(getRowSelected(diag.getNewTitle(), diag.getNewAuthor()), getRowSelected(diag.getNewTitle(), diag.getNewAuthor()));//focus on the edited book
                 } catch (SQLException e) {
@@ -295,10 +300,11 @@ public class MainWindow extends JDialog {
                 if (diag.getIsValid()){
                     String ReadingQry = "INSERT INTO Reading (ID,Title,Author,StartReading, EndReading) " +
                             "VALUES (?,?,?,?,?);";
+                    String AvNumQry = "UPDATE Book SET AvReadingTime=?, NumberReading=?"+
+                            "WHERE Title='"+diag.getMtitle()+"' AND Author='"+diag.getAuthor()+"'";
                     contentPane.updateUI();
-                    try(Connection conn = connect(); PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry)){
+                    try(Connection conn = connect(); PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry); PreparedStatement AvNumPstmt = conn.prepareStatement(AvNumQry)){
                         m_statement = conn.createStatement();
-                        ResultSet rs = m_statement.executeQuery("SELECT * FROM Book WHERE Title='"+diag.getMtitle()+"' AND Author='"+diag.getAuthor()+ "'");
                         ReadingPstmt.setInt(1, getIdReading(diag.getMtitle(), diag.getAuthor()));
                         ReadingPstmt.setString(2, diag.getMtitle());
                         ReadingPstmt.setString(3, diag.getAuthor());
@@ -314,16 +320,19 @@ public class MainWindow extends JDialog {
                             ReadingPstmt.setString(4, "Inconnu");
                             ReadingPstmt.setString(5, "Inconnu");
                         }
-
                         ReadingPstmt.executeUpdate();//Insert the new reading
+
+                        AvNumPstmt.setInt(1, averageTime(diag.getMtitle(), diag.getAuthor()));
+                        AvNumPstmt.setInt(2, getNumberOfReading(diag.getMtitle(), diag.getAuthor()));
+                        AvNumPstmt.executeUpdate();
+
                         setMTitle(diag.getMtitle());
                         setAuthor(diag.getAuthor());
                         loadComponents(diag.getMtitle(), diag.getAuthor());
-                        loadDB(false,false);
+                        loadDB(false);
                         //Focus in the jtable on a reading created from an existing book
                         BooksTable.setRowSelectionInterval(getRowSelected(diag.getMtitle(), diag.getAuthor()), getRowSelected(diag.getMtitle(), diag.getAuthor()));
 
-                        rs.close();
                         conn.close();
                         m_statement.close();
                     }catch (SQLException e){
@@ -335,7 +344,7 @@ public class MainWindow extends JDialog {
         FiltersBookBtn.addActionListener((ActionEvent e)-> {
                 m_diag = openFilterDlg();
                 contentPane.updateUI();
-                loadDB(m_diag.getIsValid(),false);
+                loadDB(m_diag.getIsValid());
                 setMTitle(BooksTable.getValueAt(0, 0).toString());
                 setAuthor(BooksTable.getValueAt(0, 1).toString());
                 loadComponents(getMTitle(), getAuthor());
@@ -343,7 +352,7 @@ public class MainWindow extends JDialog {
             });
         CancelFiltersBtn.addActionListener((ActionEvent e) -> {
                 contentPane.updateUI();
-            loadDB(false,false);
+            loadDB(false);
                 setMTitle(BooksTable.getValueAt(0, 0).toString());
                 setAuthor(BooksTable.getValueAt(0, 1).toString());
                 loadComponents(getMTitle(), getAuthor());
@@ -363,38 +372,12 @@ public class MainWindow extends JDialog {
         BookManageTagsBtn.addActionListener((ActionEvent e) -> {
             openManageTagsDlg();
             contentPane.updateUI();
-            loadDB(false,false);
+            loadDB(false);
             BooksTable.setRowSelectionInterval(getRowSelected(getMTitle(),getAuthor()),getRowSelected(getMTitle(),getAuthor()));//focus on the book where you have managed your readings
             loadComponents(getMTitle(), getAuthor());
         });
-        BookTagsPanel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-            super.mouseClicked(e);
-            if(!e.getComponent().getComponentAt(e.getX(),e.getY()).equals(BookTagsPanel)){
-                Component[] componentList = BookTagsPanel.getComponents();
-                int i = 0;
-                while (i<getTags().getSizeTags()) { //To filter with tag
-                    if(componentList[i]==e.getComponent().getComponentAt(e.getX(),e.getY())){
-                        setTextag(getTags().getTag(i).getTextTag());
-                        loadDB(false, true);
-                        CancelFiltersBtn.setEnabled(true);
-                        setMTitle(BooksTable.getValueAt(0, 0).toString());
-                        setAuthor(BooksTable.getValueAt(0, 1).toString());
-                        loadComponents(getMTitle(), getAuthor());
-                        BooksTable.setRowSelectionInterval(getRowSelected(getMTitle(),getAuthor()), getRowSelected(getMTitle(),getAuthor()));
-                        break;
-                    }
-                    i++;
-                }
-            }
-            }
-        });
     }
 
-    public String getTextag(){
-        return this.m_textTag;
-    }
     public Tags getTags(){
         return this.m_tags;
     }
@@ -418,9 +401,6 @@ public class MainWindow extends JDialog {
         return row;
     }
 
-    public void setTextag(String text){
-        this.m_textTag=text;
-    }
     public void setTags(Tags tags){
         this.m_tags=tags;
     }
@@ -447,6 +427,8 @@ public class MainWindow extends JDialog {
                     " NotePerso INT, " +
                     " NoteBabelio INT, " +
                     " ReleaseYear TEXT, " +
+                    " AvReadingTime INT, " +
+                    " NumberReading INT, " +
                     " Summary TEXT)";
 
             String ReadSql = "CREATE TABLE IF NOT EXISTS Reading" +
@@ -478,25 +460,63 @@ public class MainWindow extends JDialog {
             System.exit(0);
         }
     }
-    public void loadDB(boolean isFiltered, boolean tagFilters){
+    public void loadDB(boolean isFiltered){
         m_tableModel.setRowCount(0);
         CancelFiltersBtn.setEnabled(isFiltered);
         try(Connection conn = connect()){
             m_statement = conn.createStatement();
             System.out.println("Table connexion successfully");
             ResultSet rs;
-            if(isFiltered && !tagFilters){
-                String qry = "SELECT Title, Author FROM Book " +
-                        "WHERE Title LIKE '%" + m_diag.getMTitle() + "%'"+
-                        "AND Author LIKE '%" + m_diag.getAuthor() + "%'"+
-                        "AND ReleaseYear BETWEEN '"+m_diag.getFirstDatRelease()+"' AND '"+m_diag.getLastDateRelease()+"'"+
-                        "AND NotePerso BETWEEN '"+m_diag.getFirstNote()+"' AND '"+m_diag.getLastNote()+"';";
-                rs = m_statement.executeQuery(qry);
-            } else if (tagFilters) {
-                String qry = "SELECT Title, Author FROM Book " +
-                        "INNER JOIN Tagging ON Book.ID=Tagging.IdBook "+
-                        "INNER JOIN Tags ON Tagging.idTag=Tags.ID "+
-                        "WHERE Tags.Tag='"+getTextag()+"'";
+            if(isFiltered){
+                String qry="";
+                if(!m_diag.getTextSort().equals("EndReading") && !m_diag.getTextSort().equals("StartReading")) {
+                    if (!m_diag.getTextTag().equals("")) {
+                        qry = "SELECT Title, Author FROM Book " +
+                                "INNER JOIN Tagging ON Book.ID=Tagging.IdBook " +
+                                "INNER JOIN Tags ON Tagging.idTag=Tags.ID " +
+                                "WHERE Tags.Tag='" + m_diag.getTextTag() + "' " +
+                                "AND Book.Title LIKE '%" + m_diag.getMTitle() + "%'" +
+                                "AND Book.Author LIKE '%" + m_diag.getAuthor() + "%'" +
+                                "AND Book.ReleaseYear BETWEEN '" + m_diag.getFirstDatRelease() + "' AND '" + m_diag.getLastDateRelease() + "'" +
+                                "AND Book.NotePerso BETWEEN '" + m_diag.getFirstNote() + "' AND '" + m_diag.getLastNote() + "'";
+                    } else {
+                        qry = "SELECT Title, Author FROM Book " +
+                                "WHERE Book.Title LIKE '%" + m_diag.getMTitle() + "%'" +
+                                "AND Book.Author LIKE '%" + m_diag.getAuthor() + "%'" +
+                                "AND Book.ReleaseYear BETWEEN '" + m_diag.getFirstDatRelease() + "' AND '" + m_diag.getLastDateRelease() + "'" +
+                                "AND Book.NotePerso BETWEEN '" + m_diag.getFirstNote() + "' AND '" + m_diag.getLastNote() + "'";
+                    }
+                    if(m_diag.isAscending()){
+                        qry = qry+" ORDER BY "+m_diag.getTextSort()+" ASC;";
+                    }else{
+                        qry = qry+" ORDER BY "+m_diag.getTextSort()+" DESC;";
+                    }
+                }else{
+                    if (!m_diag.getTextTag().equals("")) {
+                        qry = "SELECT Book.Title, Book.Author FROM Book " +
+                                "INNER JOIN Tagging ON Book.ID=Tagging.IdBook " +
+                                "INNER JOIN Tags ON Tagging.idTag=Tags.ID " +
+                                "INNER JOIN Reading ON Reading.Title=Book.Title AND Reading.Author=Book.Author " +
+                                "WHERE Tags.Tag='" + m_diag.getTextTag() + "' " +
+                                "AND Book.Title LIKE '%" + m_diag.getMTitle() + "%'" +
+                                "AND Book.Author LIKE '%" + m_diag.getAuthor() + "%'" +
+                                "AND Book.ReleaseYear BETWEEN '" + m_diag.getFirstDatRelease() + "' AND '" + m_diag.getLastDateRelease() + "'" +
+                                "AND Book.NotePerso BETWEEN '" + m_diag.getFirstNote() + "' AND '" + m_diag.getLastNote() + "'";
+                    } else {
+                        qry = "SELECT Book.Title, Book.Author FROM Book " +
+                                "INNER JOIN Reading ON Reading.Title=Book.Title AND Reading.Author=Book.Author " +
+                                "WHERE Book.Title LIKE '%" + m_diag.getMTitle() + "%'" +
+                                "AND Book.Author LIKE '%" + m_diag.getAuthor() + "%'" +
+                                "AND Book.ReleaseYear BETWEEN '" + m_diag.getFirstDatRelease() + "' AND '" + m_diag.getLastDateRelease() + "'" +
+                                "AND Book.NotePerso BETWEEN '" + m_diag.getFirstNote() + "' AND '" + m_diag.getLastNote() + "'";
+                    }
+                    if(m_diag.isAscending()){
+                        qry = qry+" ORDER BY Reading."+m_diag.getTextSort()+" ASC;";
+                    }else{
+                        qry = qry+" ORDER BY Reading."+m_diag.getTextSort()+" DESC;";
+                    }
+                }
+
                 rs = m_statement.executeQuery(qry);
             } else{
                 rs = m_statement.executeQuery("SELECT * FROM Book ORDER BY Title ASC;");//Execute a Query to retrieve all the values from the database by grouping the duplicates
@@ -563,32 +583,18 @@ public class MainWindow extends JDialog {
             NumberPageLabel.setText("Nombre de page : "+NumberOPQry.getString(1));
 
             //Number of reading label
-            Statement statement = conn.createStatement();
-            ResultSet CountReadingQry = statement.executeQuery("SELECT COUNT(*) FROM Reading WHERE Title='"+title+"' AND Author='"+author+ "'");
-            CountReadingLabel.setText("Nombre de lecture : "+CountReadingQry.getString(1));
+            ResultSet NumberReadingQry = m_statement.executeQuery("SELECT NumberReading FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
+            CountReadingLabel.setText("Nombre de lecture : "+NumberReadingQry.getInt(1));
 
             //Average time label
-            String sql = "SELECT StartReading, EndReading FROM Reading WHERE Title='"+title+"' AND Author='"+author+"'";
-            ResultSet qry = m_statement.executeQuery(sql);
-            long days = 0;
-            int dateValid = 0;
-            while (qry.next()){
-                boolean isOk = ((qry.getString(1).equals("Inconnu") && qry.getString(2).equals("Inconnu")) ||
-                        (qry.getString(1).equals("Inconnu") && qry.getString(2).equals("Pas fini")))
-                        ||((!qry.getString(1).equals("Inconnu") && qry.getString(2).equals("Inconnu")) ||
-                        (!qry.getString(1).equals("Inconnu") && qry.getString(2).equals("Pas fini")))
-                        ||((qry.getString(1).equals("Inconnu") && !qry.getString(2).equals("Inconnu")) ||
-                        (qry.getString(1).equals("Inconnu") && !qry.getString(2).equals("Pas fini")));
-                if(!isOk){
-                    dateValid++;
-                    LocalDate start = LocalDate.parse(qry.getString(1)) ;
-                    LocalDate stop = LocalDate.parse(qry.getString(2)) ;
-                    days = days + ChronoUnit.DAYS.between(start , stop);
-                    BookTimeAverageLabel.setText("Temps moyen de lecture : "+days/dateValid+" jours");
-                }
-                if (dateValid==0)
-                    BookTimeAverageLabel.setText("Temps moyen de lecture : Pas de moyenne possible");
+            ResultSet AvReadingTimeQry = m_statement.executeQuery("SELECT AvReadingTime FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
+            int average = AvReadingTimeQry.getInt(1);
+            if(average>0){
+                BookTimeAverageLabel.setText("Temps moyen de lecture : "+average+" jours");
             }
+            if (average==0)
+                BookTimeAverageLabel.setText("Temps moyen de lecture : Pas de moyenne possible");
+
 
             //Note on babelio
             ResultSet NoteBBQry = m_statement.executeQuery("SELECT NoteBabelio FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
@@ -636,7 +642,6 @@ public class MainWindow extends JDialog {
 
             conn.close();
             m_statement.close();
-            statement.close();
         } catch ( Exception e ) {
             System.err.println( e.getClass().getName() + ": " + e.getMessage() );
             System.exit(0);

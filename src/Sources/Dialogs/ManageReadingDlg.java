@@ -74,9 +74,14 @@ public class ManageReadingDlg extends JDialog {
             String ReadingQry = "DELETE FROM Reading WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"' AND ID='"+getRow()+"'";//Delete in bdd the item that we want delete
             String BookQry = "DELETE FROM Book WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";//Delete in bdd the item that we want delete
             String TaggingQry = "DELETE FROM Tagging WHERE IdBook='"+getIdBook(getMTitle(),getAuthor())+"'";
+            String AvNumQry = "UPDATE Book SET AvReadingTime=?, NumberReading=? WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";
             if(ReadingsTable.getRowCount()>1){//If there is more than one reading you don't need to know if the person really wants to delete the book
-                try (Connection conn = connect(); PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry)) {
+                try (Connection conn = connect(); PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry); PreparedStatement AvNumPstmt = conn.prepareStatement(AvNumQry)) {
                     ReadingPstmt.executeUpdate();
+                    AvNumPstmt.setInt(1, averageTime(getMTitle(), getAuthor()));
+                    AvNumPstmt.setInt(2, getNumberOfReading(getMTitle(), getAuthor()));
+                    AvNumPstmt.executeUpdate();
+
                     contentPane.updateUI();
                     fillBookList();
                     resetIdReading(getMTitle(), getAuthor(), getRowCount());//refresh all ID in the table ReadingDate
@@ -110,11 +115,7 @@ public class ManageReadingDlg extends JDialog {
         });
         edit.addActionListener((ActionEvent evt) ->{
             EditReadingDlg diag = new EditReadingDlg(getMTitle(), getAuthor(),getStartReading(), getEndReading());//Open a dialog where we can edit the date reading
-            File fileEdit = new File("Ressource/Icons/edit.png");
-            String pathEdit = fileEdit.getAbsolutePath();
-            Image imgEdit = Toolkit.getDefaultToolkit().getImage(pathEdit);
-            imgEdit = imgEdit.getScaledInstance(18,18,Image.SCALE_AREA_AVERAGING);
-            diag.setIconImage(imgEdit);
+            diag.setIconImage(getImageEdit());
             diag.setTitle("Modifier une lecture");
             diag.setSize(500,210);
             diag.setLocationRelativeTo(null);
@@ -123,11 +124,17 @@ public class ManageReadingDlg extends JDialog {
             if(diag.isValid()){
                 String sql = "UPDATE Reading SET StartReading=?, EndReading=?" +
                         "WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"' AND ID='"+getRow()+"'";//Edit in bdd the item that we want to change the reading date
-                try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                String AvNumQry = "UPDATE Book SET AvReadingTime=?, NumberReading=? WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";
+                try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql); PreparedStatement AvNumPstmt = conn.prepareStatement(AvNumQry)) {
                     // execute the uptdate statement
                     pstmt.setString(1, diag.getNewStartReading());
                     pstmt.setString(2, diag.getNewEndReading());
                     pstmt.executeUpdate();
+
+                    AvNumPstmt.setInt(1, averageTime(getMTitle(), getAuthor()));
+                    AvNumPstmt.setInt(2, getNumberOfReading(getMTitle(), getAuthor()));
+                    AvNumPstmt.executeUpdate();
+
                     contentPane.updateUI();
                     fillBookList();
                     ReadingsTable.setRowSelectionInterval(getRow(), getRow());//Focus on the reading that we edit

@@ -58,7 +58,8 @@ public class EditReadingDlg extends JDialog {
                     boolean dateFind =false;
                     while (qry.next() && !dateFind){//check if the modified date already exists (unless it is Unknown)
                         //If there is a date then we do not modify and display an error message
-                        if (!getNewStartReading().equals(getStartReading()) && !getNewEndReading().equals(getEndReading()) && !Objects.equals(getNewStartReading(), getNewEndReading())){//if we don't edit the end date
+                        if (!getNewStartReading().equals(getStartReading()) && !getNewEndReading().equals(getEndReading()) && !Objects.equals(getNewStartReading(), getNewEndReading())){
+                            //if we don't edit the end date
                             if (getNewStartReading().equals(qry.getString(3)) && getNewEndReading().equals(qry.getString(4))
                                     && !isDateReadingUnknown() && !isNotDone()){
                                 JFrame jFrame = new JFrame();

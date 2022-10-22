@@ -271,27 +271,6 @@ public class AddBookDlg extends JDialog {
     public Tags getTags(){
         return this.m_tags;
     }
-    public Tags loadTags(){
-        Tags tags = new Tags();
-        String sql = "SELECT Tag,Color FROM Tags";
-        try {
-            Class.forName("org.sqlite.JDBC");
-            m_connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
-            m_statement = m_connection.createStatement();
-            ResultSet tagsQry = m_statement.executeQuery(sql);
-            while (tagsQry.next()){
-                tags.createTag(tagsQry.getString(1));
-                tags.getTag(tags.getSizeTags()-1).setColor(tagsQry.getInt(2));
-            }
-            m_connection.close();
-            m_statement.close();
-        }catch (Exception e){
-            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-            System.exit(0);
-        }
-
-        return tags;
-    }
     public boolean getTagIsUpdate() {
         return this.m_tagIsUpdate;
     }
