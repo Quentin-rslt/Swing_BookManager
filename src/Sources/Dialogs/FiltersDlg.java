@@ -24,6 +24,20 @@ public class FiltersDlg extends JDialog {
     private JRadioButton FiltersascendingOrderRB;
     private JComboBox FiltersSortCB;
     private JComboBox FiltersTagCB;
+    private JSpinner FiltersFirstNumberOPSpin;
+    private JSpinner FiltersSecNumberOPSpin;
+    private JSpinner FiltersFirstNumberORSpin;
+    private JSpinner FiltersSecNumberORSpin;
+    private JSpinner FiltersFirstAvTSpin;
+    private JSpinner FiltersSecAvTSpin;
+    private JSpinner FiltersFirstNoteBBSpin;
+    private JSpinner FiltersSecNoteBBSpin;
+    private JSpinner FiltersFirstStartRSpin;
+    private JSpinner FiltersSecStartRSpin;
+    private JSpinner FiltersFirstEndRSpin;
+    private JSpinner FiltersSecEndRSpin;
+    private JCheckBox UnknownReadDateChecbox;
+    private JCheckBox NotDoneReadChecbox;
 
     private boolean m_isValid;
 
@@ -41,6 +55,37 @@ public class FiltersDlg extends JDialog {
             setVisible(false);
             dispose();
         });
+        UnknownReadDateChecbox.addActionListener((ActionEvent e) -> {
+            if (UnknownReadDateChecbox.isSelected()){
+                NotDoneReadChecbox.setSelected(false);
+                FiltersFirstStartRSpin.setEnabled(false);
+                FiltersSecStartRSpin.setEnabled(false);
+
+                FiltersFirstEndRSpin.setEnabled(false);
+                FiltersSecEndRSpin.setEnabled(false);
+            }
+            else{
+                FiltersFirstStartRSpin.setEnabled(true);
+                FiltersSecStartRSpin.setEnabled(true);
+
+                FiltersFirstEndRSpin.setEnabled(true);
+                FiltersSecEndRSpin.setEnabled(true);
+            }
+        });
+        NotDoneReadChecbox.addActionListener((ActionEvent e) -> {
+            if (NotDoneReadChecbox.isSelected()){
+                UnknownReadDateChecbox.setSelected(false);
+                FiltersFirstStartRSpin.setEnabled(true);
+                FiltersSecStartRSpin.setEnabled(true);
+
+                FiltersFirstEndRSpin.setEnabled(false);
+                FiltersSecEndRSpin.setEnabled(false);
+            }
+            else{
+                FiltersFirstEndRSpin.setEnabled(true);
+                FiltersSecEndRSpin.setEnabled(true);
+            }
+        });
     }
 
     public String getMTitle(){
@@ -57,12 +102,81 @@ public class FiltersDlg extends JDialog {
         SimpleDateFormat format = new SimpleDateFormat("yyyy");//set the date format returned to have the day, month and year
         return format.format(FiltersLastReleaseYearSpin.getValue());
     }
+    public String getFirstNumberOP(){
+        return FiltersFirstNumberOPSpin.getValue().toString();
+    }
+    public String getLastNumberOP(){
+        return FiltersSecNumberOPSpin.getValue().toString();
+    }
+    public String getFirstNumberOR(){
+        return FiltersFirstNumberORSpin.getValue().toString();
+    }
+    public String getLastNumberOR(){
+        return FiltersSecNumberORSpin.getValue().toString();
+    }
+    public String getFirstAvTime(){
+        return FiltersFirstAvTSpin.getValue().toString();
+    }
+    public String getLastAvTime(){
+        return FiltersSecAvTSpin.getValue().toString();
+    }
+    public String getFirstNoteBB(){
+        return FiltersFirstNoteBBSpin.getValue().toString();
+    }
+    public String getLastNoteBB(){
+        return FiltersSecNoteBBSpin.getValue().toString();
+    }
     public String getFirstNote(){
         return FiltersFirstNoteSpin.getValue().toString();
     }
     public String getLastNote(){
         return FiltersLastNoteSpin.getValue().toString();
     }
+    public String getFirstStartDate(){
+        String str;
+        if(UnknownReadDateChecbox.isSelected())
+            str = "Inconnu";
+        else {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");//set the date format returned to have the day, month and year
+            str = format.format(FiltersFirstStartRSpin.getValue());
+        }
+        return str;
+    }
+    public String getLastStartDate(){
+        String str;
+        if(UnknownReadDateChecbox.isSelected())
+            str = "Inconnu";
+        else {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");//set the date format returned to have the day, month and year
+            str =  format.format(FiltersSecStartRSpin.getValue());
+        }
+        return str;
+    }
+    public String getFirstEndDate(){
+        String str;
+        if(UnknownReadDateChecbox.isSelected())
+            str = "Inconnu";
+        else if (NotDoneReadChecbox.isSelected()) {
+            str = "Pas fini";
+        } else {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");//set the date format returned to have the day, month and year
+            str=  format.format(FiltersFirstEndRSpin.getValue());
+        }
+        return str;
+    }
+    public String getLastEndDate(){
+        String str;
+        if(UnknownReadDateChecbox.isSelected())
+            str = "Inconnu";
+        else if (NotDoneReadChecbox.isSelected()) {
+            str = "Pas fini";
+        } else {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");//set the date format returned to have the day, month and year
+            str=  format.format(FiltersSecEndRSpin.getValue());
+        }
+        return str;
+    }
+
     public boolean getIsValid() {
         return m_isValid;
     }
@@ -129,6 +243,42 @@ public class FiltersDlg extends JDialog {
             FiltersFirstNoteSpin.setModel(FirstNoteSM);
             FiltersLastNoteSpin.setModel(EndNoteSM);
 
+            SpinnerModel FirstNoteBB = new SpinnerNumberModel(0, 0, 5, 0.01);
+            SpinnerModel LastNoteBB = new SpinnerNumberModel(5, 0, 5, 0.01);
+            FiltersFirstNoteBBSpin.setModel(FirstNoteBB);
+            FiltersSecNoteBBSpin.setModel(LastNoteBB);
+
+            Date FirstDateStartReading = new Date();
+            SpinnerDateModel FirstStartReadSpinDate = new SpinnerDateModel(new SimpleDateFormat("yyyy/MM/dd").parse("0001/01/01"), null,FirstDateStartReading, Calendar.YEAR);
+            FiltersFirstStartRSpin.setModel(FirstStartReadSpinDate);
+            JSpinner.DateEditor FirstStart = new JSpinner.DateEditor(FiltersFirstStartRSpin,"yyyy/MM/dd");//set the display of the JSpinner reading book date
+            FiltersFirstStartRSpin.setEditor(FirstStart);
+
+            Date LastDateStartReading = new Date();
+            SpinnerDateModel LastStartReadSpinDate = new SpinnerDateModel(LastDateStartReading, null,LastDateStartReading, Calendar.YEAR);
+            FiltersSecStartRSpin.setModel(LastStartReadSpinDate);
+            JSpinner.DateEditor LastStart = new JSpinner.DateEditor(FiltersSecStartRSpin,"yyyy/MM/dd");//set the display of the JSpinner reading book date
+            FiltersSecStartRSpin.setEditor(LastStart);
+
+            Date FirstDateEndReading = new Date();
+            SpinnerDateModel FirstEndReadSpinDate = new SpinnerDateModel(new SimpleDateFormat("yyyy/MM/dd").parse("0001/01/01"), null,FirstDateEndReading, Calendar.YEAR);
+            FiltersFirstEndRSpin.setModel(FirstEndReadSpinDate);
+            JSpinner.DateEditor FirstEnd = new JSpinner.DateEditor(FiltersFirstEndRSpin,"yyyy/MM/dd");//set the display of the JSpinner reading book date
+            FiltersFirstEndRSpin.setEditor(FirstEnd);
+
+            Date LastDateEndReading = new Date();
+            SpinnerDateModel EndReadSpinDate = new SpinnerDateModel(LastDateEndReading, null,LastDateEndReading, Calendar.YEAR);
+            FiltersSecEndRSpin.setModel(EndReadSpinDate);
+            JSpinner.DateEditor LastEnd = new JSpinner.DateEditor(FiltersSecEndRSpin,"yyyy/MM/dd");//set the display of the JSpinner reading book date
+            FiltersSecEndRSpin.setEditor(LastEnd);
+
+            SpinnerModel LastNumberOP = new SpinnerNumberModel(9999999, 0,9999999 , 1);
+            FiltersSecNumberOPSpin.setModel(LastNumberOP);
+            SpinnerModel LastNumberOR = new SpinnerNumberModel(9999999, 0, 9999999, 1);
+            FiltersSecNumberORSpin.setModel(LastNumberOR);
+            SpinnerModel LastAvTime = new SpinnerNumberModel(9999999, 0, 9999999, 1);
+            FiltersSecAvTSpin.setModel(LastAvTime);
+
             fillSortCB();
             fillTagsCB();
         }catch (Exception e){
@@ -137,8 +287,8 @@ public class FiltersDlg extends JDialog {
         }
     }
     public void fillSortCB(){
-        for (String s : Arrays.asList("Titre", "Auteur", "Année de sortie", "Nombre de page", "Note personelle", "Note Babelio", "Date de début de lecture", "Date de fin de lecture"
-        ,"Temps moyen de lecture","Nombre de lecture")) {
+        for (String s : Arrays.asList("Titre", "Auteur", "Année de sortie", "Nombre de page","Nombre de lecture","Temps moyen de lecture", "Note Babelio", "Note personelle", "Date de début de lecture", "Date de fin de lecture"
+        )) {
             FiltersSortCB.addItem(s);
         }
     }

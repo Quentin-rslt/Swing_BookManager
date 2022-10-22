@@ -459,48 +459,46 @@ public class MainWindow extends JDialog {
             System.out.println("Table connexion successfully");
             ResultSet rs;
             if(isFiltered){
+                System.out.println(m_diag.getFirstEndDate()+" - "+m_diag.getLastEndDate());
                 String qry;
+
+                if (!m_diag.getTextTag().equals("")) {
+                    qry = "SELECT Book.Title, Book.Author FROM Book " +
+                            "INNER JOIN Tagging ON Book.ID=Tagging.IdBook " +
+                            "INNER JOIN Tags ON Tagging.idTag=Tags.ID " +
+                            "INNER JOIN Reading ON Reading.Title=Book.Title AND Reading.Author=Book.Author " +
+                            "WHERE Tags.Tag='" + m_diag.getTextTag() + "' " +
+                            "AND Book.Title LIKE '%" + m_diag.getMTitle() + "%'" +
+                            "AND Book.Author LIKE '%" + m_diag.getAuthor() + "%'" +
+                            "AND Book.ReleaseYear BETWEEN '" + m_diag.getFirstDatRelease() + "' AND '" + m_diag.getLastDateRelease() + "'" +
+                            "AND Book.NotePerso BETWEEN '" + m_diag.getFirstNote() + "' AND '" + m_diag.getLastNote() + "'"+
+                            "AND Book.NumberOP BETWEEN '" + m_diag.getFirstNumberOP() + "' AND '" + m_diag.getLastNumberOP() + "'"+
+                            "AND Book.NumberReading BETWEEN '" + m_diag.getFirstNumberOR() + "' AND '" + m_diag.getLastNumberOR() + "'"+
+                            "AND Book.AvReadingTime BETWEEN '" + m_diag.getFirstAvTime() + "' AND '" + m_diag.getLastAvTime() + "'"+
+                            "AND Book.NoteBabelio BETWEEN '" + m_diag.getFirstNoteBB() + "' AND '" + m_diag.getLastNoteBB() + "'"+
+                            "AND Reading.StartReading BETWEEN '" + m_diag.getFirstStartDate() + "' AND '" + m_diag.getLastStartDate() + "'"+
+                            "AND Reading.EndReading BETWEEN '" + m_diag.getFirstEndDate() + "' AND '" + m_diag.getLastEndDate() + "'";
+                } else {
+                    qry = "SELECT Book.Title, Book.Author FROM Book " +
+                            "INNER JOIN Reading ON Reading.Title=Book.Title AND Reading.Author=Book.Author " +
+                            "WHERE Book.Title LIKE '%" + m_diag.getMTitle() + "%'" +
+                            "AND Book.Author LIKE '%" + m_diag.getAuthor() + "%'" +
+                            "AND Book.ReleaseYear BETWEEN '" + m_diag.getFirstDatRelease() + "' AND '" + m_diag.getLastDateRelease() + "'" +
+                            "AND Book.NotePerso BETWEEN '" + m_diag.getFirstNote() + "' AND '" + m_diag.getLastNote() + "'"+
+                            "AND Book.NumberOP BETWEEN '" + m_diag.getFirstNumberOP() + "' AND '" + m_diag.getLastNumberOP() + "'"+
+                            "AND Book.NumberReading BETWEEN '" + m_diag.getFirstNumberOR() + "' AND '" + m_diag.getLastNumberOR() + "'"+
+                            "AND Book.AvReadingTime BETWEEN '" + m_diag.getFirstAvTime() + "' AND '" + m_diag.getLastAvTime() + "'"+
+                            "AND Book.NoteBabelio BETWEEN '" + m_diag.getFirstNoteBB() + "' AND '" + m_diag.getLastNoteBB() + "'"+
+                            "AND Reading.StartReading BETWEEN '" + m_diag.getFirstStartDate() + "' AND '" + m_diag.getLastStartDate() + "'"+
+                            "AND Reading.EndReading BETWEEN '" + m_diag.getFirstEndDate() + "' AND '" + m_diag.getLastEndDate() + "'";
+                }
                 if(!m_diag.getTextSort().equals("EndReading") && !m_diag.getTextSort().equals("StartReading")) {
-                    if (!m_diag.getTextTag().equals("")) {
-                        qry = "SELECT Title, Author FROM Book " +
-                                "INNER JOIN Tagging ON Book.ID=Tagging.IdBook " +
-                                "INNER JOIN Tags ON Tagging.idTag=Tags.ID " +
-                                "WHERE Tags.Tag='" + m_diag.getTextTag() + "' " +
-                                "AND Book.Title LIKE '%" + m_diag.getMTitle() + "%'" +
-                                "AND Book.Author LIKE '%" + m_diag.getAuthor() + "%'" +
-                                "AND Book.ReleaseYear BETWEEN '" + m_diag.getFirstDatRelease() + "' AND '" + m_diag.getLastDateRelease() + "'" +
-                                "AND Book.NotePerso BETWEEN '" + m_diag.getFirstNote() + "' AND '" + m_diag.getLastNote() + "'";
-                    } else {
-                        qry = "SELECT Title, Author FROM Book " +
-                                "WHERE Book.Title LIKE '%" + m_diag.getMTitle() + "%'" +
-                                "AND Book.Author LIKE '%" + m_diag.getAuthor() + "%'" +
-                                "AND Book.ReleaseYear BETWEEN '" + m_diag.getFirstDatRelease() + "' AND '" + m_diag.getLastDateRelease() + "'" +
-                                "AND Book.NotePerso BETWEEN '" + m_diag.getFirstNote() + "' AND '" + m_diag.getLastNote() + "'";
-                    }
                     if(m_diag.isAscending()){
-                        qry = qry+" ORDER BY "+m_diag.getTextSort()+" ASC;";
+                        qry = qry+" ORDER BY Book."+m_diag.getTextSort()+" ASC;";
                     }else{
-                        qry = qry+" ORDER BY "+m_diag.getTextSort()+" DESC;";
+                        qry = qry+" ORDER BY Book."+m_diag.getTextSort()+" DESC;";
                     }
                 }else{
-                    if (!m_diag.getTextTag().equals("")) {
-                        qry = "SELECT Book.Title, Book.Author FROM Book " +
-                                "INNER JOIN Tagging ON Book.ID=Tagging.IdBook " +
-                                "INNER JOIN Tags ON Tagging.idTag=Tags.ID " +
-                                "INNER JOIN Reading ON Reading.Title=Book.Title AND Reading.Author=Book.Author " +
-                                "WHERE Tags.Tag='" + m_diag.getTextTag() + "' " +
-                                "AND Book.Title LIKE '%" + m_diag.getMTitle() + "%'" +
-                                "AND Book.Author LIKE '%" + m_diag.getAuthor() + "%'" +
-                                "AND Book.ReleaseYear BETWEEN '" + m_diag.getFirstDatRelease() + "' AND '" + m_diag.getLastDateRelease() + "'" +
-                                "AND Book.NotePerso BETWEEN '" + m_diag.getFirstNote() + "' AND '" + m_diag.getLastNote() + "'";
-                    } else {
-                        qry = "SELECT Book.Title, Book.Author FROM Book " +
-                                "INNER JOIN Reading ON Reading.Title=Book.Title AND Reading.Author=Book.Author " +
-                                "WHERE Book.Title LIKE '%" + m_diag.getMTitle() + "%'" +
-                                "AND Book.Author LIKE '%" + m_diag.getAuthor() + "%'" +
-                                "AND Book.ReleaseYear BETWEEN '" + m_diag.getFirstDatRelease() + "' AND '" + m_diag.getLastDateRelease() + "'" +
-                                "AND Book.NotePerso BETWEEN '" + m_diag.getFirstNote() + "' AND '" + m_diag.getLastNote() + "'";
-                    }
                     if(m_diag.isAscending()){
                         qry = qry+" ORDER BY Reading."+m_diag.getTextSort()+" ASC;";
                     }else{
