@@ -1,7 +1,9 @@
 package Sources.Dialogs;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -38,6 +40,9 @@ public class FiltersDlg extends JDialog {
     private JSpinner FiltersSecEndRSpin;
     private JCheckBox UnknownReadDateChecbox;
     private JCheckBox NotDoneReadChecbox;
+    private JCheckBox IsFilteredCheckBox;
+    private JPanel FiltersPanel;
+    private JLabel ReadDateLabel;
 
     private boolean m_isValid;
 
@@ -84,6 +89,29 @@ public class FiltersDlg extends JDialog {
             else{
                 FiltersFirstEndRSpin.setEnabled(true);
                 FiltersSecEndRSpin.setEnabled(true);
+            }
+        });
+        IsFilteredCheckBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(isFiltered()){
+                    FiltersFirstStartRSpin.setEnabled(true);
+                    FiltersSecStartRSpin.setEnabled(true);
+                    FiltersFirstEndRSpin.setEnabled(true);
+                    FiltersSecEndRSpin.setEnabled(true);
+                    NotDoneReadChecbox.setEnabled(true);
+                    UnknownReadDateChecbox.setEnabled(true);
+                    ReadDateLabel.setEnabled(true);
+                }
+                else{
+                    FiltersFirstStartRSpin.setEnabled(false);
+                    FiltersSecStartRSpin.setEnabled(false);
+                    FiltersFirstEndRSpin.setEnabled(false);
+                    FiltersSecEndRSpin.setEnabled(false);
+                    NotDoneReadChecbox.setEnabled(false);
+                    UnknownReadDateChecbox.setEnabled(false);
+                    ReadDateLabel.setEnabled(false);
+                }
             }
         });
     }
@@ -175,6 +203,9 @@ public class FiltersDlg extends JDialog {
             str=  format.format(FiltersSecEndRSpin.getValue());
         }
         return str;
+    }
+    public boolean isFiltered(){
+        return this.IsFilteredCheckBox.isSelected();
     }
 
     public boolean getIsValid() {

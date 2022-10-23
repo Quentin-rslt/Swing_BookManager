@@ -273,8 +273,8 @@ public class MainWindow extends JDialog {
                         }
 
                         String TagsInsertQry = "INSERT INTO Tags (Tag,Color)" +
-                                    " SELECT '"+ diag.getTags().getTag(i).getTextTag() +"', '"+diag.getTags().getTag(i).getColor()+"'" +
-                                    " WHERE NOT EXISTS(SELECT * FROM Tags WHERE Tag='" + diag.getTags().getTag(i).getTextTag() + "' AND Color='" + diag.getTags().getTag(i).getColor() + "')";
+                                " SELECT '"+ diag.getTags().getTag(i).getTextTag() +"', '"+diag.getTags().getTag(i).getColor()+"'" +
+                                " WHERE NOT EXISTS(SELECT * FROM Tags WHERE Tag='" + diag.getTags().getTag(i).getTextTag() + "' AND Color='" + diag.getTags().getTag(i).getColor() + "')";
                         PreparedStatement TagsInsertPstmt = conn.prepareStatement(TagsInsertQry);
                         TagsInsertPstmt.executeUpdate();
 
@@ -293,52 +293,52 @@ public class MainWindow extends JDialog {
             }
         });
         add.addActionListener((ActionEvent evt) -> {
-                AddReading diag = openAddReadingDlg(getMTitle(),getAuthor());
+            AddReading diag = openAddReadingDlg(getMTitle(),getAuthor());
 
-                if (diag.getIsValid()){
-                    String ReadingQry = "INSERT INTO Reading (ID,Title,Author,StartReading, EndReading) " +
-                            "VALUES (?,?,?,?,?);";
-                    String AvNumQry = "UPDATE Book SET AvReadingTime=?, NumberReading=?"+
-                            "WHERE Title='"+diag.getMtitle()+"' AND Author='"+diag.getAuthor()+"'";
-                    contentPane.updateUI();
-                    try(Connection conn = connect(); PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry); PreparedStatement AvNumPstmt = conn.prepareStatement(AvNumQry)){
-                        m_statement = conn.createStatement();
-                        ReadingPstmt.setInt(1, getIdReading(diag.getMtitle(), diag.getAuthor()));
-                        ReadingPstmt.setString(2, diag.getMtitle());
-                        ReadingPstmt.setString(3, diag.getAuthor());
+            if (diag.getIsValid()){
+                String ReadingQry = "INSERT INTO Reading (ID,Title,Author,StartReading, EndReading) " +
+                        "VALUES (?,?,?,?,?);";
+                String AvNumQry = "UPDATE Book SET AvReadingTime=?, NumberReading=?"+
+                        "WHERE Title='"+diag.getMtitle()+"' AND Author='"+diag.getAuthor()+"'";
+                contentPane.updateUI();
+                try(Connection conn = connect(); PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry); PreparedStatement AvNumPstmt = conn.prepareStatement(AvNumQry)){
+                    m_statement = conn.createStatement();
+                    ReadingPstmt.setInt(1, getIdReading(diag.getMtitle(), diag.getAuthor()));
+                    ReadingPstmt.setString(2, diag.getMtitle());
+                    ReadingPstmt.setString(3, diag.getAuthor());
 
-                        if(!diag.isDateUnknown()&& !diag.isNotDone()){
-                            ReadingPstmt.setString(4, diag.getNewStartReading());
-                            ReadingPstmt.setString(5, diag.getNewEndReading());
-                        }else if (!diag.isDateUnknown() && diag.isNotDone()) {
-                            ReadingPstmt.setString(4, diag.getNewStartReading());
-                            ReadingPstmt.setString(5, "Pas fini");
-                        }
-                        else {
-                            ReadingPstmt.setString(4, "Inconnu");
-                            ReadingPstmt.setString(5, "Inconnu");
-                        }
-                        ReadingPstmt.executeUpdate();//Insert the new reading
-
-                        AvNumPstmt.setInt(1, averageTime(diag.getMtitle(), diag.getAuthor()));
-                        AvNumPstmt.setInt(2, getNumberOfReading(diag.getMtitle(), diag.getAuthor()));
-                        AvNumPstmt.executeUpdate();
-
-                        setMTitle(diag.getMtitle());
-                        setAuthor(diag.getAuthor());
-                        loadComponents(diag.getMtitle(), diag.getAuthor());
-                        loadDB(false);
-                        //Focus in the jtable on a reading created from an existing book
-                        BooksTable.setRowSelectionInterval(getRowSelected(diag.getMtitle(), diag.getAuthor()), getRowSelected(diag.getMtitle(), diag.getAuthor()));
-
-                        conn.close();
-                        m_statement.close();
-                    }catch (SQLException e){
-                        System.out.println(e.getMessage());
-                        System.exit(0);
+                    if(!diag.isDateUnknown()&& !diag.isNotDone()){
+                        ReadingPstmt.setString(4, diag.getNewStartReading());
+                        ReadingPstmt.setString(5, diag.getNewEndReading());
+                    }else if (!diag.isDateUnknown() && diag.isNotDone()) {
+                        ReadingPstmt.setString(4, diag.getNewStartReading());
+                        ReadingPstmt.setString(5, "Pas fini");
                     }
+                    else {
+                        ReadingPstmt.setString(4, "Inconnu");
+                        ReadingPstmt.setString(5, "Inconnu");
+                    }
+                    ReadingPstmt.executeUpdate();//Insert the new reading
+
+                    AvNumPstmt.setInt(1, averageTime(diag.getMtitle(), diag.getAuthor()));
+                    AvNumPstmt.setInt(2, getNumberOfReading(diag.getMtitle(), diag.getAuthor()));
+                    AvNumPstmt.executeUpdate();
+
+                    setMTitle(diag.getMtitle());
+                    setAuthor(diag.getAuthor());
+                    loadComponents(diag.getMtitle(), diag.getAuthor());
+                    loadDB(false);
+                    //Focus in the jtable on a reading created from an existing book
+                    BooksTable.setRowSelectionInterval(getRowSelected(diag.getMtitle(), diag.getAuthor()), getRowSelected(diag.getMtitle(), diag.getAuthor()));
+
+                    conn.close();
+                    m_statement.close();
+                }catch (SQLException e){
+                    System.out.println(e.getMessage());
+                    System.exit(0);
                 }
-            });
+            }
+        });
         FiltersBookBtn.addActionListener((ActionEvent e)-> {
             m_diag = openFilterDlg();
             loadDB(m_diag.getIsValid());
@@ -353,13 +353,13 @@ public class MainWindow extends JDialog {
             contentPane.updateUI();
         });
         CancelFiltersBtn.addActionListener((ActionEvent e) -> {
-                contentPane.updateUI();
+            contentPane.updateUI();
             loadDB(false);
-                setMTitle(BooksTable.getValueAt(0, 0).toString());
-                setAuthor(BooksTable.getValueAt(0, 1).toString());
-                loadComponents(getMTitle(), getAuthor());
-                BooksTable.setRowSelectionInterval(getRowSelected(getMTitle(),getAuthor()), getRowSelected(getMTitle(),getAuthor()));
-            });
+            setMTitle(BooksTable.getValueAt(0, 0).toString());
+            setAuthor(BooksTable.getValueAt(0, 1).toString());
+            loadComponents(getMTitle(), getAuthor());
+            BooksTable.setRowSelectionInterval(getRowSelected(getMTitle(),getAuthor()), getRowSelected(getMTitle(),getAuthor()));
+        });
         BookManageTagsBtn.addActionListener((ActionEvent e) -> {
             openManageTagsDlg();
             contentPane.updateUI();
@@ -460,49 +460,43 @@ public class MainWindow extends JDialog {
             ResultSet rs;
             if(isFiltered){
                 System.out.println(m_diag.getFirstEndDate()+" - "+m_diag.getLastEndDate());
-                String qry;
+                String qry = "SELECT Book.Title, Book.Author FROM Book " +
+                        "INNER JOIN Reading ON Reading.Title=Book.Title AND Reading.Author=Book.Author ";
 
                 if (!m_diag.getTextTag().equals("")) {
-                    qry = "SELECT Book.Title, Book.Author FROM Book " +
+                    qry = qry+
                             "INNER JOIN Tagging ON Book.ID=Tagging.IdBook " +
                             "INNER JOIN Tags ON Tagging.idTag=Tags.ID " +
-                            "INNER JOIN Reading ON Reading.Title=Book.Title AND Reading.Author=Book.Author " +
-                            "WHERE Tags.Tag='" + m_diag.getTextTag() + "' " +
-                            "AND Book.Title LIKE '%" + m_diag.getMTitle() + "%'" +
-                            "AND Book.Author LIKE '%" + m_diag.getAuthor() + "%'" +
-                            "AND Book.ReleaseYear BETWEEN '" + m_diag.getFirstDatRelease() + "' AND '" + m_diag.getLastDateRelease() + "'" +
-                            "AND Book.NotePerso BETWEEN '" + m_diag.getFirstNote() + "' AND '" + m_diag.getLastNote() + "'"+
-                            "AND Book.NumberOP BETWEEN '" + m_diag.getFirstNumberOP() + "' AND '" + m_diag.getLastNumberOP() + "'"+
-                            "AND Book.NumberReading BETWEEN '" + m_diag.getFirstNumberOR() + "' AND '" + m_diag.getLastNumberOR() + "'"+
-                            "AND Book.AvReadingTime BETWEEN '" + m_diag.getFirstAvTime() + "' AND '" + m_diag.getLastAvTime() + "'"+
-                            "AND Book.NoteBabelio BETWEEN '" + m_diag.getFirstNoteBB() + "' AND '" + m_diag.getLastNoteBB() + "'"+
-                            "AND Reading.StartReading BETWEEN '" + m_diag.getFirstStartDate() + "' AND '" + m_diag.getLastStartDate() + "'"+
-                            "AND Reading.EndReading BETWEEN '" + m_diag.getFirstEndDate() + "' AND '" + m_diag.getLastEndDate() + "'";
-                } else {
-                    qry = "SELECT Book.Title, Book.Author FROM Book " +
-                            "INNER JOIN Reading ON Reading.Title=Book.Title AND Reading.Author=Book.Author " +
-                            "WHERE Book.Title LIKE '%" + m_diag.getMTitle() + "%'" +
-                            "AND Book.Author LIKE '%" + m_diag.getAuthor() + "%'" +
-                            "AND Book.ReleaseYear BETWEEN '" + m_diag.getFirstDatRelease() + "' AND '" + m_diag.getLastDateRelease() + "'" +
-                            "AND Book.NotePerso BETWEEN '" + m_diag.getFirstNote() + "' AND '" + m_diag.getLastNote() + "'"+
-                            "AND Book.NumberOP BETWEEN '" + m_diag.getFirstNumberOP() + "' AND '" + m_diag.getLastNumberOP() + "'"+
-                            "AND Book.NumberReading BETWEEN '" + m_diag.getFirstNumberOR() + "' AND '" + m_diag.getLastNumberOR() + "'"+
-                            "AND Book.AvReadingTime BETWEEN '" + m_diag.getFirstAvTime() + "' AND '" + m_diag.getLastAvTime() + "'"+
-                            "AND Book.NoteBabelio BETWEEN '" + m_diag.getFirstNoteBB() + "' AND '" + m_diag.getLastNoteBB() + "'"+
+                            "WHERE Tags.Tag='" + m_diag.getTextTag() + "' "+
+                            "AND Book.Title LIKE '%" + m_diag.getMTitle() + "%'";
+                }else {
+                    qry = qry + "WHERE Book.Title LIKE '%" + m_diag.getMTitle() + "%'";
+                }
+                qry = qry +
+                        "AND Book.Author LIKE '%" + m_diag.getAuthor() + "%'" +
+                        "AND Book.ReleaseYear BETWEEN '" + m_diag.getFirstDatRelease() + "' AND '" + m_diag.getLastDateRelease() + "'" +
+                        "AND Book.NotePerso BETWEEN '" + m_diag.getFirstNote() + "' AND '" + m_diag.getLastNote() + "'"+
+                        "AND Book.NumberOP BETWEEN '" + m_diag.getFirstNumberOP() + "' AND '" + m_diag.getLastNumberOP() + "'"+
+                        "AND Book.NumberReading BETWEEN '" + m_diag.getFirstNumberOR() + "' AND '" + m_diag.getLastNumberOR() + "'"+
+                        "AND Book.AvReadingTime BETWEEN '" + m_diag.getFirstAvTime() + "' AND '" + m_diag.getLastAvTime() + "'"+
+                        "AND Book.NoteBabelio BETWEEN '" + m_diag.getFirstNoteBB() + "' AND '" + m_diag.getLastNoteBB() + "'";
+                if(m_diag.isFiltered()){
+                    qry = qry +
                             "AND Reading.StartReading BETWEEN '" + m_diag.getFirstStartDate() + "' AND '" + m_diag.getLastStartDate() + "'"+
                             "AND Reading.EndReading BETWEEN '" + m_diag.getFirstEndDate() + "' AND '" + m_diag.getLastEndDate() + "'";
                 }
+
                 if(!m_diag.getTextSort().equals("EndReading") && !m_diag.getTextSort().equals("StartReading")) {
                     if(m_diag.isAscending()){
-                        qry = qry+" ORDER BY Book."+m_diag.getTextSort()+" ASC;";
+                        qry = qry+" GROUP BY Book.Title ORDER BY Book."+m_diag.getTextSort()+" ASC;";
                     }else{
-                        qry = qry+" ORDER BY Book."+m_diag.getTextSort()+" DESC;";
+                        qry = qry+" GROUP BY Book.Title ORDER BY Book."+m_diag.getTextSort()+" DESC;";
                     }
                 }else{
                     if(m_diag.isAscending()){
-                        qry = qry+" ORDER BY Reading."+m_diag.getTextSort()+" ASC;";
+                        qry = qry+" GROUP BY Book.Title ORDER BY Reading."+m_diag.getTextSort()+" ASC;";
                     }else{
-                        qry = qry+" ORDER BY Reading."+m_diag.getTextSort()+" DESC;";
+                        qry = qry+" GROUP BY Book.Title ORDER BY Reading."+m_diag.getTextSort()+" DESC;";
                     }
                 }
 
