@@ -85,6 +85,7 @@ public class EditBookDlg extends JDialog {
                 BookSummaryTextPane.setBorder(roundBrd);
             }
         });
+        initListenerTag();
         BookTagsCB.getEditor().getEditorComponent().addKeyListener(new java.awt.event.KeyAdapter() {
 
             @Override
