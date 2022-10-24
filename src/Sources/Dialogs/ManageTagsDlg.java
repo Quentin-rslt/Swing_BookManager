@@ -9,6 +9,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.sql.*;
 
 import static Sources.Common.*;
@@ -42,32 +43,7 @@ public class ManageTagsDlg extends JDialog {
             dispose();
         });
 
-        for(int i=0; i<getTags().getSizeTags();i++){
-            int finalI = i;
-            getTags().getTag(i).addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseEntered(MouseEvent e) {
-                    super.mouseEntered(e);
-                    Color color = new Color(getTags().getTag(finalI).getColor());
-                    getTags().getTag(finalI).setBackground(color.brighter());
-                    TagsPanel.updateUI();
-                }
-                public void mouseExited(MouseEvent e) {
-                    super.mouseExited(e);
-                    getTags().getTag(finalI).setBackground(new Color(getTags().getTag(finalI).getColor()));
-                    TagsPanel.updateUI();
-                }
-                public void mouseClicked(MouseEvent e) {
-                    super.mouseClicked(e);
-                    if(!e.getComponent().getComponentAt(e.getX(),e.getY()).equals(TagsPanel)){
-                        if(e.getButton() == MouseEvent.BUTTON3) {
-                            m_popup.show(getTags().getTag(finalI), e.getX(), e.getY());//show a popup to edit the reading
-                            m_popup.setInvoker(e.getComponent().getComponentAt(e.getX(),e.getY()));
-                        }
-                    }
-                }
-            });
-        }
+        initListenerTag();
 
         cut.addActionListener((ActionEvent evt)-> {
             Component[] componentList = TagsPanel.getComponents();
@@ -88,6 +64,8 @@ public class ManageTagsDlg extends JDialog {
                 }
                 i++;
             }
+            initListenerTag();
+            TagsPanel.updateUI();
         });
         edit.addActionListener((ActionEvent evt) ->{
             Component[] componentList = TagsPanel.getComponents();
@@ -113,6 +91,8 @@ public class ManageTagsDlg extends JDialog {
                 }
                 i++;
             }
+            initListenerTag();
+            TagsPanel.updateUI();
         });
     }
 
@@ -156,6 +136,40 @@ public class ManageTagsDlg extends JDialog {
         } catch ( Exception e ) {
             System.err.println( e.getClass().getName() + ": " + e.getMessage() );
             System.exit(0);
+        }
+    }
+    public void initListenerTag(){
+        for(int i=0; i<getTags().getSizeTags();i++){
+            MouseListener[] mouseListeners =  getTags().getTag(i).getMouseListeners();
+            for (MouseListener mouseListener : mouseListeners) {
+                getTags().getTag(i).removeMouseListener(mouseListener);
+            }
+        }
+        for(int i=0; i<getTags().getSizeTags();i++){
+            int finalI = i;
+            getTags().getTag(i).addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    super.mouseEntered(e);
+                    Color color = new Color(getTags().getTag(finalI).getColor());
+                    getTags().getTag(finalI).setBackground(color.brighter());
+                    TagsPanel.updateUI();
+                }
+                public void mouseExited(MouseEvent e) {
+                    super.mouseExited(e);
+                    getTags().getTag(finalI).setBackground(new Color(getTags().getTag(finalI).getColor()));
+                    TagsPanel.updateUI();
+                }
+                public void mouseClicked(MouseEvent e) {
+                    super.mouseClicked(e);
+                    if(!e.getComponent().getComponentAt(e.getX(),e.getY()).equals(TagsPanel)){
+                        if(e.getButton() == MouseEvent.BUTTON3) {
+                            m_popup.show(getTags().getTag(finalI), e.getX(), e.getY());//show a popup to edit the reading
+                            m_popup.setInvoker(e.getComponent().getComponentAt(e.getX(),e.getY()));
+                        }
+                    }
+                }
+            });
         }
     }
 }

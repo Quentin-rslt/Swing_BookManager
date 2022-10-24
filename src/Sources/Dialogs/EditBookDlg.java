@@ -89,52 +89,57 @@ public class EditBookDlg extends JDialog {
 
             @Override
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                if (!Objects.equals(BookTagsCB.getSelectedItem(), "")) {
-                    if (evt.getKeyCode()== KeyEvent.VK_ENTER){
-                        m_tags=fillPaneTags(getTags(), BookTagsPanel, BookTagsCB);
-                    }
-                    initListenerTag();
+            if (!Objects.equals(BookTagsCB.getSelectedItem(), "")) {
+                if (evt.getKeyCode()== KeyEvent.VK_ENTER){
+                    fillPaneTags(getTags(), BookTagsPanel, BookTagsCB);
                 }
-                BookTagsPanel.updateUI();
+            }
+            initListenerTag();
+            BookTagsPanel.updateUI();
             }
         });
 
-        initListenerTag();
         cut.addActionListener((ActionEvent evt) ->{
             Component[] componentList = BookTagsPanel.getComponents();
-            for(int i = 0; i<getTags().getSizeTags();i++){
+            int i = 0;
+            while (i<getTags().getSizeTags()) {
                 if(componentList[i]==m_popup.getInvoker()){
                     BookTagsPanel.remove(componentList[i]);
                     getTags().removeTag(i);
+                    break;
                 }
+                i++;
             }
+            initListenerTag();
             BookTagsPanel.updateUI();
         });
         edit.addActionListener((ActionEvent evt)-> {
             Component[] componentList = BookTagsPanel.getComponents();
-            //j is the index of tags where we want to edit
-            int j = 0;
-            for(int i = 0; i<getTags().getSizeTags();i++){
+            int i = 0;
+            while (i<getTags().getSizeTags()) {
                 if(componentList[i]==m_popup.getInvoker()){
-                    j = i;
+                    EditTagDlg diag = openEditTagDlg(getTags().getTag(i));
+
+                    if(diag.isValide()){
+                        setTagIsUpdate(diag.isUpdate());
+                        Tag tag = new Tag(diag.getNewTextTag());
+                        tag.setColor(diag.getNewColorTag().getRGB());
+
+                        getTags().addTag(tag);
+                        BookTagsPanel.remove(componentList[i]);
+                        getTags().getTags().remove(i);
+
+                        for(int j=0; j<getTags().getSizeTags();j++){
+                            BookTagsPanel.add(getTags().getTag(j));
+                        }
+                        BookTagsPanel.updateUI();
+                    }
+                    break;
                 }
+                i++;
             }
-            EditTagDlg diag = openEditTagDlg(getTags().getTag(j));
-
-            if(diag.isValide()){
-                setTagIsUpdate(diag.isUpdate());
-                Tag tag = new Tag(diag.getNewTextTag());
-                tag.setColor(diag.getNewColorTag().getRGB());
-
-                getTags().addTag(tag);
-                BookTagsPanel.remove(componentList[j]);
-                getTags().getTags().remove(j);
-
-                for(int i=0; i<getTags().getSizeTags();i++){
-                    BookTagsPanel.add(getTags().getTag(i));
-                }
-                BookTagsPanel.updateUI();
-            }
+            initListenerTag();
+            BookTagsPanel.updateUI();
         });
     }
 
@@ -280,7 +285,13 @@ public class EditBookDlg extends JDialog {
         }
     }
     public void initListenerTag(){
-        for(int i=0; i<m_tags.getSizeTags();i++){
+        for(int i=0; i<getTags().getSizeTags();i++){
+            MouseListener[] mouseListeners =  getTags().getTag(i).getMouseListeners();
+            for (MouseListener mouseListener : mouseListeners) {
+                getTags().getTag(i).removeMouseListener(mouseListener);
+            }
+        }
+        for(int i=0; i<getTags().getSizeTags();i++){
             int finalI = i;
             getTags().getTag(i).addMouseListener(new MouseAdapter() {
                 @Override
