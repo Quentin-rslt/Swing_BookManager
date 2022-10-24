@@ -1,7 +1,6 @@
 package Sources.Dialogs;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
@@ -23,7 +22,6 @@ public class FiltersDlg extends JDialog {
     private JSpinner FiltersFirstNoteSpin;
     private JSpinner FiltersLastNoteSpin;
     private JRadioButton FiltersorderCrossingRB;
-    private JRadioButton FiltersascendingOrderRB;
     private JComboBox FiltersSortCB;
     private JComboBox FiltersTagCB;
     private JSpinner FiltersFirstNumberOPSpin;
@@ -41,7 +39,6 @@ public class FiltersDlg extends JDialog {
     private JCheckBox UnknownReadDateChecbox;
     private JCheckBox NotDoneReadChecbox;
     private JCheckBox IsFilteredCheckBox;
-    private JPanel FiltersPanel;
     private JLabel ReadDateLabel;
 
     private boolean m_isValid;

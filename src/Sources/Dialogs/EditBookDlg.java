@@ -37,7 +37,7 @@ public class EditBookDlg extends JDialog {
     private String m_oldAuthor;
     private boolean isValid = false;
     final JPopupMenu m_popup;
-    final Tags m_tags = new Tags();
+    Tags m_tags = new Tags();
 
     public EditBookDlg(String title, String author) {
         setContentPane(contentPane);
@@ -91,35 +91,25 @@ public class EditBookDlg extends JDialog {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 if (!Objects.equals(BookTagsCB.getSelectedItem(), "")) {
                     if (evt.getKeyCode()== KeyEvent.VK_ENTER){
-                        fillPaneTags(getTags(), BookTagsPanel, BookTagsCB);
+                        m_tags=fillPaneTags(getTags(), BookTagsPanel, BookTagsCB);
                     }
+                    initListenerTag();
                 }
                 BookTagsPanel.updateUI();
             }
         });
 
-        BookTagsPanel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                super.mouseClicked(e);
-                if(!e.getComponent().getComponentAt(e.getX(),e.getY()).equals(BookTagsPanel)){
-                    if(e.getButton() == MouseEvent.BUTTON3) {
-                        m_popup.show(BookTagsPanel, e.getX(), e.getY());//show a popup to edit the reading
-                        m_popup.setInvoker(e.getComponent().getComponentAt(e.getX(),e.getY()));
-                    }
+        initListenerTag();
+        cut.addActionListener((ActionEvent evt) ->{
+            Component[] componentList = BookTagsPanel.getComponents();
+            for(int i = 0; i<getTags().getSizeTags();i++){
+                if(componentList[i]==m_popup.getInvoker()){
+                    BookTagsPanel.remove(componentList[i]);
+                    getTags().removeTag(i);
                 }
             }
+            BookTagsPanel.updateUI();
         });
-        cut.addActionListener((ActionEvent evt) ->{
-                Component[] componentList = BookTagsPanel.getComponents();
-                for(int i = 0; i<getTags().getSizeTags();i++){
-                    if(componentList[i]==m_popup.getInvoker()){
-                        BookTagsPanel.remove(componentList[i]);
-                        getTags().removeTag(i);
-                    }
-                }
-                BookTagsPanel.updateUI();
-            });
         edit.addActionListener((ActionEvent evt)-> {
             Component[] componentList = BookTagsPanel.getComponents();
             //j is the index of tags where we want to edit
@@ -283,11 +273,38 @@ public class EditBookDlg extends JDialog {
             System.exit(0);
         }
     }
-
     public void fillThemeCB(){
         this.BookTagsCB.addItem("");
         for (int i = 0; i<loadTags().getSizeTags(); i++){
             this.BookTagsCB.addItem(loadTags().getTag(i).getTextTag());
+        }
+    }
+    public void initListenerTag(){
+        for(int i=0; i<m_tags.getSizeTags();i++){
+            int finalI = i;
+            getTags().getTag(i).addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    super.mouseEntered(e);
+                    Color color = new Color(getTags().getTag(finalI).getColor());
+                    getTags().getTag(finalI).setBackground(color.brighter());
+                    BookTagsPanel.updateUI();
+                }
+                public void mouseExited(MouseEvent e) {
+                    super.mouseExited(e);
+                    getTags().getTag(finalI).setBackground(new Color(getTags().getTag(finalI).getColor()));
+                    BookTagsPanel.updateUI();
+                }
+                public void mouseClicked(MouseEvent e) {
+                    super.mouseClicked(e);
+                    if(!e.getComponent().getComponentAt(e.getX(),e.getY()).equals(BookTagsPanel)){
+                        if(e.getButton() == MouseEvent.BUTTON3) {
+                            m_popup.show(getTags().getTag(finalI), e.getX(), e.getY());//show a popup to edit the reading
+                            m_popup.setInvoker(e.getComponent().getComponentAt(e.getX(),e.getY()));
+                        }
+                    }
+                }
+            });
         }
     }
 }

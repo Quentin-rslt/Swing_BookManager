@@ -33,7 +33,7 @@
           </component>
         </children>
       </grid>
-      <grid id="30c2a" binding="FiltersPanel" layout-manager="GridLayoutManager" row-count="13" column-count="5" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="1">
+      <grid id="30c2a" layout-manager="GridLayoutManager" row-count="13" column-count="5" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="1">
         <margin top="5" left="10" bottom="0" right="10"/>
         <constraints border-constraint="Center"/>
         <properties/>
@@ -375,7 +375,7 @@
                   <text value="Ordre croissant"/>
                 </properties>
               </component>
-              <component id="e27d2" class="javax.swing.JRadioButton" binding="FiltersascendingOrderRB">
+              <component id="e27d2" class="javax.swing.JRadioButton">
                 <constraints/>
                 <properties>
                   <horizontalAlignment value="2"/>

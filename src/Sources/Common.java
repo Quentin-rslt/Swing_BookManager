@@ -95,7 +95,7 @@ public class Common {
             }
         }
     }
-    public static void fillPaneTags(Tags tags, JPanel panel, JComboBox cb){
+    public static Tags fillPaneTags(Tags tags, JPanel panel, JComboBox cb){
         boolean tagFind = false;
         int i = 0;
         while(!tagFind && i<tags.getSizeTags()){
@@ -151,6 +151,7 @@ public class Common {
                 }
             }
         }
+        return tags;
     }
     public static void setNameOfBook(String name){
         m_name = name;

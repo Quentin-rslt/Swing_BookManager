@@ -48,7 +48,8 @@ public class ManageTagsDlg extends JDialog {
                 @Override
                 public void mouseEntered(MouseEvent e) {
                     super.mouseEntered(e);
-                    getTags().getTag(finalI).setBackground(Color.white);
+                    Color color = new Color(getTags().getTag(finalI).getColor());
+                    getTags().getTag(finalI).setBackground(color.brighter());
                     TagsPanel.updateUI();
                 }
                 public void mouseExited(MouseEvent e) {
