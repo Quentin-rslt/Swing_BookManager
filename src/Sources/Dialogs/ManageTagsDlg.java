@@ -54,7 +54,6 @@ public class ManageTagsDlg extends JDialog {
             }
             }
         });
-
         cut.addActionListener((ActionEvent evt)-> {
             Component[] componentList = TagsPanel.getComponents();
             int i = 0;
@@ -75,7 +74,6 @@ public class ManageTagsDlg extends JDialog {
                 i++;
             }
         });
-
         edit.addActionListener((ActionEvent evt) ->{
             Component[] componentList = TagsPanel.getComponents();
             int i = 0;

@@ -424,7 +424,7 @@
                   <focusPainted value="false"/>
                   <horizontalTextPosition value="0"/>
                   <margin top="5" left="25" bottom="5" right="25"/>
-                  <text value="Filtres"/>
+                  <text value="Critères"/>
                   <verticalAlignment value="0"/>
                 </properties>
               </component>

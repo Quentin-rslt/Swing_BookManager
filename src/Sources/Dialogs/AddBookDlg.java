@@ -302,6 +302,9 @@ public class AddBookDlg extends JDialog {
         JSpinner.DateEditor start = new JSpinner.DateEditor(BookStartReadingSpin,"yyyy/MM/dd");//set the display of the JSpinner reading book date
         BookStartReadingSpin.setEditor(start);
 
+        SpinnerModel BookNumberOPSM = new SpinnerNumberModel(0, 0, 9999999, 1);
+        BookNumberOPSpin.setModel(BookNumberOPSM);
+
         fillThemeCB();
     }
     public void initComponents(boolean bool){

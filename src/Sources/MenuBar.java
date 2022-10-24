@@ -79,6 +79,7 @@ public class MenuBar {
 
         //Filters book
         JMenuItem filterMenuItem = new JMenuItem("Filtrer");
+        filterMenuItem.addActionListener((e -> openFilterDlg()));
 
         //Edit Menu
         JMenu editMenu = new JMenu("Editer");

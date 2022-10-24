@@ -79,6 +79,7 @@ public class MainWindow extends JDialog {
             ManageReadingsBtn.setEnabled(true);
             FiltersBookBtn.setEnabled(true);
         }else{
+            BookManageTagsBtn.setEnabled(false);
             ManageReadingsBtn.setEnabled(false);
             FiltersBookBtn.setEnabled(false);
         }
