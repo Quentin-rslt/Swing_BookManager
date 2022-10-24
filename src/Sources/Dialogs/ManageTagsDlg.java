@@ -42,18 +42,32 @@ public class ManageTagsDlg extends JDialog {
             dispose();
         });
 
-        TagsPanel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-            super.mouseClicked(e);
-            if(!e.getComponent().getComponentAt(e.getX(),e.getY()).equals(TagsPanel)){
-                if(e.getButton() == MouseEvent.BUTTON3) {
-                    m_popup.show(TagsPanel, e.getX(), e.getY());//show a popup to edit the reading
-                    m_popup.setInvoker(e.getComponent().getComponentAt(e.getX(),e.getY()));
+        for(int i=0; i<getTags().getSizeTags();i++){
+            int finalI = i;
+            getTags().getTag(i).addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    super.mouseEntered(e);
+                    getTags().getTag(finalI).setBackground(Color.white);
+                    TagsPanel.updateUI();
                 }
-            }
-            }
-        });
+                public void mouseExited(MouseEvent e) {
+                    super.mouseExited(e);
+                    getTags().getTag(finalI).setBackground(new Color(getTags().getTag(finalI).getColor()));
+                    TagsPanel.updateUI();
+                }
+                public void mouseClicked(MouseEvent e) {
+                    super.mouseClicked(e);
+                    if(!e.getComponent().getComponentAt(e.getX(),e.getY()).equals(TagsPanel)){
+                        if(e.getButton() == MouseEvent.BUTTON3) {
+                            m_popup.show(getTags().getTag(finalI), e.getX(), e.getY());//show a popup to edit the reading
+                            m_popup.setInvoker(e.getComponent().getComponentAt(e.getX(),e.getY()));
+                        }
+                    }
+                }
+            });
+        }
+
         cut.addActionListener((ActionEvent evt)-> {
             Component[] componentList = TagsPanel.getComponents();
             int i = 0;
