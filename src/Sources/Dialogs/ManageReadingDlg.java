@@ -1,15 +1,14 @@
 package Sources.Dialogs;
 
+import Sources.MainWindow;
 import Sources.RoundBorderCp;
 
 import javax.swing.*;
 import javax.swing.border.AbstractBorder;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.File;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -39,11 +38,12 @@ public class ManageReadingDlg extends JDialog {
     private boolean m_isEmpty = false;
     private int m_row;
 
-    public ManageReadingDlg(String title, String author) {
+    public ManageReadingDlg(MainWindow parent, String title, String author) {
+        super(parent, "ManageReadingDlg", false);
         setContentPane(contentPane);
         setMTitle(title);
         setAuthor(author);
-        fillBookList();
+        fillBookList(getMTitle(),getAuthor());
         ReadingsTable.setRowSelectionInterval(0, 0);
 
         m_popup = new JPopupMenu();//Create a popup menu to delete a reading an edit this reading
@@ -52,7 +52,6 @@ public class ManageReadingDlg extends JDialog {
         m_popup.add(cut);
         m_popup.add(edit);
 
-        setModal(true);
         CancelBtn.addActionListener((ActionEvent e)-> {
             setIsEmpty(ReadingsTable.getRowCount() <= 0);
             setVisible(false);
@@ -83,9 +82,14 @@ public class ManageReadingDlg extends JDialog {
                     AvNumPstmt.executeUpdate();
 
                     contentPane.updateUI();
-                    fillBookList();
+                    fillBookList(getMTitle(),getAuthor());
                     resetIdReading(getMTitle(), getAuthor(), getRowCount());//refresh all ID in the table ReadingDate
                     ReadingsTable.setRowSelectionInterval(0, 0);
+
+                    //load bdd in MainWindow
+                    parent.loadDB(false);
+                    parent.BooksTable.setRowSelectionInterval(parent.getRowSelected(getMTitle(),getAuthor()),parent.getRowSelected(getMTitle(),getAuthor()));//focus on the book where you have managed your readings
+                    parent.loadComponents(getMTitle(), getAuthor());
                 } catch (SQLException e) {
                     System.out.println(e.getMessage());
                 }
@@ -103,10 +107,19 @@ public class ManageReadingDlg extends JDialog {
                         ReadingPstmt.executeUpdate();
                         BookPstmt.executeUpdate();
                         TaggingPstmt.executeUpdate();
-                        fillBookList();
+                        fillBookList(getMTitle(),getAuthor());
                         ManageTitleLabel.setText("Lectures du livre : ");
                         ManageAuthorLabel.setText("Ecrit par : ");
                         contentPane.updateUI();
+
+                        //load bdd in MainWindow
+                        parent.loadDB(false);
+                        parent.BooksTable.setRowSelectionInterval(0, 0);
+                        parent.setMTitle(parent.BooksTable.getValueAt(0, 0).toString());
+                        parent.setAuthor(parent.BooksTable.getValueAt(0, 1).toString());
+                        parent.loadComponents(MainWindow.getMTitle(), MainWindow.getAuthor());
+                        setVisible(false);
+                        dispose();
                     } catch (SQLException e) {
                         System.out.println(e.getMessage());
                     }
@@ -136,11 +149,14 @@ public class ManageReadingDlg extends JDialog {
                     AvNumPstmt.executeUpdate();
 
                     contentPane.updateUI();
-                    fillBookList();
+                    fillBookList(getMTitle(),getAuthor());
                     ReadingsTable.setRowSelectionInterval(getRow(), getRow());//Focus on the reading that we edit
                 } catch (SQLException e) {
                     System.out.println(e.getMessage());
                 }
+                parent.loadDB(false);
+                parent.BooksTable.setRowSelectionInterval(parent.getRowSelected(getMTitle(),getAuthor()),parent.getRowSelected(getMTitle(),getAuthor()));//focus on the book where you have managed your readings
+                parent.loadComponents(getMTitle(), getAuthor());
             }
         });
     }
@@ -205,31 +221,32 @@ public class ManageReadingDlg extends JDialog {
         }
 
     }
-    public void fillBookList(){
-        ManageTitleLabel.setText("Lectures du livre : "+getMTitle());
-        ManageAuthorLabel.setText("Ecrit par : "+getAuthor());
-        m_tableModel.setRowCount(0);
-        try(Connection conn = connect()){
-            Statement m_statement = conn.createStatement();
-            ResultSet qry = m_statement.executeQuery("SELECT StartReading, EndReading FROM Reading WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+ "'");
 
-            while (qry.next()){
+    public void fillBookList(String title, String author) {
+        ManageTitleLabel.setText("Lectures du livre : " + title);
+        ManageAuthorLabel.setText("Ecrit par : " + author);
+        m_tableModel.setRowCount(0);
+        try (Connection conn = connect()) {
+            Statement m_statement = conn.createStatement();
+            ResultSet qry = m_statement.executeQuery("SELECT StartReading, EndReading FROM Reading WHERE Title='" + title + "' AND Author='" + author + "'");
+
+            while (qry.next()) {
                 String startReading = qry.getString("StartReading");
                 String endReading = qry.getString("EndReading");
 
                 long days;
-                String StdDays="";
+                String StdDays = "";
                 boolean isOk = ((qry.getString("StartReading").equals("Inconnu") && qry.getString("EndReading").equals("Inconnu")) ||
                         (qry.getString("StartReading").equals("Inconnu") && qry.getString("EndReading").equals("Pas fini")))
-                        ||((!qry.getString("StartReading").equals("Inconnu") && qry.getString("EndReading").equals("Inconnu")) ||
+                        || ((!qry.getString("StartReading").equals("Inconnu") && qry.getString("EndReading").equals("Inconnu")) ||
                         (!qry.getString("StartReading").equals("Inconnu") && qry.getString("EndReading").equals("Pas fini")))
-                        ||((qry.getString("StartReading").equals("Inconnu") && !qry.getString("EndReading").equals("Inconnu")) ||
+                        || ((qry.getString("StartReading").equals("Inconnu") && !qry.getString("EndReading").equals("Inconnu")) ||
                         (qry.getString("StartReading").equals("Inconnu") && !qry.getString("EndReading").equals("Pas fini")));
-                if(!isOk){
-                    LocalDate start = LocalDate.parse(qry.getString("StartReading")) ;
-                    LocalDate stop = LocalDate.parse(qry.getString("EndReading")) ;
-                    days = ChronoUnit.DAYS.between(start , stop);
-                    StdDays = days+" jours";
+                if (!isOk) {
+                    LocalDate start = LocalDate.parse(qry.getString("StartReading"));
+                    LocalDate stop = LocalDate.parse(qry.getString("EndReading"));
+                    days = ChronoUnit.DAYS.between(start, stop);
+                    StdDays = days + " jours";
                 }
 
                 String[] header = {"Début de lecture", "Fin de lecture", "Temps de lecture"};
@@ -239,18 +256,19 @@ public class ManageReadingDlg extends JDialog {
                 m_tableModel.addRow(data);//add to tablemodel the data
             }
             ReadingsTable.setModel(m_tableModel);
-            AbstractBorder roundBrdMax = new RoundBorderCp(contentPane.getBackground(),1,30, 0,0,0);
-            AbstractBorder roundBrdMin = new RoundBorderCp(contentPane.getBackground(),1,30, 400-(ReadingsTable.getRowCount()*ReadingsTable.getRowHeight()),0,0);
-            if(ReadingsTable.getRowCount()>11)
+            AbstractBorder roundBrdMax = new RoundBorderCp(contentPane.getBackground(), 1, 30, 0, 0, 0);
+            AbstractBorder roundBrdMin = new RoundBorderCp(contentPane.getBackground(), 1, 30, 400 - (ReadingsTable.getRowCount() * ReadingsTable.getRowHeight()), 0, 0);
+            if (ReadingsTable.getRowCount() > 11)
                 ReadingsTable.setBorder(roundBrdMax);
             else
                 ReadingsTable.setBorder(roundBrdMin);
-
+            if(ReadingsTable.getRowCount()>0)
+                ReadingsTable.setRowSelectionInterval(0, 0);
             qry.close();
             conn.close();
             m_statement.close();
-        } catch ( Exception e ) {
-            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(0);
         }
     }

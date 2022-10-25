@@ -35,7 +35,7 @@ public class MainWindow extends JDialog {
     private JPanel BookTagsPanel;
     private JScrollPane JSpane;
     private JButton BookManageTagsBtn;
-    private JTable BooksTable;
+    public JTable BooksTable;
     private JScrollPane jsPane;
     private final DefaultTableModel m_tableModel = new DefaultTableModel(){//Create a Jtable with the tablemodel not editable
         public boolean isCellEditable(int rowIndex, int colIndex) {
@@ -49,6 +49,8 @@ public class MainWindow extends JDialog {
     final JPopupMenu m_popup;
     private FiltersDlg m_diag;
     private Tags m_tags = new Tags();
+    private int counterManageReading = 0;
+    private ManageReadingDlg m_ManageReadingDiag;
 
 
     public MainWindow() {
@@ -75,6 +77,7 @@ public class MainWindow extends JDialog {
             setAuthor(BooksTable.getValueAt(0, 1).toString());
             loadComponents(getMTitle(), getAuthor());
             setJMenuBar(createMenuBar(getMTitle(),getAuthor()));
+
             BooksTable.setRowSelectionInterval(getRowSelected(getMTitle(), getAuthor()), getRowSelected(getMTitle(), getAuthor()));
             ManageReadingsBtn.setEnabled(true);
             FiltersBookBtn.setEnabled(true);
@@ -93,22 +96,15 @@ public class MainWindow extends JDialog {
                 setRowSelected(BooksTable.rowAtPoint(evt.getPoint()));
                 setMTitle(BooksTable.getValueAt(getRowSelected(), 0).toString()); //get the value of the column of the table
                 setAuthor(BooksTable.getValueAt(getRowSelected(), 1).toString());
+                if(m_ManageReadingDiag!=null)
+                    m_ManageReadingDiag.fillBookList(getMTitle(),getAuthor());
                 loadComponents(getMTitle(), getAuthor());
                 if(evt.getButton() == MouseEvent.BUTTON3) {//if we right click show a popup to edit the book
                     BooksTable.setRowSelectionInterval(getRowSelected(), getRowSelected());//we focus the row when we right on the item
                     m_popup.show(BooksTable, evt.getX(), evt.getY());
                 }
                 if(evt.getClickCount() == 2 && evt.getButton() == MouseEvent.BUTTON1){
-                    ManageReadingDlg diag = openManageReadingDlg(getMTitle(), getAuthor());
-                    contentPane.updateUI();
-                    loadDB(false);
-                    if(diag.isEmpty()){
-                        initComponents();
-                    }
-                    else {
-                        BooksTable.setRowSelectionInterval(getRowSelected(getMTitle(),getAuthor()),getRowSelected(getMTitle(),getAuthor()));//focus on the book where you have managed your readings
-                        loadComponents(getMTitle(), getAuthor());
-                    }
+                    openManageReadingDlg(MainWindow.this,  getMTitle(), getAuthor());
                 }
             }
         });
@@ -197,16 +193,7 @@ public class MainWindow extends JDialog {
             }
         });
         ManageReadingsBtn.addActionListener((ActionEvent e) ->{
-            ManageReadingDlg diag = openManageReadingDlg(getMTitle(),getAuthor());
-            contentPane.updateUI();
-            loadDB(false);
-            if(diag.isEmpty()){
-                initComponents();
-            }
-            else {
-                BooksTable.setRowSelectionInterval(getRowSelected(getMTitle(),getAuthor()),getRowSelected(getMTitle(),getAuthor()));//focus on the book where you have managed your readings
-                loadComponents(getMTitle(), getAuthor());
-            }
+            m_ManageReadingDiag= openManageReadingDlg(this, getMTitle(),getAuthor());
         });
         cut.addActionListener((ActionEvent evt) -> {
             JFrame jFrame = new JFrame();
@@ -656,11 +643,11 @@ public class MainWindow extends JDialog {
             System.err.println( "Failed to load darkTheme" );
         }
 
-        MainWindow dialog = new MainWindow();
-        dialog.setTitle("Book manager");
-        dialog.setSize(1350,760);
-        dialog.setLocationRelativeTo(null);
-        dialog.setVisible(true);
+        MainWindow parent = new MainWindow();
+        parent.setTitle("Book manager");
+        parent.setSize(1350,760);
+        parent.setLocationRelativeTo(null);
+        parent.setVisible(true);
         System.exit(0);
     }
 }

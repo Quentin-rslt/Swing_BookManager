@@ -66,7 +66,7 @@ public class MenuBar {
         JMenuItem manageTagMenuItem = new JMenuItem("Les tags");
         manageTagMenuItem.addActionListener((e->openManageTagsDlg()));
         JMenuItem manageReadingMenuItem = new JMenuItem("Les lectures");
-        manageReadingMenuItem.addActionListener((e->openManageReadingDlg(title, author)));
+        //manageReadingMenuItem.addActionListener((e->openManageReadingDlg(parent, title, author)));
         manageMenu.add(manageTagMenuItem);
         manageMenu.add(manageReadingMenuItem);
 

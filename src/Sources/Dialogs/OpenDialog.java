@@ -1,13 +1,14 @@
 package Sources.Dialogs;
 
+import Sources.MainWindow;
 import Sources.Tag;
 
 import static Sources.Common.getImageAdd;
 import static Sources.Common.getImageEdit;
 
 public class OpenDialog {
-    public static ManageReadingDlg openManageReadingDlg(String title, String author){
-        ManageReadingDlg diag = new ManageReadingDlg(title, author);
+    public static ManageReadingDlg openManageReadingDlg(MainWindow parent, String title, String author){
+        ManageReadingDlg diag = new ManageReadingDlg(parent, title, author);
         diag.setTitle("Gérer les lectures");
         diag.setSize(500,570);
         diag.setLocationRelativeTo(null);
