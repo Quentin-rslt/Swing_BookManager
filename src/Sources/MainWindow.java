@@ -35,7 +35,7 @@ public class MainWindow extends JDialog {
     private JPanel BookTagsPanel;
     private JScrollPane JSpane;
     private JButton BookManageTagsBtn;
-    public JTable BooksTable;
+    private JTable BooksTable;
     private JScrollPane jsPane;
     private final DefaultTableModel m_tableModel = new DefaultTableModel(){//Create a Jtable with the tablemodel not editable
         public boolean isCellEditable(int rowIndex, int colIndex) {
@@ -77,7 +77,7 @@ public class MainWindow extends JDialog {
             setMTitle(BooksTable.getValueAt(0, 0).toString());
             setAuthor(BooksTable.getValueAt(0, 1).toString());
             loadComponents(getMTitle(), getAuthor());
-            setJMenuBar(createMenuBar(getMTitle(),getAuthor()));
+            setJMenuBar(createMenuBar(this,getMTitle(),getAuthor()));
 
             BooksTable.setRowSelectionInterval(getRowSelected(getMTitle(), getAuthor()), getRowSelected(getMTitle(), getAuthor()));
             ManageReadingsBtn.setEnabled(true);
@@ -97,8 +97,9 @@ public class MainWindow extends JDialog {
                 setRowSelected(BooksTable.rowAtPoint(evt.getPoint()));
                 setMTitle(BooksTable.getValueAt(getRowSelected(), 0).toString()); //get the value of the column of the table
                 setAuthor(BooksTable.getValueAt(getRowSelected(), 1).toString());
-                if(m_ManageReadingDiag!=null)
+                if(m_ManageReadingDiag!=null){
                     m_ManageReadingDiag.fillBookList(getMTitle(),getAuthor());
+                }
                 loadComponents(getMTitle(), getAuthor());
                 if(evt.getButton() == MouseEvent.BUTTON3) {//if we right click show a popup to edit the book
                     BooksTable.setRowSelectionInterval(getRowSelected(), getRowSelected());//we focus the row when we right on the item
@@ -106,7 +107,7 @@ public class MainWindow extends JDialog {
                 }
                 if(evt.getClickCount() == 2 && evt.getButton() == MouseEvent.BUTTON1){
                     if(getCounterManageReading()<1){
-                        openManageReadingDlg(MainWindow.this,  getMTitle(), getAuthor());
+                        m_ManageReadingDiag=openManageReadingDlg(MainWindow.this,  getMTitle(), getAuthor());
                         setCounterManageReading(1);
                     }
                 }
@@ -350,6 +351,9 @@ public class MainWindow extends JDialog {
                 setAuthor(BooksTable.getValueAt(0, 1).toString());
                 loadComponents(getMTitle(), getAuthor());
                 BooksTable.setRowSelectionInterval(getRowSelected(getMTitle(),getAuthor()), getRowSelected(getMTitle(),getAuthor()));
+                if(m_ManageReadingDiag!=null){
+                    m_ManageReadingDiag.fillBookList(getMTitle(),getAuthor());
+                }
             }
             else
                 initComponents();
@@ -362,6 +366,9 @@ public class MainWindow extends JDialog {
             setAuthor(BooksTable.getValueAt(0, 1).toString());
             loadComponents(getMTitle(), getAuthor());
             BooksTable.setRowSelectionInterval(getRowSelected(getMTitle(),getAuthor()), getRowSelected(getMTitle(),getAuthor()));
+            if(m_ManageReadingDiag!=null){
+                m_ManageReadingDiag.fillBookList(getMTitle(),getAuthor());
+            }
         });
         BookManageTagsBtn.addActionListener((ActionEvent e) -> {
             openManageTagsDlg();
@@ -621,7 +628,7 @@ public class MainWindow extends JDialog {
             ResultSet ImageQry = m_statement.executeQuery("SELECT Image FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
             addImageToPanel(ImageQry.getString(1),BookPhotoPanel);
 
-            setJMenuBar(createMenuBar(getMTitle(), getAuthor()));
+            setJMenuBar(createMenuBar(this, getMTitle(), getAuthor()));
 
             conn.close();
             m_statement.close();
@@ -666,7 +673,16 @@ public class MainWindow extends JDialog {
     public int getCounterManageReading() {
         return counterManageReading;
     }
+    public ManageReadingDlg getManageReadingDiag(){
+        return this.m_ManageReadingDiag;
+    }
+    public JTable getBooksTable(){
+        return this.BooksTable;
+    }
 
+    public void setCounterManageReading(ManageReadingDlg manageReadingDiag) {
+        this.m_ManageReadingDiag = manageReadingDiag;
+    }
     public void setCounterManageReading(int counterManageReading) {
         this.counterManageReading = this.counterManageReading+counterManageReading;
     }

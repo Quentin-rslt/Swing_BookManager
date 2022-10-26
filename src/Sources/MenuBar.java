@@ -4,14 +4,14 @@ import javax.swing.*;
 import static Sources.Dialogs.OpenDialog.*;
 
 public class MenuBar {
-    public static JMenuBar createMenuBar(String title, String author) {
+    public static JMenuBar createMenuBar(MainWindow parent, String title, String author) {
         JMenu helpMenu = new JMenu("Aide");
         JMenuItem aboutMenuItem = new JMenuItem("A propos");
         helpMenu.add(aboutMenuItem);
 
         JMenuBar menuBar = new JMenuBar();
         menuBar.add(createFileMenu());
-        menuBar.add(createEditMenu(title, author));
+        menuBar.add(createEditMenu(parent, title, author));
         menuBar.add(createViewMenu());
         menuBar.add(helpMenu);
 
@@ -51,7 +51,7 @@ public class MenuBar {
 
         return fileMenu;
     }
-    public static JMenu createEditMenu(String title, String author){
+    public static JMenu createEditMenu(MainWindow parent, String title, String author){
         //Add menu
         JMenu addMenu = new JMenu("Ajouter ");
         JMenuItem addBookMenuItem = new JMenuItem("Un livre");
@@ -66,7 +66,7 @@ public class MenuBar {
         JMenuItem manageTagMenuItem = new JMenuItem("Les tags");
         manageTagMenuItem.addActionListener((e->openManageTagsDlg()));
         JMenuItem manageReadingMenuItem = new JMenuItem("Les lectures");
-        //manageReadingMenuItem.addActionListener((e->openManageReadingDlg(parent, title, author)));
+        manageReadingMenuItem.addActionListener((e->parent.setCounterManageReading(openManageReadingDlg(parent, title, author))));
         manageMenu.add(manageTagMenuItem);
         manageMenu.add(manageReadingMenuItem);
 

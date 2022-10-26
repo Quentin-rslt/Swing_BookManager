@@ -89,7 +89,7 @@ public class ManageReadingDlg extends JDialog {
 
                     //load bdd in MainWindow
                     parent.loadDB(false);
-                    parent.BooksTable.setRowSelectionInterval(parent.getRowSelected(getMTitle(),getAuthor()),parent.getRowSelected(getMTitle(),getAuthor()));//focus on the book where you have managed your readings
+                    parent.getBooksTable().setRowSelectionInterval(parent.getRowSelected(getMTitle(),getAuthor()),parent.getRowSelected(getMTitle(),getAuthor()));//focus on the book where you have managed your readings
                     parent.loadComponents(getMTitle(), getAuthor());
                 } catch (SQLException e) {
                     System.out.println(e.getMessage());
@@ -115,9 +115,9 @@ public class ManageReadingDlg extends JDialog {
 
                         //load bdd in MainWindow
                         parent.loadDB(false);
-                        parent.BooksTable.setRowSelectionInterval(0, 0);
-                        parent.setMTitle(parent.BooksTable.getValueAt(0, 0).toString());
-                        parent.setAuthor(parent.BooksTable.getValueAt(0, 1).toString());
+                        parent.getBooksTable().setRowSelectionInterval(0, 0);
+                        parent.setMTitle(parent.getBooksTable().getValueAt(0, 0).toString());
+                        parent.setAuthor(parent.getBooksTable().getValueAt(0, 1).toString());
                         parent.loadComponents(MainWindow.getMTitle(), MainWindow.getAuthor());
                         parent.resetCounterManageReading(0);
                         setVisible(false);
@@ -157,7 +157,7 @@ public class ManageReadingDlg extends JDialog {
                     System.out.println(e.getMessage());
                 }
                 parent.loadDB(false);
-                parent.BooksTable.setRowSelectionInterval(parent.getRowSelected(getMTitle(),getAuthor()),parent.getRowSelected(getMTitle(),getAuthor()));//focus on the book where you have managed your readings
+                parent.getBooksTable().setRowSelectionInterval(parent.getRowSelected(getMTitle(),getAuthor()),parent.getRowSelected(getMTitle(),getAuthor()));//focus on the book where you have managed your readings
                 parent.loadComponents(getMTitle(), getAuthor());
             }
         });
@@ -268,6 +268,7 @@ public class ManageReadingDlg extends JDialog {
                 ReadingsTable.setBorder(roundBrdMin);
             if(ReadingsTable.getRowCount()>0)
                 ReadingsTable.setRowSelectionInterval(0, 0);
+            contentPane.updateUI();
             qry.close();
             conn.close();
             m_statement.close();
