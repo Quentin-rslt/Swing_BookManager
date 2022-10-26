@@ -51,13 +51,15 @@ public class MainWindow extends JDialog {
     private Tags m_tags = new Tags();
     private int counterManageReading;
     private ManageReadingDlg m_ManageReadingDiag;
+    private Boolean isFiltered;
 
 
     public MainWindow() {
         setContentPane(contentPane);
         setModal(true);
         connectionDB();
-        loadDB(false);
+        setIsFiltered(false);
+        loadDB(isFiltered());
         setCounterManageReading(0);
 
         AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),3,30,0,0,20);
@@ -186,7 +188,8 @@ public class MainWindow extends JDialog {
                     setMTitle(diag.getNewBookTitle());
                     setAuthor(diag.getNewBookAuthor());
                     loadComponents(diag.getNewBookTitle(), diag.getNewBookAuthor());
-                    loadDB(false);
+                    setIsFiltered(false);
+                    loadDB(isFiltered());
                     //Focus in the jtable on the book created
                     BooksTable.setRowSelectionInterval(getRowSelected(diag.getNewBookTitle(), diag.getNewBookAuthor()), getRowSelected(diag.getNewBookTitle(), diag.getNewBookAuthor()));
                     if(getCounterManageReading()>0)
@@ -223,7 +226,7 @@ public class MainWindow extends JDialog {
                     pstmt.executeUpdate();
                     pstmt2.executeUpdate();
                     taggingPstmt.executeUpdate();
-                    loadDB(false);
+                    loadDB(isFiltered());
                     BooksTable.setRowSelectionInterval(0, 0);
                     setMTitle(BooksTable.getValueAt(0, 0).toString());
                     setAuthor(BooksTable.getValueAt(0, 1).toString());
@@ -283,7 +286,7 @@ public class MainWindow extends JDialog {
                     }
 
                     contentPane.updateUI();
-                    loadDB(false);
+                    loadDB(isFiltered());
                     setMTitle(diag.getNewTitle());
                     setAuthor(diag.getNewAuthor());
                     loadComponents(diag.getNewTitle(), diag.getNewAuthor());//reload changes made to the book
@@ -330,7 +333,7 @@ public class MainWindow extends JDialog {
                     setMTitle(diag.getMtitle());
                     setAuthor(diag.getAuthor());
                     loadComponents(diag.getMtitle(), diag.getAuthor());
-                    loadDB(false);
+                    loadDB(isFiltered());
                     //Focus in the jtable on a reading created from an existing book
                     BooksTable.setRowSelectionInterval(getRowSelected(diag.getMtitle(), diag.getAuthor()), getRowSelected(diag.getMtitle(), diag.getAuthor()));
                     if(getCounterManageReading()>0)
@@ -345,7 +348,13 @@ public class MainWindow extends JDialog {
         });
         FiltersBookBtn.addActionListener((ActionEvent e)-> {
             m_diag = openFilterDlg();
-            loadDB(m_diag.getIsValid());
+            if(isFiltered()){
+                loadDB(isFiltered());
+            }
+            else{
+                loadDB(m_diag.getIsValid());
+                setIsFiltered(m_diag.getIsValid());
+            }
             if(BooksTable.getRowCount()>0){
                 setMTitle(BooksTable.getValueAt(0, 0).toString());
                 setAuthor(BooksTable.getValueAt(0, 1).toString());
@@ -361,7 +370,8 @@ public class MainWindow extends JDialog {
         });
         CancelFiltersBtn.addActionListener((ActionEvent e) -> {
             contentPane.updateUI();
-            loadDB(false);
+            setIsFiltered(false);
+            loadDB(isFiltered());
             setMTitle(BooksTable.getValueAt(0, 0).toString());
             setAuthor(BooksTable.getValueAt(0, 1).toString());
             loadComponents(getMTitle(), getAuthor());
@@ -373,7 +383,7 @@ public class MainWindow extends JDialog {
         BookManageTagsBtn.addActionListener((ActionEvent e) -> {
             openManageTagsDlg();
             contentPane.updateUI();
-            loadDB(false);
+            loadDB(isFiltered());
             BooksTable.setRowSelectionInterval(getRowSelected(getMTitle(),getAuthor()),getRowSelected(getMTitle(),getAuthor()));//focus on the book where you have managed your readings
             loadComponents(getMTitle(), getAuthor());
         });
@@ -679,6 +689,9 @@ public class MainWindow extends JDialog {
     public JTable getBooksTable(){
         return this.BooksTable;
     }
+    public Boolean isFiltered() {
+        return isFiltered;
+    }
 
     public void setCounterManageReading(ManageReadingDlg manageReadingDiag) {
         this.m_ManageReadingDiag = manageReadingDiag;
@@ -688,6 +701,9 @@ public class MainWindow extends JDialog {
     }
     public void resetCounterManageReading(int counterManageReading) {
         this.counterManageReading = counterManageReading;
+    }
+    public void setIsFiltered(Boolean filtered) {
+        isFiltered = filtered;
     }
 }
 
