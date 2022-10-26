@@ -59,7 +59,7 @@ public class AddReading extends JDialog {
             });
         ReadingOkBtn.addActionListener((ActionEvent evt)-> {
                 //System.out.println(getNewStartReading()+" - "+getNewEndReading());
-                String sql = "SELECT Title, Author, StartReading, EndReading FROM Reading";
+                String sql = "SELECT Title, Author, StartReading, EndReading FROM Reading WHERE Title='"+getMtitle()+"' AND Author='"+getAuthor()+"'";
                 try (Connection conn = connect()){
                     Statement statement = conn.createStatement();
                     ResultSet qry = statement.executeQuery(sql);
