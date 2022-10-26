@@ -49,7 +49,7 @@ public class MainWindow extends JDialog {
     final JPopupMenu m_popup;
     private FiltersDlg m_diag;
     private Tags m_tags = new Tags();
-    private int counterManageReading = 0;
+    private int counterManageReading;
     private ManageReadingDlg m_ManageReadingDiag;
 
 
@@ -58,6 +58,7 @@ public class MainWindow extends JDialog {
         setModal(true);
         connectionDB();
         loadDB(false);
+        setCounterManageReading(0);
 
         AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),3,30,0,0,20);
         BookSummary.setBorder(roundBrd);
@@ -104,7 +105,10 @@ public class MainWindow extends JDialog {
                     m_popup.show(BooksTable, evt.getX(), evt.getY());
                 }
                 if(evt.getClickCount() == 2 && evt.getButton() == MouseEvent.BUTTON1){
-                    openManageReadingDlg(MainWindow.this,  getMTitle(), getAuthor());
+                    if(getCounterManageReading()<1){
+                        openManageReadingDlg(MainWindow.this,  getMTitle(), getAuthor());
+                        setCounterManageReading(1);
+                    }
                 }
             }
         });
@@ -184,7 +188,8 @@ public class MainWindow extends JDialog {
                     loadDB(false);
                     //Focus in the jtable on the book created
                     BooksTable.setRowSelectionInterval(getRowSelected(diag.getNewBookTitle(), diag.getNewBookAuthor()), getRowSelected(diag.getNewBookTitle(), diag.getNewBookAuthor()));
-
+                    if(getCounterManageReading()>0)
+                        this.m_ManageReadingDiag.fillBookList(getMTitle(), getAuthor());
                     conn.close();
                     m_statement.close();
                 } catch (SQLException e) {
@@ -193,7 +198,10 @@ public class MainWindow extends JDialog {
             }
         });
         ManageReadingsBtn.addActionListener((ActionEvent e) ->{
-            m_ManageReadingDiag= openManageReadingDlg(this, getMTitle(),getAuthor());
+            if(getCounterManageReading()<1){
+                setCounterManageReading(1);
+                m_ManageReadingDiag= openManageReadingDlg(this, getMTitle(),getAuthor());
+            }
         });
         cut.addActionListener((ActionEvent evt) -> {
             JFrame jFrame = new JFrame();
@@ -219,6 +227,8 @@ public class MainWindow extends JDialog {
                     setMTitle(BooksTable.getValueAt(0, 0).toString());
                     setAuthor(BooksTable.getValueAt(0, 1).toString());
                     loadComponents(getMTitle(), getAuthor());
+                    if(getCounterManageReading()>0)
+                        this.m_ManageReadingDiag.fillBookList(getMTitle(), getAuthor());
                 } catch (SQLException e) {
                     System.out.println(e.getMessage());
                 }
@@ -273,8 +283,12 @@ public class MainWindow extends JDialog {
 
                     contentPane.updateUI();
                     loadDB(false);
+                    setMTitle(diag.getNewTitle());
+                    setAuthor(diag.getNewAuthor());
                     loadComponents(diag.getNewTitle(), diag.getNewAuthor());//reload changes made to the book
                     BooksTable.setRowSelectionInterval(getRowSelected(diag.getNewTitle(), diag.getNewAuthor()), getRowSelected(diag.getNewTitle(), diag.getNewAuthor()));//focus on the edited book
+                    if(getCounterManageReading()>0)
+                        this.m_ManageReadingDiag.fillBookList(getMTitle(), getAuthor());
                 } catch (SQLException e) {
                     System.out.println(e.getMessage());
                 }
@@ -318,7 +332,8 @@ public class MainWindow extends JDialog {
                     loadDB(false);
                     //Focus in the jtable on a reading created from an existing book
                     BooksTable.setRowSelectionInterval(getRowSelected(diag.getMtitle(), diag.getAuthor()), getRowSelected(diag.getMtitle(), diag.getAuthor()));
-
+                    if(getCounterManageReading()>0)
+                        this.m_ManageReadingDiag.fillBookList(getMTitle(), getAuthor());
                     conn.close();
                     m_statement.close();
                 }catch (SQLException e){
@@ -430,7 +445,6 @@ public class MainWindow extends JDialog {
             m_statement.executeUpdate(ReadSql);//Create the reading table
             m_statement.executeUpdate(TagsSql);//Create the tags table
             m_statement.executeUpdate(TaggingSql);//Create the tagging table
-            System.out.println("Table created successfully");
 
             conn.close();
             m_statement.close();
@@ -444,10 +458,8 @@ public class MainWindow extends JDialog {
         CancelFiltersBtn.setEnabled(isFiltered);
         try(Connection conn = connect()){
             m_statement = conn.createStatement();
-            System.out.println("Table connexion successfully");
             ResultSet rs;
             if(isFiltered){
-                System.out.println(m_diag.getFirstEndDate()+" - "+m_diag.getLastEndDate());
                 String qry = "SELECT Book.Title, Book.Author FROM Book " +
                         "INNER JOIN Reading ON Reading.Title=Book.Title AND Reading.Author=Book.Author ";
 
@@ -649,6 +661,17 @@ public class MainWindow extends JDialog {
         parent.setLocationRelativeTo(null);
         parent.setVisible(true);
         System.exit(0);
+    }
+
+    public int getCounterManageReading() {
+        return counterManageReading;
+    }
+
+    public void setCounterManageReading(int counterManageReading) {
+        this.counterManageReading = this.counterManageReading+counterManageReading;
+    }
+    public void resetCounterManageReading(int counterManageReading) {
+        this.counterManageReading = counterManageReading;
     }
 }
 

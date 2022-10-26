@@ -54,6 +54,7 @@ public class ManageReadingDlg extends JDialog {
 
         CancelBtn.addActionListener((ActionEvent e)-> {
             setIsEmpty(ReadingsTable.getRowCount() <= 0);
+            parent.resetCounterManageReading(0);
             setVisible(false);
             dispose();
         });
@@ -118,6 +119,7 @@ public class ManageReadingDlg extends JDialog {
                         parent.setMTitle(parent.BooksTable.getValueAt(0, 0).toString());
                         parent.setAuthor(parent.BooksTable.getValueAt(0, 1).toString());
                         parent.loadComponents(MainWindow.getMTitle(), MainWindow.getAuthor());
+                        parent.resetCounterManageReading(0);
                         setVisible(false);
                         dispose();
                     } catch (SQLException e) {
@@ -225,6 +227,8 @@ public class ManageReadingDlg extends JDialog {
     public void fillBookList(String title, String author) {
         ManageTitleLabel.setText("Lectures du livre : " + title);
         ManageAuthorLabel.setText("Ecrit par : " + author);
+        setMTitle(title);
+        setAuthor(author);
         m_tableModel.setRowCount(0);
         try (Connection conn = connect()) {
             Statement m_statement = conn.createStatement();
