@@ -91,6 +91,11 @@ public class MenuBar {
                 if(parent.getCounterManageReading()>0)
                     parent.getManageReadingDiag().fillBookList(getMTitle(), getAuthor());
             }else{
+                if(parent.getManageReadingDiag()!=null) {
+                    parent.getManageReadingDiag().setVisible(false);
+                    parent.getManageReadingDiag().dispose();
+                    parent.resetCounterManageReading(0);
+                }
                 parent.initComponents();
             }
         }));

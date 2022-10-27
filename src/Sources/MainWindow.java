@@ -213,6 +213,11 @@ public class MainWindow extends JDialog {
                             if(getCounterManageReading()>0)
                                 this.m_ManageReadingDiag.fillBookList(getMTitle(), getAuthor());
                         }else{
+                            if(this.m_ManageReadingDiag!=null) {
+                                getManageReadingDiag().setVisible(false);
+                                getManageReadingDiag().dispose();
+                                resetCounterManageReading(0);
+                            }
                             initComponents();
                         }
                     }
@@ -260,6 +265,11 @@ public class MainWindow extends JDialog {
                         if (getCounterManageReading() > 0)
                             this.m_ManageReadingDiag.fillBookList(getMTitle(), getAuthor());
                     }else{
+                        if(this.m_ManageReadingDiag!=null) {
+                            getManageReadingDiag().setVisible(false);
+                            getManageReadingDiag().dispose();
+                            resetCounterManageReading(0);
+                        }
                         initComponents();
                     }
                 } catch (SQLException e) {
@@ -332,6 +342,11 @@ public class MainWindow extends JDialog {
                             if(getCounterManageReading()>0)
                                 this.m_ManageReadingDiag.fillBookList(getMTitle(), getAuthor());
                         }else{
+                            if(this.m_ManageReadingDiag!=null) {
+                                getManageReadingDiag().setVisible(false);
+                                getManageReadingDiag().dispose();
+                                resetCounterManageReading(0);
+                            }
                             initComponents();
                         }
                     }
@@ -412,6 +427,11 @@ public class MainWindow extends JDialog {
                     if(getCounterManageReading()>0)
                         this.m_ManageReadingDiag.fillBookList(getMTitle(), getAuthor());
                 }else{
+                    if(this.m_ManageReadingDiag!=null) {
+                        getManageReadingDiag().setVisible(false);
+                        getManageReadingDiag().dispose();
+                        resetCounterManageReading(0);
+                    }
                     initComponents();
                 }
             }
@@ -468,6 +488,11 @@ public class MainWindow extends JDialog {
                     if(getCounterManageReading()>0)
                         this.m_ManageReadingDiag.fillBookList(getMTitle(), getAuthor());
                 }else{
+                    if(this.m_ManageReadingDiag!=null) {
+                        getManageReadingDiag().setVisible(false);
+                        getManageReadingDiag().dispose();
+                        resetCounterManageReading(0);
+                    }
                     initComponents();
                 }
             }

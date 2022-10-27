@@ -273,7 +273,6 @@ public class Common {
             double ratio = width/height;
             size = new Dimension(305, (int) (305/ratio));
 
-
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
