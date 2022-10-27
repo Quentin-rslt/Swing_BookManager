@@ -243,11 +243,8 @@ public class Common {
             double height = image.getHeight();
             double width = image.getWidth();
             double ratio = width/height;
-            if(ratio>1){
-                size = new Dimension(305, (int) (305/ratio));
-            }else{
-                size = new Dimension(305,500);
-            }
+            size = new Dimension(305, (int) (305/ratio));
+
 
         } catch (IOException e) {
             throw new RuntimeException(e);
