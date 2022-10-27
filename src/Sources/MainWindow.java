@@ -473,10 +473,13 @@ public class MainWindow extends JDialog {
             }
         });
     }
-
     public Tags getTags(){
         return this.m_tags;
     }
+    public ManageReadingDlg getManageReadingDiag(){
+        return this.m_ManageReadingDiag;
+    }
+
     public static String getMTitle(){
         return m_title;
     }
@@ -780,7 +783,7 @@ public class MainWindow extends JDialog {
         return isFiltered;
     }
 
-    public void setCounterManageReading(ManageReadingDlg manageReadingDiag) {
+    public void setManageReading(ManageReadingDlg manageReadingDiag) {
         this.m_ManageReadingDiag = manageReadingDiag;
     }
     public void setCounterManageReading(int counterManageReading) {

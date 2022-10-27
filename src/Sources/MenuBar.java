@@ -1,7 +1,11 @@
 package Sources;
 
 import javax.swing.*;
+
+import static Sources.Common.deleteBook;
 import static Sources.Dialogs.OpenDialog.*;
+import static Sources.MainWindow.getAuthor;
+import static Sources.MainWindow.getMTitle;
 
 public class MenuBar {
     public static JMenuBar createMenuBar(MainWindow parent, String title, String author) {
@@ -66,7 +70,7 @@ public class MenuBar {
         JMenuItem manageTagMenuItem = new JMenuItem("Les tags");
         manageTagMenuItem.addActionListener((e->openManageTagsDlg()));
         JMenuItem manageReadingMenuItem = new JMenuItem("Les lectures");
-        manageReadingMenuItem.addActionListener((e->parent.setCounterManageReading(openManageReadingDlg(parent, title, author))));
+        manageReadingMenuItem.addActionListener((e->parent.setManageReading(openManageReadingDlg(parent, title, author))));
         manageMenu.add(manageTagMenuItem);
         manageMenu.add(manageReadingMenuItem);
 
@@ -76,6 +80,20 @@ public class MenuBar {
 
         //Delete book
         JMenuItem supprBookMenuItem = new JMenuItem("Supprimer le livre");
+        supprBookMenuItem.addActionListener((e -> {
+            deleteBook(title, author);
+            parent.loadDB(parent.isFiltered());
+            if(parent.getBooksTable().getRowCount()>0){
+                parent.setMTitle(parent.getBooksTable().getValueAt(0, 0).toString());
+                parent.setAuthor(parent.getBooksTable().getValueAt(0, 1).toString());
+                parent.loadComponents(getMTitle(), getAuthor());//reload changes made to the book
+                parent.getBooksTable().setRowSelectionInterval(0, 0);
+                if(parent.getCounterManageReading()>0)
+                    parent.getManageReadingDiag().fillBookList(getMTitle(), getAuthor());
+            }else{
+                parent.initComponents();
+            }
+        }));
 
         //Filters book
         JMenuItem filterMenuItem = new JMenuItem("Filtrer");
