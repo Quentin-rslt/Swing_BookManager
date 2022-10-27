@@ -151,25 +151,25 @@ public class AddBookDlg extends JDialog {
 
             @Override
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                if (!Objects.equals(BookTagsCB.getSelectedItem(), "")) {
-                    if (evt.getKeyCode()==KeyEvent.VK_ENTER){
-                        fillPaneTags(getTags(), BookTagsPanel, BookTagsCB);
-                    }
+            if (!Objects.equals(BookTagsCB.getSelectedItem(), "")) {
+                if (evt.getKeyCode()==KeyEvent.VK_ENTER){
+                    fillPaneTags(getTags(), BookTagsPanel, BookTagsCB);
                 }
-                initListenerTag();
-                BookTagsPanel.updateUI();
+            }
+            initListenerTag();
+            BookTagsPanel.updateUI();
             }
         });
         BookTagsPanel.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
-                super.mouseClicked(e);
-                if(!e.getComponent().getComponentAt(e.getX(),e.getY()).equals(BookTagsPanel)){
-                    if(e.getButton() == MouseEvent.BUTTON3) {
-                        m_popup.show(BookTagsPanel, e.getX(), e.getY());//show a popup to edit the reading
-                        m_popup.setInvoker(e.getComponent().getComponentAt(e.getX(),e.getY()));
-                    }
-                    initListenerTag();
+            super.mouseClicked(e);
+            if(!e.getComponent().getComponentAt(e.getX(),e.getY()).equals(BookTagsPanel)){
+                if(e.getButton() == MouseEvent.BUTTON3) {
+                    m_popup.show(BookTagsPanel, e.getX(), e.getY());//show a popup to edit the reading
+                    m_popup.setInvoker(e.getComponent().getComponentAt(e.getX(),e.getY()));
                 }
+                initListenerTag();
+            }
             }
         });
 

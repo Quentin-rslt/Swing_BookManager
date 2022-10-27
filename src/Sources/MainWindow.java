@@ -71,11 +71,17 @@ public class MainWindow extends JDialog {
         JMenuItem add = new JMenuItem("Ajouter une lecture", new ImageIcon(getImageAdd()));
         JMenuItem cut = new JMenuItem("Supprimer", new ImageIcon(getImageCut()));
         JMenuItem edit = new JMenuItem("Modifier", new ImageIcon(getImageEdit()));
+
+        JMenu manage = new JMenu("Gérer");
         JMenuItem openManageReadings = new JMenuItem("Gérer les lectures");
+        JMenuItem openManageTags = new JMenuItem("Gérer ses tags");
+        manage.add(openManageReadings);
+        manage.add(openManageTags);
+
         m_popup.add(add);
         m_popup.add(cut);
         m_popup.add(edit);
-        m_popup.add(openManageReadings);
+        m_popup.add(manage);
 
         if(BooksTable.getRowCount() != 0) {//Vérif if the table is not empty; when starting the app, load and focus on the first book of the table
             setMTitle(BooksTable.getValueAt(0, 0).toString());
@@ -375,6 +381,13 @@ public class MainWindow extends JDialog {
                 setCounterManageReading(1);
                 m_ManageReadingDiag= openManageReadingDlg(this, getMTitle(),getAuthor());
             }
+        });
+        openManageTags.addActionListener((ActionEvent evt)->{
+            openManageTagsDlg(getMTitle(), getAuthor());
+            contentPane.updateUI();
+            loadDB(isFiltered());
+            BooksTable.setRowSelectionInterval(getRowSelected(getMTitle(),getAuthor()),getRowSelected(getMTitle(),getAuthor()));//focus on the book where you have managed your readings
+            loadComponents(getMTitle(), getAuthor());
         });
         FiltersBookBtn.addActionListener((ActionEvent e)-> {
             m_diag = openFilterDlg();
