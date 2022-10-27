@@ -239,6 +239,8 @@ public class MainWindow extends JDialog {
                         loadComponents(getMTitle(), getAuthor());
                         if (getCounterManageReading() > 0)
                             this.m_ManageReadingDiag.fillBookList(getMTitle(), getAuthor());
+                    }else{
+                        initComponents();
                     }
                 } catch (SQLException e) {
                     System.out.println(e.getMessage());
@@ -309,6 +311,8 @@ public class MainWindow extends JDialog {
                             BooksTable.setRowSelectionInterval(0, 0);
                             if(getCounterManageReading()>0)
                                 this.m_ManageReadingDiag.fillBookList(getMTitle(), getAuthor());
+                        }else{
+                            initComponents();
                         }
                     }
                 } catch (SQLException e) {

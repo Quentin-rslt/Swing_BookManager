@@ -33,7 +33,6 @@ public class ManageReadingDlg extends JDialog {
     private String m_startReading = "";
     private String m_endReading = "";
     final JPopupMenu m_popup;
-    private boolean m_isEmpty = false;
     private int m_row;
 
     public ManageReadingDlg(MainWindow parent, String title, String author) {
@@ -57,7 +56,6 @@ public class ManageReadingDlg extends JDialog {
         });
 
         CancelBtn.addActionListener((ActionEvent e)-> {
-            setIsEmpty(ReadingsTable.getRowCount() <= 0);
             parent.resetCounterManageReading(0);
             setVisible(false);
             dispose();
@@ -109,6 +107,7 @@ public class ManageReadingDlg extends JDialog {
                             fillBookList(MainWindow.getMTitle(), MainWindow.getAuthor());
                             ReadingsTable.setRowSelectionInterval(getRow(), getRow());//Focus on the reading that we edit
                         }else{
+                            parent.initComponents();
                             parent.resetCounterManageReading(0);
                             setVisible(false);
                             dispose();
@@ -144,6 +143,8 @@ public class ManageReadingDlg extends JDialog {
                             parent.setAuthor(parent.getBooksTable().getValueAt(0, 1).toString());
                             parent.loadComponents(MainWindow.getMTitle(), MainWindow.getAuthor());
                             parent.resetCounterManageReading(0);
+                        }else{
+                            parent.initComponents();
                         }
                         setVisible(false);
                         dispose();
@@ -200,6 +201,7 @@ public class ManageReadingDlg extends JDialog {
                         fillBookList(MainWindow.getMTitle(), MainWindow.getAuthor());
                         ReadingsTable.setRowSelectionInterval(getRow(), getRow());//Focus on the reading that we edit
                     }else{
+                        parent.initComponents();
                         parent.resetCounterManageReading(0);
                         setVisible(false);
                         dispose();
@@ -223,9 +225,6 @@ public class ManageReadingDlg extends JDialog {
     public String getEndReading() {
         return m_endReading;
     }
-    public boolean isEmpty() {
-        return m_isEmpty;
-    }
     public int getRow() {
         return m_row;
     }
@@ -238,9 +237,6 @@ public class ManageReadingDlg extends JDialog {
     }
     public void setMTitle(String m_title) {
         this.m_title = m_title;
-    }
-    public void setIsEmpty(boolean m_isEmpty) {
-        this.m_isEmpty = m_isEmpty;
     }
     public void setStartReading(String m_dateReading) {
         this.m_startReading = m_dateReading;
