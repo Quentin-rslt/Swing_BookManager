@@ -1,17 +1,14 @@
 package Sources.Dialogs;
 
 import Sources.RoundBorderCp;
-import Sources.Tag;
 import Sources.Tags;
 
 import javax.swing.*;
 import javax.swing.border.AbstractBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
 import java.sql.*;
+import java.util.Objects;
 
 import static Sources.Common.*;
 import static Sources.Dialogs.OpenDialog.openEditTagDlg;
@@ -20,6 +17,7 @@ public class ManageTagsDlg extends JDialog {
     private JPanel contentPane;
     private JButton TagCancelBtn;
     private JPanel TagsPanel;
+    private JComboBox AddTagCb;
     private Tags m_tags;
     final JPopupMenu m_popup;
     private int m_row;
@@ -95,6 +93,30 @@ public class ManageTagsDlg extends JDialog {
             initListenerTag();
             TagsPanel.updateUI();
         });
+        AddTagCb.getEditor().getEditorComponent().addKeyListener(new java.awt.event.KeyAdapter() {
+            @Override
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                if (!Objects.equals(AddTagCb.getSelectedItem(), "")) {
+                    if (evt.getKeyCode()== KeyEvent.VK_ENTER){
+                        boolean tagFind = fillPaneTags(getTags(), TagsPanel, AddTagCb);
+                        if(!tagFind) {
+                            getTags().getTag(getTags().getSizeTags()-1).setBorderColor(TagsPanel.getBackground());
+                            try (Connection conn = connect()) {
+                                String TagsInsertQry = "INSERT INTO Tags (Tag,Color)" +
+                                        " SELECT '" + getTags().getTag(getTags().getSizeTags() - 1).getTextTag() + "', '" + getTags().getTag(getTags().getSizeTags() - 1).getColor() + "'" +
+                                        " WHERE NOT EXISTS(SELECT * FROM Tags WHERE Tag='" + getTags().getTag(getTags().getSizeTags() - 1).getTextTag() + "' AND Color='" + getTags().getTag(getTags().getSizeTags() - 1).getColor() + "')";
+                                PreparedStatement TagsInsertPstmt = conn.prepareStatement(TagsInsertQry);
+                                TagsInsertPstmt.executeUpdate();
+                            } catch (SQLException e) {
+                                System.out.println(e.getMessage());
+                            }
+                        }
+                    }
+                }
+                initListenerTag();
+                TagsPanel.updateUI();
+            }
+        });
     }
     public ManageTagsDlg(String title , String author) {
         setContentPane(contentPane);
@@ -104,6 +126,7 @@ public class ManageTagsDlg extends JDialog {
         AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),3,30,0,0,0);
         TagsPanel.setBackground(new Color(51,45,45));
         TagsPanel.setBorder(roundBrd);
+        fillThemeCB();
 
         m_popup = new JPopupMenu();//Create a popup menu to delete a reading an edit this reading
         JMenuItem cut = new JMenuItem("Supprimer", new ImageIcon(getImageCut()));
@@ -124,8 +147,8 @@ public class ManageTagsDlg extends JDialog {
             while (i<getTags().getSizeTags()) {
                 if(componentList[i]==m_popup.getInvoker()){
                     String TaggingQry = "DELETE FROM Tagging WHERE IdTag='"+getIdTag(getTags().getTag(i).getTextTag(), getTags().getTag(i).getColor())+"'";
-                    try (Connection conn = connect(); PreparedStatement TagsPstmt = conn.prepareStatement(TaggingQry)) {
-                        TagsPstmt.executeUpdate();
+                    try (Connection conn = connect(); PreparedStatement TaggingSuppPstmt = conn.prepareStatement(TaggingQry)) {
+                        TaggingSuppPstmt.executeUpdate();
                         fillTagsList(title, author);
                         contentPane.updateUI();
                         break;
@@ -145,25 +168,80 @@ public class ManageTagsDlg extends JDialog {
                 if(componentList[i]==m_popup.getInvoker()){
                     EditTagDlg diag = openEditTagDlg(getTags().getTag(i));
                     if(diag.isValide()){
-                        String TagsUpdateQry = "UPDATE Tags SET Tag=?,Color=?"+
-                                "WHERE Tag='"+getTags().getTag(i).getTextTag()+"'";
+                        if(!diag.getNewTextTag().equals(getTags().getTag(i).getTextTag())){
+                            String TaggingSuppQry = "DELETE FROM Tagging WHERE IdTag='"+getIdTag(getTags().getTag(i).getTextTag(), getTags().getTag(i).getColor())+"'";
+                            String TaggingQry = "INSERT INTO Tagging (IdBook,IdTag) " +
+                                    "VALUES (?,?);";
+                            String TagsQry = "INSERT INTO Tags (Tag,Color)"+
+                                    "VALUES (?,?);";
+                            try (Connection conn = connect(); PreparedStatement TagsInsertPstmt = conn.prepareStatement(TagsQry);
+                                 PreparedStatement TaggingInsertPstmt = conn.prepareStatement(TaggingQry); PreparedStatement TaggingSuppPstmt = conn.prepareStatement(TaggingSuppQry)) {
+                                TaggingSuppPstmt.executeUpdate();
 
-                        try (Connection conn = connect(); PreparedStatement TagsUpdatePstmt = conn.prepareStatement(TagsUpdateQry)) {
-                            TagsUpdatePstmt.setString(1, diag.getNewTextTag());
-                            TagsUpdatePstmt.setInt(2, diag.getNewColorTag().getRGB());
-                            TagsUpdatePstmt.executeUpdate();
-                            fillTagsList(title, author);
-                            contentPane.updateUI();
-                            break;
-                        }catch (SQLException e) {
-                            System.out.println(e.getMessage());
+                                TagsInsertPstmt.setString(1, diag.getNewTextTag());
+                                TagsInsertPstmt.setInt(2, diag.getNewColorTag().getRGB());
+                                TagsInsertPstmt.executeUpdate();
+
+                                TaggingInsertPstmt.setInt(1, getIdBook(title, author));
+                                TaggingInsertPstmt.setInt(2, getIdTag(diag.getNewTextTag(), diag.getNewColorTag().getRGB()));
+                                TaggingInsertPstmt.executeUpdate();
+                            }catch (SQLException e) {
+                                System.out.println(e.getMessage());
+                            }
                         }
+                        else{
+                            String TagsUpdateQry = "UPDATE Tags SET Color=?"+
+                                    "WHERE Tag='"+getTags().getTag(i).getTextTag()+"'";
+
+                            try (Connection conn = connect(); PreparedStatement TagsUpdatePstmt = conn.prepareStatement(TagsUpdateQry)) {
+                                TagsUpdatePstmt.setInt(1, diag.getNewColorTag().getRGB());
+                                TagsUpdatePstmt.executeUpdate();
+                            }catch (SQLException e) {
+                                System.out.println(e.getMessage());
+                            }
+                        }
+                        fillTagsList(title, author);
+                        contentPane.updateUI();
+                        break;
                     }
                 }
                 i++;
             }
             initListenerTag();
             TagsPanel.updateUI();
+        });
+        AddTagCb.getEditor().getEditorComponent().addKeyListener(new java.awt.event.KeyAdapter() {
+            @Override
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+            if (!Objects.equals(AddTagCb.getSelectedItem(), "")) {
+                if (evt.getKeyCode()== KeyEvent.VK_ENTER){
+                    boolean tagFind = fillPaneTags(getTags(), TagsPanel, AddTagCb);
+                    if(!tagFind) {
+                        getTags().getTag(getTags().getSizeTags()-1).setBorderColor(TagsPanel.getBackground());
+                        String TaggingQry = "INSERT INTO Tagging (IdBook,IdTag) " +
+                                "VALUES (?,?);";
+                        try (Connection conn = connect(); PreparedStatement TaggingPstmt = conn.prepareStatement(TaggingQry)) {
+
+
+                            String TagsInsertQry = "INSERT INTO Tags (Tag,Color)" +
+                                    " SELECT '" + getTags().getTag(getTags().getSizeTags() - 1).getTextTag() + "', '" + getTags().getTag(getTags().getSizeTags() - 1).getColor() + "'" +
+                                    " WHERE NOT EXISTS(SELECT * FROM Tags WHERE Tag='" + getTags().getTag(getTags().getSizeTags() - 1).getTextTag() + "' AND Color='" + getTags().getTag(getTags().getSizeTags() - 1).getColor() + "')";
+                            PreparedStatement TagsInsertPstmt = conn.prepareStatement(TagsInsertQry);
+                            TagsInsertPstmt.executeUpdate();
+
+                            TaggingPstmt.setInt(1, getIdBook(title, author));
+                            TaggingPstmt.setInt(2, getIdTag(getTags().getTag(getTags().getSizeTags() - 1).getTextTag(), getTags().getTag(getTags().getSizeTags() - 1).getColor()));
+                            TaggingPstmt.executeUpdate();
+
+                        } catch (SQLException e) {
+                            System.out.println(e.getMessage());
+                        }
+                    }
+                }
+            }
+            initListenerTag();
+            TagsPanel.updateUI();
+            }
         });
     }
 
@@ -309,5 +387,11 @@ public class ManageTagsDlg extends JDialog {
 //            initListenerTag();
 //            TagsPanel.updateUI();
 //        });
+    }
+    public void fillThemeCB(){
+        this.AddTagCb.addItem("");
+        for (int i = 0; i<loadTags().getSizeTags(); i++){
+            this.AddTagCb.addItem(loadTags().getTag(i).getTextTag());
+        }
     }
 }

@@ -58,14 +58,14 @@ public class OpenDialog {
     public static void openManageTagsDlg(){
         ManageTagsDlg diag = new ManageTagsDlg();
         diag.setTitle("Gérer les tags");
-        diag.setSize(500,300);
+        diag.setSize(550,350);
         diag.setLocationRelativeTo(null);
         diag.setVisible(true);
     }
     public static void openManageTagsDlg(String title, String author){
         ManageTagsDlg diag = new ManageTagsDlg(title,author);
         diag.setTitle("Gérer les tags du livre " +title);
-        diag.setSize(500,300);
+        diag.setSize(550,350);
         diag.setLocationRelativeTo(null);
         diag.setVisible(true);
     }
