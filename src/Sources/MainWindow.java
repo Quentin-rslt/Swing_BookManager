@@ -196,15 +196,26 @@ public class MainWindow extends JDialog {
                     loadDB(isFiltered());
                     setMTitle(diag.getNewBookTitle());
                     setAuthor(diag.getNewBookAuthor());
-                    if(!isInFilteredList(getMTitle(), getAuthor(), getBooksTable())){
+                    if(isInFilteredList(getMTitle(),getAuthor(), getBooksTable())){
+                        loadComponents(getMTitle(), getAuthor());//reload changes made to the book
+                        BooksTable.setRowSelectionInterval(getRowSelected(getMTitle(), getAuthor()), getRowSelected(getMTitle(), getAuthor()));//focus on the edited book
+                        if(getCounterManageReading()>0)
+                            this.m_ManageReadingDiag.fillBookList(getMTitle(), getAuthor());
+                    }else{
                         JFrame jFrame = new JFrame();
-                        JOptionPane.showMessageDialog(jFrame, "Le livre créé n'est pas dans les filtres donc rénitialisation des filtres");
-                        setIsFiltered(false);
-                        loadDB(isFiltered());
+                        JOptionPane.showMessageDialog(jFrame, "Le livre créé ne correspond pas aux filtres appliqué");
+                        if(getBooksTable().getRowCount()>0){
+                            setMTitle(getBooksTable().getValueAt(0, 0).toString());
+                            setAuthor(getBooksTable().getValueAt(0, 1).toString());
+                            loadComponents(getMTitle(), getAuthor());//reload changes made to the book
+                            BooksTable.setRowSelectionInterval(0, 0);
+                            if(getCounterManageReading()>0)
+                                this.m_ManageReadingDiag.fillBookList(getMTitle(), getAuthor());
+                        }else{
+                            initComponents();
+                        }
                     }
-                    loadComponents(getMTitle(), getAuthor());
-                    //Focus in the jtable on the book created
-                    BooksTable.setRowSelectionInterval(getRowSelected(diag.getNewBookTitle(), diag.getNewBookAuthor()), getRowSelected(diag.getNewBookTitle(), diag.getNewBookAuthor()));
+
                     if(getCounterManageReading()>0)
                         this.m_ManageReadingDiag.fillBookList(getMTitle(), getAuthor());
                     conn.close();
@@ -307,8 +318,8 @@ public class MainWindow extends JDialog {
                     setMTitle(diag.getNewTitle());
                     setAuthor(diag.getNewAuthor());
                     if(isInFilteredList(getMTitle(),getAuthor(), getBooksTable())){
-                        loadComponents(diag.getNewTitle(), diag.getNewAuthor());//reload changes made to the book
-                        BooksTable.setRowSelectionInterval(getRowSelected(diag.getNewTitle(), diag.getNewAuthor()), getRowSelected(diag.getNewTitle(), diag.getNewAuthor()));//focus on the edited book
+                        loadComponents(getMTitle(), getAuthor());//reload changes made to the book
+                        getBooksTable().setRowSelectionInterval(getRowSelected(getMTitle(), getAuthor()), getRowSelected(getMTitle(), getAuthor()));//focus on the edited book
                         if(getCounterManageReading()>0)
                             this.m_ManageReadingDiag.fillBookList(getMTitle(), getAuthor());
                     }else{
@@ -316,7 +327,7 @@ public class MainWindow extends JDialog {
                             setMTitle(getBooksTable().getValueAt(0, 0).toString());
                             setAuthor(getBooksTable().getValueAt(0, 1).toString());
                             loadComponents(getMTitle(), getAuthor());//reload changes made to the book
-                            BooksTable.setRowSelectionInterval(0, 0);
+                            getBooksTable().setRowSelectionInterval(0, 0);
                             if(getCounterManageReading()>0)
                                 this.m_ManageReadingDiag.fillBookList(getMTitle(), getAuthor());
                         }else{
@@ -386,8 +397,23 @@ public class MainWindow extends JDialog {
             openManageTagsDlg(getMTitle(), getAuthor());
             contentPane.updateUI();
             loadDB(isFiltered());
-            BooksTable.setRowSelectionInterval(getRowSelected(getMTitle(),getAuthor()),getRowSelected(getMTitle(),getAuthor()));//focus on the book where you have managed your readings
-            loadComponents(getMTitle(), getAuthor());
+            if(isInFilteredList(getMTitle(),getAuthor(), getBooksTable())){
+                loadComponents(getMTitle(), getAuthor());//reload changes made to the book
+                getBooksTable().setRowSelectionInterval(getRowSelected(getMTitle(), getAuthor()), getRowSelected(getMTitle(), getAuthor()));//focus on the edited book
+                if(getCounterManageReading()>0)
+                    this.m_ManageReadingDiag.fillBookList(getMTitle(), getAuthor());
+            }else{
+                if(getBooksTable().getRowCount()>0){
+                    setMTitle(getBooksTable().getValueAt(0, 0).toString());
+                    setAuthor(getBooksTable().getValueAt(0, 1).toString());
+                    loadComponents(getMTitle(), getAuthor());//reload changes made to the book
+                    getBooksTable().setRowSelectionInterval(0, 0);
+                    if(getCounterManageReading()>0)
+                        this.m_ManageReadingDiag.fillBookList(getMTitle(), getAuthor());
+                }else{
+                    initComponents();
+                }
+            }
         });
         FiltersBookBtn.addActionListener((ActionEvent e)-> {
             m_diag = openFilterDlg();
@@ -427,8 +453,23 @@ public class MainWindow extends JDialog {
             openManageTagsDlg();
             contentPane.updateUI();
             loadDB(isFiltered());
-            BooksTable.setRowSelectionInterval(getRowSelected(getMTitle(),getAuthor()),getRowSelected(getMTitle(),getAuthor()));//focus on the book where you have managed your readings
-            loadComponents(getMTitle(), getAuthor());
+            if(isInFilteredList(getMTitle(),getAuthor(), getBooksTable())){
+                loadComponents(getMTitle(), getAuthor());//reload changes made to the book
+                getBooksTable().setRowSelectionInterval(getRowSelected(getMTitle(), getAuthor()), getRowSelected(getMTitle(), getAuthor()));//focus on the edited book
+                if(getCounterManageReading()>0)
+                    this.m_ManageReadingDiag.fillBookList(getMTitle(), getAuthor());
+            }else{
+                if(getBooksTable().getRowCount()>0){
+                    setMTitle(getBooksTable().getValueAt(0, 0).toString());
+                    setAuthor(getBooksTable().getValueAt(0, 1).toString());
+                    loadComponents(getMTitle(), getAuthor());//reload changes made to the book
+                    getBooksTable().setRowSelectionInterval(0, 0);
+                    if(getCounterManageReading()>0)
+                        this.m_ManageReadingDiag.fillBookList(getMTitle(), getAuthor());
+                }else{
+                    initComponents();
+                }
+            }
         });
     }
 

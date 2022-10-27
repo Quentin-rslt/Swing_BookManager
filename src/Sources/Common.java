@@ -210,6 +210,30 @@ public class Common {
             throw new RuntimeException(e);
         }
     }
+    public static void deleteBook(String title, String author){
+        JFrame jFrame = new JFrame();
+        int n = JOptionPane.showConfirmDialog(//Open a optionPane to verify if the user really want to delete the book return 0 il they want and 1 if they refuse
+                jFrame,
+                "Etes-vous sûr de vouloir supprimer définitivement le livre ?\n"+"Cette acion sera irréversible !",
+                "An Inane Question",
+                JOptionPane.YES_NO_OPTION);
+        if(n == 0){
+            String boolQry = "DELETE FROM Book WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";//sql to delete the book in table book when we right click
+            String ReadingQry = "DELETE FROM Reading WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";
+            String TaggingQry = "DELETE FROM Tagging WHERE IdBook='"+getIdBook(getMTitle(),getAuthor())+"'";
+
+            deleteImageMainResource(getMTitle(), getAuthor());
+            try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(boolQry); PreparedStatement pstmt2 = conn.prepareStatement(ReadingQry);
+                 PreparedStatement taggingPstmt = conn.prepareStatement(TaggingQry)) {
+                // execute the delete statement
+                pstmt.executeUpdate();
+                pstmt2.executeUpdate();
+                taggingPstmt.executeUpdate();
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
 
     public static Dimension rescaleImage(File file){
         Dimension size;
@@ -368,30 +392,6 @@ public class Common {
     }
     public static String getNameOfBook(){
         return m_name;
-    }
-    public static void deleteBook(String title, String author){
-        JFrame jFrame = new JFrame();
-        int n = JOptionPane.showConfirmDialog(//Open a optionPane to verify if the user really want to delete the book return 0 il they want and 1 if they refuse
-                jFrame,
-                "Etes-vous sûr de vouloir supprimer définitivement le livre ?\n"+"Cette acion sera irréversible !",
-                "An Inane Question",
-                JOptionPane.YES_NO_OPTION);
-        if(n == 0){
-            String boolQry = "DELETE FROM Book WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";//sql to delete the book in table book when we right click
-            String ReadingQry = "DELETE FROM Reading WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";
-            String TaggingQry = "DELETE FROM Tagging WHERE IdBook='"+getIdBook(getMTitle(),getAuthor())+"'";
-
-            deleteImageMainResource(getMTitle(), getAuthor());
-            try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(boolQry); PreparedStatement pstmt2 = conn.prepareStatement(ReadingQry);
-                 PreparedStatement taggingPstmt = conn.prepareStatement(TaggingQry)) {
-                // execute the delete statement
-                pstmt.executeUpdate();
-                pstmt2.executeUpdate();
-                taggingPstmt.executeUpdate();
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
-            }
-        }
     }
     public static Tags loadTags(){
         Tags tags = new Tags();

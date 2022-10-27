@@ -96,25 +96,25 @@ public class ManageTagsDlg extends JDialog {
         AddTagCb.getEditor().getEditorComponent().addKeyListener(new java.awt.event.KeyAdapter() {
             @Override
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                if (!Objects.equals(AddTagCb.getSelectedItem(), "")) {
-                    if (evt.getKeyCode()== KeyEvent.VK_ENTER){
-                        boolean tagFind = fillPaneTags(getTags(), TagsPanel, AddTagCb);
-                        if(!tagFind) {
-                            getTags().getTag(getTags().getSizeTags()-1).setBorderColor(TagsPanel.getBackground());
-                            try (Connection conn = connect()) {
-                                String TagsInsertQry = "INSERT INTO Tags (Tag,Color)" +
-                                        " SELECT '" + getTags().getTag(getTags().getSizeTags() - 1).getTextTag() + "', '" + getTags().getTag(getTags().getSizeTags() - 1).getColor() + "'" +
-                                        " WHERE NOT EXISTS(SELECT * FROM Tags WHERE Tag='" + getTags().getTag(getTags().getSizeTags() - 1).getTextTag() + "' AND Color='" + getTags().getTag(getTags().getSizeTags() - 1).getColor() + "')";
-                                PreparedStatement TagsInsertPstmt = conn.prepareStatement(TagsInsertQry);
-                                TagsInsertPstmt.executeUpdate();
-                            } catch (SQLException e) {
-                                System.out.println(e.getMessage());
-                            }
+            if (!Objects.equals(AddTagCb.getSelectedItem(), "")) {
+                if (evt.getKeyCode()== KeyEvent.VK_ENTER){
+                    boolean tagFind = fillPaneTags(getTags(), TagsPanel, AddTagCb);
+                    if(!tagFind) {
+                        getTags().getTag(getTags().getSizeTags()-1).setBorderColor(TagsPanel.getBackground());
+                        try (Connection conn = connect()) {
+                            String TagsInsertQry = "INSERT INTO Tags (Tag,Color)" +
+                                    " SELECT '" + getTags().getTag(getTags().getSizeTags() - 1).getTextTag() + "', '" + getTags().getTag(getTags().getSizeTags() - 1).getColor() + "'" +
+                                    " WHERE NOT EXISTS(SELECT * FROM Tags WHERE Tag='" + getTags().getTag(getTags().getSizeTags() - 1).getTextTag() + "' AND Color='" + getTags().getTag(getTags().getSizeTags() - 1).getColor() + "')";
+                            PreparedStatement TagsInsertPstmt = conn.prepareStatement(TagsInsertQry);
+                            TagsInsertPstmt.executeUpdate();
+                        } catch (SQLException e) {
+                            System.out.println(e.getMessage());
                         }
                     }
                 }
-                initListenerTag();
-                TagsPanel.updateUI();
+            }
+            initListenerTag();
+            TagsPanel.updateUI();
             }
         });
     }
@@ -146,7 +146,8 @@ public class ManageTagsDlg extends JDialog {
             int i = 0;
             while (i<getTags().getSizeTags()) {
                 if(componentList[i]==m_popup.getInvoker()){
-                    String TaggingQry = "DELETE FROM Tagging WHERE IdTag='"+getIdTag(getTags().getTag(i).getTextTag(), getTags().getTag(i).getColor())+"'";
+                    String TaggingQry = "DELETE FROM Tagging WHERE IdTag='"+getIdTag(getTags().getTag(i).getTextTag(), getTags().getTag(i).getColor())+"' " +
+                            "AND idBook='"+getIdBook(title,author)+"'";
                     try (Connection conn = connect(); PreparedStatement TaggingSuppPstmt = conn.prepareStatement(TaggingQry)) {
                         TaggingSuppPstmt.executeUpdate();
                         fillTagsList(title, author);
@@ -354,39 +355,6 @@ public class ManageTagsDlg extends JDialog {
                 }
             });
         }
-//        AddTagBtn.addActionListener((ActionEvent evt)->{
-//            EditTagDlg diag = openEditTagDlg(new Tag());
-//            if(diag.isValide()){
-//                Tag tag = new Tag(diag.getNewTextTag());
-//                tag.setColor(diag.getNewColorTag().getRGB());
-//                tag.setBorderColor(TagsPanel.getBackground());
-//                getTags().addTag(tag);
-//
-//                for(int j=0; j<getTags().getSizeTags();j++){
-//                    TagsPanel.add(getTags().getTag(j));
-//                }
-//                TagsPanel.updateUI();
-//            }
-////            String TaggingQry = "INSERT INTO Tagging (IdBook,IdTag) " +
-////                    "VALUES (?,?);";
-////            try (Connection conn = connect();  PreparedStatement TaggingPstmt = conn.prepareStatement(TaggingQry)) {
-////            for(int i=0; i<getTags().getSizeTags(); i++) {
-////                String TagsInsertQry = "INSERT INTO Tags (Tag,Color)" +
-////                        " SELECT '" + getTags().getTag(i).getTextTag() + "', '" + getTags().getTag(i).getColor() + "'" +
-////                        " WHERE NOT EXISTS(SELECT * FROM Tags WHERE Tag='" + getTags().getTag(i).getTextTag() + "' AND Color='" + getTags().getTag(i).getColor() + "')";
-////                PreparedStatement TagsInsertPstmt = conn.prepareStatement(TagsInsertQry);
-////                TagsInsertPstmt.executeUpdate();
-////
-////                TaggingPstmt.setInt(1, getIdBook(title, author));
-////                TaggingPstmt.setInt(2, getIdTag(getTags().getTag(i).getTextTag(), getTags().getTag(i).getColor()));
-////                TaggingPstmt.executeUpdate();
-////            }
-////            } catch (SQLException e) {
-////                System.out.println(e.getMessage());
-////            }
-//            initListenerTag();
-//            TagsPanel.updateUI();
-//        });
     }
     public void fillThemeCB(){
         this.AddTagCb.addItem("");
