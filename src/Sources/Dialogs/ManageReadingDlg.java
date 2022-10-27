@@ -94,18 +94,12 @@ public class ManageReadingDlg extends JDialog {
                     if(isInFilteredList(getMTitle(),getAuthor(),parent.getBooksTable())){
                         parent.getBooksTable().setRowSelectionInterval(parent.getRowSelected(getMTitle(), getAuthor()), parent.getRowSelected(getMTitle(), getAuthor()));//focus on the book where you have managed your readings
                         parent.loadComponents(getMTitle(), getAuthor());
-                        contentPane.updateUI();
-                        fillBookList(getMTitle(), getAuthor());
-                        ReadingsTable.setRowSelectionInterval(getRow(), getRow());//Focus on the reading that we edit
                     }else{
                         if(parent.getBooksTable().getRowCount()>0) {
                             parent.getBooksTable().setRowSelectionInterval(0, 0);
                             parent.setMTitle(parent.getBooksTable().getValueAt(0, 0).toString());
                             parent.setAuthor(parent.getBooksTable().getValueAt(0, 1).toString());
                             parent.loadComponents(MainWindow.getMTitle(), MainWindow.getAuthor());
-                            contentPane.updateUI();
-                            fillBookList(MainWindow.getMTitle(), MainWindow.getAuthor());
-                            ReadingsTable.setRowSelectionInterval(getRow(), getRow());//Focus on the reading that we edit
                         }else{
                             parent.initComponents();
                             parent.resetCounterManageReading(0);

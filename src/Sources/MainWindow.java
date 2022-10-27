@@ -71,9 +71,11 @@ public class MainWindow extends JDialog {
         JMenuItem add = new JMenuItem("Ajouter une lecture", new ImageIcon(getImageAdd()));
         JMenuItem cut = new JMenuItem("Supprimer", new ImageIcon(getImageCut()));
         JMenuItem edit = new JMenuItem("Modifier", new ImageIcon(getImageEdit()));
+        JMenuItem openManageReadings = new JMenuItem("Gérer les lectures");
         m_popup.add(add);
         m_popup.add(cut);
         m_popup.add(edit);
+        m_popup.add(openManageReadings);
 
         if(BooksTable.getRowCount() != 0) {//Vérif if the table is not empty; when starting the app, load and focus on the first book of the table
             setMTitle(BooksTable.getValueAt(0, 0).toString());
@@ -366,6 +368,12 @@ public class MainWindow extends JDialog {
                     System.out.println(e.getMessage());
                     System.exit(0);
                 }
+            }
+        });
+        openManageReadings.addActionListener((ActionEvent evt)->{
+            if(getCounterManageReading()<1){
+                setCounterManageReading(1);
+                m_ManageReadingDiag= openManageReadingDlg(this, getMTitle(),getAuthor());
             }
         });
         FiltersBookBtn.addActionListener((ActionEvent e)-> {
