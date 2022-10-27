@@ -37,6 +37,7 @@ public class MainWindow extends JDialog {
     private JButton BookManageTagsBtn;
     private JTable BooksTable;
     private JScrollPane jsPane;
+    private JTextField BookFastSearch;
     private final DefaultTableModel m_tableModel = new DefaultTableModel(){//Create a Jtable with the tablemodel not editable
         public boolean isCellEditable(int rowIndex, int colIndex) {
             return false; //Disallow the editing of any cell
@@ -489,9 +490,14 @@ public class MainWindow extends JDialog {
         FiltersBookBtn.setEnabled(true);
         ManageReadingsBtn.setEnabled(true);
         int row = 0;
-        for (int i= 0; i<BooksTable.getRowCount();i++)
-            if(Objects.equals(BooksTable.getValueAt(i, 0).toString(), title) && Objects.equals(BooksTable.getValueAt(i, 1).toString(), author))
+        int i= 0;
+        while (i<BooksTable.getRowCount()) {
+            if(Objects.equals(BooksTable.getValueAt(i, 0).toString(), title) && Objects.equals(BooksTable.getValueAt(i, 1).toString(), author)) {
                 row = i;
+                break;
+            }
+            i++;
+        }
 
         return row;
     }
@@ -617,10 +623,10 @@ public class MainWindow extends JDialog {
                 m_tableModel.addRow(data);//add to tablemodel the data
             }
             BooksTable.setModel(m_tableModel);
-            jsPane.setPreferredSize(new Dimension(470,671));
+            jsPane.setPreferredSize(new Dimension(470,635));
 
             AbstractBorder roundBrdMax = new RoundBorderCp(contentPane.getBackground(),1,30, 0,0,0);
-            AbstractBorder roundBrdMin = new RoundBorderCp(contentPane.getBackground(),1,30, 628-(BooksTable.getRowCount()*BooksTable.getRowHeight()),11,0);
+            AbstractBorder roundBrdMin = new RoundBorderCp(contentPane.getBackground(),1,30, 592-(BooksTable.getRowCount()*BooksTable.getRowHeight()),11,0);
             if(BooksTable.getRowCount()>20)
                 BooksTable.setBorder(roundBrdMax);
             else

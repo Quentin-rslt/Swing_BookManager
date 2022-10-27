@@ -17,7 +17,9 @@ public class ManageTagsDlg extends JDialog {
     private JPanel contentPane;
     private JButton TagCancelBtn;
     private JPanel TagsPanel;
-    private JComboBox AddTagCb;
+    private JPanel AddTagPanel;
+    private JComboBox AddTagCb = new JComboBox<>();
+    private JTextField AddTagTxtF = new JTextField();
     private Tags m_tags;
     final JPopupMenu m_popup;
     private int m_row;
@@ -41,7 +43,7 @@ public class ManageTagsDlg extends JDialog {
             setVisible(false);
             dispose();
         });
-
+        AddTagPanel.add(AddTagTxtF);
         initListenerTag();
 
         cut.addActionListener((ActionEvent evt)-> {
@@ -93,12 +95,12 @@ public class ManageTagsDlg extends JDialog {
             initListenerTag();
             TagsPanel.updateUI();
         });
-        AddTagCb.getEditor().getEditorComponent().addKeyListener(new java.awt.event.KeyAdapter() {
+        AddTagTxtF.addKeyListener(new java.awt.event.KeyAdapter() {
             @Override
             public void keyReleased(java.awt.event.KeyEvent evt) {
-            if (!Objects.equals(AddTagCb.getSelectedItem(), "")) {
+            if (!Objects.equals(AddTagTxtF.getText(), "")) {
                 if (evt.getKeyCode()== KeyEvent.VK_ENTER){
-                    boolean tagFind = fillPaneTags(getTags(), TagsPanel, AddTagCb);
+                    boolean tagFind = fillPaneTags(getTags(), TagsPanel, AddTagTxtF);
                     if(!tagFind) {
                         getTags().getTag(getTags().getSizeTags()-1).setBorderColor(TagsPanel.getBackground());
                         try (Connection conn = connect()) {
@@ -126,6 +128,8 @@ public class ManageTagsDlg extends JDialog {
         AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),3,30,0,0,0);
         TagsPanel.setBackground(new Color(51,45,45));
         TagsPanel.setBorder(roundBrd);
+        AddTagCb.setEditable(true);
+        AddTagPanel.add(AddTagCb);
         fillThemeCB();
 
         m_popup = new JPopupMenu();//Create a popup menu to delete a reading an edit this reading

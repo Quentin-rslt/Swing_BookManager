@@ -154,6 +154,34 @@ public class Common {
         }
         return tagFind;
     }
+    public static boolean fillPaneTags(Tags tags, JPanel panel, JTextField txt){
+        boolean tagFind = false;
+        int i = 0;
+        while(!tagFind && i<tags.getSizeTags()){
+            if(Objects.equals(txt.getText(), tags.getTag(i).getTextTag())){
+                JFrame jFrame = new JFrame();
+                JOptionPane.showMessageDialog(jFrame, "Vous avez déjà sélectionné ce tag !");
+                tagFind =true;
+            }
+            else i++;
+        }
+        if(!tagFind){
+            EditTagDlg diag = openEditTagDlg(new Tag(Objects.requireNonNull(txt.getText())));
+
+            if(diag.isValide()){
+                Tag tag = new Tag(diag.getNewTextTag());
+                tag.setColor(diag.getNewColorTag().getRGB());
+                tags.addTag(tag);
+
+                for(int j=0; j<tags.getSizeTags();j++){
+                    panel.add(tags.getTag(j));
+                    txt.setText("");
+                }
+                panel.updateUI();
+            }
+        }
+        return tagFind;
+    }
     public static void setNameOfBook(String name){
         m_name = name;
     }
