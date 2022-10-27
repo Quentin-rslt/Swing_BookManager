@@ -451,4 +451,13 @@ public class Common {
         }
         return i;
     }
+    public static boolean isInFilteredList(String title, String author, JTable table){
+        boolean isFiltered=false;
+        for(int i=0; i<table.getRowCount();i++){
+            if(table.getModel().getValueAt(i,0).equals(title) && table.getModel().getValueAt(i,1).equals(author)){
+                isFiltered=true;
+            }
+        }
+        return isFiltered;
+    }
 }

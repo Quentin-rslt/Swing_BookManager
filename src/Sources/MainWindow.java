@@ -185,11 +185,16 @@ public class MainWindow extends JDialog {
                         TaggingPstmt.executeUpdate();
                     }
 
+                    loadDB(isFiltered());
                     setMTitle(diag.getNewBookTitle());
                     setAuthor(diag.getNewBookAuthor());
-                    loadComponents(diag.getNewBookTitle(), diag.getNewBookAuthor());
-                    setIsFiltered(false);
-                    loadDB(isFiltered());
+                    if(!isInFilteredList(getMTitle(), getAuthor(), getBooksTable())){
+                        JFrame jFrame = new JFrame();
+                        JOptionPane.showMessageDialog(jFrame, "Le livre créé n'est pas dans les filtres donc rénitialisation des filtres");
+                        setIsFiltered(false);
+                        loadDB(isFiltered());
+                    }
+                    loadComponents(getMTitle(), getAuthor());
                     //Focus in the jtable on the book created
                     BooksTable.setRowSelectionInterval(getRowSelected(diag.getNewBookTitle(), diag.getNewBookAuthor()), getRowSelected(diag.getNewBookTitle(), diag.getNewBookAuthor()));
                     if(getCounterManageReading()>0)
@@ -227,12 +232,14 @@ public class MainWindow extends JDialog {
                     pstmt2.executeUpdate();
                     taggingPstmt.executeUpdate();
                     loadDB(isFiltered());
-                    BooksTable.setRowSelectionInterval(0, 0);
-                    setMTitle(BooksTable.getValueAt(0, 0).toString());
-                    setAuthor(BooksTable.getValueAt(0, 1).toString());
-                    loadComponents(getMTitle(), getAuthor());
-                    if(getCounterManageReading()>0)
-                        this.m_ManageReadingDiag.fillBookList(getMTitle(), getAuthor());
+                    if(getBooksTable().getRowCount()>0) {
+                        BooksTable.setRowSelectionInterval(0, 0);
+                        setMTitle(BooksTable.getValueAt(0, 0).toString());
+                        setAuthor(BooksTable.getValueAt(0, 1).toString());
+                        loadComponents(getMTitle(), getAuthor());
+                        if (getCounterManageReading() > 0)
+                            this.m_ManageReadingDiag.fillBookList(getMTitle(), getAuthor());
+                    }
                 } catch (SQLException e) {
                     System.out.println(e.getMessage());
                 }
@@ -289,10 +296,21 @@ public class MainWindow extends JDialog {
                     loadDB(isFiltered());
                     setMTitle(diag.getNewTitle());
                     setAuthor(diag.getNewAuthor());
-                    loadComponents(diag.getNewTitle(), diag.getNewAuthor());//reload changes made to the book
-                    BooksTable.setRowSelectionInterval(getRowSelected(diag.getNewTitle(), diag.getNewAuthor()), getRowSelected(diag.getNewTitle(), diag.getNewAuthor()));//focus on the edited book
-                    if(getCounterManageReading()>0)
-                        this.m_ManageReadingDiag.fillBookList(getMTitle(), getAuthor());
+                    if(isInFilteredList(getMTitle(),getAuthor(), getBooksTable())){
+                        loadComponents(diag.getNewTitle(), diag.getNewAuthor());//reload changes made to the book
+                        BooksTable.setRowSelectionInterval(getRowSelected(diag.getNewTitle(), diag.getNewAuthor()), getRowSelected(diag.getNewTitle(), diag.getNewAuthor()));//focus on the edited book
+                        if(getCounterManageReading()>0)
+                            this.m_ManageReadingDiag.fillBookList(getMTitle(), getAuthor());
+                    }else{
+                        if(getBooksTable().getRowCount()>0){
+                            setMTitle(getBooksTable().getValueAt(0, 0).toString());
+                            setAuthor(getBooksTable().getValueAt(0, 1).toString());
+                            loadComponents(getMTitle(), getAuthor());//reload changes made to the book
+                            BooksTable.setRowSelectionInterval(0, 0);
+                            if(getCounterManageReading()>0)
+                                this.m_ManageReadingDiag.fillBookList(getMTitle(), getAuthor());
+                        }
+                    }
                 } catch (SQLException e) {
                     System.out.println(e.getMessage());
                 }
@@ -682,9 +700,6 @@ public class MainWindow extends JDialog {
 
     public int getCounterManageReading() {
         return counterManageReading;
-    }
-    public ManageReadingDlg getManageReadingDiag(){
-        return this.m_ManageReadingDiag;
     }
     public JTable getBooksTable(){
         return this.BooksTable;

@@ -92,10 +92,28 @@ public class ManageReadingDlg extends JDialog {
                     ReadingsTable.setRowSelectionInterval(0, 0);
 
                     //load bdd in MainWindow
-                    parent.setIsFiltered(false);
                     parent.loadDB(parent.isFiltered());
-                    parent.getBooksTable().setRowSelectionInterval(parent.getRowSelected(getMTitle(),getAuthor()),parent.getRowSelected(getMTitle(),getAuthor()));//focus on the book where you have managed your readings
-                    parent.loadComponents(getMTitle(), getAuthor());
+                    if(isInFilteredList(getMTitle(),getAuthor(),parent.getBooksTable())){
+                        parent.getBooksTable().setRowSelectionInterval(parent.getRowSelected(getMTitle(), getAuthor()), parent.getRowSelected(getMTitle(), getAuthor()));//focus on the book where you have managed your readings
+                        parent.loadComponents(getMTitle(), getAuthor());
+                        contentPane.updateUI();
+                        fillBookList(getMTitle(), getAuthor());
+                        ReadingsTable.setRowSelectionInterval(getRow(), getRow());//Focus on the reading that we edit
+                    }else{
+                        if(parent.getBooksTable().getRowCount()>0) {
+                            parent.getBooksTable().setRowSelectionInterval(0, 0);
+                            parent.setMTitle(parent.getBooksTable().getValueAt(0, 0).toString());
+                            parent.setAuthor(parent.getBooksTable().getValueAt(0, 1).toString());
+                            parent.loadComponents(MainWindow.getMTitle(), MainWindow.getAuthor());
+                            contentPane.updateUI();
+                            fillBookList(MainWindow.getMTitle(), MainWindow.getAuthor());
+                            ReadingsTable.setRowSelectionInterval(getRow(), getRow());//Focus on the reading that we edit
+                        }else{
+                            parent.resetCounterManageReading(0);
+                            setVisible(false);
+                            dispose();
+                        }
+                    }
                 } catch (SQLException e) {
                     System.out.println(e.getMessage());
                 }
@@ -120,11 +138,13 @@ public class ManageReadingDlg extends JDialog {
 
                         //load bdd in MainWindow
                         parent.loadDB(parent.isFiltered());
-                        parent.getBooksTable().setRowSelectionInterval(0, 0);
-                        parent.setMTitle(parent.getBooksTable().getValueAt(0, 0).toString());
-                        parent.setAuthor(parent.getBooksTable().getValueAt(0, 1).toString());
-                        parent.loadComponents(MainWindow.getMTitle(), MainWindow.getAuthor());
-                        parent.resetCounterManageReading(0);
+                        if(parent.getBooksTable().getRowCount()>0) {
+                            parent.getBooksTable().setRowSelectionInterval(0, 0);
+                            parent.setMTitle(parent.getBooksTable().getValueAt(0, 0).toString());
+                            parent.setAuthor(parent.getBooksTable().getValueAt(0, 1).toString());
+                            parent.loadComponents(MainWindow.getMTitle(), MainWindow.getAuthor());
+                            parent.resetCounterManageReading(0);
+                        }
                         setVisible(false);
                         dispose();
                     } catch (SQLException e) {
@@ -161,29 +181,31 @@ public class ManageReadingDlg extends JDialog {
                 } catch (SQLException e) {
                     System.out.println(e.getMessage());
                 }
-                parent.loadDB(parent.isFiltered());
-                parent.getBooksTable().setRowSelectionInterval(parent.getRowSelected(getMTitle(),getAuthor()),parent.getRowSelected(getMTitle(),getAuthor()));//focus on the book where you have managed your readings
-                parent.loadComponents(getMTitle(), getAuthor());
 
-                /*
-                    TODO Create function to find if the book is already in filtered list
-                    if the book is no longer in the filters then load on the first line
-                                        if(parent.getBooksTable().getRowCount()>1){
-                                            parent.getBooksTable().setRowSelectionInterval(parent.getRowSelected(getMTitle(),getAuthor()),parent.getRowSelected(getMTitle(),getAuthor()));//focus on the book where you have managed your readings
-                                            parent.loadComponents(getMTitle(), getAuthor());
-                                            contentPane.updateUI();
-                                            fillBookList(getMTitle(),getAuthor());
-                                            ReadingsTable.setRowSelectionInterval(getRow(), getRow());//Focus on the reading that we edit
-                                        }else{
-                                            parent.getBooksTable().setRowSelectionInterval(0,0);
-                                            parent.setMTitle(parent.getBooksTable().getValueAt(0, 0).toString());
-                                            parent.setAuthor(parent.getBooksTable().getValueAt(0, 1).toString());
-                                            parent.loadComponents(MainWindow.getMTitle(), MainWindow.getAuthor());
-                                            contentPane.updateUI();
-                                            fillBookList(MainWindow.getMTitle(),MainWindow.getAuthor());
-                                            ReadingsTable.setRowSelectionInterval(getRow(), getRow());//Focus on the reading that we edit
-                                        }
-                    */
+                //if the book is no longer in the filters then load on the first line
+                parent.loadDB(parent.isFiltered());
+                if(isInFilteredList(getMTitle(),getAuthor(),parent.getBooksTable())){
+                    parent.getBooksTable().setRowSelectionInterval(parent.getRowSelected(getMTitle(), getAuthor()), parent.getRowSelected(getMTitle(), getAuthor()));//focus on the book where you have managed your readings
+                    parent.loadComponents(getMTitle(), getAuthor());
+                    contentPane.updateUI();
+                    fillBookList(getMTitle(), getAuthor());
+                    ReadingsTable.setRowSelectionInterval(getRow(), getRow());//Focus on the reading that we edit
+                }else{
+                    if(parent.getBooksTable().getRowCount()>0) {
+                        parent.getBooksTable().setRowSelectionInterval(0, 0);
+                        parent.setMTitle(parent.getBooksTable().getValueAt(0, 0).toString());
+                        parent.setAuthor(parent.getBooksTable().getValueAt(0, 1).toString());
+                        parent.loadComponents(MainWindow.getMTitle(), MainWindow.getAuthor());
+                        contentPane.updateUI();
+                        fillBookList(MainWindow.getMTitle(), MainWindow.getAuthor());
+                        ReadingsTable.setRowSelectionInterval(getRow(), getRow());//Focus on the reading that we edit
+                    }else{
+                        parent.resetCounterManageReading(0);
+                        setVisible(false);
+                        dispose();
+                    }
+                }
+
             }
         });
     }
