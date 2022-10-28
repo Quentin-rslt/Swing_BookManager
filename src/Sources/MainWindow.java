@@ -53,6 +53,7 @@ public class MainWindow extends JDialog {
     private int counterManageReading;
     private ManageReadingDlg m_ManageReadingDiag;
     private Boolean isFiltered;
+    private boolean m_isFastSearch;
 
 
     public MainWindow() {
@@ -221,9 +222,9 @@ public class MainWindow extends JDialog {
                             initComponents();
                         }
                     }
-
-                    if(getCounterManageReading()>0)
-                        this.m_ManageReadingDiag.fillBookList(getMTitle(), getAuthor());
+                    if(isFastSearch()){
+                        fastSearchBook(BookFastSearch.getText());
+                    }
                     conn.close();
                     m_statement.close();
                 } catch (SQLException e) {
@@ -271,6 +272,9 @@ public class MainWindow extends JDialog {
                             resetCounterManageReading(0);
                         }
                         initComponents();
+                    }
+                    if(isFastSearch()){
+                        fastSearchBook(BookFastSearch.getText());
                     }
                 } catch (SQLException e) {
                     System.out.println(e.getMessage());
@@ -350,6 +354,9 @@ public class MainWindow extends JDialog {
                             initComponents();
                         }
                     }
+                    if(isFastSearch()){
+                        fastSearchBook(BookFastSearch.getText());
+                    }
                 } catch (SQLException e) {
                     System.out.println(e.getMessage());
                 }
@@ -387,14 +394,18 @@ public class MainWindow extends JDialog {
                     AvNumPstmt.setInt(2, getNumberOfReading(diag.getMtitle(), diag.getAuthor()));
                     AvNumPstmt.executeUpdate();
 
+
                     setMTitle(diag.getMtitle());
                     setAuthor(diag.getAuthor());
                     loadComponents(diag.getMtitle(), diag.getAuthor());
                     loadDB(isFiltered());
                     //Focus in the jtable on a reading created from an existing book
                     BooksTable.setRowSelectionInterval(getRowSelected(diag.getMtitle(), diag.getAuthor()), getRowSelected(diag.getMtitle(), diag.getAuthor()));
-                    if(getCounterManageReading()>0)
+                    if (getCounterManageReading() > 0)
                         this.m_ManageReadingDiag.fillBookList(getMTitle(), getAuthor());
+                    if(isFastSearch()){
+                        fastSearchBook(BookFastSearch.getText());
+                    }
                     conn.close();
                     m_statement.close();
                 }catch (SQLException e){
@@ -413,27 +424,30 @@ public class MainWindow extends JDialog {
             openManageTagsDlg(getMTitle(), getAuthor());
             contentPane.updateUI();
             loadDB(isFiltered());
-            if(isInFilteredList(getMTitle(),getAuthor(), getBooksTable())){
+            if (isInFilteredList(getMTitle(), getAuthor(), getBooksTable())) {
                 loadComponents(getMTitle(), getAuthor());//reload changes made to the book
                 getBooksTable().setRowSelectionInterval(getRowSelected(getMTitle(), getAuthor()), getRowSelected(getMTitle(), getAuthor()));//focus on the edited book
-                if(getCounterManageReading()>0)
+                if (getCounterManageReading() > 0)
                     this.m_ManageReadingDiag.fillBookList(getMTitle(), getAuthor());
-            }else{
-                if(getBooksTable().getRowCount()>0){
+            } else {
+                if (getBooksTable().getRowCount() > 0) {
                     setMTitle(getBooksTable().getValueAt(0, 0).toString());
                     setAuthor(getBooksTable().getValueAt(0, 1).toString());
                     loadComponents(getMTitle(), getAuthor());//reload changes made to the book
                     getBooksTable().setRowSelectionInterval(0, 0);
-                    if(getCounterManageReading()>0)
+                    if (getCounterManageReading() > 0)
                         this.m_ManageReadingDiag.fillBookList(getMTitle(), getAuthor());
-                }else{
-                    if(this.m_ManageReadingDiag!=null) {
+                } else {
+                    if (this.m_ManageReadingDiag != null) {
                         getManageReadingDiag().setVisible(false);
                         getManageReadingDiag().dispose();
                         resetCounterManageReading(0);
                     }
                     initComponents();
                 }
+            }
+            if(isFastSearch()){
+                fastSearchBook(BookFastSearch.getText());
             }
         });
         FiltersBookBtn.addActionListener((ActionEvent e)-> {
@@ -456,6 +470,9 @@ public class MainWindow extends JDialog {
             }
             else
                 initComponents();
+            if(isFastSearch()){
+                fastSearchBook(BookFastSearch.getText());
+            }
             contentPane.updateUI();
         });
         CancelFiltersBtn.addActionListener((ActionEvent e) -> {
@@ -468,6 +485,9 @@ public class MainWindow extends JDialog {
             BooksTable.setRowSelectionInterval(getRowSelected(getMTitle(),getAuthor()), getRowSelected(getMTitle(),getAuthor()));
             if(m_ManageReadingDiag!=null){
                 m_ManageReadingDiag.fillBookList(getMTitle(),getAuthor());
+            }
+            if(isFastSearch()){
+                fastSearchBook(BookFastSearch.getText());
             }
         });
         BookManageTagsBtn.addActionListener((ActionEvent e) -> {
@@ -496,6 +516,9 @@ public class MainWindow extends JDialog {
                     initComponents();
                 }
             }
+            if(isFastSearch()){
+                fastSearchBook(BookFastSearch.getText());
+            }
         });
         BookFastSearch.addKeyListener(new KeyAdapter() {
             @Override
@@ -505,13 +528,14 @@ public class MainWindow extends JDialog {
             }
         });
     }
+
+    /****************************** Get ***********************************/
     public Tags getTags(){
         return this.m_tags;
     }
     public ManageReadingDlg getManageReadingDiag(){
         return this.m_ManageReadingDiag;
     }
-
     public static String getMTitle(){
         return m_title;
     }
@@ -536,7 +560,23 @@ public class MainWindow extends JDialog {
 
         return row;
     }
+    public int getCounterManageReading() {
+        return counterManageReading;
+    }
+    public JTable getBooksTable(){
+        return this.BooksTable;
+    }
+    public Boolean isFiltered() {
+        return isFiltered;
+    }
+    public Boolean isFastSearch(){
+        return this.m_isFastSearch;
+    }
 
+    /****************************** Void ***********************************/
+    public void setFastSearch(boolean fast){
+        this.m_isFastSearch=fast;
+    }
     public void setTags(Tags tags){
         this.m_tags=tags;
     }
@@ -676,6 +716,7 @@ public class MainWindow extends JDialog {
         }
     }
     public void loadComponents(String title, String author){
+        ManageReadingsBtn.setEnabled(true);
         Tags tags = new Tags();
         try(Connection conn = connect()) {
             Class.forName("org.sqlite.JDBC");
@@ -790,31 +831,6 @@ public class MainWindow extends JDialog {
         contentPane.setBorder(null);
     }
 
-    public static void main(String[] args) {
-        try {
-            UIManager.setLookAndFeel(new DarkTheme());
-        }catch( Exception ex ) {
-            System.err.println( "Failed to load darkTheme" );
-        }
-
-        MainWindow parent = new MainWindow();
-        parent.setTitle("Book manager");
-        parent.setSize(1350,760);
-        parent.setLocationRelativeTo(null);
-        parent.setVisible(true);
-        System.exit(0);
-    }
-
-    public int getCounterManageReading() {
-        return counterManageReading;
-    }
-    public JTable getBooksTable(){
-        return this.BooksTable;
-    }
-    public Boolean isFiltered() {
-        return isFiltered;
-    }
-
     public void setManageReading(ManageReadingDlg manageReadingDiag) {
         this.m_ManageReadingDiag = manageReadingDiag;
     }
@@ -829,6 +845,7 @@ public class MainWindow extends JDialog {
     }
     public void fastSearchBook(String text){
         loadDB(isFiltered());
+        setFastSearch(true);
         for(int row = 0 ; row < getBooksTable().getRowCount() ; row++) {
             int cellsNotCorrespondingToFilter = 0;
             for(int column = 0 ; column < getBooksTable().getColumnCount() ; column++) {
@@ -873,6 +890,21 @@ public class MainWindow extends JDialog {
             }
             initComponents();
         }
+    }
+
+    public static void main(String[] args) {
+        try {
+            UIManager.setLookAndFeel(new DarkTheme());
+        }catch( Exception ex ) {
+            System.err.println( "Failed to load darkTheme" );
+        }
+
+        MainWindow parent = new MainWindow();
+        parent.setTitle("Book manager");
+        parent.setSize(1350,760);
+        parent.setLocationRelativeTo(null);
+        parent.setVisible(true);
+        System.exit(0);
     }
 }
 
