@@ -834,7 +834,12 @@ public class MainWindow extends JDialog {
             for(int column = 0 ; column < getBooksTable().getColumnCount() ; column++) {
                 String cellText = getBooksTable().getModel().getValueAt(row,column).toString();
                 for(int filterIndex = 0; filterIndex < text.length() ; filterIndex++) {
-                    if(cellText.charAt(filterIndex) != text.charAt(filterIndex)) {
+                    if(filterIndex<cellText.length()) {
+                        if (cellText.charAt(filterIndex) != text.charAt(filterIndex)) {
+                            cellsNotCorrespondingToFilter++;
+                            break;
+                        }
+                    }else{
                         cellsNotCorrespondingToFilter++;
                         break;
                     }
