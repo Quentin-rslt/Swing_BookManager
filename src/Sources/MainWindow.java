@@ -497,6 +497,13 @@ public class MainWindow extends JDialog {
                 }
             }
         });
+        BookFastSearch.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                super.keyReleased(e);
+                fastSearchBook(BookFastSearch.getText());
+            }
+        });
     }
     public Tags getTags(){
         return this.m_tags;
@@ -819,6 +826,48 @@ public class MainWindow extends JDialog {
     }
     public void setIsFiltered(Boolean filtered) {
         isFiltered = filtered;
+    }
+    public void fastSearchBook(String text){
+        loadDB(isFiltered());
+        for(int row = 0 ; row < getBooksTable().getRowCount() ; row++) {
+            int cellsNotCorrespondingToFilter = 0;
+            for(int column = 0 ; column < getBooksTable().getColumnCount() ; column++) {
+                String cellText = getBooksTable().getModel().getValueAt(row,column).toString();
+                for(int filterIndex = 0; filterIndex < text.length() ; filterIndex++) {
+                    if(cellText.charAt(filterIndex) != text.charAt(filterIndex)) {
+                        cellsNotCorrespondingToFilter++;
+                        break;
+                    }
+                }
+            }
+            //If no cell in the line corresponds to the search
+            if(cellsNotCorrespondingToFilter == getBooksTable().getColumnCount()) {
+                m_tableModel.removeRow(row);
+                BooksTable.updateUI();
+                row--;
+            }
+        }
+        AbstractBorder roundBrdMax = new RoundBorderCp(contentPane.getBackground(),1,30, 0,0,0);
+        AbstractBorder roundBrdMin = new RoundBorderCp(contentPane.getBackground(),1,30, 592-(BooksTable.getRowCount()*BooksTable.getRowHeight()),11,0);
+        if(BooksTable.getRowCount()>20)
+            BooksTable.setBorder(roundBrdMax);
+        else
+            BooksTable.setBorder(roundBrdMin);
+        if(getBooksTable().getRowCount()>0){
+            setMTitle(getBooksTable().getValueAt(0, 0).toString());
+            setAuthor(getBooksTable().getValueAt(0, 1).toString());
+            loadComponents(getMTitle(), getAuthor());//reload changes made to the book
+            getBooksTable().setRowSelectionInterval(0, 0);
+            if(getCounterManageReading()>0)
+                this.m_ManageReadingDiag.fillBookList(getMTitle(), getAuthor());
+        }else{
+            if(this.m_ManageReadingDiag!=null) {
+                getManageReadingDiag().setVisible(false);
+                getManageReadingDiag().dispose();
+                resetCounterManageReading(0);
+            }
+            initComponents();
+        }
     }
 }
 
