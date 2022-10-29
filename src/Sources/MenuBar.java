@@ -61,7 +61,9 @@ public class MenuBar {
         JMenuItem addBookMenuItem = new JMenuItem("Un livre");
         addBookMenuItem.addActionListener((e->openAddBookDlg()));
         JMenuItem addReadingMenuItem = new JMenuItem("Une lecture");
-        addReadingMenuItem.addActionListener((e->openAddReadingDlg(title, author)));
+        addReadingMenuItem.addActionListener((e->{
+            openAddReadingDlg(title, author);
+        }));
         addMenu.add(addBookMenuItem);
         addMenu.add(addReadingMenuItem);
 
@@ -83,20 +85,9 @@ public class MenuBar {
         supprBookMenuItem.addActionListener((e -> {
             deleteBook(title, author);
             parent.loadDB(parent.isFiltered());
-            if(parent.getBooksTable().getRowCount()>0){
-                parent.setMTitle(parent.getBooksTable().getValueAt(0, 0).toString());
-                parent.setAuthor(parent.getBooksTable().getValueAt(0, 1).toString());
-                parent.loadComponents(getMTitle(), getAuthor());//reload changes made to the book
-                parent.getBooksTable().setRowSelectionInterval(0, 0);
-                if(parent.getCounterManageReading()>0)
-                    parent.getManageReadingDiag().fillBookList(getMTitle(), getAuthor());
-            }else{
-                if(parent.getManageReadingDiag()!=null) {
-                    parent.getManageReadingDiag().setVisible(false);
-                    parent.getManageReadingDiag().dispose();
-                    parent.resetCounterManageReading(0);
-                }
-                parent.initComponents();
+            parent.isNotInFilteredBookList();
+            if(parent.isFastSearch()){
+                parent.fastSearchBook(parent.getBookFastSearch().getText());
             }
         }));
 
