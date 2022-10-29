@@ -95,6 +95,95 @@ public class Common {
             }
         }
     }
+    public static void setNameOfBook(String name){
+        m_name = name;
+    }
+    public static void selectNameOfBook(JPanel panel){
+        FileFilter imageFilter = new FileNameExtensionFilter("Image files", ImageIO.getReaderFileSuffixes());
+        jf.setFileFilter(imageFilter);
+        jf.setPreferredSize(new Dimension(850,600));
+        int rVal;
+        do{
+            rVal = jf.showOpenDialog(panel);
+            if (JFileChooser.APPROVE_OPTION == rVal){ //Opens the file panel to select an image
+                setNameOfBook(randomNameOfBook(jf.getSelectedFile().getName()));
+                String path = jf.getSelectedFile().getPath();
+                if (accept(jf.getSelectedFile())){
+                    Image img = Toolkit.getDefaultToolkit().getImage(path);
+                    Dimension d = rescaleImage(jf.getSelectedFile());
+                    img=img.getScaledInstance(d.width, d.height, Image.SCALE_AREA_AVERAGING);
+                    ImageIcon icon = new ImageIcon(img);
+                    JLabel imgLabel = new JLabel();
+                    imgLabel.setIcon(icon);
+
+                    panel.updateUI();//reload the panel
+                    panel.removeAll();
+                    panel.add(imgLabel);
+                }else{
+                    JFrame jFrame = new JFrame();
+                    JOptionPane.showMessageDialog(jFrame, "Veuillez choisir un format jpg ou png ou jpeg !");
+                }
+            }
+        } while (!accept(jf.getSelectedFile()) && rVal==0);
+    }
+    public static void rescaleResolutionImage(File file){
+        BufferedImage image;
+        BufferedImage outputImage;
+        try {
+            image = ImageIO.read(file);
+            float width = image.getWidth();
+            float height = image.getHeight();
+            int maxWidht = 1200;
+            if(width>maxWidht){
+                float ratio = (width/height);
+                int maxHeight = (int) (maxWidht/ratio); //rescale the height of the image with a maximum width of 611px
+                Image resultingImage = image.getScaledInstance(maxWidht, maxHeight, Image.SCALE_DEFAULT);
+                outputImage = new BufferedImage(maxWidht, maxHeight, BufferedImage.TYPE_INT_RGB);
+                outputImage.getGraphics().drawImage(resultingImage, 0, 0, null);
+                ImageIO.write(outputImage, getFormat(file.getName()), file);
+            }else{
+                Image resultingImage = image.getScaledInstance(image.getWidth(), image.getHeight(), Image.SCALE_DEFAULT);
+                outputImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB);
+                outputImage.getGraphics().drawImage(resultingImage, 0, 0, null);
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public static void isNotInFilteredBookList(MainWindow parent){
+        if (parent.getBooksTable().getRowCount() > 0) {
+            parent.setMTitle(parent.getBooksTable().getValueAt(0, 0).toString());
+            parent.setAuthor(parent.getBooksTable().getValueAt(0, 1).toString());
+            parent.loadComponents(getMTitle(), getAuthor());//reload changes made to the book
+            parent.getBooksTable().setRowSelectionInterval(0, 0);
+            if (parent.getCounterManageReading() > 0)
+                parent.getManageReadingDiag().fillBookList(getMTitle(), getAuthor());
+        } else {
+            if (parent.getManageReadingDiag() != null) {
+                parent.getManageReadingDiag().setVisible(false);
+                parent.getManageReadingDiag().dispose();
+                parent.resetCounterManageReading(0);
+            }
+            parent.initComponents();
+        }
+    }
+    public static void isItInFilteredBookList(String title, String author, MainWindow parent){
+        if(parent.isFiltered()){
+            if(isInFilteredList(title,getAuthor(), parent.getBooksTable())){
+                parent.loadComponents(title, author);//reload changes made to the book
+                parent.getBooksTable().setRowSelectionInterval(parent.getRowSelected(title, author), parent.getRowSelected(title, author));//focus on the edited book
+                if(parent.getCounterManageReading()>0)
+                    parent.getManageReadingDiag().fillBookList(title, author);
+            }else{
+                isNotInFilteredBookList(parent);
+            }
+        }else{
+            parent.loadComponents(title, getAuthor());//reload changes made to the book
+            parent.getBooksTable().setRowSelectionInterval(parent.getRowSelected(title, author), parent.getRowSelected(title, author));//focus on the edited book
+        }
+    }
+
     public static boolean fillPaneTags(Tags tags, JPanel panel, JComboBox cb){
         boolean tagFind = false;
         int i = 0;
@@ -182,87 +271,6 @@ public class Common {
         }
         return tagFind;
     }
-    public static void setNameOfBook(String name){
-        m_name = name;
-    }
-    public static void selectNameOfBook(JPanel panel){
-        FileFilter imageFilter = new FileNameExtensionFilter("Image files", ImageIO.getReaderFileSuffixes());
-        jf.setFileFilter(imageFilter);
-        jf.setPreferredSize(new Dimension(850,600));
-        int rVal;
-        do{
-            rVal = jf.showOpenDialog(panel);
-            if (JFileChooser.APPROVE_OPTION == rVal){ //Opens the file panel to select an image
-                setNameOfBook(randomNameOfBook(jf.getSelectedFile().getName()));
-                String path = jf.getSelectedFile().getPath();
-                if (accept(jf.getSelectedFile())){
-                    Image img = Toolkit.getDefaultToolkit().getImage(path);
-                    Dimension d = rescaleImage(jf.getSelectedFile());
-                    img=img.getScaledInstance(d.width, d.height, Image.SCALE_AREA_AVERAGING);
-                    ImageIcon icon = new ImageIcon(img);
-                    JLabel imgLabel = new JLabel();
-                    imgLabel.setIcon(icon);
-
-                    panel.updateUI();//reload the panel
-                    panel.removeAll();
-                    panel.add(imgLabel);
-                }else{
-                    JFrame jFrame = new JFrame();
-                    JOptionPane.showMessageDialog(jFrame, "Veuillez choisir un format jpg ou png ou jpeg !");
-                }
-            }
-        } while (!accept(jf.getSelectedFile()) && rVal==0);
-    }
-    public static void rescaleResolutionImage(File file){
-        BufferedImage image;
-        BufferedImage outputImage;
-        try {
-            image = ImageIO.read(file);
-            float width = image.getWidth();
-            float height = image.getHeight();
-            int maxWidht = 1200;
-            if(width>maxWidht){
-                float ratio = (width/height);
-                int maxHeight = (int) (maxWidht/ratio); //rescale the height of the image with a maximum width of 611px
-                Image resultingImage = image.getScaledInstance(maxWidht, maxHeight, Image.SCALE_DEFAULT);
-                outputImage = new BufferedImage(maxWidht, maxHeight, BufferedImage.TYPE_INT_RGB);
-                outputImage.getGraphics().drawImage(resultingImage, 0, 0, null);
-                ImageIO.write(outputImage, getFormat(file.getName()), file);
-            }else{
-                Image resultingImage = image.getScaledInstance(image.getWidth(), image.getHeight(), Image.SCALE_DEFAULT);
-                outputImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB);
-                outputImage.getGraphics().drawImage(resultingImage, 0, 0, null);
-            }
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-    public static void deleteBook(String title, String author){
-        JFrame jFrame = new JFrame();
-        int n = JOptionPane.showConfirmDialog(//Open a optionPane to verify if the user really want to delete the book return 0 il they want and 1 if they refuse
-                jFrame,
-                "Etes-vous sûr de vouloir supprimer définitivement le livre ?\n"+"Cette acion sera irréversible !",
-                "An Inane Question",
-                JOptionPane.YES_NO_OPTION);
-        if(n == 0){
-            String boolQry = "DELETE FROM Book WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";//sql to delete the book in table book when we right click
-            String ReadingQry = "DELETE FROM Reading WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";
-            String TaggingQry = "DELETE FROM Tagging WHERE IdBook='"+getIdBook(getMTitle(),getAuthor())+"'";
-
-            deleteImageMainResource(getMTitle(), getAuthor());
-            try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(boolQry); PreparedStatement pstmt2 = conn.prepareStatement(ReadingQry);
-                 PreparedStatement taggingPstmt = conn.prepareStatement(TaggingQry)) {
-                // execute the delete statement
-                pstmt.executeUpdate();
-                pstmt2.executeUpdate();
-                taggingPstmt.executeUpdate();
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
-            }
-        }
-    }
-
     public static Dimension rescaleImage(File file){
         Dimension size;
         BufferedImage image;

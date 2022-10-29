@@ -1,11 +1,15 @@
 package Sources;
 
+import Sources.Dialogs.AddBookDlg;
+import Sources.Dialogs.AddReading;
+import Sources.Dialogs.EditBookDlg;
+import Sources.Dialogs.FiltersDlg;
+
 import javax.swing.*;
 
-import static Sources.Common.deleteBook;
+import static Sources.Common.isItInFilteredBookList;
+import static Sources.CommonSQL.*;
 import static Sources.Dialogs.OpenDialog.*;
-import static Sources.MainWindow.getAuthor;
-import static Sources.MainWindow.getMTitle;
 
 public class MenuBar {
     public static JMenuBar createMenuBar(MainWindow parent, String title, String author) {
@@ -59,10 +63,14 @@ public class MenuBar {
         //Add menu
         JMenu addMenu = new JMenu("Ajouter ");
         JMenuItem addBookMenuItem = new JMenuItem("Un livre");
-        addBookMenuItem.addActionListener((e->openAddBookDlg()));
+        addBookMenuItem.addActionListener((e->{
+            AddBookDlg diag=openAddBookDlg();
+            addBook(diag, parent);
+        }));
         JMenuItem addReadingMenuItem = new JMenuItem("Une lecture");
         addReadingMenuItem.addActionListener((e->{
-            openAddReadingDlg(title, author);
+            AddReading diag = openAddReadingDlg(title, author);
+            addReading(diag, parent);
         }));
         addMenu.add(addBookMenuItem);
         addMenu.add(addReadingMenuItem);
@@ -70,30 +78,45 @@ public class MenuBar {
         //Manage menu
         JMenu manageMenu = new JMenu("Gérer ");
         JMenuItem manageTagMenuItem = new JMenuItem("Les tags");
-        manageTagMenuItem.addActionListener((e->openManageTagsDlg()));
+        manageTagMenuItem.addActionListener((e->{
+            openManageTagsDlg();
+            parent.getContentPanel().updateUI();
+            parent.loadDB(parent.isFiltered());
+            isItInFilteredBookList(title,author,parent);
+            if(parent.isFastSearch()){
+                parent.fastSearchBook(parent.getBookFastSearch().getText());
+            }
+        }));
         JMenuItem manageReadingMenuItem = new JMenuItem("Les lectures");
-        manageReadingMenuItem.addActionListener((e->parent.setManageReading(openManageReadingDlg(parent, title, author))));
+        manageReadingMenuItem.addActionListener((e->{
+            if(parent.getCounterManageReading()<1){
+                parent.setCounterManageReading(1);
+                parent.setManageReading(openManageReadingDlg(parent, title, author));
+            }
+        }));
         manageMenu.add(manageTagMenuItem);
         manageMenu.add(manageReadingMenuItem);
 
         //Edit book
         JMenuItem editBookMenuItem = new JMenuItem("Modifier le livre");
-        editBookMenuItem.addActionListener((e->openEditBookDlg(title, author)));
+        editBookMenuItem.addActionListener((e->{
+            EditBookDlg diag = openEditBookDlg(title, author);
+            editBook(diag, title,author,parent);
+        }));
 
         //Delete book
         JMenuItem supprBookMenuItem = new JMenuItem("Supprimer le livre");
         supprBookMenuItem.addActionListener((e -> {
-            deleteBook(title, author);
-            parent.loadDB(parent.isFiltered());
-            parent.isNotInFilteredBookList();
-            if(parent.isFastSearch()){
-                parent.fastSearchBook(parent.getBookFastSearch().getText());
-            }
+            deleteBook(title, author, parent);
         }));
 
         //Filters book
         JMenuItem filterMenuItem = new JMenuItem("Filtrer");
-        filterMenuItem.addActionListener((e -> openFilterDlg()));
+        filterMenuItem.addActionListener((e -> {
+            FiltersDlg diag = openFilterDlg();
+            parent.setDiagFilters(diag);
+            filtersBook(diag, title , author, parent);
+        }));
 
         //Edit Menu
         JMenu editMenu = new JMenu("Editer");
