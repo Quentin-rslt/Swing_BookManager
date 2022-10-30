@@ -115,7 +115,21 @@ public class CommonSQL {
                 parent.loadDB(parent.isFiltered());
                 parent.setMTitle(diag.getNewBookTitle());
                 parent.setAuthor(diag.getNewBookAuthor());
-                isItInFilteredBookList(getMTitle(),getAuthor(),parent);
+                if(parent.isFiltered()){
+                    if(isInFilteredList(getMTitle(),getAuthor(), parent.getBooksTable())){
+                        parent.loadComponents(getMTitle(), getAuthor());//reload changes made to the book
+                        parent.getBooksTable().setRowSelectionInterval(parent.getRowSelected(getMTitle(), getAuthor()), parent.getRowSelected(getMTitle(), getAuthor()));//focus on the edited book
+                        if(parent.getCounterManageReading()>0)
+                            parent.getManageReadingDiag().fillBookList(getMTitle(), getAuthor());
+                    }else{
+                        JFrame jFrame = new JFrame();
+                        JOptionPane.showMessageDialog(jFrame, "Le livre créé ne correspond pas aux filtres appliqué", "WARNING", JOptionPane.WARNING_MESSAGE);
+                        isNotInFilteredBookList(parent);
+                    }
+                }else{
+                    parent.loadComponents(getMTitle(), getAuthor());//reload changes made to the book
+                    parent.getBooksTable().setRowSelectionInterval(parent.getRowSelected(getMTitle(), getAuthor()), parent.getRowSelected(getMTitle(), getAuthor()));//focus on the edited book
+                }
                 if(parent.isFastSearch()){
                     parent.fastSearchBook(parent.getBookFastSearch().getText());
                 }

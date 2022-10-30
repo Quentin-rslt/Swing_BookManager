@@ -220,7 +220,7 @@ public class ManageTagsDlg extends JDialog {
             public void keyReleased(java.awt.event.KeyEvent evt) {
             if (!Objects.equals(AddTagCb.getSelectedItem(), "")) {
                 if (evt.getKeyCode()== KeyEvent.VK_ENTER){
-                    boolean tagFind = fillPaneTags(getTags(), TagsPanel, AddTagCb);
+                    boolean tagFind = fillPaneTags(getTags(), TagsPanel, AddTagCb,true);
                     if(!tagFind) {
                         getTags().getTag(getTags().getSizeTags()-1).setBorderColor(TagsPanel.getBackground());
                         String TaggingQry = "INSERT INTO Tagging (IdBook,IdTag) " +

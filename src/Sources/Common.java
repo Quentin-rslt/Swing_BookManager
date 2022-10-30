@@ -173,7 +173,7 @@ public class Common {
     }
     public static void isItInFilteredBookList(String title, String author, MainWindow parent){
         if(parent.isFiltered()){
-            if(isInFilteredList(title,getAuthor(), parent.getBooksTable())){
+            if(isInFilteredList(title,author, parent.getBooksTable())){
                 parent.loadComponents(title, author);//reload changes made to the book
                 parent.getBooksTable().setRowSelectionInterval(parent.getRowSelected(title, author), parent.getRowSelected(title, author));//focus on the edited book
                 if(parent.getCounterManageReading()>0)
@@ -182,7 +182,7 @@ public class Common {
                 isNotInFilteredBookList(parent);
             }
         }else{
-            parent.loadComponents(title, getAuthor());//reload changes made to the book
+            parent.loadComponents(title, author);//reload changes made to the book
             parent.getBooksTable().setRowSelectionInterval(parent.getRowSelected(title, author), parent.getRowSelected(title, author));//focus on the edited book
         }
     }
@@ -221,7 +221,7 @@ public class Common {
         }
     }
 
-    public static boolean fillPaneTags(Tags tags, JPanel panel, JComboBox cb){
+    public static boolean fillPaneTags(Tags tags, JPanel panel, JComboBox cb, boolean canCreate){
         boolean tagFind = false;
         int i = 0;
         while(!tagFind && i<tags.getSizeTags()){
@@ -234,30 +234,31 @@ public class Common {
         }
         if(!tagFind){
             boolean isInCB = false;
-            for(int j = 0; j<cb.getItemCount();j++){
-                if(Objects.requireNonNull(cb.getSelectedItem()).toString().equals(cb.getItemAt(j).toString())){
-                    isInCB=true;
+            for (int j = 0; j < cb.getItemCount(); j++) {
+                if (Objects.requireNonNull(cb.getSelectedItem()).toString().equals(cb.getItemAt(j).toString())) {
+                    isInCB = true;
                 }
             }
             //if the tag don't exist open editTagTagWindow to configure the color or the text
-            if(!isInCB){
-                EditTagDlg diag = openEditTagDlg(new Tag(Objects.requireNonNull(cb.getSelectedItem()).toString()));
+            if (!isInCB) {
+                if(canCreate) {
+                    EditTagDlg diag = openEditTagDlg(new Tag(Objects.requireNonNull(cb.getSelectedItem()).toString()));
 
-                if(diag.isValide()){
-                    Tag tag = new Tag(diag.getNewTextTag());
-                    tag.setColor(diag.getNewColorTag().getRGB());
-                    tags.addTag(tag);
+                    if (diag.isValide()) {
+                        Tag tag = new Tag(diag.getNewTextTag());
+                        tag.setColor(diag.getNewColorTag().getRGB());
+                        tags.addTag(tag);
 
-                    for(int j=0; j<tags.getSizeTags();j++){
-                        panel.add(tags.getTag(j));
-                        if(cb.getItemCount()>0)
-                            cb.setSelectedIndex(0);
+                        for (int j = 0; j < tags.getSizeTags(); j++) {
+                            panel.add(tags.getTag(j));
+                            if (cb.getItemCount() > 0)
+                                cb.setSelectedIndex(0);
+                        }
+                        panel.updateUI();
                     }
-                    panel.updateUI();
                 }
-            }
-            else{
-                String sql = "SELECT Color FROM Tags WHERE Tag='"+cb.getSelectedItem().toString()+ "'";
+            } else {
+                String sql = "SELECT Color FROM Tags WHERE Tag='" + cb.getSelectedItem().toString() + "'";
                 try {
                     Class.forName("org.sqlite.JDBC");
                     Connection connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
@@ -272,11 +273,12 @@ public class Common {
                     }
                     connection.close();
                     statement.close();
-                }catch (Exception e ){
+                } catch (Exception e) {
                     System.exit(0);
                     System.out.println(e.getMessage());
                 }
             }
+
         }
         return tagFind;
     }

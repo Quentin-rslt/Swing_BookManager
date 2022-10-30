@@ -152,7 +152,7 @@ public class AddBookDlg extends JDialog {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 if (!Objects.equals(BookTagsCB.getSelectedItem(), "")) {
                     if (evt.getKeyCode()==KeyEvent.VK_ENTER){
-                        fillPaneTags(getTags(), BookTagsPanel, BookTagsCB);
+                        fillPaneTags(getTags(), BookTagsPanel, BookTagsCB, true);
                     }
                 }
                 initListenerTag(getTags(), m_popup, BookTagsPanel);

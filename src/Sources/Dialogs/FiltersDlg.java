@@ -122,25 +122,41 @@ public class FiltersDlg extends JDialog {
                 }
             }
         });
-        FiltersTagCB.addKeyListener(new java.awt.event.KeyAdapter() {
+        FiltersTagCB.getEditor().getEditorComponent().addKeyListener(new java.awt.event.KeyAdapter() {
             @Override
             public void keyReleased(java.awt.event.KeyEvent evt) {
-            if (!Objects.equals(FiltersTagCB.getSelectedItem(), "")) {
-                if (evt.getKeyCode()== KeyEvent.VK_ENTER){
-                    fillPaneTags(getTags(), FiltersTagsPanel, FiltersTagCB);
+                if (!Objects.equals(FiltersTagCB.getEditor().getItem().toString(), "")) {
+                    if (evt.getKeyCode()== KeyEvent.VK_ENTER){
+                        fillPaneTags(getTags(), FiltersTagsPanel, FiltersTagCB, false);
+                    } else{
+                        FiltersTagCB.showPopup();
+                        for (int i=0; i<FiltersTagCB.getItemCount();i++){
+                            if(Objects.equals(FiltersTagCB.getEditor().getItem().toString(), FiltersTagCB.getItemAt(i))){
+                                FiltersTagCB.setSelectedIndex(i);
+                                FiltersTagCB.showPopup();
+                            }
+                        }
+                    }
                 }
+                initListenerTag(getTags(), m_popup, FiltersTagsPanel);
+                FiltersTagsPanel.updateUI();
             }
-            initListenerTag(getTags(), m_popup, FiltersTagsPanel);
-            FiltersTagsPanel.updateUI();
+        });
+        FiltersTagCB.getEditor().getEditorComponent().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                FiltersTagCB.showPopup();
+                FiltersTagCB.setSelectedIndex(0);
             }
         });
         FiltersTagsPanel.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
             super.mouseClicked(e);
-            if(!e.getComponent().getComponentAt(e.getX(),e.getY()).equals(FiltersTagsPanel)){
-                if(e.getButton() == MouseEvent.BUTTON3) {
+            if (!e.getComponent().getComponentAt(e.getX(), e.getY()).equals(FiltersTagsPanel)) {
+                if (e.getButton() == MouseEvent.BUTTON3) {
                     m_popup.show(FiltersTagsPanel, e.getX(), e.getY());//show a popup to edit the reading
-                    m_popup.setInvoker(e.getComponent().getComponentAt(e.getX(),e.getY()));
+                    m_popup.setInvoker(e.getComponent().getComponentAt(e.getX(), e.getY()));
                 }
                 initListenerTag(getTags(), m_popup, FiltersTagsPanel);
                 FiltersTagsPanel.updateUI();
