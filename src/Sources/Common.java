@@ -338,6 +338,14 @@ public class Common {
         }
         return isAccept;
     }
+    public static boolean acceptCSV(File pathname) {
+        boolean isAccept = true;
+        if(pathname!=null){
+            String filename = pathname.getName();
+            isAccept = filename.endsWith("csv");
+        }
+        return isAccept;
+    }
     public static String randomNameOfBook(String oldName){
         String name="";
         try (Connection conn = connect()) {

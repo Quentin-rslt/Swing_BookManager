@@ -10,6 +10,10 @@ import javax.swing.*;
 import static Sources.Common.isItInFilteredBookList;
 import static Sources.CommonSQL.*;
 import static Sources.Dialogs.OpenDialog.*;
+import static Sources.ImportExportData.exportCSV;
+import static Sources.ImportExportData.importCSV;
+import static Sources.MainWindow.getAuthor;
+import static Sources.MainWindow.getMTitle;
 
 public class MenuBar {
     public static JMenuBar createMenuBar(MainWindow parent, String title, String author) {
@@ -18,18 +22,19 @@ public class MenuBar {
         helpMenu.add(aboutMenuItem);
 
         JMenuBar menuBar = new JMenuBar();
-        menuBar.add(createFileMenu());
+        menuBar.add(createFileMenu(parent));
         menuBar.add(createEditMenu(parent, title, author));
         menuBar.add(createViewMenu());
         menuBar.add(helpMenu);
 
         return menuBar;
     }
-    private static JMenu createFileMenu(){
+    private static JMenu createFileMenu(MainWindow parent){
         //Export menu
         JMenu exportMenu = new JMenu("Exporter");
         JMenuItem exportJsonMenuItem = new JMenuItem("JSON");
         JMenuItem exportCsvMenuItem = new JMenuItem("CSV");
+        exportCsvMenuItem.addActionListener((e -> exportCSV()) );
         exportMenu.add(exportJsonMenuItem);
         exportMenu.add(exportCsvMenuItem);
 
@@ -37,6 +42,15 @@ public class MenuBar {
         JMenu importMenu = new JMenu("Importer ");
         JMenuItem importJsonMenuItem = new JMenuItem("JSON");
         JMenuItem importCsvMenuItem = new JMenuItem("CSV");
+        importCsvMenuItem.addActionListener((e -> {
+            importCSV(parent);
+            parent.setIsFiltered(false);
+            parent.loadDB(parent.isFiltered());
+            parent.setMTitle(parent.getBooksTable().getValueAt(0, 0).toString());
+            parent.setAuthor(parent.getBooksTable().getValueAt(0, 1).toString());
+            parent.loadComponents(getMTitle(), getAuthor());//reload changes made to the book
+            parent.getBooksTable().setRowSelectionInterval(0, 0);
+        }));
         importMenu.add(importJsonMenuItem);
         importMenu.add(importCsvMenuItem);
 

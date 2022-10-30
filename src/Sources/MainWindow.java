@@ -504,7 +504,6 @@ public class MainWindow extends JDialog {
         contentPane.updateUI();
         contentPane.setBorder(null);
     }
-
     public void setManageReading(ManageReadingDlg manageReadingDiag) {
         this.m_ManageReadingDiag = manageReadingDiag;
     }
@@ -562,6 +561,7 @@ public class MainWindow extends JDialog {
         MainWindow parent = new MainWindow();
         parent.setTitle("Book manager");
         parent.setSize(1350,760);
+        parent.setJMenuBar(createMenuBar(parent, getMTitle(), getAuthor()));
         parent.setLocationRelativeTo(null);
         parent.setVisible(true);
         System.exit(0);
