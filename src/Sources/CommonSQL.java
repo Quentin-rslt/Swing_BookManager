@@ -24,7 +24,7 @@ public class CommonSQL {
                 "An Inane Question",
                 JOptionPane.YES_NO_OPTION);
         if(n == 0){
-            String boolQry = "DELETE FROM Book WHERE Title='"+title+"' AND Author='"+author+"'";//sql to delete the book in table book when we right click
+            String boolQry = "DELETE FROM Book WHERE Title='"+title+"' AND Author='"+author+"'";
             String ReadingQry = "DELETE FROM Reading WHERE Title='"+title+"' AND Author='"+author+"'";
             String TaggingQry = "DELETE FROM Tagging WHERE IdBook='"+getIdBook(title,author)+"'";
 
@@ -236,44 +236,33 @@ public class CommonSQL {
         }
     }
     public static void filtersBook(FiltersDlg diag, String title , String author, MainWindow parent){
-        if(parent.isFiltered()){
-            parent.loadDB(parent.isFiltered());
-            if(parent.getBooksTable().getRowCount()>0){
+        if(diag.getIsValid()) {
+            if(parent.isFiltered()){
+                parent.loadDB(parent.isFiltered());
+            }
+            else{
+                parent.loadDB(diag.getIsValid());
+                parent.setIsFiltered(diag.getIsValid());
+            }
+            if (parent.getBooksTable().getRowCount() > 0) {
                 parent.setMTitle(parent.getBooksTable().getValueAt(0, 0).toString());
                 parent.setAuthor(parent.getBooksTable().getValueAt(0, 1).toString());
                 parent.loadComponents(getMTitle(), getAuthor());
-                parent.getBooksTable().setRowSelectionInterval(parent.getRowSelected(getMTitle(),getAuthor()), parent.getRowSelected(getMTitle(),getAuthor()));
-                if(parent.getManageReadingDiag()!=null){
-                    parent.getManageReadingDiag().fillBookList(getMTitle(),getAuthor());
+                parent.getBooksTable().setRowSelectionInterval(parent.getRowSelected(getMTitle(), getAuthor()), parent.getRowSelected(getMTitle(), getAuthor()));
+                if (parent.getManageReadingDiag() != null) {
+                    parent.getManageReadingDiag().fillBookList(getMTitle(), getAuthor());
                 }
-            }
-            else
+            } else
                 parent.initComponents();
-        }
-        else{
-            parent.loadDB(diag.getIsValid());
-            parent.setIsFiltered(diag.getIsValid());
-            if(diag.getIsValid()) {
-                if (parent.getBooksTable().getRowCount() > 0) {
-                    parent.setMTitle(parent.getBooksTable().getValueAt(0, 0).toString());
-                    parent.setAuthor(parent.getBooksTable().getValueAt(0, 1).toString());
-                    parent.loadComponents(getMTitle(), getAuthor());
-                    parent.getBooksTable().setRowSelectionInterval(parent.getRowSelected(getMTitle(), getAuthor()), parent.getRowSelected(getMTitle(), getAuthor()));
-                    if (parent.getManageReadingDiag() != null) {
-                        parent.getManageReadingDiag().fillBookList(getMTitle(), getAuthor());
-                    }
-                } else
-                    parent.initComponents();
-            }else{
-                if (parent.getBooksTable().getRowCount() > 0) {
-                    parent.loadComponents(title, author);
-                    parent.getBooksTable().setRowSelectionInterval(parent.getRowSelected(title, author), parent.getRowSelected(title, author));
-                    if (parent.getManageReadingDiag() != null) {
-                        parent.getManageReadingDiag().fillBookList(title, author);
-                    }
-                } else
-                    parent.initComponents();
-            }
+        }else{
+            if (parent.getBooksTable().getRowCount() > 0) {
+                parent.loadComponents(title, author);
+                parent.getBooksTable().setRowSelectionInterval(parent.getRowSelected(title, author), parent.getRowSelected(title, author));
+                if (parent.getManageReadingDiag() != null) {
+                    parent.getManageReadingDiag().fillBookList(title, author);
+                }
+            } else
+                parent.initComponents();
         }
         if(parent.isFastSearch()){
             parent.fastSearchBook(parent.getBookFastSearch().getText());
