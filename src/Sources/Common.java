@@ -8,6 +8,9 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -181,6 +184,40 @@ public class Common {
         }else{
             parent.loadComponents(title, getAuthor());//reload changes made to the book
             parent.getBooksTable().setRowSelectionInterval(parent.getRowSelected(title, author), parent.getRowSelected(title, author));//focus on the edited book
+        }
+    }
+    public static void initListenerTag(Tags tags, JPopupMenu m_popup, JPanel panel){
+        for(int i=0; i<tags.getSizeTags();i++){
+            MouseListener[] mouseListeners =  tags.getTag(i).getMouseListeners();
+            for (MouseListener mouseListener : mouseListeners) {
+                tags.getTag(i).removeMouseListener(mouseListener);
+            }
+        }
+        for(int i=0; i<tags.getSizeTags();i++){
+            int finalI = i;
+            tags.getTag(i).addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    super.mouseEntered(e);
+                    Color color = new Color(tags.getTag(finalI).getColor());
+                    tags.getTag(finalI).setBackground(color.brighter());
+                    panel.updateUI();
+                }
+                public void mouseExited(MouseEvent e) {
+                    super.mouseExited(e);
+                    tags.getTag(finalI).setBackground(new Color(tags.getTag(finalI).getColor()));
+                    panel.updateUI();
+                }
+                public void mouseClicked(MouseEvent e) {
+                    super.mouseClicked(e);
+                    if(!e.getComponent().getComponentAt(e.getX(),e.getY()).equals(panel)){
+                        if(e.getButton() == MouseEvent.BUTTON3) {
+                            m_popup.show(tags.getTag(finalI), e.getX(), e.getY());//show a popup to edit the reading
+                            m_popup.setInvoker(e.getComponent().getComponentAt(e.getX(),e.getY()));
+                        }
+                    }
+                }
+            });
         }
     }
 

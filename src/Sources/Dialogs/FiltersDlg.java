@@ -1,15 +1,17 @@
 package Sources.Dialogs;
 
+import Sources.Tags;
+
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.*;
+import java.awt.event.*;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 
-import static Sources.Common.loadTags;
+import static Sources.Common.*;
 
 public class FiltersDlg extends JDialog {
     private JPanel contentPane;
@@ -40,13 +42,22 @@ public class FiltersDlg extends JDialog {
     private JCheckBox NotDoneReadChecbox;
     private JCheckBox IsFilteredCheckBox;
     private JLabel ReadDateLabel;
+    private JPanel FiltersTagsPanel;
 
     private boolean m_isValid;
+    private final Tags m_tags;
+    final JPopupMenu m_popup;
 
     public FiltersDlg() {
+        this.m_tags = new Tags();
         setContentPane(contentPane);
         setModal(true);
         initComponents();
+
+        m_popup = new JPopupMenu();//Create a popup menu to delete a reading an edit this reading
+        JMenuItem cut = new JMenuItem("Supprimer", new ImageIcon(getImageCut()));
+        m_popup.add(cut);
+
         FiltersOkBtn.addActionListener((ActionEvent e)-> {
             setIsValid(true);
             setVisible(false);
@@ -111,8 +122,53 @@ public class FiltersDlg extends JDialog {
                 }
             }
         });
-    }
+        FiltersTagCB.addKeyListener(new java.awt.event.KeyAdapter() {
+            @Override
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+            if (!Objects.equals(FiltersTagCB.getSelectedItem(), "")) {
+                if (evt.getKeyCode()== KeyEvent.VK_ENTER){
+                    fillPaneTags(getTags(), FiltersTagsPanel, FiltersTagCB);
+                }
+            }
+            initListenerTag(getTags(), m_popup, FiltersTagsPanel);
+            FiltersTagsPanel.updateUI();
+            }
+        });
+        FiltersTagsPanel.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+            super.mouseClicked(e);
+            if(!e.getComponent().getComponentAt(e.getX(),e.getY()).equals(FiltersTagsPanel)){
+                if(e.getButton() == MouseEvent.BUTTON3) {
+                    m_popup.show(FiltersTagsPanel, e.getX(), e.getY());//show a popup to edit the reading
+                    m_popup.setInvoker(e.getComponent().getComponentAt(e.getX(),e.getY()));
+                }
+                initListenerTag(getTags(), m_popup, FiltersTagsPanel);
+                FiltersTagsPanel.updateUI();
+            }
+            }
+        });
+        cut.addActionListener((ActionEvent evt)-> {
+            Component[] componentList = FiltersTagsPanel.getComponents();
+            int i = 0;
+            while (i<getTags().getSizeTags()) {
+                if(componentList[i]==m_popup.getInvoker()){
+                    FiltersTagsPanel.remove(componentList[i]);
+                    getTags().removeTag(i);
 
+                    for(int j=0; j<getTags().getSizeTags();j++){
+                        FiltersTagsPanel.add(getTags().getTag(j));
+                    }
+                    break;
+                }
+                i++;
+            }
+            initListenerTag(getTags(), m_popup, FiltersTagsPanel);
+            FiltersTagsPanel.updateUI();
+        });
+    }
+    public Tags getTags(){
+        return this.m_tags;
+    }
     public String getMTitle(){
         return FiltersTitleTextField.getText();
     }
@@ -248,6 +304,9 @@ public class FiltersDlg extends JDialog {
     public boolean isAscending(){
         return FiltersorderCrossingRB.isSelected();
     }
+    public JPanel getFiltersTagsPanel(){
+        return this.FiltersTagsPanel;
+    }
 
     public void setIsValid(boolean m_isValid) {
         this.m_isValid = m_isValid;
@@ -315,8 +374,7 @@ public class FiltersDlg extends JDialog {
         }
     }
     public void fillSortCB(){
-        for (String s : Arrays.asList("Titre", "Auteur", "Année de sortie", "Nombre de page","Nombre de lecture","Temps moyen de lecture", "Note Babelio", "Note personelle", "Date de début de lecture", "Date de fin de lecture"
-        )) {
+        for (String s : Arrays.asList("Titre", "Auteur", "Année de sortie", "Nombre de page","Nombre de lecture","Temps moyen de lecture", "Note Babelio", "Note personelle", "Date de début de lecture", "Date de fin de lecture")) {
             FiltersSortCB.addItem(s);
         }
     }

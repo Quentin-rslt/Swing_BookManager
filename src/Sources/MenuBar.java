@@ -106,9 +106,7 @@ public class MenuBar {
 
         //Delete book
         JMenuItem supprBookMenuItem = new JMenuItem("Supprimer le livre");
-        supprBookMenuItem.addActionListener((e -> {
-            deleteBook(title, author, parent);
-        }));
+        supprBookMenuItem.addActionListener((e -> deleteBook(title, author, parent)));
 
         //Filters book
         JMenuItem filterMenuItem = new JMenuItem("Filtrer");

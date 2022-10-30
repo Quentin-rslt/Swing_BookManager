@@ -49,7 +49,7 @@ public class MainWindow extends JDialog {
     private static String m_author;
     private int m_rowSelected = 0;
     final JPopupMenu m_popup;
-    private FiltersDlg m_diag;
+    private FiltersDlg m_filtersDiag;
     private Tags m_tags = new Tags();
     private int counterManageReading;
     private ManageReadingDlg m_ManageReadingDiag;
@@ -137,9 +137,7 @@ public class MainWindow extends JDialog {
                 m_ManageReadingDiag= openManageReadingDlg(this, getMTitle(),getAuthor());
             }
         });
-        cut.addActionListener((ActionEvent evt) -> {
-            deleteBook(getMTitle(), getAuthor(), this);
-        });
+        cut.addActionListener((ActionEvent evt) -> deleteBook(getMTitle(), getAuthor(), this));
         edit.addActionListener((ActionEvent evt) -> {
             EditBookDlg diag = openEditBookDlg(getMTitle(),getAuthor());
             editBook(diag, getMTitle(),getAuthor(),this);
@@ -164,8 +162,8 @@ public class MainWindow extends JDialog {
             }
         });
         FiltersBookBtn.addActionListener((ActionEvent e)-> {
-            m_diag = openFilterDlg();
-            filtersBook(m_diag, getMTitle() , getAuthor(), this);
+            m_filtersDiag = openFilterDlg();
+            filtersBook(m_filtersDiag, getMTitle() , getAuthor(), this);
         });
         CancelFiltersBtn.addActionListener((ActionEvent e) -> {
             contentPane.updateUI();
@@ -194,8 +192,8 @@ public class MainWindow extends JDialog {
         BookFastSearch.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
-                super.keyReleased(e);
-                fastSearchBook(BookFastSearch.getText());
+            super.keyReleased(e);
+            fastSearchBook(BookFastSearch.getText());
             }
         });
     }
@@ -249,13 +247,10 @@ public class MainWindow extends JDialog {
     public JPanel getContentPanel(){
         return this.contentPane;
     }
-    public FiltersDlg getDiagFilters(){
-        return this.m_diag;
-    }
 
     /****************************** Void ***********************************/
     public void setDiagFilters(FiltersDlg dlg){
-        this.m_diag=dlg;
+        this.m_filtersDiag=dlg;
     }
     public void setFastSearch(boolean fast){
         this.m_isFastSearch=fast;
@@ -325,47 +320,43 @@ public class MainWindow extends JDialog {
             m_statement = conn.createStatement();
             ResultSet rs;
             if(isFiltered){
-                String qry = "SELECT Book.Title, Book.Author FROM Book " +
-                        "INNER JOIN Reading ON Reading.Title=Book.Title AND Reading.Author=Book.Author ";
+                StringBuilder qry = new StringBuilder("SELECT Book.Title, Book.Author FROM Book " +
+                        "INNER JOIN Reading ON Reading.Title=Book.Title AND Reading.Author=Book.Author ");
 
-                if (!m_diag.getTextTag().equals("")) {
-                    qry = qry+
-                            "INNER JOIN Tagging ON Book.ID=Tagging.IdBook " +
-                            "INNER JOIN Tags ON Tagging.idTag=Tags.ID " +
-                            "WHERE Tags.Tag='" + m_diag.getTextTag() + "' "+
-                            "AND Book.Title LIKE '%" + m_diag.getMTitle() + "%'";
+                if (m_filtersDiag.getTags().getSizeTags()>0) {
+                    qry.append("INNER JOIN Tagging ON Book.ID=Tagging.IdBook ").append("INNER JOIN Tags ON Tagging.idTag=Tags.ID ").append("WHERE Tags.Tag IN(");
+                    for(int i = 0; i<m_filtersDiag.getTags().getSizeTags();i++){
+                        if(i<m_filtersDiag.getTags().getSizeTags()-1){
+                            qry.append("'").append(m_filtersDiag.getTags().getTag(i).getTextTag()).append("', ");
+                        }
+                        else {
+                            qry.append("'").append(m_filtersDiag.getTags().getTag(i).getTextTag()).append("') ");
+                        }
+                    }
+                    qry.append("AND Book.Title LIKE '%").append(m_filtersDiag.getMTitle()).append("%'");
                 }else {
-                    qry = qry + "WHERE Book.Title LIKE '%" + m_diag.getMTitle() + "%'";
+                    qry.append("WHERE Book.Title LIKE '%").append(m_filtersDiag.getMTitle()).append("%'");
                 }
-                qry = qry +
-                        "AND Book.Author LIKE '%" + m_diag.getAuthor() + "%'" +
-                        "AND Book.ReleaseYear BETWEEN '" + m_diag.getFirstDatRelease() + "' AND '" + m_diag.getLastDateRelease() + "'" +
-                        "AND Book.NotePerso BETWEEN '" + m_diag.getFirstNote() + "' AND '" + m_diag.getLastNote() + "'"+
-                        "AND Book.NumberOP BETWEEN '" + m_diag.getFirstNumberOP() + "' AND '" + m_diag.getLastNumberOP() + "'"+
-                        "AND Book.NumberReading BETWEEN '" + m_diag.getFirstNumberOR() + "' AND '" + m_diag.getLastNumberOR() + "'"+
-                        "AND Book.AvReadingTime BETWEEN '" + m_diag.getFirstAvTime() + "' AND '" + m_diag.getLastAvTime() + "'"+
-                        "AND Book.NoteBabelio BETWEEN '" + m_diag.getFirstNoteBB() + "' AND '" + m_diag.getLastNoteBB() + "'";
-                if(m_diag.isFiltered()){
-                    qry = qry +
-                            "AND Reading.StartReading BETWEEN '" + m_diag.getFirstStartDate() + "' AND '" + m_diag.getLastStartDate() + "'"+
-                            "AND Reading.EndReading BETWEEN '" + m_diag.getFirstEndDate() + "' AND '" + m_diag.getLastEndDate() + "'";
+                qry.append("AND Book.Author LIKE '%").append(m_filtersDiag.getAuthor()).append("%'").append("AND Book.ReleaseYear BETWEEN '").append(m_filtersDiag.getFirstDatRelease()).append("' AND '").append(m_filtersDiag.getLastDateRelease()).append("'").append("AND Book.NotePerso BETWEEN '").append(m_filtersDiag.getFirstNote()).append("' AND '").append(m_filtersDiag.getLastNote()).append("'").append("AND Book.NumberOP BETWEEN '").append(m_filtersDiag.getFirstNumberOP()).append("' AND '").append(m_filtersDiag.getLastNumberOP()).append("'").append("AND Book.NumberReading BETWEEN '").append(m_filtersDiag.getFirstNumberOR()).append("' AND '").append(m_filtersDiag.getLastNumberOR()).append("'").append("AND Book.AvReadingTime BETWEEN '").append(m_filtersDiag.getFirstAvTime()).append("' AND '").append(m_filtersDiag.getLastAvTime()).append("'").append("AND Book.NoteBabelio BETWEEN '").append(m_filtersDiag.getFirstNoteBB()).append("' AND '").append(m_filtersDiag.getLastNoteBB()).append("'");
+                if(m_filtersDiag.isFiltered()){
+                    qry.append("AND Reading.StartReading BETWEEN '").append(m_filtersDiag.getFirstStartDate()).append("' AND '").append(m_filtersDiag.getLastStartDate()).append("'").append("AND Reading.EndReading BETWEEN '").append(m_filtersDiag.getFirstEndDate()).append("' AND '").append(m_filtersDiag.getLastEndDate()).append("'");
                 }
 
-                if(!m_diag.getTextSort().equals("EndReading") && !m_diag.getTextSort().equals("StartReading")) {
-                    if(m_diag.isAscending()){
-                        qry = qry+" GROUP BY Book.Title ORDER BY Book."+m_diag.getTextSort()+" ASC;";
+                if(!m_filtersDiag.getTextSort().equals("EndReading") && !m_filtersDiag.getTextSort().equals("StartReading")) {
+                    if(m_filtersDiag.isAscending()){
+                        qry.append(" GROUP BY Book.Title ORDER BY Book.").append(m_filtersDiag.getTextSort()).append(" ASC;");
                     }else{
-                        qry = qry+" GROUP BY Book.Title ORDER BY Book."+m_diag.getTextSort()+" DESC;";
+                        qry.append(" GROUP BY Book.Title ORDER BY Book.").append(m_filtersDiag.getTextSort()).append(" DESC;");
                     }
                 }else{
-                    if(m_diag.isAscending()){
-                        qry = qry+" GROUP BY Book.Title ORDER BY Reading."+m_diag.getTextSort()+" ASC;";
+                    if(m_filtersDiag.isAscending()){
+                        qry.append(" GROUP BY Book.Title ORDER BY Reading.").append(m_filtersDiag.getTextSort()).append(" ASC;");
                     }else{
-                        qry = qry+" GROUP BY Book.Title ORDER BY Reading."+m_diag.getTextSort()+" DESC;";
+                        qry.append(" GROUP BY Book.Title ORDER BY Reading.").append(m_filtersDiag.getTextSort()).append(" DESC;");
                     }
                 }
 
-                rs = m_statement.executeQuery(qry);
+                rs = m_statement.executeQuery(qry.toString());
             } else{
                 rs = m_statement.executeQuery("SELECT * FROM Book ORDER BY Title ASC;");//Execute a Query to retrieve all the values from the database by grouping the duplicates
             }
@@ -528,7 +519,7 @@ public class MainWindow extends JDialog {
     }
     public void fastSearchBook(String text){
         loadDB(isFiltered());
-        setFastSearch(true);
+        setFastSearch(!text.isBlank());
         for(int row = 0 ; row < getBooksTable().getRowCount() ; row++) {
             int cellsNotCorrespondingToFilter = 0;
             for(int column = 0 ; column < getBooksTable().getColumnCount() ; column++) {

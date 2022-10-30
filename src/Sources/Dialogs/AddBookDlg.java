@@ -148,16 +148,15 @@ public class AddBookDlg extends JDialog {
         });
         BookBrowseBtn.addActionListener((ActionEvent e)->selectNameOfBook(PreviewPhotoPanel));
         BookTagsCB.getEditor().getEditorComponent().addKeyListener(new java.awt.event.KeyAdapter() {
-
             @Override
             public void keyReleased(java.awt.event.KeyEvent evt) {
-            if (!Objects.equals(BookTagsCB.getSelectedItem(), "")) {
-                if (evt.getKeyCode()==KeyEvent.VK_ENTER){
-                    fillPaneTags(getTags(), BookTagsPanel, BookTagsCB);
+                if (!Objects.equals(BookTagsCB.getSelectedItem(), "")) {
+                    if (evt.getKeyCode()==KeyEvent.VK_ENTER){
+                        fillPaneTags(getTags(), BookTagsPanel, BookTagsCB);
+                    }
                 }
-            }
-            initListenerTag();
-            BookTagsPanel.updateUI();
+                initListenerTag(getTags(), m_popup, BookTagsPanel);
+                BookTagsPanel.updateUI();
             }
         });
         BookTagsPanel.addMouseListener(new MouseAdapter() {
@@ -168,7 +167,7 @@ public class AddBookDlg extends JDialog {
                     m_popup.show(BookTagsPanel, e.getX(), e.getY());//show a popup to edit the reading
                     m_popup.setInvoker(e.getComponent().getComponentAt(e.getX(),e.getY()));
                 }
-                initListenerTag();
+                initListenerTag(getTags(), m_popup, BookTagsPanel);
             }
             }
         });
@@ -182,14 +181,13 @@ public class AddBookDlg extends JDialog {
                     getTags().removeTag(i);
 
                     for(int j=0; j<getTags().getSizeTags();j++){
-                        System.out.println(getTags().getTag(j).getTextTag());
                         BookTagsPanel.add(getTags().getTag(j));
                     }
                     break;
                 }
                 i++;
             }
-            initListenerTag();
+            initListenerTag(getTags(), m_popup, BookTagsPanel);
             BookTagsPanel.updateUI();
         });
         edit.addActionListener((ActionEvent evt)-> {
@@ -217,7 +215,7 @@ public class AddBookDlg extends JDialog {
                 }
                 i++;
             }
-            initListenerTag();
+            initListenerTag(getTags(), m_popup, BookTagsPanel);
         });
         BookSummaryTextPane.addFocusListener(new FocusAdapter() {
             @Override
@@ -337,38 +335,28 @@ public class AddBookDlg extends JDialog {
             this.BookTagsCB.addItem(loadTags().getTag(i).getTextTag());
         }
     }
-    public void initListenerTag(){
-        for(int i=0; i<getTags().getSizeTags();i++){
-            MouseListener[] mouseListeners =  getTags().getTag(i).getMouseListeners();
-            for (MouseListener mouseListener : mouseListeners) {
-                getTags().getTag(i).removeMouseListener(mouseListener);
-            }
-        }
-        for(int i=0; i<getTags().getSizeTags();i++){
-            int finalI = i;
-            getTags().getTag(i).addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseEntered(MouseEvent e) {
-                    super.mouseEntered(e);
-                    Color color = new Color(getTags().getTag(finalI).getColor());
-                    getTags().getTag(finalI).setBackground(color.brighter());
-                    BookTagsPanel.updateUI();
-                }
-                public void mouseExited(MouseEvent e) {
-                    super.mouseExited(e);
-                    getTags().getTag(finalI).setBackground(new Color(getTags().getTag(finalI).getColor()));
-                    BookTagsPanel.updateUI();
-                }
-                public void mouseClicked(MouseEvent e) {
-                    super.mouseClicked(e);
-                    if(!e.getComponent().getComponentAt(e.getX(),e.getY()).equals(BookTagsPanel)){
-                        if(e.getButton() == MouseEvent.BUTTON3) {
-                            m_popup.show(getTags().getTag(finalI), e.getX(), e.getY());//show a popup to edit the reading
-                            m_popup.setInvoker(e.getComponent().getComponentAt(e.getX(),e.getY()));
+    public void fastSearchCB(String text){
+        fillThemeCB();
+        for(int row = 0 ; row < this.BookTagsCB.getItemCount(); row++) {
+            boolean notSeam =false;
+            String cellText = this.BookTagsCB.getItemAt(row).toString();
+            if(!cellText.equals("")) {
+                for (int filterIndex = 0; filterIndex < text.length(); filterIndex++) {
+                    if (filterIndex < cellText.length()) {
+                        if (cellText.charAt(filterIndex) != text.charAt(filterIndex)) {
+                            notSeam=true;
+                            break;
                         }
+                    } else {
+                        break;
                     }
                 }
-            });
+                if(notSeam){
+                    this.BookTagsCB.removeItemAt(row);
+                    row--;
+                }
+            }
         }
+        this.BookTagsCB.setSelectedIndex(0);
     }
 }
