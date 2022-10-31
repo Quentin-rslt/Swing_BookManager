@@ -88,12 +88,12 @@ public class ImportExportData {
                     String ReadingQry = "REPLACE INTO Reading (ID,Title,Author,StartReading, EndReading) " +
                             "SELECT ?,?,?,?,? " +
                             "WHERE NOT EXISTS " +
-                            "(SELECT * FROM Reading WHERE Title = ? AND Author = ? AND StartReading = ? AND EndReading = ?); ";
+                            "(SELECT * FROM Reading WHERE Title =? AND Author =?); ";
 
                     String TaggingQry = "REPLACE INTO Tagging (IdBook,IdTag) " +
                             "SELECT ?,? " +
                             "WHERE NOT EXISTS" +
-                            "(SELECT * FROM Tagging WHERE IdBook = ? AND IdTag = ?); ";
+                            "(SELECT * FROM Tagging WHERE IdBook =? AND IdTag =?); ";
 
                     String TagsQry = "REPLACE INTO Tags (ID, Tag,Color) " +
                             "VALUES (?,?,?);";
