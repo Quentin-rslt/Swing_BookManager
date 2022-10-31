@@ -41,7 +41,8 @@ public class ManageReadingDlg extends JDialog {
         setMTitle(title);
         setAuthor(author);
         fillBookList(getMTitle(),getAuthor());
-        ReadingsTable.setRowSelectionInterval(0, 0);
+        if(this.ReadingsTable.getRowCount()>0)
+            ReadingsTable.setRowSelectionInterval(0, 0);
 
         m_popup = new JPopupMenu();//Create a popup menu to delete a reading an edit this reading
         JMenuItem cut = new JMenuItem("Supprimer", new ImageIcon(getImageCut()));

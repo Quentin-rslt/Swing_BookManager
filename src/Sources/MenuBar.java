@@ -34,7 +34,15 @@ public class MenuBar {
         JMenu exportMenu = new JMenu("Exporter");
         JMenuItem exportJsonMenuItem = new JMenuItem("JSON");
         JMenuItem exportCsvMenuItem = new JMenuItem("CSV");
-        exportCsvMenuItem.addActionListener((e -> exportCSV()) );
+        exportCsvMenuItem.addActionListener((e -> {
+            boolean good =exportCSV();
+            JFrame jFrame = new JFrame();
+            if(good){
+                JOptionPane.showMessageDialog(jFrame, "L'exportation a été effectué");
+            }else{
+                JOptionPane.showMessageDialog(jFrame,"L'exportation n'a pas pu être effectué","ERROR", JOptionPane.ERROR_MESSAGE);
+            }
+        }) );
         exportMenu.add(exportJsonMenuItem);
         exportMenu.add(exportCsvMenuItem);
 
@@ -43,13 +51,20 @@ public class MenuBar {
         JMenuItem importJsonMenuItem = new JMenuItem("JSON");
         JMenuItem importCsvMenuItem = new JMenuItem("CSV");
         importCsvMenuItem.addActionListener((e -> {
-            importCSV(parent);
-            parent.setIsFiltered(false);
-            parent.loadDB(parent.isFiltered());
-            parent.setMTitle(parent.getBooksTable().getValueAt(0, 0).toString());
-            parent.setAuthor(parent.getBooksTable().getValueAt(0, 1).toString());
-            parent.loadComponents(getMTitle(), getAuthor());//reload changes made to the book
-            parent.getBooksTable().setRowSelectionInterval(0, 0);
+            boolean good = importCSV(parent);
+            if(good) {
+                parent.setIsFiltered(false);
+                parent.loadDB(parent.isFiltered());
+                parent.setMTitle(parent.getBooksTable().getValueAt(0, 0).toString());
+                parent.setAuthor(parent.getBooksTable().getValueAt(0, 1).toString());
+                parent.loadComponents(getMTitle(), getAuthor());//reload changes made to the book
+                parent.getBooksTable().setRowSelectionInterval(0, 0);
+                JFrame jFrame = new JFrame();
+                JOptionPane.showMessageDialog(jFrame, "L'importation des données a été effectué");
+            }else{
+                JFrame jFrame = new JFrame();
+                JOptionPane.showMessageDialog(jFrame, "L'importation des données n'a pas pu être effectué","ERROR", JOptionPane.ERROR_MESSAGE);
+            }
         }));
         importMenu.add(importJsonMenuItem);
         importMenu.add(importCsvMenuItem);

@@ -95,6 +95,7 @@ public class MainWindow extends JDialog {
             BooksTable.setRowSelectionInterval(getRowSelected(getMTitle(), getAuthor()), getRowSelected(getMTitle(), getAuthor()));
             ManageReadingsBtn.setEnabled(true);
             FiltersBookBtn.setEnabled(true);
+            BookManageTagsBtn.setEnabled(true);
         }else{
             BookManageTagsBtn.setEnabled(false);
             ManageReadingsBtn.setEnabled(false);
@@ -217,6 +218,7 @@ public class MainWindow extends JDialog {
     public int getRowSelected(String title, String author){//return the row find by a title and an author
         FiltersBookBtn.setEnabled(true);
         ManageReadingsBtn.setEnabled(true);
+        BookManageTagsBtn.setEnabled(true);
         int row = 0;
         int i= 0;
         while (i<BooksTable.getRowCount()) {
@@ -391,6 +393,7 @@ public class MainWindow extends JDialog {
     }
     public void loadComponents(String title, String author){
         ManageReadingsBtn.setEnabled(true);
+        BookManageTagsBtn.setEnabled(true);
         Tags tags = new Tags();
         try(Connection conn = connect()) {
             Class.forName("org.sqlite.JDBC");
