@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.Objects;
 
 import static Sources.Common.*;
+import static Sources.CommonSQL.*;
 
 public class FiltersDlg extends JDialog {
     private JPanel contentPane;

@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.Objects;
 
 import static Sources.Common.*;
+import static Sources.CommonSQL.*;
 import static Sources.Dialogs.OpenDialog.openEditTagDlg;
 
 public class EditBookDlg extends JDialog {
@@ -69,7 +70,7 @@ public class EditBookDlg extends JDialog {
                     JOptionPane.showMessageDialog(jFrame, "Veuillez remplir tous les champs !");
                 }
             });
-        BookBrowseBtn.addActionListener((ActionEvent e)->selectNameOfBook(BookPhotoPanel));
+        BookBrowseBtn.addActionListener((ActionEvent e)-> selectImageOfBook(BookPhotoPanel));
         BookSummaryTextPane.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {

@@ -12,6 +12,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
 import static Sources.Common.*;
+import static Sources.CommonSQL.*;
 
 public class ManageReadingDlg extends JDialog {
     private JPanel contentPane;

@@ -1,6 +1,8 @@
 package Sources;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
 import java.io.*;
@@ -12,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static Sources.Common.*;
+import static Sources.CommonSQL.*;
 
 public class ImportExportData {
     public static String escapeSpecialCharacters(String data) {
@@ -27,7 +30,6 @@ public class ImportExportData {
 
             Date today = new Date();
             SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-
 
             Path folder = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(),"BookManager/Saves/CSV/"+formater.format(today));
             Files.createDirectories(folder);
@@ -134,6 +136,12 @@ public class ImportExportData {
         if (JFileChooser.APPROVE_OPTION == rVal){ //Opens the file panel to select an image
             String path = jf.getSelectedFile().getPath();
 
+            String dltBookQry = "DELETE FROM BOOK;";
+            String dltReadingQry = "DELETE FROM Reading;";
+            String dltTaggingQry = "DELETE FROM Tagging;";
+            String dltTagsQry = "DELETE FROM Tags;";
+            String dltSqlite_sequenceQry = "DELETE FROM sqlite_sequence;";
+
             String BookQry = "REPLACE INTO Book (ID,Title,Author,Image,NumberOP,NotePerso,NoteBabelio,ReleaseYear,AvReadingTime,NumberReading,Summary) " +
                     " VALUES (?,?,?,?,?,?,?,?,?,?,?); ";
 
@@ -150,7 +158,18 @@ public class ImportExportData {
                  PreparedStatement BookPstmt = conn.prepareStatement(BookQry);
                  PreparedStatement TagsPstmt = conn.prepareStatement(TagsQry);
                  PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry);
-                 PreparedStatement TaggingPstmt = conn.prepareStatement(TaggingQry)){
+                 PreparedStatement TaggingPstmt = conn.prepareStatement(TaggingQry);
+                 PreparedStatement DltBookPstmt = conn.prepareStatement(dltBookQry);
+                 PreparedStatement DltReadingPstmt = conn.prepareStatement(dltReadingQry);
+                 PreparedStatement DltTaggingPstmt = conn.prepareStatement(dltTaggingQry);
+                 PreparedStatement DltTagsPstmt = conn.prepareStatement(dltTagsQry);
+                 PreparedStatement DltSqlite_sequencePstmt = conn.prepareStatement(dltSqlite_sequenceQry)){
+
+                DltBookPstmt.executeUpdate();
+                DltReadingPstmt.executeUpdate();
+                DltTaggingPstmt.executeUpdate();
+                DltTagsPstmt.executeUpdate();
+                DltSqlite_sequencePstmt.executeUpdate();
 
                 //Book
                 BufferedReader lineReaderBook = new BufferedReader(new FileReader(path+"/Book.csv"));
@@ -182,8 +201,6 @@ public class ImportExportData {
                     BookPstmt.setString(9, avReadingTime);
                     BookPstmt.setString(10, numberReading);
                     BookPstmt.setString(11, summary);
-
-                    System.out.println(summary);
 
                     BookPstmt.executeUpdate();
                 }
@@ -239,7 +256,6 @@ public class ImportExportData {
                     TagsPstmt.executeUpdate();
                 }
                 good =1;
-
             } catch (SQLException e) {
                 System.out.println("Datababse error:");
                 e.printStackTrace();
@@ -251,6 +267,41 @@ public class ImportExportData {
         if(rVal == JFileChooser.CANCEL_OPTION ) {
             good = 2;
         }
+        return good;
+    }
+
+    public static void exportDB(){
+        try (Connection conn = connect()){
+            Date today = new Date();
+            SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+
+            Path folder = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(),"BookManager/Saves/Database/");
+            Files.createDirectories(folder);
+
+            conn.createStatement().executeUpdate("backup to "+folder+"/"+formater.format(today)+".db");
+        } catch (SQLException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public static int importDB(MainWindow panel){
+        int good = 0;
+        JFileChooser jf = new JFileChooser();
+        jf.setPreferredSize(new Dimension(850,600));
+        FileFilter fileFilter = new FileNameExtensionFilter("DB files", "db");
+        jf.setFileFilter(fileFilter);
+        jf.setDialogTitle("Sélectionnner une database");
+        int rVal = jf.showOpenDialog(panel);
+        do {
+            if (JFileChooser.APPROVE_OPTION == rVal) { //Opens the file panel to select an image
+                String path = jf.getSelectedFile().getPath();
+                if (acceptDB(jf.getSelectedFile())){
+                    good=1;
+                }
+            }
+            if (rVal == JFileChooser.CANCEL_OPTION) {
+                good = 2;
+            }
+        }while (!acceptDB(jf.getSelectedFile()) && rVal==0);
         return good;
     }
 }

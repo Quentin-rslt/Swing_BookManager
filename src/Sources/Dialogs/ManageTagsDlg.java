@@ -11,6 +11,7 @@ import java.sql.*;
 import java.util.Objects;
 
 import static Sources.Common.*;
+import static Sources.CommonSQL.*;
 import static Sources.Dialogs.OpenDialog.openEditTagDlg;
 
 public class ManageTagsDlg extends JDialog {
@@ -51,7 +52,7 @@ public class ManageTagsDlg extends JDialog {
             int i = 0;
             while (i<getTags().getSizeTags()) {
                 if(componentList[i]==m_popup.getInvoker()){
-                    String Tags = "DELETE FROM Tags WHERE Tag='"+getTags().getTag(i).getTextTag()+"'";
+                    String Tags = "DELETE FROM Tags WHERE Tag='"+getTags().getTag(    i).getTextTag()+"'";
                     String TaggingQry = "DELETE FROM Tagging WHERE IdTag='"+getIdTag(getTags().getTag(i).getTextTag(), getTags().getTag(i).getColor())+"'";
                     try (Connection conn = connect(); PreparedStatement TaggingPstmt = conn.prepareStatement(Tags); PreparedStatement TagsPstmt = conn.prepareStatement(TaggingQry)) {
                         TagsPstmt.executeUpdate();

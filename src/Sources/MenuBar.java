@@ -10,8 +10,7 @@ import javax.swing.*;
 import static Sources.Common.isItInFilteredBookList;
 import static Sources.CommonSQL.*;
 import static Sources.Dialogs.OpenDialog.*;
-import static Sources.ImportExportData.exportCSV;
-import static Sources.ImportExportData.importCSV;
+import static Sources.ImportExportData.*;
 import static Sources.MainWindow.getAuthor;
 import static Sources.MainWindow.getMTitle;
 
@@ -32,7 +31,12 @@ public class MenuBar {
     private static JMenu createFileMenu(MainWindow parent){
         //Export menu
         JMenu exportMenu = new JMenu("Exporter");
-        JMenuItem exportSQLMenuItem = new JMenuItem("SQL");
+        JMenuItem exportDBMenuItem = new JMenuItem("Database");
+        exportDBMenuItem.addActionListener((e -> {
+            exportDB();
+            JFrame jFrame = new JFrame();
+            JOptionPane.showMessageDialog(jFrame, "L'exportation a été effectué");
+        }));
         JMenuItem exportJsonMenuItem = new JMenuItem("JSON");
         JMenuItem exportCsvMenuItem = new JMenuItem("CSV");
         exportCsvMenuItem.addActionListener((e -> {
@@ -44,13 +48,29 @@ public class MenuBar {
                 JOptionPane.showMessageDialog(jFrame,"L'exportation n'a pas pu être effectué","ERROR", JOptionPane.ERROR_MESSAGE);
             }
         }) );
-        exportMenu.add(exportSQLMenuItem);
+        exportMenu.add(exportDBMenuItem);
         exportMenu.add(exportJsonMenuItem);
         exportMenu.add(exportCsvMenuItem);
 
         //Import menu
         JMenu importMenu = new JMenu("Importer ");
-        JMenuItem importSQLMenuItem = new JMenuItem("SQL");
+        JMenuItem importDBMenuItem = new JMenuItem("Database");
+        importDBMenuItem.addActionListener((e -> {
+            int good = importDB(parent);
+            if(good==1) {
+                parent.setIsFiltered(false);
+                parent.loadDB(parent.isFiltered());
+                parent.setMTitle(parent.getBooksTable().getValueAt(0, 0).toString());
+                parent.setAuthor(parent.getBooksTable().getValueAt(0, 1).toString());
+                parent.loadComponents(getMTitle(), getAuthor());//reload changes made to the book
+                parent.getBooksTable().setRowSelectionInterval(0, 0);
+                JFrame jFrame = new JFrame();
+                JOptionPane.showMessageDialog(jFrame, "L'importation des données a été effectué");
+            }else if(good==0){
+                JFrame jFrame = new JFrame();
+                JOptionPane.showMessageDialog(jFrame, "L'importation des données n'a pas pu être effectué","ERROR", JOptionPane.ERROR_MESSAGE);
+            }
+        }));
         JMenuItem importJsonMenuItem = new JMenuItem("JSON");
         JMenuItem importCsvMenuItem = new JMenuItem("CSV");
         importCsvMenuItem.addActionListener((e -> {
@@ -69,7 +89,7 @@ public class MenuBar {
                 JOptionPane.showMessageDialog(jFrame, "L'importation des données n'a pas pu être effectué","ERROR", JOptionPane.ERROR_MESSAGE);
             }
         }));
-        importMenu.add(importSQLMenuItem);
+        importMenu.add(importDBMenuItem);
         importMenu.add(importJsonMenuItem);
         importMenu.add(importCsvMenuItem);
 
@@ -142,7 +162,7 @@ public class MenuBar {
         supprBookMenuItem.addActionListener((e -> deleteBook(title, author, parent)));
 
         //Filters book
-        JMenuItem filterMenuItem = new JMenuItem("Filtrer");
+        JMenuItem filterMenuItem = new JMenuItem("Critères");
         filterMenuItem.addActionListener((e -> {
             FiltersDlg diag = openFilterDlg();
             parent.setDiagFilters(diag);

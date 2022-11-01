@@ -8,7 +8,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 
-import static Sources.Common.connect;
+import static Sources.CommonSQL.*;
 
 public class AddReading extends JDialog {
     private JPanel contentPane;

@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.Objects;
 
 import static Sources.Common.*;
+import static Sources.CommonSQL.*;
 import static Sources.Common.getImageEdit;
 import static Sources.Dialogs.OpenDialog.openEditTagDlg;
 
@@ -146,7 +147,7 @@ public class AddBookDlg extends JDialog {
                 JOptionPane.showMessageDialog(jFrame, "Veuillez remplir tous les champs !");
             }
         });
-        BookBrowseBtn.addActionListener((ActionEvent e)->selectNameOfBook(PreviewPhotoPanel));
+        BookBrowseBtn.addActionListener((ActionEvent e)-> selectImageOfBook(PreviewPhotoPanel));
         BookTagsCB.getEditor().getEditorComponent().addKeyListener(new java.awt.event.KeyAdapter() {
             @Override
             public void keyReleased(java.awt.event.KeyEvent evt) {

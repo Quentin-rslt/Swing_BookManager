@@ -18,11 +18,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.*;
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static Sources.CommonSQL.*;
 import static Sources.Dialogs.OpenDialog.openEditTagDlg;
 import static Sources.MainWindow.getAuthor;
 import static Sources.MainWindow.getMTitle;
@@ -31,7 +30,7 @@ public class Common {
     static JFileChooser jf= new JFileChooser();
     static String m_name="";
     public static void addImageToPanel(String nom,JPanel panel){//Apply to our panel an image with path
-        Path folder = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(),"BookManager");
+        Path folder = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(),"BookManager/Image");
         File file = new File(folder+"/"+nom);
         if(nom.equals("Default.jpg"))
             file = new File("Ressource/Image/"+nom);
@@ -51,7 +50,7 @@ public class Common {
     public static void addImageToResource(){
         if(jf.getSelectedFile()!=null && !getNameOfBook().equals("Default.jpg")){
             Path src = Paths.get(jf.getSelectedFile().getAbsolutePath());
-            Path folder = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(),"BookManager");
+            Path folder = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(),"BookManager/Image");
             Path dest = Paths.get(folder+"/"+getNameOfBook());
             try {
                 Files.createDirectories(folder);
@@ -63,9 +62,9 @@ public class Common {
         }
     }
     public static void updateImageToResource(String title, String author){
-        if(jf.getSelectedFile()!=null && !getNameOfBook().equals(getBookNameBdd(title, author))){
+        if(jf.getSelectedFile()!=null && !getNameOfBook().equals(getImageBDD(title, author))){
             Path src = Paths.get(jf.getSelectedFile().getAbsolutePath());
-            Path folder = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(),"BookManager");
+            Path folder = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(),"BookManager/Image");
             Path dest = Paths.get(folder+"/"+getNameOfBook());
             try {
                 Files.createDirectories(folder);
@@ -77,9 +76,9 @@ public class Common {
         }
     }
     public static void deleteImageMainResource(String title, String author){
-        if(!getBookNameBdd(title, author).equals("Default.jpg")){
+        if(!getImageBDD(title, author).equals("Default.jpg")){
             Path folder = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(),"BookManager");
-            Path dest = Paths.get(folder+"/"+getBookNameBdd(title, author));//delete the image of the deleted book
+            Path dest = Paths.get(folder+"/"+ getImageBDD(title, author));//delete the image of the deleted book
             try {
                 Files.delete(dest);
             } catch (Exception evt) {
@@ -88,9 +87,9 @@ public class Common {
         }
     }
     public static void deleteImageResource(String title, String author){
-        if(jf.getSelectedFile()!=null && !getNameOfBook().equals(getBookNameBdd(title, author)) && !getBookNameBdd(title, author).equals("Default.jpg")){
+        if(jf.getSelectedFile()!=null && !getNameOfBook().equals(getImageBDD(title, author)) && !getImageBDD(title, author).equals("Default.jpg")){
             Path folder = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(),"BookManager");
-            Path dest = Paths.get(folder+"/"+getBookNameBdd(title, author));//delete the image of the deleted book
+            Path dest = Paths.get(folder+"/"+ getImageBDD(title, author));//delete the image of the deleted book
             try {
                 Files.delete(dest);
             } catch (Exception evt) {
@@ -101,7 +100,7 @@ public class Common {
     public static void setNameOfBook(String name){
         m_name = name;
     }
-    public static void selectNameOfBook(JPanel panel){
+    public static void selectImageOfBook(JPanel panel){
         FileFilter imageFilter = new FileNameExtensionFilter("Image files", ImageIO.getReaderFileSuffixes());
         jf.setFileFilter(imageFilter);
         jf.setPreferredSize(new Dimension(850,600));
@@ -338,11 +337,11 @@ public class Common {
         }
         return isAccept;
     }
-    public static boolean acceptCSV(File pathname) {
+    public static boolean acceptDB(File pathname) {
         boolean isAccept = true;
         if(pathname!=null){
             String filename = pathname.getName();
-            isAccept = filename.endsWith("csv");
+            isAccept = filename.endsWith("db");
         }
         return isAccept;
     }
@@ -403,138 +402,8 @@ public class Common {
 
         return imgEdit;
     }
-    public static Connection connect() {
-        Connection connection = null;
-        String url = "jdbc:sqlite:BookManager.db";
-        try {
-            connection = DriverManager.getConnection(url);
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        return connection;
-    }
-    public static int getIdReading(String title, String author) {
-        int i =0;
-        try (Connection conn = connect()) {
-            Statement statement = conn.createStatement();
-            ResultSet rs = statement.executeQuery("SELECT COUNT(*) FROM Reading WHERE Title='"+title+"' AND Author='"+author+ "'");
-            i=rs.getInt(1);
-            rs.close();
-            conn.close();
-            statement.close();
-        }catch (Exception e){
-            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-            System.exit(0);
-        }
-        return i;
-    }
-    public static int getIdBook(String title, String author) {
-        int i =0;
-        try (Connection conn = connect()) {
-            Statement statement = conn.createStatement();
-            ResultSet idBook = statement.executeQuery("SELECT ID FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
-            i=idBook.getInt(1);
-            idBook.close();
-            conn.close();
-            statement.close();
-        }catch (Exception e){
-            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-            System.exit(0);
-        }
-        return i;
-    }
-    public static int getIdTag(String tag, int color) {
-        int i =0;
-        try (Connection conn = connect()) {
-            Statement statement = conn.createStatement();
-            ResultSet idBook = statement.executeQuery("SELECT ID FROM Tags WHERE Tag='"+tag+"' AND Color='"+color+ "'");
-            i=idBook.getInt(1);
-            idBook.close();
-            conn.close();
-            statement.close();
-        }catch (Exception e){
-            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-            System.exit(0);
-        }
-        return i;
-    }
-    public static String getBookNameBdd(String title, String author) {
-        String name ="";
-        try (Connection conn = connect()) {
-            Statement statement = conn.createStatement();
-            ResultSet ImageQry = statement.executeQuery("SELECT Image FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
-            name=ImageQry.getString(1);
-            ImageQry.close();
-            conn.close();
-            statement.close();
-        }catch (Exception e){
-            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-            System.exit(0);
-        }
-        return name;
-    }
     public static String getNameOfBook(){
         return m_name;
-    }
-    public static Tags loadTags(){
-        Tags tags = new Tags();
-        String sql = "SELECT Tag,Color FROM Tags";
-        try(Connection conn = connect()) {
-            Class.forName("org.sqlite.JDBC");
-            Statement statement = conn.createStatement();
-            ResultSet tagsQry = statement.executeQuery(sql);
-            while (tagsQry.next()){
-                tags.createTag(tagsQry.getString(1));
-                tags.getTag(tags.getSizeTags()-1).setColor(tagsQry.getInt(2));
-            }
-            conn.close();
-            statement.close();
-        }catch (Exception e){
-            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-            System.exit(0);
-        }
-
-        return tags;
-    }
-    public static int averageTime(String title, String author) {
-        String sql = "SELECT StartReading, EndReading FROM Reading WHERE Title='" + title + "' AND Author='" + author + "'";
-        long days = 0;
-        int dateValid = 0;
-        int average = 0;
-        try (Connection conn = connect()) {
-            Statement statement =conn.createStatement();
-            ResultSet qry = statement.executeQuery(sql);
-
-            while (qry.next()) {
-                boolean isOk = ((qry.getString(1).equals("Inconnu") && qry.getString(2).equals("Inconnu")) ||
-                        (qry.getString(1).equals("Inconnu") && qry.getString(2).equals("Pas fini")))
-                        || ((!qry.getString(1).equals("Inconnu") && qry.getString(2).equals("Inconnu")) ||
-                        (!qry.getString(1).equals("Inconnu") && qry.getString(2).equals("Pas fini")))
-                        || ((qry.getString(1).equals("Inconnu") && !qry.getString(2).equals("Inconnu")) ||
-                        (qry.getString(1).equals("Inconnu") && !qry.getString(2).equals("Pas fini")));
-                if (!isOk) {
-                    dateValid++;
-                    LocalDate start = LocalDate.parse(qry.getString(1));
-                    LocalDate stop = LocalDate.parse(qry.getString(2));
-                    days = days + ChronoUnit.DAYS.between(start, stop);
-                    average= (int) (days/dateValid);
-                }
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return average;
-    }
-    public static int getNumberOfReading(String title, String author){
-        int i =0;
-        try (Connection conn = connect()) {
-            Statement statement = conn.createStatement();
-            ResultSet CountReadingQry = statement.executeQuery("SELECT COUNT(*) FROM Reading WHERE Title='"+title+"' AND Author='"+author+ "'");
-            i = CountReadingQry.getInt(1);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return i;
     }
     public static boolean isInFilteredList(String title, String author, JTable table){
         boolean isFiltered=false;

@@ -48,7 +48,7 @@ public class OpenDialog {
     }
     public static FiltersDlg openFilterDlg(){
         FiltersDlg diag = new FiltersDlg();
-        diag.setTitle("Filter la liste");
+        diag.setTitle("Critères de recherche");
         diag.setSize(730,700);
         diag.setLocationRelativeTo(null);
         diag.setVisible(true);

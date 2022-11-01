@@ -9,7 +9,7 @@ import java.awt.event.ActionEvent;
 import java.sql.*;
 import java.util.Objects;
 
-import static Sources.Common.connect;
+import static Sources.CommonSQL.*;
 
 public class EditTagDlg extends JDialog {
     private JPanel contentPane;
