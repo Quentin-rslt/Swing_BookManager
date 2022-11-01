@@ -32,6 +32,7 @@ public class MenuBar {
     private static JMenu createFileMenu(MainWindow parent){
         //Export menu
         JMenu exportMenu = new JMenu("Exporter");
+        JMenuItem exportSQLMenuItem = new JMenuItem("SQL");
         JMenuItem exportJsonMenuItem = new JMenuItem("JSON");
         JMenuItem exportCsvMenuItem = new JMenuItem("CSV");
         exportCsvMenuItem.addActionListener((e -> {
@@ -43,16 +44,18 @@ public class MenuBar {
                 JOptionPane.showMessageDialog(jFrame,"L'exportation n'a pas pu être effectué","ERROR", JOptionPane.ERROR_MESSAGE);
             }
         }) );
+        exportMenu.add(exportSQLMenuItem);
         exportMenu.add(exportJsonMenuItem);
         exportMenu.add(exportCsvMenuItem);
 
         //Import menu
         JMenu importMenu = new JMenu("Importer ");
+        JMenuItem importSQLMenuItem = new JMenuItem("SQL");
         JMenuItem importJsonMenuItem = new JMenuItem("JSON");
         JMenuItem importCsvMenuItem = new JMenuItem("CSV");
         importCsvMenuItem.addActionListener((e -> {
-            boolean good = importCSV(parent);
-            if(good) {
+            int good = importCSV(parent);
+            if(good==1) {
                 parent.setIsFiltered(false);
                 parent.loadDB(parent.isFiltered());
                 parent.setMTitle(parent.getBooksTable().getValueAt(0, 0).toString());
@@ -61,11 +64,12 @@ public class MenuBar {
                 parent.getBooksTable().setRowSelectionInterval(0, 0);
                 JFrame jFrame = new JFrame();
                 JOptionPane.showMessageDialog(jFrame, "L'importation des données a été effectué");
-            }else{
+            }else if(good==0){
                 JFrame jFrame = new JFrame();
                 JOptionPane.showMessageDialog(jFrame, "L'importation des données n'a pas pu être effectué","ERROR", JOptionPane.ERROR_MESSAGE);
             }
         }));
+        importMenu.add(importSQLMenuItem);
         importMenu.add(importJsonMenuItem);
         importMenu.add(importCsvMenuItem);
 

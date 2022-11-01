@@ -1,8 +1,6 @@
 package Sources;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileFilter;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
 import java.io.*;
@@ -10,19 +8,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import static Sources.Common.*;
 
 public class ImportExportData {
     public static String escapeSpecialCharacters(String data) {
-        String escapedData = data.replaceAll("\\R", " ");
-        if (data.contains(",") || data.contains("\"") || data.contains("'")) {
-            data = data.replace("\"", "\"\"");
-            escapedData = "\"" + data + "\"";
-        }
-        return escapedData;
+        return data.replaceAll("\\n", " ");
     }
     public static boolean exportCSV(){
         boolean good = false;
@@ -32,7 +25,11 @@ public class ImportExportData {
             String qryTagging = "SELECT * FROM Tagging; ";
             String qryTags = "SELECT * FROM Tags; ";
 
-            Path folder = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(),"BookManager/Export/CSV");
+            Date today = new Date();
+            SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+
+
+            Path folder = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(),"BookManager/Saves/CSV/"+formater.format(today));
             Files.createDirectories(folder);
 
             Statement statement = conn.createStatement();
@@ -52,7 +49,7 @@ public class ImportExportData {
                 String releaseYear = rsBook.getString(8);
                 String avReadingTime = rsBook.getString(9);
                 String numberReading = rsBook.getString(10);
-                String summary = rsBook.getString(11);
+                String summary = escapeSpecialCharacters(rsBook.getString(11));
 
                 String line = String.format(
                         "%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s",
@@ -121,19 +118,20 @@ public class ImportExportData {
         catch (SQLException e) {
             System.out.println("Datababse error:");
             e.printStackTrace();
-            good = false;
         } catch (IOException e) {
             System.out.println("File IO error:");
             e.printStackTrace();
         }
         return good;
     }
-    public static boolean importCSV(MainWindow panel){
-        boolean good =false;
+    public static int importCSV(MainWindow panel){
+        int good = 0;
         JFileChooser jf = new JFileChooser();
         jf.setPreferredSize(new Dimension(850,600));
         jf.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        if (JFileChooser.APPROVE_OPTION == jf.showOpenDialog(panel)){ //Opens the file panel to select an image
+        jf.setDialogTitle("Sélectionnner un dossier");
+        int rVal = jf.showOpenDialog(panel);
+        if (JFileChooser.APPROVE_OPTION == rVal){ //Opens the file panel to select an image
             String path = jf.getSelectedFile().getPath();
 
             String BookQry = "REPLACE INTO Book (ID,Title,Author,Image,NumberOP,NotePerso,NoteBabelio,ReleaseYear,AvReadingTime,NumberReading,Summary) " +
@@ -154,38 +152,38 @@ public class ImportExportData {
                  PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry);
                  PreparedStatement TaggingPstmt = conn.prepareStatement(TaggingQry)){
 
-                System.out.println(jf.getSelectedFile().getName());
-
                 //Book
                 BufferedReader lineReaderBook = new BufferedReader(new FileReader(path+"/Book.csv"));
                 String lineTextBook;
                 lineReaderBook.readLine();
                 while ((lineTextBook = lineReaderBook.readLine()) != null) {
                     String[] data = lineTextBook.split("\\|");
-                    int ID_Book = Integer.parseInt(data[0]);
+                    String ID_Book = data[0];
                     String title = data[1];
                     String author = data[2];
                     String image = data[3];
-                    int numberOP = Integer.parseInt(data[4]);
+                    String numberOP = data[4];
                     String notePerso = data[5];
                     String noteBBL = data[6];
-                    int releaseYear = Integer.parseInt(data[7]);
-                    int avReadingTime = Integer.parseInt(data[8]);
-                    int numberReading = Integer.parseInt(data[9]);
+                    String releaseYear = data[7];
+                    String avReadingTime = data[8];
+                    String numberReading = data[9];
                     String summary = data[10];
 
                     //Book
-                    BookPstmt.setInt(1, ID_Book);
+                    BookPstmt.setString(1, ID_Book);
                     BookPstmt.setString(2, title);
                     BookPstmt.setString(3, author);
                     BookPstmt.setString(4, image);
-                    BookPstmt.setInt(5, numberOP);
+                    BookPstmt.setString(5, numberOP);
                     BookPstmt.setString(6, notePerso);
                     BookPstmt.setString(7, noteBBL);
-                    BookPstmt.setInt(8, releaseYear);
-                    BookPstmt.setInt(9, avReadingTime);
-                    BookPstmt.setInt(10, numberReading);
+                    BookPstmt.setString(8, releaseYear);
+                    BookPstmt.setString(9, avReadingTime);
+                    BookPstmt.setString(10, numberReading);
                     BookPstmt.setString(11, summary);
+
+                    System.out.println(summary);
 
                     BookPstmt.executeUpdate();
                 }
@@ -240,7 +238,7 @@ public class ImportExportData {
 
                     TagsPstmt.executeUpdate();
                 }
-                good =true;
+                good =1;
 
             } catch (SQLException e) {
                 System.out.println("Datababse error:");
@@ -249,9 +247,9 @@ public class ImportExportData {
                 System.out.println("File IO error:");
                 e.printStackTrace();
             }
-        }else{
-            JFrame jFrame = new JFrame();
-            JOptionPane.showMessageDialog(jFrame, "Veuillez choisir un format csv !");
+        }
+        if(rVal == JFileChooser.CANCEL_OPTION ) {
+            good = 2;
         }
         return good;
     }

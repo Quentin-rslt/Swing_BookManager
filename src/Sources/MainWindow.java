@@ -503,6 +503,7 @@ public class MainWindow extends JDialog {
         BookSummary.setText("");
         BookTagsPanel.removeAll();
         ManageReadingsBtn.setEnabled(false);
+        BookManageTagsBtn.setEnabled(false);
         BookPhotoPanel.removeAll();
         contentPane.updateUI();
         contentPane.setBorder(null);
