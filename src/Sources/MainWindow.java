@@ -552,7 +552,8 @@ public class MainWindow extends JDialog {
             BooksTable.setBorder(roundBrdMax);
         else
             BooksTable.setBorder(roundBrdMin);
-        isNotInFilteredBookList(this);
+
+        isItInFilteredBookList(getMTitle(),getAuthor(),this);
     }
 
     public static void main(String[] args) {

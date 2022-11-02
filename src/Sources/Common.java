@@ -77,7 +77,7 @@ public class Common {
     }
     public static void deleteImageMainResource(String title, String author){
         if(!getImageBDD(title, author).equals("Default.jpg")){
-            Path folder = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(),"BookManager");
+            Path folder = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(),"BookManager/Image");
             Path dest = Paths.get(folder+"/"+ getImageBDD(title, author));//delete the image of the deleted book
             try {
                 Files.delete(dest);
@@ -88,7 +88,7 @@ public class Common {
     }
     public static void deleteImageResource(String title, String author){
         if(jf.getSelectedFile()!=null && !getNameOfBook().equals(getImageBDD(title, author)) && !getImageBDD(title, author).equals("Default.jpg")){
-            Path folder = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(),"BookManager");
+            Path folder = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(),"BookManager/Image");
             Path dest = Paths.get(folder+"/"+ getImageBDD(title, author));//delete the image of the deleted book
             try {
                 Files.delete(dest);
@@ -171,18 +171,13 @@ public class Common {
         }
     }
     public static void isItInFilteredBookList(String title, String author, MainWindow parent){
-        if(parent.isFiltered()){
-            if(isInFilteredList(title,author, parent.getBooksTable())){
-                parent.loadComponents(title, author);//reload changes made to the book
-                parent.getBooksTable().setRowSelectionInterval(parent.getRowSelected(title, author), parent.getRowSelected(title, author));//focus on the edited book
-                if(parent.getCounterManageReading()>0)
-                    parent.getManageReadingDiag().fillBookList(title, author);
-            }else{
-                isNotInFilteredBookList(parent);
-            }
-        }else{
+        if(isInFilteredList(title,author, parent.getBooksTable())){
             parent.loadComponents(title, author);//reload changes made to the book
             parent.getBooksTable().setRowSelectionInterval(parent.getRowSelected(title, author), parent.getRowSelected(title, author));//focus on the edited book
+            if(parent.getCounterManageReading()>0)
+                parent.getManageReadingDiag().fillBookList(title, author);
+        }else{
+            isNotInFilteredBookList(parent);
         }
     }
     public static void initListenerTag(Tags tags, JPopupMenu m_popup, JPanel panel){
