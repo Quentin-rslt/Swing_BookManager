@@ -285,11 +285,24 @@ public class CommonSQL {
         }
         parent.getContentPanel().updateUI();
     }
+    public static void updateImageToExport(String path){
+        String replaceImageQry = "UPDATE Book SET Image=?";
+        try{
+            String url = "jdbc:sqlite:"+path;
+            Connection connection = DriverManager.getConnection(url);
+
+            PreparedStatement replaceImagePstmt = connection.prepareStatement(replaceImageQry);
+            replaceImagePstmt.setString(1, "Default.jpg");
+            replaceImagePstmt.executeUpdate();
+        }catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public static Connection connect() {
         Connection connection = null;
         try {
-            Path folder = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(),"BookManager/Saves/Database/");
+            Path folder = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(),"BookManager");
             Files.createDirectories(folder);
 
             String url = "jdbc:sqlite:"+folder+"/BookManager.db";

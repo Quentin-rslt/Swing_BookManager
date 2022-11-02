@@ -21,6 +21,8 @@ public class ImportExportData {
         return data.replaceAll("\\n", " ");
     }
     public static boolean exportCSV(){
+        JFrame jFrame = new JFrame();
+        JOptionPane.showMessageDialog(jFrame, "Les images ne seront pas exportées","WARNING", JOptionPane.WARNING_MESSAGE);
         boolean good = false;
         try(Connection conn = connect()){
             String qryBook = "SELECT * FROM Book; ";
@@ -44,7 +46,7 @@ public class ImportExportData {
                 String ID_Book = rsBook.getString(1);
                 String title = rsBook.getString(2);
                 String author = rsBook.getString(3);
-                String image = rsBook.getString(4);
+                String image = "Default.jpg";
                 String numberOP = rsBook.getString(5);
                 String notePerso = rsBook.getString(6);
                 String noteBBL = rsBook.getString(7);
@@ -271,14 +273,19 @@ public class ImportExportData {
     }
 
     public static void exportDB(){
-        try (Connection conn = connect()){
+        JFrame jFrame = new JFrame();
+        JOptionPane.showMessageDialog(jFrame, "Les images ne seront pas exportées","WARNING", JOptionPane.WARNING_MESSAGE);
+        try{
+            Connection conn = connect();
             Date today = new Date();
             SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-
             Path folder = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(),"BookManager/Saves/Database/");
+            String path = folder+"/"+formater.format(today)+".db";
             Files.createDirectories(folder);
 
-            conn.createStatement().executeUpdate("backup to "+folder+"/"+formater.format(today)+".db");
+            conn.createStatement().executeUpdate("backup to "+path);
+            conn.close();
+            updateImageToExport(path);
         } catch (SQLException | IOException e) {
             throw new RuntimeException(e);
         }
@@ -293,9 +300,17 @@ public class ImportExportData {
         int rVal = jf.showOpenDialog(panel);
         do {
             if (JFileChooser.APPROVE_OPTION == rVal) { //Opens the file panel to select an image
-                String path = jf.getSelectedFile().getPath();
+                Path src = Path.of(jf.getSelectedFile().getPath());
+                Path folder = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(),"BookManager");
+                Path dest = Paths.get(folder+"/"+"BookManager.db");
                 if (acceptDB(jf.getSelectedFile())){
                     good=1;
+                    try {
+                        Files.delete(dest);
+                        Files.copy(src, dest);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
             if (rVal == JFileChooser.CANCEL_OPTION) {

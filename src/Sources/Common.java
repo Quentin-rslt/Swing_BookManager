@@ -27,8 +27,8 @@ import static Sources.MainWindow.getAuthor;
 import static Sources.MainWindow.getMTitle;
 
 public class Common {
-    static JFileChooser jf= new JFileChooser();
-    static String m_name="";
+    private static final JFileChooser jf= new JFileChooser();
+    private static String m_name="";
     public static void addImageToPanel(String nom,JPanel panel){//Apply to our panel an image with path
         Path folder = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(),"BookManager/Image");
         File file = new File(folder+"/"+nom);
@@ -97,9 +97,6 @@ public class Common {
             }
         }
     }
-    public static void setNameOfBook(String name){
-        m_name = name;
-    }
     public static void selectImageOfBook(JPanel panel){
         FileFilter imageFilter = new FileNameExtensionFilter("Image files", ImageIO.getReaderFileSuffixes());
         jf.setFileFilter(imageFilter);
@@ -127,6 +124,9 @@ public class Common {
                 }
             }
         } while (!accept(jf.getSelectedFile()) && rVal==0);
+    }
+    public static void setNameOfBook(String name){
+        m_name = name;
     }
     public static void rescaleResolutionImage(File file){
         BufferedImage image;
@@ -215,6 +215,15 @@ public class Common {
         }
     }
 
+    public static boolean isInFilteredList(String title, String author, JTable table){
+        boolean isFiltered=false;
+        for(int i=0; i<table.getRowCount();i++){
+            if(table.getModel().getValueAt(i,0).equals(title) && table.getModel().getValueAt(i,1).equals(author)){
+                isFiltered=true;
+            }
+        }
+        return isFiltered;
+    }
     public static boolean fillPaneTags(Tags tags, JPanel panel, JComboBox cb, boolean canCreate){
         boolean tagFind = false;
         int i = 0;
@@ -397,14 +406,5 @@ public class Common {
     }
     public static String getNameOfBook(){
         return m_name;
-    }
-    public static boolean isInFilteredList(String title, String author, JTable table){
-        boolean isFiltered=false;
-        for(int i=0; i<table.getRowCount();i++){
-            if(table.getModel().getValueAt(i,0).equals(title) && table.getModel().getValueAt(i,1).equals(author)){
-                isFiltered=true;
-            }
-        }
-        return isFiltered;
     }
 }
