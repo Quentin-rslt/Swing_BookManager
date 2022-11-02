@@ -258,9 +258,7 @@ public class Common {
                 }
             } else {
                 String sql = "SELECT Color FROM Tags WHERE Tag='" + cb.getSelectedItem().toString() + "'";
-                try {
-                    Class.forName("org.sqlite.JDBC");
-                    Connection connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
+                try (Connection connection = connect()){
                     Statement statement = connection.createStatement();
                     ResultSet tagsQry = statement.executeQuery(sql);
 

@@ -76,8 +76,6 @@ public class ManageReadingDlg extends JDialog {
         });
         cut.addActionListener((ActionEvent evt) ->{
             String ReadingQry = "DELETE FROM Reading WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"' AND ID='"+getRow()+"'";//Delete in bdd the item that we want delete
-            String BookQry = "DELETE FROM Book WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";//Delete in bdd the item that we want delete
-            String TaggingQry = "DELETE FROM Tagging WHERE IdBook='"+getIdBook(getMTitle(),getAuthor())+"'";
             String AvNumQry = "UPDATE Book SET AvReadingTime=?, NumberReading=? WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";
             if(ReadingsTable.getRowCount()>1){//If there is more than one reading you don't need to know if the person really wants to delete the book
                 try (Connection conn = connect(); PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry); PreparedStatement AvNumPstmt = conn.prepareStatement(AvNumQry)) {
@@ -93,61 +91,13 @@ public class ManageReadingDlg extends JDialog {
 
                     //load bdd in MainWindow
                     parent.loadDB(parent.isFiltered());
-                    if(isInFilteredList(getMTitle(),getAuthor(),parent.getBooksTable())){
-                        parent.getBooksTable().setRowSelectionInterval(parent.getRowSelected(getMTitle(), getAuthor()), parent.getRowSelected(getMTitle(), getAuthor()));//focus on the book where you have managed your readings
-                        parent.loadComponents(getMTitle(), getAuthor());
-                    }else{
-                        if(parent.getBooksTable().getRowCount()>0) {
-                            parent.getBooksTable().setRowSelectionInterval(0, 0);
-                            parent.setMTitle(parent.getBooksTable().getValueAt(0, 0).toString());
-                            parent.setAuthor(parent.getBooksTable().getValueAt(0, 1).toString());
-                            parent.loadComponents(MainWindow.getMTitle(), MainWindow.getAuthor());
-                        }else{
-                            parent.initComponents();
-                            parent.resetCounterManageReading(0);
-                            setVisible(false);
-                            dispose();
-                        }
-                    }
+                    isItInFilteredBookList(getMTitle(),getAuthor(),parent);
                 } catch (SQLException e) {
                     System.out.println(e.getMessage());
                 }
             }
             else{
-                JFrame jFrame = new JFrame();
-                int n = JOptionPane.showConfirmDialog(//Open a optionPane to verify if the user really want to delete the book return 0 il they want and 1 if they refuse
-                        jFrame,
-                        "Cette acion supprimeras complétement le livre et sera irréversible. \n"+"Etes-vous sûr de vouloir le faire ?",
-                        "An Inane Question",
-                        JOptionPane.YES_NO_OPTION);
-                if(n==0){
-                    try (Connection conn = connect(); PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry); PreparedStatement BookPstmt = conn.prepareStatement(BookQry);
-                         PreparedStatement TaggingPstmt = conn.prepareStatement(TaggingQry)) {
-                        ReadingPstmt.executeUpdate();
-                        BookPstmt.executeUpdate();
-                        TaggingPstmt.executeUpdate();
-                        fillBookList(getMTitle(),getAuthor());
-                        ManageTitleLabel.setText("Lectures du livre : ");
-                        ManageAuthorLabel.setText("Ecrit par : ");
-                        contentPane.updateUI();
-
-                        //load bdd in MainWindow
-                        parent.loadDB(parent.isFiltered());
-                        if(parent.getBooksTable().getRowCount()>0) {
-                            parent.getBooksTable().setRowSelectionInterval(0, 0);
-                            parent.setMTitle(parent.getBooksTable().getValueAt(0, 0).toString());
-                            parent.setAuthor(parent.getBooksTable().getValueAt(0, 1).toString());
-                            parent.loadComponents(MainWindow.getMTitle(), MainWindow.getAuthor());
-                            parent.resetCounterManageReading(0);
-                        }else{
-                            parent.initComponents();
-                        }
-                        setVisible(false);
-                        dispose();
-                    } catch (SQLException e) {
-                        System.out.println(e.getMessage());
-                    }
-                }
+                deleteBook(getMTitle(),getAuthor(),parent);
             }
         });
         edit.addActionListener((ActionEvent evt) ->{
@@ -181,28 +131,7 @@ public class ManageReadingDlg extends JDialog {
 
                 //if the book is no longer in the filters then load on the first line
                 parent.loadDB(parent.isFiltered());
-                if(isInFilteredList(getMTitle(),getAuthor(),parent.getBooksTable())){
-                    parent.getBooksTable().setRowSelectionInterval(parent.getRowSelected(getMTitle(), getAuthor()), parent.getRowSelected(getMTitle(), getAuthor()));//focus on the book where you have managed your readings
-                    parent.loadComponents(getMTitle(), getAuthor());
-                    contentPane.updateUI();
-                    fillBookList(getMTitle(), getAuthor());
-                    ReadingsTable.setRowSelectionInterval(getRow(), getRow());//Focus on the reading that we edit
-                }else{
-                    if(parent.getBooksTable().getRowCount()>0) {
-                        parent.getBooksTable().setRowSelectionInterval(0, 0);
-                        parent.setMTitle(parent.getBooksTable().getValueAt(0, 0).toString());
-                        parent.setAuthor(parent.getBooksTable().getValueAt(0, 1).toString());
-                        parent.loadComponents(MainWindow.getMTitle(), MainWindow.getAuthor());
-                        contentPane.updateUI();
-                        fillBookList(MainWindow.getMTitle(), MainWindow.getAuthor());
-                        ReadingsTable.setRowSelectionInterval(getRow(), getRow());//Focus on the reading that we edit
-                    }else{
-                        parent.initComponents();
-                        parent.resetCounterManageReading(0);
-                        setVisible(false);
-                        dispose();
-                    }
-                }
+                isItInFilteredBookList(getMTitle(),getAuthor(),parent);
 
             }
         });

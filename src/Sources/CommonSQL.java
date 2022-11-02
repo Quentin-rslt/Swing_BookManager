@@ -62,7 +62,6 @@ public class CommonSQL {
             parent.getContentPanel().updateUI();
             try (Connection conn = connect(); PreparedStatement BookPstmt = conn.prepareStatement(BookQry); PreparedStatement AvNumPstmt = conn.prepareStatement(AvNumQry);
                  PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry); PreparedStatement TaggingPstmt = conn.prepareStatement(TaggingQry)) {
-                Statement statement = conn.createStatement();
 
                 ReadingPstmt.setInt(1, getIdReading(diag.getNewBookTitle(), diag.getNewBookAuthor()));
                 ReadingPstmt.setString(2, diag.getNewBookTitle());
@@ -138,7 +137,6 @@ public class CommonSQL {
                     parent.fastSearchBook(parent.getBookFastSearch().getText());
                 }
                 conn.close();
-                statement.close();
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
             }
@@ -195,9 +193,11 @@ public class CommonSQL {
                 parent.setMTitle(diag.getNewTitle());
                 parent.setAuthor(diag.getNewAuthor());
                 isItInFilteredBookList(getMTitle(),getAuthor(),parent);
+
                 if(parent.isFastSearch()){
                     parent.fastSearchBook(parent.getBookFastSearch().getText());
                 }
+                conn.close();
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
             }
@@ -211,7 +211,6 @@ public class CommonSQL {
                     "WHERE Title='"+diag.getMtitle()+"' AND Author='"+diag.getAuthor()+"'";
             parent.getContentPanel().updateUI();
             try(Connection conn = connect(); PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry); PreparedStatement AvNumPstmt = conn.prepareStatement(AvNumQry)){
-                Statement statement = conn.createStatement();
                 ReadingPstmt.setInt(1, getIdReading(diag.getMtitle(), diag.getAuthor()));
                 ReadingPstmt.setString(2, diag.getMtitle());
                 ReadingPstmt.setString(3, diag.getAuthor());
@@ -246,7 +245,6 @@ public class CommonSQL {
                     parent.fastSearchBook(parent.getBookFastSearch().getText());
                 }
                 conn.close();
-                statement.close();
             }catch (SQLException e){
                 System.out.println(e.getMessage());
                 System.exit(0);

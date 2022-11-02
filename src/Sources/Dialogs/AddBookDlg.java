@@ -41,7 +41,6 @@ public class AddBookDlg extends JDialog {
     private JScrollPane JsPane;
     private boolean m_isValide = false;//Useful for determinate if the input are good
     private boolean m_tagIsUpdate = false;
-    private Connection m_connection;
     private Statement m_statement;
     Tags m_tags;
     final JPopupMenu m_popup;
@@ -90,10 +89,8 @@ public class AddBookDlg extends JDialog {
         ValidateBtn.addActionListener((ActionEvent evt) -> {
             String sql = "SELECT Title, Author, StartReading, EndReading FROM Reading";
             if(!Objects.equals(getNewBookAuthor(), "") && !Objects.equals(getNewBookTitle(), "") && !Objects.equals(getNewBookSummary(), "")){//Verif if the input are good to quit the dlg and recovered the data for bdd
-                try{//Can add a new reading if the book already exist
-                    Class.forName("org.sqlite.JDBC");
-                    m_connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
-                    m_statement = m_connection.createStatement();
+                try (Connection conn = connect()){//Can add a new reading if the book already exist
+                    m_statement = conn.createStatement();
                     ResultSet bookQry = m_statement.executeQuery(sql);
                     Date enDate =new SimpleDateFormat("yyyy-MM-dd").parse(getNewBookEndReading());
                     Date startDate = new SimpleDateFormat("yyyy-MM-dd").parse(getNewBookStartReading());
@@ -135,7 +132,7 @@ public class AddBookDlg extends JDialog {
                         JFrame jFrame = new JFrame();
                         JOptionPane.showMessageDialog(jFrame, "La date de début de lecture ne peut être identique à la fin de lecture !");
                     }
-                    m_connection.close();
+                    conn.close();
                     m_statement.close();
                 } catch ( Exception e ) {
                     System.err.println( e.getClass().getName() + ": " + e.getMessage() );
@@ -335,29 +332,5 @@ public class AddBookDlg extends JDialog {
         for (int i = 0; i<loadTags().getSizeTags(); i++){
             this.BookTagsCB.addItem(loadTags().getTag(i).getTextTag());
         }
-    }
-    public void fastSearchCB(String text){
-        fillThemeCB();
-        for(int row = 0 ; row < this.BookTagsCB.getItemCount(); row++) {
-            boolean notSeam =false;
-            String cellText = this.BookTagsCB.getItemAt(row).toString();
-            if(!cellText.equals("")) {
-                for (int filterIndex = 0; filterIndex < text.length(); filterIndex++) {
-                    if (filterIndex < cellText.length()) {
-                        if (cellText.charAt(filterIndex) != text.charAt(filterIndex)) {
-                            notSeam=true;
-                            break;
-                        }
-                    } else {
-                        break;
-                    }
-                }
-                if(notSeam){
-                    this.BookTagsCB.removeItemAt(row);
-                    row--;
-                }
-            }
-        }
-        this.BookTagsCB.setSelectedIndex(0);
     }
 }

@@ -3,13 +3,14 @@ package Sources.Dialogs;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
+
+import static Sources.CommonSQL.connect;
 
 public class EditReadingDlg extends JDialog {
     private JPanel contentPane;
@@ -21,8 +22,6 @@ public class EditReadingDlg extends JDialog {
     private JCheckBox BookUnknownDateReadingCheckBox;
     private JCheckBox BookNotDoneReadChecbox;
     private JSpinner BookNewStartReadingSpin;
-
-
     private String m_title;
     private String m_author;
     private String m_startReading;
@@ -44,9 +43,7 @@ public class EditReadingDlg extends JDialog {
         });
         OkBtn.addActionListener((ActionEvent evt) ->{
                 String sql = "SELECT Title, Author, StartReading, EndReading FROM Reading WHERE Title='"+getMtitle()+"' AND Author='"+getAuthor()+"'";
-                try {
-                    Class.forName("org.sqlite.JDBC");
-                    Connection connection = DriverManager.getConnection("jdbc:sqlite:BookManager.db");
+                try (Connection connection = connect()){
                     Statement statement = connection.createStatement();
                     ResultSet qry = statement.executeQuery(sql);
                     Date enDate = new Date(), startDate = new Date();
