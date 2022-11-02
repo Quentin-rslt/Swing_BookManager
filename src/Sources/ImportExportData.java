@@ -297,20 +297,33 @@ public class ImportExportData {
         FileFilter fileFilter = new FileNameExtensionFilter("DB files", "db");
         jf.setFileFilter(fileFilter);
         jf.setDialogTitle("Sélectionnner une database");
-        int rVal = jf.showOpenDialog(panel);
+        int rVal;
         do {
+            rVal = jf.showOpenDialog(panel);
             if (JFileChooser.APPROVE_OPTION == rVal) { //Opens the file panel to select an image
                 Path src = Path.of(jf.getSelectedFile().getPath());
-                Path folder = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(),"BookManager");
-                Path dest = Paths.get(folder+"/"+"BookManager.db");
-                if (acceptDB(jf.getSelectedFile())){
-                    good=1;
-                    try {
-                        Files.delete(dest);
-                        Files.copy(src, dest);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
+                Path folder = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(), "BookManager");
+                Path dest = Paths.get(folder + "/" + "BookManager.db");
+
+                if (!jf.getSelectedFile().getName().equals("BookManager.db")) {
+                    if (acceptDB(jf.getSelectedFile())) {
+                        good = 1;
+                        try {
+                            Files.delete(dest);
+                            Files.copy(src, dest);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                        deleteImageToImport();
                     }
+                    else{
+                        JFrame jFrame = new JFrame();
+                        JOptionPane.showMessageDialog(jFrame, "Veuillez choisir un format .db !","ERROR",JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+                else{
+                    JFrame jFrame = new JFrame();
+                    JOptionPane.showMessageDialog(jFrame, "Ce fichier .db est actuellement celui utilisé","ERROR",JOptionPane.ERROR_MESSAGE);
                 }
             }
             if (rVal == JFileChooser.CANCEL_OPTION) {

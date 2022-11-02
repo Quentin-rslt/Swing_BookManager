@@ -86,6 +86,18 @@ public class Common {
             }
         }
     }
+    public static void deleteImageToImport(){
+        File directory = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(),"BookManager/Image").toFile();
+        try {
+            for (File file: Objects.requireNonNull(directory.listFiles())) {
+                if (!file.isDirectory()) {
+                    file.delete();
+                }
+            }
+        } catch (Exception evt) {
+            throw new RuntimeException(evt.getMessage(), evt);
+        }
+    }
     public static void deleteImageResource(String title, String author){
         if(jf.getSelectedFile()!=null && !getNameOfBook().equals(getImageBDD(title, author)) && !getImageBDD(title, author).equals("Default.jpg")){
             Path folder = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(),"BookManager/Image");
@@ -120,7 +132,7 @@ public class Common {
                     panel.add(imgLabel);
                 }else{
                     JFrame jFrame = new JFrame();
-                    JOptionPane.showMessageDialog(jFrame, "Veuillez choisir un format jpg ou png ou jpeg !");
+                    JOptionPane.showMessageDialog(jFrame, "Veuillez choisir un format jpg ou png ou jpeg !","ERROR",JOptionPane.ERROR_MESSAGE);
                 }
             }
         } while (!accept(jf.getSelectedFile()) && rVal==0);
@@ -343,7 +355,7 @@ public class Common {
         boolean isAccept = true;
         if(pathname!=null){
             String filename = pathname.getName();
-            isAccept = filename.endsWith("db");
+            isAccept = filename.endsWith("db") && !filename.equals("BookManager.db");
         }
         return isAccept;
     }
