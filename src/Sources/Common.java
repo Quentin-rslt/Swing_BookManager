@@ -171,7 +171,6 @@ public class Common {
             parent.setAuthor(parent.getBooksTable().getValueAt(0, 1).toString());
             parent.loadComponents(getMTitle(), getAuthor());//reload changes made to the book
             parent.getBooksTable().setRowSelectionInterval(0, 0);
-            parent.fillReadingsList(getMTitle(), getAuthor());
         } else {
             parent.initComponents();
         }
@@ -180,7 +179,7 @@ public class Common {
         if(isInFilteredList(title,author, parent.getBooksTable())){
             parent.loadComponents(title, author);//reload changes made to the book
             parent.getBooksTable().setRowSelectionInterval(parent.getRowSelected(title, author), parent.getRowSelected(title, author));//focus on the edited book
-            parent.fillReadingsList(title, author);
+            parent.getReadingsTable().setRowSelectionInterval(parent.getManageReading().getRow(),parent.getManageReading().getRow());
         }
         else{
             isNotInFilteredBookList(parent);

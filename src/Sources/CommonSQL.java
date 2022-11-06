@@ -1,9 +1,6 @@
 package Sources;
 
-import Sources.Dialogs.AddBookDlg;
-import Sources.Dialogs.AddReading;
-import Sources.Dialogs.EditBookDlg;
-import Sources.Dialogs.FiltersDlg;
+import Sources.Dialogs.*;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
@@ -135,7 +132,6 @@ public class CommonSQL {
                 if(parent.isFastSearch()){
                     parent.fastSearchBook(parent.getBookFastSearch().getText());
                 }
-                conn.close();
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
             }
@@ -196,7 +192,6 @@ public class CommonSQL {
                 if(parent.isFastSearch()){
                     parent.fastSearchBook(parent.getBookFastSearch().getText());
                 }
-                conn.close();
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
             }
@@ -242,11 +237,38 @@ public class CommonSQL {
                 if(parent.isFastSearch()){
                     parent.fastSearchBook(parent.getBookFastSearch().getText());
                 }
-                conn.close();
             }catch (SQLException e){
                 System.out.println(e.getMessage());
                 System.exit(0);
             }
+        }
+    }
+    public static void editReading(EditReadingDlg diag,String title, String author, MainWindow parent,ManageReading reading){
+        if(diag.isValid()){
+            String sql = "UPDATE Reading SET StartReading=?, EndReading=?" +
+                    "WHERE Title='"+title+"' AND Author='"+author+"' AND ID='"+reading.getRow()+"'";//Edit in bdd the item that we want to change the reading date
+            String AvNumQry = "UPDATE Book SET AvReadingTime=?, NumberReading=? WHERE Title='"+title+"' AND Author='"+author+"'";
+            try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql); PreparedStatement AvNumPstmt = conn.prepareStatement(AvNumQry)) {
+                // execute the uptdate statement
+                pstmt.setString(1, diag.getNewStartReading());
+                pstmt.setString(2, diag.getNewEndReading());
+                pstmt.executeUpdate();
+
+                AvNumPstmt.setInt(1, averageTime(title, author));
+                AvNumPstmt.setInt(2, getNumberOfReading(title, author));
+                AvNumPstmt.executeUpdate();
+
+                parent.getContentPanel().updateUI();
+                parent.fillReadingsList(title,author);
+                reading.getReadingsTable().setRowSelectionInterval(reading.getRow(), reading.getRow());//Focus on the reading that we edit
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+
+            //if the book is no longer in the filters then load on the first line
+            parent.loadDB(parent.isFiltered());
+            isItInFilteredBookList(title,author,parent);
+
         }
     }
     public static void filtersBook(FiltersDlg diag, String title , String author, MainWindow parent){

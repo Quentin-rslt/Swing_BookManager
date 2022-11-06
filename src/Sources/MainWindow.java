@@ -58,6 +58,7 @@ public class MainWindow extends JDialog {
     private Tags m_tags = new Tags();
     private Boolean isFiltered;
     private boolean m_isFastSearch;
+    private ManageReading m_manageReading;
 
 
     public MainWindow() {
@@ -107,6 +108,7 @@ public class MainWindow extends JDialog {
                 setMTitle(BooksTable.getValueAt(getRowSelected(), 0).toString()); //get the value of the column of the table
                 setAuthor(BooksTable.getValueAt(getRowSelected(), 1).toString());
                 loadComponents(getMTitle(), getAuthor());
+                m_manageReading = new ManageReading(MainWindow.this, getMTitle(),getAuthor(), ReadingsTable);
                 if(evt.getButton() == MouseEvent.BUTTON3) {//if we right click show a popup to edit the book
                     BooksTable.setRowSelectionInterval(getRowSelected(), getRowSelected());//we focus the row when we right on the item
                     m_popup.show(BooksTable, evt.getX(), evt.getY());
@@ -126,6 +128,7 @@ public class MainWindow extends JDialog {
         add.addActionListener((ActionEvent evt) -> {
             AddReading diag = openAddReadingDlg(getMTitle(),getAuthor());
             addReading(diag, this);
+            this.getReadingsTable().setRowSelectionInterval(this.getManageReading().getRowCount()-1,this.getManageReading().getRowCount()-1);
         });
         openManageTags.addActionListener((ActionEvent evt)->{
             openManageTagsDlg(getMTitle(), getAuthor());
@@ -206,6 +209,12 @@ public class MainWindow extends JDialog {
     }
     public JPanel getContentPanel(){
         return this.contentPane;
+    }
+    public JTable getReadingsTable() {
+        return ReadingsTable;
+    }
+    public ManageReading getManageReading() {
+        return m_manageReading;
     }
 
     /****************************** Void ***********************************/
@@ -388,6 +397,7 @@ public class MainWindow extends JDialog {
                 ReadingsTable.setBorder(roundBrdMax);
             else
                 ReadingsTable.setBorder(roundBrdMin);
+
             if(ReadingsTable.getRowCount()>0)
                 ReadingsTable.setRowSelectionInterval(0, 0);
             contentPane.updateUI();
@@ -403,7 +413,7 @@ public class MainWindow extends JDialog {
         BookManageTagsBtn.setEnabled(true);
         Tags tags = new Tags();
         fillReadingsList(title,author);
-        new ManageReading(this, title,author, ReadingsTable);
+
         try(Connection conn = connect()) {
             Class.forName("org.sqlite.JDBC");
             m_statement = conn.createStatement();
@@ -500,6 +510,7 @@ public class MainWindow extends JDialog {
         }
     }
     public void initComponents(){
+        m_tableReadingModel.setRowCount(0);
         TitleLabel.setText("Titre livre");
         ReleaseYearLAbel.setText("Année de sortie :");
         NumberPageLabel.setText("Nombre de page :");
@@ -546,7 +557,7 @@ public class MainWindow extends JDialog {
             }
         }
         AbstractBorder roundBrdMax = new RoundBorderCp(contentPane.getBackground(),1,30, 0,0,0);
-        AbstractBorder roundBrdMin = new RoundBorderCp(contentPane.getBackground(),1,30, 592-(BooksTable.getRowCount()*BooksTable.getRowHeight()),11,0);
+        AbstractBorder roundBrdMin = new RoundBorderCp(contentPane.getBackground(),1,30, BooksTable.getPreferredScrollableViewportSize().height-(BooksTable.getRowCount()*BooksTable.getRowHeight()),0,0);
         if(BooksTable.getRowCount()>20)
             BooksTable.setBorder(roundBrdMax);
         else

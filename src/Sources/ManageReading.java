@@ -6,6 +6,7 @@ import java.awt.event.*;
 import java.sql.*;
 import static Sources.Common.*;
 import static Sources.CommonSQL.*;
+import static Sources.Dialogs.OpenDialog.openEditReadingDlg;
 
 public class ManageReading {
     JTable m_readingsTable;
@@ -41,6 +42,10 @@ public class ManageReading {
                 ReadingsTable.setRowSelectionInterval(getRow(), getRow());//we focus the row when we right on the item
                 m_popup.show(ReadingsTable, evt.getX(), evt.getY());//show a popup to edit the reading
             }
+            if(evt.getClickCount() == 2 && evt.getButton() == MouseEvent.BUTTON1){
+                EditReadingDlg diag = openEditReadingDlg(getMTitle(), getAuthor(),getStartReading(), getEndReading());//Open a dialog where we can edit the date reading
+                editReading(diag,getMTitle(), getAuthor(), parent, ManageReading.this);
+            }
             }
         });
         cut.addActionListener((ActionEvent evt) ->{
@@ -57,10 +62,11 @@ public class ManageReading {
                     parent.fillReadingsList(getMTitle(),getAuthor());
                     resetIdReading(getMTitle(), getAuthor(), getRowCount());//refresh all ID in the table ReadingDate
                     ReadingsTable.setRowSelectionInterval(0, 0);
+                    setRow(0);
 
                     //load bdd in MainWindow
                     parent.loadDB(parent.isFiltered());
-                    isItInFilteredBookList(getMTitle(),getAuthor(),parent);
+                    isItInFilteredBookList(getMTitle(), getAuthor(), parent);
                 } catch (SQLException e) {
                     System.out.println(e.getMessage());
                 }
@@ -70,39 +76,8 @@ public class ManageReading {
             }
         });
         edit.addActionListener((ActionEvent evt) ->{
-            EditReadingDlg diag = new EditReadingDlg(getMTitle(), getAuthor(),getStartReading(), getEndReading());//Open a dialog where we can edit the date reading
-            diag.setIconImage(getImageEdit());
-            diag.setTitle("Modifier une lecture");
-            diag.setSize(500,210);
-            diag.setLocationRelativeTo(null);
-            diag.setVisible(true);
-
-            if(diag.isValid()){
-                String sql = "UPDATE Reading SET StartReading=?, EndReading=?" +
-                        "WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"' AND ID='"+getRow()+"'";//Edit in bdd the item that we want to change the reading date
-                String AvNumQry = "UPDATE Book SET AvReadingTime=?, NumberReading=? WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";
-                try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql); PreparedStatement AvNumPstmt = conn.prepareStatement(AvNumQry)) {
-                    // execute the uptdate statement
-                    pstmt.setString(1, diag.getNewStartReading());
-                    pstmt.setString(2, diag.getNewEndReading());
-                    pstmt.executeUpdate();
-
-                    AvNumPstmt.setInt(1, averageTime(getMTitle(), getAuthor()));
-                    AvNumPstmt.setInt(2, getNumberOfReading(getMTitle(), getAuthor()));
-                    AvNumPstmt.executeUpdate();
-
-                    parent.getContentPanel().updateUI();
-                    parent.fillReadingsList(getMTitle(),getAuthor());
-                    ReadingsTable.setRowSelectionInterval(getRow(), getRow());//Focus on the reading that we edit
-                } catch (SQLException e) {
-                    System.out.println(e.getMessage());
-                }
-
-                //if the book is no longer in the filters then load on the first line
-                parent.loadDB(parent.isFiltered());
-                isItInFilteredBookList(getMTitle(),getAuthor(),parent);
-
-            }
+            EditReadingDlg diag = openEditReadingDlg(getMTitle(), getAuthor(),getStartReading(), getEndReading());//Open a dialog where we can edit the date reading
+            editReading(diag,getMTitle(), getAuthor(), parent,this);
         });
     }
 
@@ -124,6 +99,9 @@ public class ManageReading {
     }
     public int getRowCount(){
         return m_readingsTable.getRowCount();
+    }
+    public JTable getReadingsTable() {
+        return m_readingsTable;
     }
 
     public void setAuthor(String m_author) {
