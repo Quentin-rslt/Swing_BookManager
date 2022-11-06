@@ -281,9 +281,6 @@ public class FiltersDlg extends JDialog {
     public boolean getIsValid() {
         return m_isValid;
     }
-    public String getTextTag(){
-        return Objects.requireNonNull(FiltersTagCB.getSelectedItem()).toString();
-    }
     public String getTextSort(){
         String sort= "";
         if(Objects.requireNonNull(FiltersSortCB.getSelectedItem()).toString().equals("Titre")){
@@ -320,9 +317,6 @@ public class FiltersDlg extends JDialog {
     }
     public boolean isAscending(){
         return FiltersorderCrossingRB.isSelected();
-    }
-    public JPanel getFiltersTagsPanel(){
-        return this.FiltersTagsPanel;
     }
 
     public void setIsValid(boolean m_isValid) {
@@ -382,6 +376,14 @@ public class FiltersDlg extends JDialog {
             FiltersSecNumberORSpin.setModel(LastNumberOR);
             SpinnerModel LastAvTime = new SpinnerNumberModel(9999999, 0, 9999999, 1);
             FiltersSecAvTSpin.setModel(LastAvTime);
+
+            FiltersFirstStartRSpin.setEnabled(false);
+            FiltersSecStartRSpin.setEnabled(false);
+            FiltersFirstEndRSpin.setEnabled(false);
+            FiltersSecEndRSpin.setEnabled(false);
+            NotDoneReadChecbox.setEnabled(false);
+            UnknownReadDateChecbox.setEnabled(false);
+            ReadDateLabel.setEnabled(false);
 
             fillSortCB();
             fillTagsCB();

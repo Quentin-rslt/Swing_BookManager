@@ -332,7 +332,7 @@
               <component id="53ce8" class="javax.swing.JCheckBox" binding="IsFilteredCheckBox">
                 <constraints/>
                 <properties>
-                  <selected value="true"/>
+                  <selected value="false"/>
                   <text value="Filtrer les dates de lectures"/>
                 </properties>
               </component>

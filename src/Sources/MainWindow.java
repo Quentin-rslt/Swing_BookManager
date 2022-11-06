@@ -6,9 +6,10 @@ import Themes.DarkTheme.DarkTheme;
 import javax.swing.*;
 import javax.swing.border.AbstractBorder;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 import static Sources.Common.*;
@@ -22,7 +23,6 @@ public class MainWindow extends JDialog {
     private JLabel FirstReadingLabel;
     private JLabel LastReadingLabel;
     private JPanel BookPhotoPanel;
-    private JButton ManageReadingsBtn;
     private JLabel TitleLabel;
     private JLabel NumberPageLabel;
     private JLabel NoteLabel;
@@ -37,9 +37,14 @@ public class MainWindow extends JDialog {
     private JScrollPane JSpane;
     private JButton BookManageTagsBtn;
     private JTable BooksTable;
-    private JScrollPane jsPane;
     private JTextField BookFastSearch;
-    private final DefaultTableModel m_tableModel = new DefaultTableModel(){//Create a Jtable with the tablemodel not editable
+    private JTable ReadingsTable;
+    private final DefaultTableModel m_tableBookModel = new DefaultTableModel(){//Create a Jtable with the tablemodel not editable
+        public boolean isCellEditable(int rowIndex, int colIndex) {
+            return false; //Disallow the editing of any cell
+        }
+    };
+    private final DefaultTableModel m_tableReadingModel = new DefaultTableModel(){//Create a Jtable with the tablemodel not editable
         public boolean isCellEditable(int rowIndex, int colIndex) {
             return false; //Disallow the editing of any cell
         }
@@ -51,8 +56,6 @@ public class MainWindow extends JDialog {
     final JPopupMenu m_popup;
     private FiltersDlg m_filtersDiag;
     private Tags m_tags = new Tags();
-    private int counterManageReading;
-    private ManageReadingDlg m_ManageReadingDiag;
     private Boolean isFiltered;
     private boolean m_isFastSearch;
 
@@ -63,7 +66,6 @@ public class MainWindow extends JDialog {
         connectionDB();
         setIsFiltered(false);
         loadDB(isFiltered());
-        setCounterManageReading(0);
 
         AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),3,30,0,0,20);
         BookSummary.setBorder(roundBrd);
@@ -75,16 +77,12 @@ public class MainWindow extends JDialog {
         JMenuItem cut = new JMenuItem("Supprimer", new ImageIcon(getImageCut()));
         JMenuItem edit = new JMenuItem("Modifier", new ImageIcon(getImageEdit()));
 
-        JMenu manage = new JMenu("Gérer");
-        JMenuItem openManageReadings = new JMenuItem("Gérer les lectures");
         JMenuItem openManageTags = new JMenuItem("Gérer ses tags");
-        manage.add(openManageReadings);
-        manage.add(openManageTags);
 
         m_popup.add(add);
         m_popup.add(cut);
         m_popup.add(edit);
-        m_popup.add(manage);
+        m_popup.add(openManageTags);
 
         if(BooksTable.getRowCount() != 0) {//Vérif if the table is not empty; when starting the app, load and focus on the first book of the table
             setMTitle(BooksTable.getValueAt(0, 0).toString());
@@ -93,12 +91,10 @@ public class MainWindow extends JDialog {
             setJMenuBar(createMenuBar(this,getMTitle(),getAuthor()));
 
             BooksTable.setRowSelectionInterval(getRowSelected(getMTitle(), getAuthor()), getRowSelected(getMTitle(), getAuthor()));
-            ManageReadingsBtn.setEnabled(true);
             FiltersBookBtn.setEnabled(true);
             BookManageTagsBtn.setEnabled(true);
         }else{
             BookManageTagsBtn.setEnabled(false);
-            ManageReadingsBtn.setEnabled(false);
             FiltersBookBtn.setEnabled(false);
         }
 
@@ -106,24 +102,14 @@ public class MainWindow extends JDialog {
             @Override
             public void mouseReleased(MouseEvent evt) {//set main UI when we clicked on an element of the array, retrieved from the db
                 super.mouseReleased(evt);
-                ManageReadingsBtn.setEnabled(true);
                 FiltersBookBtn.setEnabled(true);
                 setRowSelected(BooksTable.rowAtPoint(evt.getPoint()));
                 setMTitle(BooksTable.getValueAt(getRowSelected(), 0).toString()); //get the value of the column of the table
                 setAuthor(BooksTable.getValueAt(getRowSelected(), 1).toString());
-                if(m_ManageReadingDiag!=null){
-                    m_ManageReadingDiag.fillBookList(getMTitle(),getAuthor());
-                }
                 loadComponents(getMTitle(), getAuthor());
                 if(evt.getButton() == MouseEvent.BUTTON3) {//if we right click show a popup to edit the book
                     BooksTable.setRowSelectionInterval(getRowSelected(), getRowSelected());//we focus the row when we right on the item
                     m_popup.show(BooksTable, evt.getX(), evt.getY());
-                }
-                if(evt.getClickCount() == 2 && evt.getButton() == MouseEvent.BUTTON1){
-                    if(getCounterManageReading()<1){
-                        m_ManageReadingDiag=openManageReadingDlg(MainWindow.this,  getMTitle(), getAuthor());
-                        setCounterManageReading(1);
-                    }
                 }
             }
         });
@@ -131,12 +117,6 @@ public class MainWindow extends JDialog {
             setNameOfImage("");
             AddBookDlg diag = openAddBookDlg();
             addBook(diag,this);
-        });
-        ManageReadingsBtn.addActionListener((ActionEvent e) ->{
-            if(getCounterManageReading()<1){
-                setCounterManageReading(1);
-                m_ManageReadingDiag= openManageReadingDlg(this, getMTitle(),getAuthor());
-            }
         });
         cut.addActionListener((ActionEvent evt) -> deleteBook(getMTitle(), getAuthor(), this));
         edit.addActionListener((ActionEvent evt) -> {
@@ -146,12 +126,6 @@ public class MainWindow extends JDialog {
         add.addActionListener((ActionEvent evt) -> {
             AddReading diag = openAddReadingDlg(getMTitle(),getAuthor());
             addReading(diag, this);
-        });
-        openManageReadings.addActionListener((ActionEvent evt)->{
-            if(getCounterManageReading()<1){
-                setCounterManageReading(1);
-                m_ManageReadingDiag= openManageReadingDlg(this, getMTitle(),getAuthor());
-            }
         });
         openManageTags.addActionListener((ActionEvent evt)->{
             openManageTagsDlg(getMTitle(), getAuthor());
@@ -194,9 +168,6 @@ public class MainWindow extends JDialog {
     public Tags getTags(){
         return this.m_tags;
     }
-    public ManageReadingDlg getManageReadingDiag(){
-        return this.m_ManageReadingDiag;
-    }
     public static String getMTitle(){
         return m_title;
     }
@@ -208,7 +179,6 @@ public class MainWindow extends JDialog {
     }
     public int getRowSelected(String title, String author){//return the row find by a title and an author
         FiltersBookBtn.setEnabled(true);
-        ManageReadingsBtn.setEnabled(true);
         BookManageTagsBtn.setEnabled(true);
         int row = 0;
         int i= 0;
@@ -221,9 +191,6 @@ public class MainWindow extends JDialog {
         }
 
         return row;
-    }
-    public int getCounterManageReading() {
-        return counterManageReading;
     }
     public JTable getBooksTable(){
         return this.BooksTable;
@@ -307,7 +274,7 @@ public class MainWindow extends JDialog {
         }
     }
     public void loadDB(boolean isFiltered){
-        m_tableModel.setRowCount(0);
+        m_tableBookModel.setRowCount(0);
         CancelFiltersBtn.setEnabled(isFiltered);
         try(Connection conn = connect()){
             m_statement = conn.createStatement();
@@ -361,14 +328,13 @@ public class MainWindow extends JDialog {
                 String[] header = {"Titre","Auteur"};
                 Object[] data = {title, author};
 
-                m_tableModel.setColumnIdentifiers(header);//Create the header
-                m_tableModel.addRow(data);//add to tablemodel the data
+                m_tableBookModel.setColumnIdentifiers(header);//Create the header
+                m_tableBookModel.addRow(data);//add to tablemodel the data
             }
-            BooksTable.setModel(m_tableModel);
-            jsPane.setPreferredSize(new Dimension(470,635));
+            BooksTable.setModel(m_tableBookModel);
 
             AbstractBorder roundBrdMax = new RoundBorderCp(contentPane.getBackground(),1,30, 0,0,0);
-            AbstractBorder roundBrdMin = new RoundBorderCp(contentPane.getBackground(),1,30, 592-(BooksTable.getRowCount()*BooksTable.getRowHeight()),11,0);
+            AbstractBorder roundBrdMin = new RoundBorderCp(contentPane.getBackground(),1,30, BooksTable.getPreferredScrollableViewportSize().height-(BooksTable.getRowCount()*BooksTable.getRowHeight()),0,0);
             if(BooksTable.getRowCount()>20)
                 BooksTable.setBorder(roundBrdMax);
             else
@@ -382,10 +348,62 @@ public class MainWindow extends JDialog {
             System.exit(0);
         }
     }
+    public void fillReadingsList(String title, String author) {
+        setMTitle(title);
+        setAuthor(author);
+        m_tableReadingModel.setRowCount(0);
+        try (Connection conn = connect()) {
+            Statement m_statement = conn.createStatement();
+            ResultSet qry = m_statement.executeQuery("SELECT StartReading, EndReading FROM Reading WHERE Title='" + title + "' AND Author='" + author + "'");
+
+            while (qry.next()) {
+                String startReading = qry.getString("StartReading");
+                String endReading = qry.getString("EndReading");
+
+                long days;
+                String StdDays = "";
+                boolean isOk = ((qry.getString("StartReading").equals("Inconnu") && qry.getString("EndReading").equals("Inconnu")) ||
+                        (qry.getString("StartReading").equals("Inconnu") && qry.getString("EndReading").equals("Pas fini")))
+                        || ((!qry.getString("StartReading").equals("Inconnu") && qry.getString("EndReading").equals("Inconnu")) ||
+                        (!qry.getString("StartReading").equals("Inconnu") && qry.getString("EndReading").equals("Pas fini")))
+                        || ((qry.getString("StartReading").equals("Inconnu") && !qry.getString("EndReading").equals("Inconnu")) ||
+                        (qry.getString("StartReading").equals("Inconnu") && !qry.getString("EndReading").equals("Pas fini")));
+                if (!isOk) {
+                    LocalDate start = LocalDate.parse(qry.getString("StartReading"));
+                    LocalDate stop = LocalDate.parse(qry.getString("EndReading"));
+                    days = ChronoUnit.DAYS.between(start, stop);
+                    StdDays = days + " jours";
+                }
+
+                String[] header = {"Début de lecture", "Fin de lecture", "Temps de lecture"};
+                Object[] data = {startReading, endReading, StdDays};
+
+                m_tableReadingModel.setColumnIdentifiers(header);//Create the header
+                m_tableReadingModel.addRow(data);//add to tablemodel the data
+            }
+            ReadingsTable.setModel(m_tableReadingModel);
+            AbstractBorder roundBrdMax = new RoundBorderCp(contentPane.getBackground(), 1, 30, 0, 0, 0);
+            AbstractBorder roundBrdMin = new RoundBorderCp(contentPane.getBackground(), 1, 30, ReadingsTable.getPreferredScrollableViewportSize().height - (ReadingsTable.getRowCount() * ReadingsTable.getRowHeight()), 0, 0);
+            if (ReadingsTable.getRowCount() > 3)
+                ReadingsTable.setBorder(roundBrdMax);
+            else
+                ReadingsTable.setBorder(roundBrdMin);
+            if(ReadingsTable.getRowCount()>0)
+                ReadingsTable.setRowSelectionInterval(0, 0);
+            contentPane.updateUI();
+            qry.close();
+            conn.close();
+            m_statement.close();
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        }
+    }
     public void loadComponents(String title, String author){
-        ManageReadingsBtn.setEnabled(true);
         BookManageTagsBtn.setEnabled(true);
         Tags tags = new Tags();
+        fillReadingsList(title,author);
+        new ManageReading(this, title,author, ReadingsTable);
         try(Connection conn = connect()) {
             Class.forName("org.sqlite.JDBC");
             m_statement = conn.createStatement();
@@ -493,20 +511,10 @@ public class MainWindow extends JDialog {
         LastReadingLabel.setText("Dernière lecture :");
         BookSummary.setText("");
         BookTagsPanel.removeAll();
-        ManageReadingsBtn.setEnabled(false);
         BookManageTagsBtn.setEnabled(false);
         BookPhotoPanel.removeAll();
         contentPane.updateUI();
         contentPane.setBorder(null);
-    }
-    public void setManageReading(ManageReadingDlg manageReadingDiag) {
-        this.m_ManageReadingDiag = manageReadingDiag;
-    }
-    public void setCounterManageReading(int counterManageReading) {
-        this.counterManageReading = this.counterManageReading+counterManageReading;
-    }
-    public void resetCounterManageReading(int counterManageReading) {
-        this.counterManageReading = counterManageReading;
     }
     public void setIsFiltered(Boolean filtered) {
         isFiltered = filtered;
@@ -532,7 +540,7 @@ public class MainWindow extends JDialog {
             }
             //If no cell in the line corresponds to the search
             if(cellsNotCorrespondingToFilter == getBooksTable().getColumnCount()) {
-                m_tableModel.removeRow(row);
+                m_tableBookModel.removeRow(row);
                 BooksTable.updateUI();
                 row--;
             }
@@ -556,7 +564,7 @@ public class MainWindow extends JDialog {
 
         MainWindow parent = new MainWindow();
         parent.setTitle("Book manager");
-        parent.setSize(1350,760);
+        parent.setSize(1500,844);
         parent.setJMenuBar(createMenuBar(parent, getMTitle(), getAuthor()));
         parent.setLocationRelativeTo(null);
         parent.setVisible(true);

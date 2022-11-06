@@ -122,8 +122,7 @@ public class CommonSQL {
                     if(isInFilteredList(getMTitle(),getAuthor(), parent.getBooksTable())){
                         parent.loadComponents(getMTitle(), getAuthor());//reload changes made to the book
                         parent.getBooksTable().setRowSelectionInterval(parent.getRowSelected(getMTitle(), getAuthor()), parent.getRowSelected(getMTitle(), getAuthor()));//focus on the edited book
-                        if(parent.getCounterManageReading()>0)
-                            parent.getManageReadingDiag().fillBookList(getMTitle(), getAuthor());
+                        parent.fillReadingsList(getMTitle(), getAuthor());
                     }else{
                         JFrame jFrame = new JFrame();
                         JOptionPane.showMessageDialog(jFrame, "Le livre créé ne correspond pas aux filtres appliqué", "WARNING", JOptionPane.WARNING_MESSAGE);
@@ -239,8 +238,7 @@ public class CommonSQL {
                 parent.loadDB(parent.isFiltered());
                 //Focus in the jtable on a reading created from an existing book
                 parent.getBooksTable().setRowSelectionInterval(parent.getRowSelected(diag.getMtitle(), diag.getAuthor()), parent.getRowSelected(diag.getMtitle(), diag.getAuthor()));
-                if (parent.getCounterManageReading() > 0)
-                    parent.getManageReadingDiag().fillBookList(getMTitle(), getAuthor());
+                parent.fillReadingsList(getMTitle(), getAuthor());
                 if(parent.isFastSearch()){
                     parent.fastSearchBook(parent.getBookFastSearch().getText());
                 }
@@ -265,9 +263,7 @@ public class CommonSQL {
             if (parent.getBooksTable().getRowCount() > 0) {
                 parent.loadComponents(title, author);
                 parent.getBooksTable().setRowSelectionInterval(parent.getRowSelected(title, author), parent.getRowSelected(title, author));
-                if (parent.getManageReadingDiag() != null) {
-                    parent.getManageReadingDiag().fillBookList(title, author);
-                }
+                parent.fillReadingsList(title, author);
             } else
                 parent.initComponents();
         }

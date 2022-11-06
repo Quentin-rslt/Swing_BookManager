@@ -171,14 +171,8 @@ public class Common {
             parent.setAuthor(parent.getBooksTable().getValueAt(0, 1).toString());
             parent.loadComponents(getMTitle(), getAuthor());//reload changes made to the book
             parent.getBooksTable().setRowSelectionInterval(0, 0);
-            if (parent.getCounterManageReading() > 0)
-                parent.getManageReadingDiag().fillBookList(getMTitle(), getAuthor());
+            parent.fillReadingsList(getMTitle(), getAuthor());
         } else {
-            if (parent.getManageReadingDiag() != null) {
-                parent.getManageReadingDiag().setVisible(false);
-                parent.getManageReadingDiag().dispose();
-                parent.resetCounterManageReading(0);
-            }
             parent.initComponents();
         }
     }
@@ -186,8 +180,7 @@ public class Common {
         if(isInFilteredList(title,author, parent.getBooksTable())){
             parent.loadComponents(title, author);//reload changes made to the book
             parent.getBooksTable().setRowSelectionInterval(parent.getRowSelected(title, author), parent.getRowSelected(title, author));//focus on the edited book
-            if(parent.getCounterManageReading()>0)
-                parent.getManageReadingDiag().fillBookList(title, author);
+            parent.fillReadingsList(title, author);
         }
         else{
             isNotInFilteredBookList(parent);
@@ -335,7 +328,7 @@ public class Common {
             if(ratio<0.6){
                 size = new Dimension((int) (500*ratio),  500);
             }else{
-                size = new Dimension(305, (int) (305/ratio));
+                size = new Dimension(350, (int) (350/ratio));
             }
 
         } catch (IOException e) {

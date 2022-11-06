@@ -129,8 +129,7 @@ public class MenuBar {
         addMenu.add(addReadingMenuItem);
 
         //Manage menu
-        JMenu manageMenu = new JMenu("Gérer ");
-        JMenuItem manageTagMenuItem = new JMenuItem("Les tags");
+        JMenuItem manageTagMenuItem = new JMenuItem("Gérer les tags");
         manageTagMenuItem.addActionListener((e->{
             openManageTagsDlg();
             parent.getContentPanel().updateUI();
@@ -140,15 +139,6 @@ public class MenuBar {
                 parent.fastSearchBook(parent.getBookFastSearch().getText());
             }
         }));
-        JMenuItem manageReadingMenuItem = new JMenuItem("Les lectures");
-        manageReadingMenuItem.addActionListener((e->{
-            if(parent.getCounterManageReading()<1){
-                parent.setCounterManageReading(1);
-                parent.setManageReading(openManageReadingDlg(parent, title, author));
-            }
-        }));
-        manageMenu.add(manageTagMenuItem);
-        manageMenu.add(manageReadingMenuItem);
 
         //Edit book
         JMenuItem editBookMenuItem = new JMenuItem("Modifier le livre");
@@ -172,7 +162,7 @@ public class MenuBar {
         //Edit Menu
         JMenu editMenu = new JMenu("Editer");
         editMenu.add(addMenu);
-        editMenu.add(manageMenu);
+        editMenu.add(manageTagMenuItem);
         editMenu.addSeparator();
         editMenu.add(editBookMenuItem);
         editMenu.add(supprBookMenuItem);

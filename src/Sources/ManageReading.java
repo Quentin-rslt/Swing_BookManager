@@ -1,34 +1,14 @@
-package Sources.Dialogs;
+package Sources;
 
-import Sources.MainWindow;
-import Sources.RoundBorderCp;
-
+import Sources.Dialogs.EditReadingDlg;
 import javax.swing.*;
-import javax.swing.border.AbstractBorder;
-import javax.swing.table.DefaultTableModel;
 import java.awt.event.*;
 import java.sql.*;
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-
 import static Sources.Common.*;
 import static Sources.CommonSQL.*;
 
-public class ManageReadingDlg extends JDialog {
-    private JPanel contentPane;
-    private JButton CancelBtn;
-    private JLabel ManageTitleLabel;
-    private JLabel ManageAuthorLabel;
-    private JTable ReadingsTable;
-
-
-    final DefaultTableModel m_tableModel = new DefaultTableModel(){
-        @Override
-        public boolean isCellEditable(int row, int column) {
-            //all cells false
-            return false;
-        }
-    };
+public class ManageReading {
+    JTable m_readingsTable;
     private String m_title = "";
     private String m_author = "";
     private String m_startReading = "";
@@ -36,13 +16,12 @@ public class ManageReadingDlg extends JDialog {
     final JPopupMenu m_popup;
     private int m_row;
 
-    public ManageReadingDlg(MainWindow parent, String title, String author) {
-        super(parent, "ManageReadingDlg", false);
-        setContentPane(contentPane);
+    public ManageReading(MainWindow parent, String title, String author, JTable ReadingsTable) {
+        this.m_readingsTable = ReadingsTable;
         setMTitle(title);
         setAuthor(author);
-        fillBookList(getMTitle(),getAuthor());
-        if(this.ReadingsTable.getRowCount()>0)
+        parent.fillReadingsList(getMTitle(),getAuthor());
+        if(ReadingsTable.getRowCount()>0)
             ReadingsTable.setRowSelectionInterval(0, 0);
 
         m_popup = new JPopupMenu();//Create a popup menu to delete a reading an edit this reading
@@ -51,27 +30,17 @@ public class ManageReadingDlg extends JDialog {
         m_popup.add(cut);
         m_popup.add(edit);
 
-        this.addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent windowEvent){
-                parent.resetCounterManageReading(0);
-            }
-        });
 
-        CancelBtn.addActionListener((ActionEvent e)-> {
-            parent.resetCounterManageReading(0);
-            setVisible(false);
-            dispose();
-        });
         ReadingsTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent evt) {
-                setRow(ReadingsTable.rowAtPoint(evt.getPoint()));
-                setStartReading(m_startReading = ReadingsTable.getValueAt(getRow(), 0).toString());
-                setEndReading(m_endReading = ReadingsTable.getValueAt(getRow(), 1).toString());
-                if(evt.getButton() == MouseEvent.BUTTON3) {
-                    ReadingsTable.setRowSelectionInterval(getRow(), getRow());//we focus the row when we right on the item
-                    m_popup.show(ReadingsTable, evt.getX(), evt.getY());//show a popup to edit the reading
-                }
+            setRow(ReadingsTable.rowAtPoint(evt.getPoint()));
+            setStartReading(m_startReading = ReadingsTable.getValueAt(getRow(), 0).toString());
+            setEndReading(m_endReading = ReadingsTable.getValueAt(getRow(), 1).toString());
+            if(evt.getButton() == MouseEvent.BUTTON3) {
+                ReadingsTable.setRowSelectionInterval(getRow(), getRow());//we focus the row when we right on the item
+                m_popup.show(ReadingsTable, evt.getX(), evt.getY());//show a popup to edit the reading
+            }
             }
         });
         cut.addActionListener((ActionEvent evt) ->{
@@ -84,8 +53,8 @@ public class ManageReadingDlg extends JDialog {
                     AvNumPstmt.setInt(2, getNumberOfReading(getMTitle(), getAuthor()));
                     AvNumPstmt.executeUpdate();
 
-                    contentPane.updateUI();
-                    fillBookList(getMTitle(),getAuthor());
+                    parent.getContentPanel().updateUI();
+                    parent.fillReadingsList(getMTitle(),getAuthor());
                     resetIdReading(getMTitle(), getAuthor(), getRowCount());//refresh all ID in the table ReadingDate
                     ReadingsTable.setRowSelectionInterval(0, 0);
 
@@ -122,8 +91,8 @@ public class ManageReadingDlg extends JDialog {
                     AvNumPstmt.setInt(2, getNumberOfReading(getMTitle(), getAuthor()));
                     AvNumPstmt.executeUpdate();
 
-                    contentPane.updateUI();
-                    fillBookList(getMTitle(),getAuthor());
+                    parent.getContentPanel().updateUI();
+                    parent.fillReadingsList(getMTitle(),getAuthor());
                     ReadingsTable.setRowSelectionInterval(getRow(), getRow());//Focus on the reading that we edit
                 } catch (SQLException e) {
                     System.out.println(e.getMessage());
@@ -154,7 +123,7 @@ public class ManageReadingDlg extends JDialog {
         return m_row;
     }
     public int getRowCount(){
-        return ReadingsTable.getRowCount();
+        return m_readingsTable.getRowCount();
     }
 
     public void setAuthor(String m_author) {
@@ -182,67 +151,13 @@ public class ManageReadingDlg extends JDialog {
                 InsetrPstmt.setInt(1, i);
                 InsetrPstmt.setString(2, title);
                 InsetrPstmt.setString(3, author);
-                InsetrPstmt.setString(4, ReadingsTable.getValueAt(i, 0).toString());
-                InsetrPstmt.setString(5, ReadingsTable.getValueAt(i, 1).toString());
+                InsetrPstmt.setString(4, m_readingsTable.getValueAt(i, 0).toString());
+                InsetrPstmt.setString(5, m_readingsTable.getValueAt(i, 1).toString());
                 InsetrPstmt.executeUpdate();
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
 
-    }
-
-    public void fillBookList(String title, String author) {
-        ManageTitleLabel.setText("Lectures du livre : " + title);
-        ManageAuthorLabel.setText("Ecrit par : " + author);
-        setMTitle(title);
-        setAuthor(author);
-        m_tableModel.setRowCount(0);
-        try (Connection conn = connect()) {
-            Statement m_statement = conn.createStatement();
-            ResultSet qry = m_statement.executeQuery("SELECT StartReading, EndReading FROM Reading WHERE Title='" + title + "' AND Author='" + author + "'");
-
-            while (qry.next()) {
-                String startReading = qry.getString("StartReading");
-                String endReading = qry.getString("EndReading");
-
-                long days;
-                String StdDays = "";
-                boolean isOk = ((qry.getString("StartReading").equals("Inconnu") && qry.getString("EndReading").equals("Inconnu")) ||
-                        (qry.getString("StartReading").equals("Inconnu") && qry.getString("EndReading").equals("Pas fini")))
-                        || ((!qry.getString("StartReading").equals("Inconnu") && qry.getString("EndReading").equals("Inconnu")) ||
-                        (!qry.getString("StartReading").equals("Inconnu") && qry.getString("EndReading").equals("Pas fini")))
-                        || ((qry.getString("StartReading").equals("Inconnu") && !qry.getString("EndReading").equals("Inconnu")) ||
-                        (qry.getString("StartReading").equals("Inconnu") && !qry.getString("EndReading").equals("Pas fini")));
-                if (!isOk) {
-                    LocalDate start = LocalDate.parse(qry.getString("StartReading"));
-                    LocalDate stop = LocalDate.parse(qry.getString("EndReading"));
-                    days = ChronoUnit.DAYS.between(start, stop);
-                    StdDays = days + " jours";
-                }
-
-                String[] header = {"Début de lecture", "Fin de lecture", "Temps de lecture"};
-                Object[] data = {startReading, endReading, StdDays};
-
-                m_tableModel.setColumnIdentifiers(header);//Create the header
-                m_tableModel.addRow(data);//add to tablemodel the data
-            }
-            ReadingsTable.setModel(m_tableModel);
-            AbstractBorder roundBrdMax = new RoundBorderCp(contentPane.getBackground(), 1, 30, 0, 0, 0);
-            AbstractBorder roundBrdMin = new RoundBorderCp(contentPane.getBackground(), 1, 30, 400 - (ReadingsTable.getRowCount() * ReadingsTable.getRowHeight()), 0, 0);
-            if (ReadingsTable.getRowCount() > 11)
-                ReadingsTable.setBorder(roundBrdMax);
-            else
-                ReadingsTable.setBorder(roundBrdMin);
-            if(ReadingsTable.getRowCount()>0)
-                ReadingsTable.setRowSelectionInterval(0, 0);
-            contentPane.updateUI();
-            qry.close();
-            conn.close();
-            m_statement.close();
-        } catch (Exception e) {
-            System.err.println(e.getClass().getName() + ": " + e.getMessage());
-            System.exit(0);
-        }
     }
 }
