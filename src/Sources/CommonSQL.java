@@ -260,16 +260,7 @@ public class CommonSQL {
                 parent.loadDB(diag.getIsValid());
                 parent.setIsFiltered(diag.getIsValid());
             }
-            if (parent.getBooksTable().getRowCount() > 0) {
-                parent.setMTitle(parent.getBooksTable().getValueAt(0, 0).toString());
-                parent.setAuthor(parent.getBooksTable().getValueAt(0, 1).toString());
-                parent.loadComponents(getMTitle(), getAuthor());
-                parent.getBooksTable().setRowSelectionInterval(parent.getRowSelected(getMTitle(), getAuthor()), parent.getRowSelected(getMTitle(), getAuthor()));
-                if (parent.getManageReadingDiag() != null) {
-                    parent.getManageReadingDiag().fillBookList(getMTitle(), getAuthor());
-                }
-            } else
-                parent.initComponents();
+            isItInFilteredBookList(getMTitle(),getAuthor(),parent);
         }else{
             if (parent.getBooksTable().getRowCount() > 0) {
                 parent.loadComponents(title, author);

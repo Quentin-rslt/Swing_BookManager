@@ -251,7 +251,7 @@ public class EditBookDlg extends JDialog {
             //Image
             ResultSet ImageQry = statement.executeQuery("SELECT Image FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
             addImageToPanel(ImageQry.getString(1),BookPhotoPanel);
-            setNameOfBook(ImageQry.getString(1));
+            setNameOfImage(ImageQry.getString(1));
             fillThemeCB();
             conn.close();
             statement.close();

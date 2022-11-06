@@ -104,7 +104,7 @@ public class AddBookDlg extends JDialog {
                         }
                     }
                     if(getNameOfBook().equals("")){
-                        setNameOfBook("Default.jpg");
+                        setNameOfImage("Default.jpg");
                     }
                     if (!bookFind && isDateUnknown()&& !isNotDOne() && !Objects.equals(getNewBookAuthor(), getNewBookTitle())){
                         addImageToResource();

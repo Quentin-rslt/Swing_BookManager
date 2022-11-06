@@ -28,7 +28,7 @@ import static Sources.MainWindow.getMTitle;
 
 public class Common {
     private static final JFileChooser jf= new JFileChooser();
-    private static String m_name="";
+    private static String m_nameImage ="";
     public static void addImageToPanel(String nom,JPanel panel){//Apply to our panel an image with path
         Path folder = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(),"BookManager/Image");
         File file = new File(folder+"/"+nom);
@@ -117,7 +117,7 @@ public class Common {
         do{
             rVal = jf.showOpenDialog(panel);
             if (JFileChooser.APPROVE_OPTION == rVal){ //Opens the file panel to select an image
-                setNameOfBook(randomNameOfBook(jf.getSelectedFile().getName()));
+                setNameOfImage(randomNameOfBook(jf.getSelectedFile().getName()));
                 String path = jf.getSelectedFile().getPath();
                 if (accept(jf.getSelectedFile())){
                     Image img = Toolkit.getDefaultToolkit().getImage(path);
@@ -137,8 +137,8 @@ public class Common {
             }
         } while (!accept(jf.getSelectedFile()) && rVal==0);
     }
-    public static void setNameOfBook(String name){
-        m_name = name;
+    public static void setNameOfImage(String name){
+        m_nameImage = name;
     }
     public static void rescaleResolutionImage(File file){
         BufferedImage image;
@@ -188,7 +188,8 @@ public class Common {
             parent.getBooksTable().setRowSelectionInterval(parent.getRowSelected(title, author), parent.getRowSelected(title, author));//focus on the edited book
             if(parent.getCounterManageReading()>0)
                 parent.getManageReadingDiag().fillBookList(title, author);
-        }else{
+        }
+        else{
             isNotInFilteredBookList(parent);
         }
     }
@@ -417,6 +418,6 @@ public class Common {
         return imgEdit;
     }
     public static String getNameOfBook(){
-        return m_name;
+        return m_nameImage;
     }
 }

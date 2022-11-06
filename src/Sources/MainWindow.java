@@ -128,7 +128,7 @@ public class MainWindow extends JDialog {
             }
         });
         AddBookBtn.addActionListener((ActionEvent evt) -> {
-            setNameOfBook("");
+            setNameOfImage("");
             AddBookDlg diag = openAddBookDlg();
             addBook(diag,this);
         });
@@ -170,16 +170,7 @@ public class MainWindow extends JDialog {
             contentPane.updateUI();
             setIsFiltered(false);
             loadDB(isFiltered());
-            setMTitle(BooksTable.getValueAt(0, 0).toString());
-            setAuthor(BooksTable.getValueAt(0, 1).toString());
-            loadComponents(getMTitle(), getAuthor());
-            BooksTable.setRowSelectionInterval(getRowSelected(getMTitle(),getAuthor()), getRowSelected(getMTitle(),getAuthor()));
-            if(m_ManageReadingDiag!=null){
-                m_ManageReadingDiag.fillBookList(getMTitle(),getAuthor());
-            }
-            if(isFastSearch()){
-                fastSearchBook(BookFastSearch.getText());
-            }
+            isItInFilteredBookList(getMTitle(),getAuthor(),this);
         });
         BookManageTagsBtn.addActionListener((ActionEvent e) -> {
             openManageTagsDlg();
