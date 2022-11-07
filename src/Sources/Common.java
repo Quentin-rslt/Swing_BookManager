@@ -147,7 +147,7 @@ public class Common {
             image = ImageIO.read(file);
             float width = image.getWidth();
             float height = image.getHeight();
-            int maxWidht = 1200;
+            int maxWidht = 1000;
             if(width>maxWidht){
                 float ratio = (width/height);
                 int maxHeight = (int) (maxWidht/ratio); //rescale the height of the image with a maximum width of 611px

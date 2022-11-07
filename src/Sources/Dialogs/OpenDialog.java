@@ -10,7 +10,7 @@ public class OpenDialog {
         AddBookDlg diag = new AddBookDlg();
         diag.setTitle("Ajouter un livre");
         diag.setIconImage(getImageAdd());
-        diag.setSize(950,650);
+        diag.setSize(1000,730);
         diag.setLocationRelativeTo(null);
         diag.setVisible(true);
 
@@ -20,7 +20,7 @@ public class OpenDialog {
         EditBookDlg diag = new EditBookDlg(title, author);
         diag.setTitle("Modifier un livre");
         diag.setIconImage(getImageEdit());
-        diag.setSize(950,650);
+        diag.setSize(1000,730);
         diag.setLocationRelativeTo(null);
         diag.setVisible(true);
 

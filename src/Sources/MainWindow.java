@@ -89,11 +89,11 @@ public class MainWindow extends JDialog {
         if(BooksTable.getRowCount() != 0) {//Vérif if the table is not empty; when starting the app, load and focus on the first book of the table
             setMTitle(BooksTable.getValueAt(0, 0).toString());
             setAuthor(BooksTable.getValueAt(0, 1).toString());
+            setRowReading(0);
+            setRowSelected(0);
             loadComponents(getMTitle(), getAuthor());
             setJMenuBar(createMenuBar(this,getMTitle(),getAuthor()));
 
-            setRowReading(0);
-            setRowSelected(0);
             ReadingsTable.setRowSelectionInterval(getRowReading(),getRowReading());
             BooksTable.setRowSelectionInterval(getRowSelectedByBook(getMTitle(), getAuthor()), getRowSelectedByBook(getMTitle(), getAuthor()));
             FiltersBookBtn.setEnabled(true);
@@ -107,15 +107,15 @@ public class MainWindow extends JDialog {
             @Override
             public void mouseReleased(MouseEvent evt) {//set main UI when we clicked on an element of the array, retrieved from the db
                 super.mouseReleased(evt);
-                setRowSelected(BooksTable.rowAtPoint(evt.getPoint()));
-                String newTitle= BooksTable.getValueAt(getRowSelected(), 0).toString();
-                String newAuthor= BooksTable.getValueAt(getRowSelected(), 1).toString();
 
-                if(!newTitle.equals(getMTitle())&& !newAuthor.equals(getAuthor())) {
+                int newLine= BooksTable.rowAtPoint(evt.getPoint());
+
+                if(newLine != getRowSelected()) {
+                    setRowSelected(BooksTable.rowAtPoint(evt.getPoint()));
+                    setRowReading(0);
                     setMTitle(BooksTable.getValueAt(getRowSelected(), 0).toString()); //get the value of the column of the table
                     setAuthor(BooksTable.getValueAt(getRowSelected(), 1).toString());
                     loadComponents(getMTitle(), getAuthor());
-                    setRowReading(0);
                     ReadingsTable.setRowSelectionInterval(getRowReading(),getRowReading());
                 }
                 if(evt.getButton() == MouseEvent.BUTTON3) {//if we right click show a popup to edit the book
@@ -336,7 +336,7 @@ public class MainWindow extends JDialog {
 
                 rs = m_statement.executeQuery(qry.toString());
             } else{
-                rs = m_statement.executeQuery("SELECT * FROM Book ORDER BY Title ASC;");//Execute a Query to retrieve all the values from the database by grouping the duplicates
+                rs = m_statement.executeQuery("SELECT * FROM Book;");//Execute a Query to retrieve all the values from the database by grouping the duplicates
             }
             // (with their name and author)
             while (rs.next()) {//Fill in the table of the list of Book
@@ -353,7 +353,7 @@ public class MainWindow extends JDialog {
 
             AbstractBorder roundBrdMax = new RoundBorderCp(contentPane.getBackground(),1,30, 0,0,0);
             AbstractBorder roundBrdMin = new RoundBorderCp(contentPane.getBackground(),1,30, BooksTable.getPreferredScrollableViewportSize().height-(BooksTable.getRowCount()*BooksTable.getRowHeight()),0,0);
-            if(BooksTable.getRowCount()>20)
+            if(BooksTable.getRowCount()>13)
                 BooksTable.setBorder(roundBrdMax);
             else
                 BooksTable.setBorder(roundBrdMin);
@@ -470,7 +470,7 @@ public class MainWindow extends JDialog {
 
             //Note on babelio
             ResultSet NoteBBQry = m_statement.executeQuery("SELECT NoteBabelio FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
-            NoteLabel.setText("Note : "+NoteBBQry.getString(1));
+            NoteLabel.setText("Note Babelio : "+NoteBBQry.getString(1));
 
             //Summary
             ResultSet SummaryQry = m_statement.executeQuery("SELECT Summary FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
@@ -568,7 +568,7 @@ public class MainWindow extends JDialog {
 
         AbstractBorder roundBrdMax = new RoundBorderCp(contentPane.getBackground(),1,30, 0,0,0);
         AbstractBorder roundBrdMin = new RoundBorderCp(contentPane.getBackground(),1,30, BooksTable.getPreferredScrollableViewportSize().height-(BooksTable.getRowCount()*BooksTable.getRowHeight()),0,0);
-        if(BooksTable.getRowCount()>20)
+        if(BooksTable.getRowCount()>13)
             BooksTable.setBorder(roundBrdMax);
         else
             BooksTable.setBorder(roundBrdMin);

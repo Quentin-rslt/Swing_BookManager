@@ -117,10 +117,10 @@ public class CommonSQL {
                         parent.loadDB(parent.isFiltered());
                         parent.setMTitle(diag.getNewBookTitle());
                         parent.setAuthor(diag.getNewBookAuthor());
+                        parent.setRowReading(0);
                         parent.loadComponents(getMTitle(), getAuthor());//reload changes made to the book
                         parent.getBooksTable().setRowSelectionInterval(parent.getRowSelectedByBook(getMTitle(), getAuthor()), parent.getRowSelectedByBook(getMTitle(), getAuthor()));//focus on the edited book
                         parent.fillReadingsList(getMTitle(), getAuthor());
-                        parent.setRowReading(0);
                         parent.getReadingsTable().setRowSelectionInterval(0, 0);
                     } else {
                         JFrame jFrame = new JFrame();
@@ -130,10 +130,10 @@ public class CommonSQL {
                     parent.loadDB(parent.isFiltered());
                     parent.setMTitle(diag.getNewBookTitle());
                     parent.setAuthor(diag.getNewBookAuthor());
+                    parent.setRowReading(0);
                     parent.loadComponents(getMTitle(), getAuthor());//reload changes made to the book
                     parent.getBooksTable().setRowSelectionInterval(parent.getRowSelectedByBook(getMTitle(), getAuthor()), parent.getRowSelectedByBook(getMTitle(), getAuthor()));//focus on the edited book
                     parent.fillReadingsList(getMTitle(), getAuthor());
-                    parent.setRowReading(0);
                     parent.getReadingsTable().setRowSelectionInterval(0, 0);
                 }
 
