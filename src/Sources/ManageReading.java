@@ -37,14 +37,14 @@ public class ManageReading {
             parent.setRowReading(getRow());
             setStartReading(m_startReading = ReadingsTable.getValueAt(getRow(), 0).toString());
             setEndReading(m_endReading = ReadingsTable.getValueAt(getRow(), 1).toString());
-            if(evt.getButton() == MouseEvent.BUTTON3) {
-                ReadingsTable.setRowSelectionInterval(getRow(), getRow());//we focus the row when we right on the item
-                m_popup.show(ReadingsTable, evt.getX(), evt.getY());//show a popup to edit the reading
-            }
-            if(evt.getClickCount() == 2 && evt.getButton() == MouseEvent.BUTTON1){
-                EditReadingDlg diag = openEditReadingDlg(getMTitle(), getAuthor(),getStartReading(), getEndReading());//Open a dialog where we can edit the date reading
-                editReading(diag,getMTitle(), getAuthor(), parent, ManageReading.this);
-            }
+                if(evt.getButton() == MouseEvent.BUTTON3) {
+                    ReadingsTable.setRowSelectionInterval(getRow(), getRow());//we focus the row when we right on the item
+                    m_popup.show(ReadingsTable, evt.getX(), evt.getY());//show a popup to edit the reading
+                }
+//                if(evt.getClickCount() == 2 && evt.getButton() == MouseEvent.BUTTON1){
+//                    EditReadingDlg diag = openEditReadingDlg(getMTitle(), getAuthor(),getStartReading(), getEndReading());//Open a dialog where we can edit the date reading
+//                    editReading(diag,getMTitle(), getAuthor(), parent, ManageReading.this);
+//                }
             }
         });
         cut.addActionListener((ActionEvent evt) ->{

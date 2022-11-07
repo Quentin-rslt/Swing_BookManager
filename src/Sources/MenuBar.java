@@ -62,8 +62,9 @@ public class MenuBar {
                 parent.loadDB(parent.isFiltered());
                 parent.setMTitle(parent.getBooksTable().getValueAt(0, 0).toString());
                 parent.setAuthor(parent.getBooksTable().getValueAt(0, 1).toString());
+                parent.setRowSelected(0);
+                parent.setRowReading(0);
                 parent.loadComponents(getMTitle(), getAuthor());//reload changes made to the book
-                parent.getBooksTable().setRowSelectionInterval(0, 0);
                 JFrame jFrame = new JFrame();
                 JOptionPane.showMessageDialog(jFrame, "L'importation des données a été effectué");
             }else if(good==0){

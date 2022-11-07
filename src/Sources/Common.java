@@ -181,6 +181,7 @@ public class Common {
     public static void isItInFilteredBookList(String title, String author, MainWindow parent){
         if(isInFilteredList(title,author, parent.getBooksTable())){
             parent.loadComponents(title, author);//reload changes made to the book
+            parent.setRowSelected(parent.getRowSelected(title, author));
             parent.getBooksTable().setRowSelectionInterval(parent.getRowSelected(title, author), parent.getRowSelected(title, author));//focus on the edited book
             parent.getReadingsTable().setRowSelectionInterval(parent.getRowReading(),parent.getRowReading());
         }

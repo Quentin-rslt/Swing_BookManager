@@ -93,6 +93,7 @@ public class MainWindow extends JDialog {
             setJMenuBar(createMenuBar(this,getMTitle(),getAuthor()));
 
             setRowReading(0);
+            setRowSelected(0);
             ReadingsTable.setRowSelectionInterval(getRowReading(),getRowReading());
             BooksTable.setRowSelectionInterval(getRowSelected(getMTitle(), getAuthor()), getRowSelected(getMTitle(), getAuthor()));
             FiltersBookBtn.setEnabled(true);
@@ -106,7 +107,6 @@ public class MainWindow extends JDialog {
             @Override
             public void mouseReleased(MouseEvent evt) {//set main UI when we clicked on an element of the array, retrieved from the db
                 super.mouseReleased(evt);
-                FiltersBookBtn.setEnabled(true);
                 setRowSelected(BooksTable.rowAtPoint(evt.getPoint()));
                 String newTitle= BooksTable.getValueAt(getRowSelected(), 0).toString();
                 String newAuthor= BooksTable.getValueAt(getRowSelected(), 1).toString();
@@ -192,8 +192,6 @@ public class MainWindow extends JDialog {
         return m_rowSelected;
     }
     public int getRowSelected(String title, String author){//return the row find by a title and an author
-        FiltersBookBtn.setEnabled(true);
-        BookManageTagsBtn.setEnabled(true);
         int row = 0;
         int i= 0;
         while (i<BooksTable.getRowCount()) {
@@ -419,10 +417,13 @@ public class MainWindow extends JDialog {
         }
     }
     public void loadComponents(String title, String author){
-        BookManageTagsBtn.setEnabled(true);
         Tags tags = new Tags();
         fillReadingsList(title,author);
         m_manageReading = new ManageReading(MainWindow.this, getMTitle(), getAuthor(), ReadingsTable);
+        ReadingsTable.setRowSelectionInterval(getRowReading(),getRowReading());
+        BooksTable.setRowSelectionInterval(getRowSelected(), getRowSelected());
+        FiltersBookBtn.setEnabled(true);
+        BookManageTagsBtn.setEnabled(true);
         try(Connection conn = connect()) {
             Class.forName("org.sqlite.JDBC");
             m_statement = conn.createStatement();
@@ -531,7 +532,6 @@ public class MainWindow extends JDialog {
         LastReadingLabel.setText("Dernière lecture :");
         BookSummary.setText("");
         BookTagsPanel.removeAll();
-        BookManageTagsBtn.setEnabled(false);
         BookPhotoPanel.removeAll();
         contentPane.updateUI();
         contentPane.setBorder(null);
