@@ -22,8 +22,6 @@ public class ManageReading {
         setMTitle(title);
         setAuthor(author);
         parent.fillReadingsList(getMTitle(),getAuthor());
-        if(ReadingsTable.getRowCount()>0)
-            ReadingsTable.setRowSelectionInterval(0, 0);
 
         m_popup = new JPopupMenu();//Create a popup menu to delete a reading an edit this reading
         JMenuItem cut = new JMenuItem("Supprimer", new ImageIcon(getImageCut()));
@@ -72,7 +70,7 @@ public class ManageReading {
                 }
             }
             else{
-                deleteBook(getMTitle(),getAuthor(),parent);
+                deleteBook(parent);
             }
         });
         edit.addActionListener((ActionEvent evt) ->{

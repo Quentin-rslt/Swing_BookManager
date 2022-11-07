@@ -76,7 +76,7 @@ public class Common {
         }
     }
     public static void deleteImageMainResource(String title, String author){
-        if(!getImageBDD(title, author).equals("Default.jpg")){
+        if(getImageBDD(title,author)!=null && !getImageBDD(title, author).equals("Default.jpg")){
             Path folder = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(),"BookManager/Image");
             Path dest = Paths.get(folder+"/"+ getImageBDD(title, author));//delete the image of the deleted book
             try {

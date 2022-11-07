@@ -91,6 +91,8 @@ public class MainWindow extends JDialog {
             loadComponents(getMTitle(), getAuthor());
             setJMenuBar(createMenuBar(this,getMTitle(),getAuthor()));
 
+            getManageReading().setRow(0);
+            ReadingsTable.setRowSelectionInterval(getManageReading().getRow(),getManageReading().getRow());
             BooksTable.setRowSelectionInterval(getRowSelected(getMTitle(), getAuthor()), getRowSelected(getMTitle(), getAuthor()));
             FiltersBookBtn.setEnabled(true);
             BookManageTagsBtn.setEnabled(true);
@@ -105,10 +107,16 @@ public class MainWindow extends JDialog {
                 super.mouseReleased(evt);
                 FiltersBookBtn.setEnabled(true);
                 setRowSelected(BooksTable.rowAtPoint(evt.getPoint()));
-                setMTitle(BooksTable.getValueAt(getRowSelected(), 0).toString()); //get the value of the column of the table
-                setAuthor(BooksTable.getValueAt(getRowSelected(), 1).toString());
-                loadComponents(getMTitle(), getAuthor());
-                m_manageReading = new ManageReading(MainWindow.this, getMTitle(),getAuthor(), ReadingsTable);
+                String newTitle= BooksTable.getValueAt(getRowSelected(), 0).toString();
+                String newAuthor= BooksTable.getValueAt(getRowSelected(), 1).toString();
+
+                if(!newTitle.equals(getMTitle())&& !newAuthor.equals(getAuthor())) {
+                    setMTitle(BooksTable.getValueAt(getRowSelected(), 0).toString()); //get the value of the column of the table
+                    setAuthor(BooksTable.getValueAt(getRowSelected(), 1).toString());
+                    loadComponents(getMTitle(), getAuthor());
+                    getManageReading().setRow(0);
+                    ReadingsTable.setRowSelectionInterval(getManageReading().getRow(),getManageReading().getRow());
+                }
                 if(evt.getButton() == MouseEvent.BUTTON3) {//if we right click show a popup to edit the book
                     BooksTable.setRowSelectionInterval(getRowSelected(), getRowSelected());//we focus the row when we right on the item
                     m_popup.show(BooksTable, evt.getX(), evt.getY());
@@ -120,7 +128,7 @@ public class MainWindow extends JDialog {
             AddBookDlg diag = openAddBookDlg();
             addBook(diag,this);
         });
-        cut.addActionListener((ActionEvent evt) -> deleteBook(getMTitle(), getAuthor(), this));
+        cut.addActionListener((ActionEvent evt) -> deleteBook(this));
         edit.addActionListener((ActionEvent evt) -> {
             EditBookDlg diag = openEditBookDlg(getMTitle(),getAuthor());
             editBook(diag, getMTitle(),getAuthor(),this);
@@ -398,8 +406,6 @@ public class MainWindow extends JDialog {
             else
                 ReadingsTable.setBorder(roundBrdMin);
 
-            if(ReadingsTable.getRowCount()>0)
-                ReadingsTable.setRowSelectionInterval(0, 0);
             contentPane.updateUI();
             qry.close();
             conn.close();
@@ -413,7 +419,7 @@ public class MainWindow extends JDialog {
         BookManageTagsBtn.setEnabled(true);
         Tags tags = new Tags();
         fillReadingsList(title,author);
-
+        m_manageReading = new ManageReading(MainWindow.this, getMTitle(), getAuthor(), ReadingsTable);
         try(Connection conn = connect()) {
             Class.forName("org.sqlite.JDBC");
             m_statement = conn.createStatement();

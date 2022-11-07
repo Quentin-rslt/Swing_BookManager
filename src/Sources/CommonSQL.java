@@ -17,7 +17,7 @@ import static Sources.MainWindow.getAuthor;
 import static Sources.MainWindow.getMTitle;
 
 public class CommonSQL {
-    public static void deleteBook(String title, String  author, MainWindow parent){
+    public static void deleteBook(MainWindow parent){
         JFrame jFrame = new JFrame();
         int n = JOptionPane.showConfirmDialog(//Open a optionPane to verify if the user really want to delete the book return 0 il they want and 1 if they refuse
                 jFrame,
@@ -25,11 +25,11 @@ public class CommonSQL {
                 "An Inane Question",
                 JOptionPane.YES_NO_OPTION);
         if(n == 0){
-            String boolQry = "DELETE FROM Book WHERE Title='"+title+"' AND Author='"+author+"'";
-            String ReadingQry = "DELETE FROM Reading WHERE Title='"+title+"' AND Author='"+author+"'";
-            String TaggingQry = "DELETE FROM Tagging WHERE IdBook='"+getIdBook(title,author)+"'";
+            String boolQry = "DELETE FROM Book WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";
+            String ReadingQry = "DELETE FROM Reading WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";
+            String TaggingQry = "DELETE FROM Tagging WHERE IdBook='"+getIdBook(getMTitle(),getAuthor())+"'";
 
-            deleteImageMainResource(title, author);
+            deleteImageMainResource(getMTitle(), getAuthor());
             try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(boolQry); PreparedStatement pstmt2 = conn.prepareStatement(ReadingQry);
                  PreparedStatement taggingPstmt = conn.prepareStatement(TaggingQry)) {
                 // execute the delete statement
