@@ -37,7 +37,7 @@ public class CommonSQL {
                 pstmt2.executeUpdate();
                 taggingPstmt.executeUpdate();
                 parent.loadDB(parent.isFiltered());
-                parent.setRowReading(0);
+                //parent.setRowReading(0);
                 isNotInFilteredBookList(parent);
                 if(parent.isFastSearch()){
                     parent.fastSearchBook(parent.getBookFastSearch().getText());
@@ -112,31 +112,31 @@ public class CommonSQL {
                     TaggingPstmt.setInt(2, getIdTag(diag.getTags().getTag(i).getTextTag(), diag.getTags().getTag(i).getColor()));
                     TaggingPstmt.executeUpdate();
                 }
-
-                parent.loadDB(parent.isFiltered());
-                parent.setMTitle(diag.getNewBookTitle());
-                parent.setAuthor(diag.getNewBookAuthor());
-                if(parent.isFiltered()){
-                    if(isInFilteredList(getMTitle(),getAuthor(), parent.getBooksTable())){
+                if(parent.isFiltered() || parent.isFastSearch()) {
+                    if (isInFilteredList(diag.getNewBookTitle(), diag.getNewBookAuthor(), parent.getBooksTable())) {
+                        parent.loadDB(parent.isFiltered());
+                        parent.setMTitle(diag.getNewBookTitle());
+                        parent.setAuthor(diag.getNewBookAuthor());
                         parent.loadComponents(getMTitle(), getAuthor());//reload changes made to the book
                         parent.getBooksTable().setRowSelectionInterval(parent.getRowSelected(getMTitle(), getAuthor()), parent.getRowSelected(getMTitle(), getAuthor()));//focus on the edited book
                         parent.fillReadingsList(getMTitle(), getAuthor());
                         parent.setRowReading(0);
                         parent.getReadingsTable().setRowSelectionInterval(0, 0);
-                    }else{
+                    } else {
                         JFrame jFrame = new JFrame();
-                        JOptionPane.showMessageDialog(jFrame, "Le livre créé ne correspond pas aux filtres appliqué", "WARNING", JOptionPane.WARNING_MESSAGE);
-                        isNotInFilteredBookList(parent);
+                        JOptionPane.showMessageDialog(jFrame, "Le livre créé ne correspond pas aux critères appliqué", "WARNING", JOptionPane.WARNING_MESSAGE);
                     }
                 }else{
+                    parent.loadDB(parent.isFiltered());
+                    parent.setMTitle(diag.getNewBookTitle());
+                    parent.setAuthor(diag.getNewBookAuthor());
                     parent.loadComponents(getMTitle(), getAuthor());//reload changes made to the book
                     parent.getBooksTable().setRowSelectionInterval(parent.getRowSelected(getMTitle(), getAuthor()), parent.getRowSelected(getMTitle(), getAuthor()));//focus on the edited book
+                    parent.fillReadingsList(getMTitle(), getAuthor());
                     parent.setRowReading(0);
                     parent.getReadingsTable().setRowSelectionInterval(0, 0);
                 }
-                if(parent.isFastSearch()){
-                    parent.fastSearchBook(parent.getBookFastSearch().getText());
-                }
+
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
             }
@@ -242,6 +242,8 @@ public class CommonSQL {
                 if(parent.isFastSearch()){
                     parent.fastSearchBook(parent.getBookFastSearch().getText());
                 }
+                parent.getReadingsTable().setRowSelectionInterval(parent.getManageReading().getRowCount()-1,parent.getManageReading().getRowCount()-1);
+                parent.setRowReading(parent.getManageReading().getRowCount()-1);
             }catch (SQLException e){
                 System.out.println(e.getMessage());
                 System.exit(0);
@@ -290,7 +292,7 @@ public class CommonSQL {
             if (parent.getBooksTable().getRowCount() > 0) {
                 parent.loadComponents(title, author);
                 parent.getBooksTable().setRowSelectionInterval(parent.getRowSelected(title, author), parent.getRowSelected(title, author));
-                parent.fillReadingsList(title, author);
+                parent.getReadingsTable().setRowSelectionInterval(parent.getRowReading(),parent.getRowReading());
             } else
                 parent.initComponents();
         }

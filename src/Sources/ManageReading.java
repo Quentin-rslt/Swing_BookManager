@@ -60,9 +60,9 @@ public class ManageReading {
                     parent.getContentPanel().updateUI();
                     parent.fillReadingsList(getMTitle(),getAuthor());
                     resetIdReading(getMTitle(), getAuthor(), getRowCount());//refresh all ID in the table ReadingDate
-                    ReadingsTable.setRowSelectionInterval(0, 0);
-                    setRow(0);
+                    setRow(getRow()-1);
                     parent.setRowReading(getRow());
+                    ReadingsTable.setRowSelectionInterval(getRow(), getRow());
                     //load bdd in MainWindow
                     parent.loadDB(parent.isFiltered());
                     isItInFilteredBookList(getMTitle(), getAuthor(), parent);

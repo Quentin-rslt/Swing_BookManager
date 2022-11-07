@@ -167,11 +167,12 @@ public class Common {
     }
     public static void isNotInFilteredBookList(MainWindow parent){
         if (parent.getBooksTable().getRowCount() > 0) {
-            parent.setMTitle(parent.getBooksTable().getValueAt(0, 0).toString());
-            parent.setAuthor(parent.getBooksTable().getValueAt(0, 1).toString());
+            parent.setRowSelected(parent.getRowSelected()-1);
+            parent.setMTitle(parent.getBooksTable().getValueAt(parent.getRowSelected(), 0).toString());
+            parent.setAuthor(parent.getBooksTable().getValueAt(parent.getRowSelected(), 1).toString());
             parent.loadComponents(getMTitle(), getAuthor());//reload changes made to the book
             parent.setRowReading(0);
-            parent.getBooksTable().setRowSelectionInterval(0, 0);
+            parent.getBooksTable().setRowSelectionInterval(parent.getRowSelected(), parent.getRowSelected());
             parent.getReadingsTable().setRowSelectionInterval(0, 0);
         } else {
             parent.initComponents();
