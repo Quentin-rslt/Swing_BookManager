@@ -34,6 +34,7 @@ public class ManageReading {
             @Override
             public void mouseReleased(MouseEvent evt) {
             setRow(ReadingsTable.rowAtPoint(evt.getPoint()));
+            parent.setRowReading(getRow());
             setStartReading(m_startReading = ReadingsTable.getValueAt(getRow(), 0).toString());
             setEndReading(m_endReading = ReadingsTable.getValueAt(getRow(), 1).toString());
             if(evt.getButton() == MouseEvent.BUTTON3) {
@@ -61,7 +62,7 @@ public class ManageReading {
                     resetIdReading(getMTitle(), getAuthor(), getRowCount());//refresh all ID in the table ReadingDate
                     ReadingsTable.setRowSelectionInterval(0, 0);
                     setRow(0);
-
+                    parent.setRowReading(getRow());
                     //load bdd in MainWindow
                     parent.loadDB(parent.isFiltered());
                     isItInFilteredBookList(getMTitle(), getAuthor(), parent);

@@ -59,6 +59,7 @@ public class MainWindow extends JDialog {
     private Boolean isFiltered;
     private boolean m_isFastSearch;
     private ManageReading m_manageReading;
+    private int rowReading;
 
 
     public MainWindow() {
@@ -137,6 +138,7 @@ public class MainWindow extends JDialog {
             AddReading diag = openAddReadingDlg(getMTitle(),getAuthor());
             addReading(diag, this);
             this.getReadingsTable().setRowSelectionInterval(this.getManageReading().getRowCount()-1,this.getManageReading().getRowCount()-1);
+            setRowReading(this.getManageReading().getRowCount()-1);
         });
         openManageTags.addActionListener((ActionEvent evt)->{
             openManageTagsDlg(getMTitle(), getAuthor());
@@ -586,6 +588,13 @@ public class MainWindow extends JDialog {
         parent.setLocationRelativeTo(null);
         parent.setVisible(true);
         System.exit(0);
+    }
+    public int getRowReading() {
+        return rowReading;
+    }
+
+    public void setRowReading(int rowReading) {
+        this.rowReading = rowReading;
     }
 }
 

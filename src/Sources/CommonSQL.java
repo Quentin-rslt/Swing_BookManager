@@ -37,6 +37,7 @@ public class CommonSQL {
                 pstmt2.executeUpdate();
                 taggingPstmt.executeUpdate();
                 parent.loadDB(parent.isFiltered());
+                parent.setRowReading(0);
                 isNotInFilteredBookList(parent);
                 if(parent.isFastSearch()){
                     parent.fastSearchBook(parent.getBookFastSearch().getText());
@@ -120,6 +121,8 @@ public class CommonSQL {
                         parent.loadComponents(getMTitle(), getAuthor());//reload changes made to the book
                         parent.getBooksTable().setRowSelectionInterval(parent.getRowSelected(getMTitle(), getAuthor()), parent.getRowSelected(getMTitle(), getAuthor()));//focus on the edited book
                         parent.fillReadingsList(getMTitle(), getAuthor());
+                        parent.setRowReading(0);
+                        parent.getReadingsTable().setRowSelectionInterval(0, 0);
                     }else{
                         JFrame jFrame = new JFrame();
                         JOptionPane.showMessageDialog(jFrame, "Le livre créé ne correspond pas aux filtres appliqué", "WARNING", JOptionPane.WARNING_MESSAGE);
@@ -128,6 +131,8 @@ public class CommonSQL {
                 }else{
                     parent.loadComponents(getMTitle(), getAuthor());//reload changes made to the book
                     parent.getBooksTable().setRowSelectionInterval(parent.getRowSelected(getMTitle(), getAuthor()), parent.getRowSelected(getMTitle(), getAuthor()));//focus on the edited book
+                    parent.setRowReading(0);
+                    parent.getReadingsTable().setRowSelectionInterval(0, 0);
                 }
                 if(parent.isFastSearch()){
                     parent.fastSearchBook(parent.getBookFastSearch().getText());
@@ -229,8 +234,8 @@ public class CommonSQL {
 
                 parent.setMTitle(diag.getMtitle());
                 parent.setAuthor(diag.getAuthor());
-                parent.loadComponents(diag.getMtitle(), diag.getAuthor());
                 parent.loadDB(parent.isFiltered());
+                parent.loadComponents(diag.getMtitle(), diag.getAuthor());
                 //Focus in the jtable on a reading created from an existing book
                 parent.getBooksTable().setRowSelectionInterval(parent.getRowSelected(diag.getMtitle(), diag.getAuthor()), parent.getRowSelected(diag.getMtitle(), diag.getAuthor()));
                 parent.fillReadingsList(getMTitle(), getAuthor());
