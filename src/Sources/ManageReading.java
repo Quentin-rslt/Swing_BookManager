@@ -65,7 +65,7 @@ public class ManageReading {
                     ReadingsTable.setRowSelectionInterval(getRow(), getRow());
                     //load bdd in MainWindow
                     parent.loadDB(parent.isFiltered());
-                    isItInFilteredBookList(getMTitle(), getAuthor(), parent);
+                    isItInFilteredBookList(getMTitle(), getAuthor(), parent, true);
                 } catch (SQLException e) {
                     System.out.println(e.getMessage());
                 }

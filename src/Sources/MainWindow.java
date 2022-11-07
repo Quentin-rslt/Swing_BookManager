@@ -95,7 +95,7 @@ public class MainWindow extends JDialog {
             setRowReading(0);
             setRowSelected(0);
             ReadingsTable.setRowSelectionInterval(getRowReading(),getRowReading());
-            BooksTable.setRowSelectionInterval(getRowSelected(getMTitle(), getAuthor()), getRowSelected(getMTitle(), getAuthor()));
+            BooksTable.setRowSelectionInterval(getRowSelectedByBook(getMTitle(), getAuthor()), getRowSelectedByBook(getMTitle(), getAuthor()));
             FiltersBookBtn.setEnabled(true);
             BookManageTagsBtn.setEnabled(true);
         }else{
@@ -142,7 +142,7 @@ public class MainWindow extends JDialog {
             openManageTagsDlg(getMTitle(), getAuthor());
             contentPane.updateUI();
             loadDB(isFiltered());
-            isItInFilteredBookList(getMTitle(),getAuthor(),this);
+            isItInFilteredBookList(getMTitle(),getAuthor(),this,false);
             if(isFastSearch()){
                 fastSearchBook(BookFastSearch.getText());
             }
@@ -155,7 +155,7 @@ public class MainWindow extends JDialog {
             contentPane.updateUI();
             setIsFiltered(false);
             loadDB(isFiltered());
-            isItInFilteredBookList(getMTitle(),getAuthor(),this);
+            isItInFilteredBookList(getMTitle(),getAuthor(),this,false);
             if(isFastSearch()){
                 fastSearchBook(getBookFastSearch().getText());
             }
@@ -164,7 +164,7 @@ public class MainWindow extends JDialog {
             openManageTagsDlg();
             contentPane.updateUI();
             loadDB(isFiltered());
-            isItInFilteredBookList(getMTitle(),getAuthor(),this);
+            isItInFilteredBookList(getMTitle(),getAuthor(),this, false);
             if(isFastSearch()){
                 fastSearchBook(BookFastSearch.getText());
             }
@@ -191,7 +191,7 @@ public class MainWindow extends JDialog {
     public int getRowSelected() {
         return m_rowSelected;
     }
-    public int getRowSelected(String title, String author){//return the row find by a title and an author
+    public int getRowSelectedByBook(String title, String author){//return the row find by a title and an author
         int row = 0;
         int i= 0;
         while (i<BooksTable.getRowCount()) {
@@ -573,7 +573,10 @@ public class MainWindow extends JDialog {
         else
             BooksTable.setBorder(roundBrdMin);
 
-        isItInFilteredBookList(getMTitle(),getAuthor(),this);
+        if(getRowReading()+1>getReadingsTable().getRowCount()){
+            setRowReading(0);
+        }
+        isItInFilteredBookList(getMTitle(),getAuthor(),this, false);
     }
 
     public static void main(String[] args) {

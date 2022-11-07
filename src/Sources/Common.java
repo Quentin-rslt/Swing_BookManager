@@ -165,28 +165,44 @@ public class Common {
             throw new RuntimeException(e);
         }
     }
-    public static void isNotInFilteredBookList(MainWindow parent){
-        if (parent.getBooksTable().getRowCount() > 0) {
-            parent.setRowSelected(parent.getRowSelected()-1);
-            parent.setMTitle(parent.getBooksTable().getValueAt(parent.getRowSelected(), 0).toString());
-            parent.setAuthor(parent.getBooksTable().getValueAt(parent.getRowSelected(), 1).toString());
-            parent.loadComponents(getMTitle(), getAuthor());//reload changes made to the book
-            parent.setRowReading(0);
-            parent.getBooksTable().setRowSelectionInterval(parent.getRowSelected(), parent.getRowSelected());
-            parent.getReadingsTable().setRowSelectionInterval(0, 0);
-        } else {
-            parent.initComponents();
+    public static void isNotInFilteredBookList(MainWindow parent, boolean bookDelete){
+        if(bookDelete) {
+            if (parent.getBooksTable().getRowCount() > 0) {
+                if (parent.getRowSelected() > 0) {
+                    parent.setRowSelected(parent.getRowSelected() - 1);
+                }
+                parent.setRowReading(0);
+                parent.setMTitle(parent.getBooksTable().getValueAt(parent.getRowSelected(), 0).toString());
+                parent.setAuthor(parent.getBooksTable().getValueAt(parent.getRowSelected(), 1).toString());
+                parent.loadComponents(getMTitle(), getAuthor());//reload changes made to the book
+                parent.getBooksTable().setRowSelectionInterval(parent.getRowSelected(), parent.getRowSelected());
+                parent.getReadingsTable().setRowSelectionInterval(0, 0);
+            } else {
+                parent.initComponents();
+            }
+        }else {
+            if (parent.getBooksTable().getRowCount() > 0) {
+                parent.setMTitle(parent.getBooksTable().getValueAt(0, 0).toString());
+                parent.setAuthor(parent.getBooksTable().getValueAt(0, 1).toString());
+                parent.setRowSelected(0);
+                parent.setRowReading(0);
+                parent.loadComponents(getMTitle(), getAuthor());//reload changes made to the book
+                parent.getBooksTable().setRowSelectionInterval(0, 0);
+                parent.getReadingsTable().setRowSelectionInterval(0, 0);
+            } else {
+                parent.initComponents();
+            }
         }
     }
-    public static void isItInFilteredBookList(String title, String author, MainWindow parent){
+    public static void isItInFilteredBookList(String title, String author, MainWindow parent, boolean bookDelete){
         if(isInFilteredList(title,author, parent.getBooksTable())){
+            parent.setRowSelected(parent.getRowSelectedByBook(title, author));
             parent.loadComponents(title, author);//reload changes made to the book
-            parent.setRowSelected(parent.getRowSelected(title, author));
-            parent.getBooksTable().setRowSelectionInterval(parent.getRowSelected(title, author), parent.getRowSelected(title, author));//focus on the edited book
+            parent.getBooksTable().setRowSelectionInterval(parent.getRowSelectedByBook(title, author), parent.getRowSelectedByBook(title, author));//focus on the edited book
             parent.getReadingsTable().setRowSelectionInterval(parent.getRowReading(),parent.getRowReading());
         }
         else{
-            isNotInFilteredBookList(parent);
+            isNotInFilteredBookList(parent, bookDelete);
         }
     }
     public static void initListenerTag(Tags tags, JPopupMenu m_popup, JPanel panel){

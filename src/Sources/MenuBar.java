@@ -135,7 +135,7 @@ public class MenuBar {
             openManageTagsDlg();
             parent.getContentPanel().updateUI();
             parent.loadDB(parent.isFiltered());
-            isItInFilteredBookList(title,author,parent);
+            isItInFilteredBookList(title,author,parent, false);
             if(parent.isFastSearch()){
                 parent.fastSearchBook(parent.getBookFastSearch().getText());
             }
