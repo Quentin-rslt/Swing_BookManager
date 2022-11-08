@@ -172,11 +172,10 @@ public class Common {
                     parent.setRowSelected(parent.getRowSelected() - 1);
                 }
                 parent.setRowReading(0);
+                parent.setRowSelected(parent.getRowSelected());
                 parent.setMTitle(parent.getBooksTable().getValueAt(parent.getRowSelected(), 0).toString());
                 parent.setAuthor(parent.getBooksTable().getValueAt(parent.getRowSelected(), 1).toString());
                 parent.loadComponents(getMTitle(), getAuthor());//reload changes made to the book
-                parent.getBooksTable().setRowSelectionInterval(parent.getRowSelected(), parent.getRowSelected());
-                parent.getReadingsTable().setRowSelectionInterval(0, 0);
             } else {
                 parent.initComponents();
             }
@@ -187,8 +186,6 @@ public class Common {
                 parent.setRowSelected(0);
                 parent.setRowReading(0);
                 parent.loadComponents(getMTitle(), getAuthor());//reload changes made to the book
-                parent.getBooksTable().setRowSelectionInterval(0, 0);
-                parent.getReadingsTable().setRowSelectionInterval(0, 0);
             } else {
                 parent.initComponents();
             }
@@ -198,8 +195,6 @@ public class Common {
         if(isInFilteredList(title,author, parent.getBooksTable())){
             parent.setRowSelected(parent.getRowSelectedByBook(title, author));
             parent.loadComponents(title, author);//reload changes made to the book
-            parent.getBooksTable().setRowSelectionInterval(parent.getRowSelectedByBook(title, author), parent.getRowSelectedByBook(title, author));//focus on the edited book
-            parent.getReadingsTable().setRowSelectionInterval(parent.getRowReading(),parent.getRowReading());
         }
         else{
             isNotInFilteredBookList(parent, bookDelete);

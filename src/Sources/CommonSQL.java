@@ -118,6 +118,7 @@ public class CommonSQL {
                         parent.setMTitle(diag.getNewBookTitle());
                         parent.setAuthor(diag.getNewBookAuthor());
                         parent.setRowReading(0);
+                        parent.setRowSelected(parent.getRowSelectedByBook(getMTitle(), getAuthor()));
                         parent.loadComponents(getMTitle(), getAuthor());//reload changes made to the book
                         parent.getBooksTable().setRowSelectionInterval(parent.getRowSelectedByBook(getMTitle(), getAuthor()), parent.getRowSelectedByBook(getMTitle(), getAuthor()));//focus on the edited book
                         parent.fillReadingsList(getMTitle(), getAuthor());
@@ -131,6 +132,7 @@ public class CommonSQL {
                     parent.setMTitle(diag.getNewBookTitle());
                     parent.setAuthor(diag.getNewBookAuthor());
                     parent.setRowReading(0);
+                    parent.setRowSelected(parent.getRowSelectedByBook(getMTitle(), getAuthor()));
                     parent.loadComponents(getMTitle(), getAuthor());//reload changes made to the book
                     parent.getBooksTable().setRowSelectionInterval(parent.getRowSelectedByBook(getMTitle(), getAuthor()), parent.getRowSelectedByBook(getMTitle(), getAuthor()));//focus on the edited book
                     parent.fillReadingsList(getMTitle(), getAuthor());
@@ -316,7 +318,6 @@ public class CommonSQL {
     }
     @SuppressWarnings("unchecked")
     public static void fillAuthorCB(JComboBox authorCB){
-        int i =0;
         try (Connection conn = connect()) {
             Statement statement = conn.createStatement();
             ResultSet authorRs = statement.executeQuery("SELECT Author FROM Book  GROUP BY Author");
