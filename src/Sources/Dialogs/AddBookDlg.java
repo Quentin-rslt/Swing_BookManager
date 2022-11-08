@@ -25,7 +25,6 @@ public class AddBookDlg extends JDialog {
     private JButton CancelBtn;
     private JPanel PreviewPhotoPanel;
     private JTextField BookNameTextField;
-    private JTextField BookAuthorTextField;
     private JSpinner BookPersonalNoteSpin;
     private JCheckBox BookUnknownReadDateChecbox;
     private JButton BookBrowseBtn;
@@ -39,6 +38,7 @@ public class AddBookDlg extends JDialog {
     private JComboBox BookTagsCB;
     private JPanel BookTagsPanel;
     private JScrollPane JsPane;
+    private JComboBox BookAuthorCB;
     private boolean m_isValide = false;//Useful for determinate if the input are good
     private boolean m_tagIsUpdate = false;
     private Statement m_statement;
@@ -236,7 +236,7 @@ public class AddBookDlg extends JDialog {
         return BookNameTextField.getText();
     }
     public String getNewBookAuthor(){
-        return BookAuthorTextField.getText();
+        return Objects.requireNonNull(BookAuthorCB.getSelectedItem()).toString();
     }
     public String getNewBookNumberOP(){
         return BookNumberOPSpin.getValue().toString();
@@ -309,10 +309,11 @@ public class AddBookDlg extends JDialog {
         BookNumberOPSpin.setModel(BookNumberOPSM);
 
         fillThemeCB();
+        fillAuthorCB(BookAuthorCB);
     }
     public void initComponents(boolean bool){
         BookNameTextField.setEnabled(bool);
-        BookAuthorTextField.setEnabled(bool);
+        BookAuthorCB.setEnabled(bool);
         BookReleaseYearSpin.setEnabled(bool);
         BookNumberOPSpin.setEnabled(bool);
         BookPersonalNoteSpin.setEnabled(bool);

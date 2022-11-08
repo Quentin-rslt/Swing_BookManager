@@ -39,6 +39,7 @@ public class MainWindow extends JDialog {
     private JTable BooksTable;
     private JTextField BookFastSearch;
     private JTable ReadingsTable;
+    private JLabel CountBookLbl;
     private final DefaultTableModel m_tableBookModel = new DefaultTableModel(){//Create a Jtable with the tablemodel not editable
         public boolean isCellEditable(int rowIndex, int colIndex) {
             return false; //Disallow the editing of any cell
@@ -505,6 +506,7 @@ public class MainWindow extends JDialog {
                     findLast =true;
                 }
             }
+            CountBookLbl.setText("Livre : " +getBooksTable().getRowCount());
 
             //Image
             ResultSet ImageQry = m_statement.executeQuery("SELECT Image FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");

@@ -314,6 +314,24 @@ public class CommonSQL {
             throw new RuntimeException(e);
         }
     }
+    @SuppressWarnings("unchecked")
+    public static void fillAuthorCB(JComboBox authorCB){
+        int i =0;
+        try (Connection conn = connect()) {
+            Statement statement = conn.createStatement();
+            ResultSet authorRs = statement.executeQuery("SELECT Author FROM Book");
+            authorCB.addItem("");
+            while (authorRs.next()){
+                authorCB.addItem(authorRs.getString(1));
+            }
+
+            conn.close();
+            statement.close();
+        }catch (Exception e){
+            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+            System.exit(0);
+        }
+    }
 
     public static Connection connect() {
         Connection connection = null;
