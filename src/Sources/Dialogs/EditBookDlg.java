@@ -21,7 +21,6 @@ import static Sources.Dialogs.OpenDialog.openEditTagDlg;
 public class EditBookDlg extends JDialog {
     private JPanel contentPane;
     private JTextField BookTitleTextField;
-    private JTextField BookAuthorTextField;
     private JSpinner BookPersonalNoteSpin;
     private JButton BookBrowseBtn;
     private JSpinner BookNoteBblSpin;
@@ -33,6 +32,7 @@ public class EditBookDlg extends JDialog {
     private JScrollPane JsPane;
     private JComboBox BookTagsCB;
     private JPanel BookTagsPanel;
+    private JComboBox BookAuthorCB;
     private boolean m_isUpdate;
     private String m_oldTitle;
     private String m_oldAuthor;
@@ -155,7 +155,7 @@ public class EditBookDlg extends JDialog {
         return BookTitleTextField.getText();
     }
     public String getNewAuthor() {
-        return BookAuthorTextField.getText();
+        return Objects.requireNonNull(BookAuthorCB.getSelectedItem()).toString();
     }
     public String getNewReleaseyear() {
         SimpleDateFormat formater = new SimpleDateFormat("yyyy");//set the date format returned to have just the year release
@@ -198,6 +198,7 @@ public class EditBookDlg extends JDialog {
         isValid = valid;
     }
     public void loadDB(String title, String author){
+        fillAuthorCB(BookAuthorCB);
         try(Connection conn = connect()) {
             Statement statement = conn.createStatement();
             //Title
@@ -206,8 +207,7 @@ public class EditBookDlg extends JDialog {
 
             //Author
             ResultSet authorQry = statement.executeQuery("SELECT Author FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
-            BookAuthorTextField.setText(authorQry.getString(1));
-
+            BookAuthorCB.setSelectedItem(authorQry.getString(1));
             //Release year
             ResultSet NumberOPQry = statement.executeQuery("SELECT ReleaseYear FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
             Date dateRelease = new Date();

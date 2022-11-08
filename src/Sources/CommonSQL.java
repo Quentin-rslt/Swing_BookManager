@@ -319,7 +319,7 @@ public class CommonSQL {
         int i =0;
         try (Connection conn = connect()) {
             Statement statement = conn.createStatement();
-            ResultSet authorRs = statement.executeQuery("SELECT Author FROM Book");
+            ResultSet authorRs = statement.executeQuery("SELECT Author FROM Book  GROUP BY Author");
             authorCB.addItem("");
             while (authorRs.next()){
                 authorCB.addItem(authorRs.getString(1));
