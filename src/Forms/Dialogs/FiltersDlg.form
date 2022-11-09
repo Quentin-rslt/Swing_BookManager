@@ -2,7 +2,7 @@
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="Sources.Dialogs.FiltersDlg">
   <grid id="cbd77" binding="contentPane" layout-manager="BorderLayout" hgap="0" vgap="0">
     <constraints>
-      <xy x="48" y="54" width="691" height="657"/>
+      <xy x="48" y="54" width="691" height="681"/>
     </constraints>
     <properties/>
     <border type="none"/>
@@ -354,16 +354,46 @@
               <editable value="true"/>
             </properties>
           </component>
-          <grid id="5288c" binding="FiltersTagsPanel" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="0">
+          <grid id="66120" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
               <grid row="1" column="2" row-span="1" col-span="3" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
-                <minimum-size width="-1" height="30"/>
-                <preferred-size width="-1" height="30"/>
+                <maximum-size width="-1" height="50"/>
               </grid>
             </constraints>
             <properties/>
             <border type="none"/>
-            <children/>
+            <children>
+              <grid id="7930a" layout-manager="BorderLayout" hgap="0" vgap="0">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                    <minimum-size width="-1" height="50"/>
+                    <preferred-size width="-1" height="50"/>
+                    <maximum-size width="-1" height="50"/>
+                  </grid>
+                </constraints>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <scrollpane id="d1da">
+                    <constraints border-constraint="Center"/>
+                    <properties>
+                      <horizontalScrollBarPolicy value="30"/>
+                      <preferredSize width="350" height="10"/>
+                    </properties>
+                    <border type="none"/>
+                    <children>
+                      <grid id="997ba" binding="FiltersTagsPanel" layout-manager="FlowLayout" hgap="0" vgap="0" flow-align="0">
+                        <constraints/>
+                        <properties/>
+                        <border type="none"/>
+                        <children/>
+                      </grid>
+                    </children>
+                  </scrollpane>
+                </children>
+              </grid>
+            </children>
           </grid>
         </children>
       </grid>
