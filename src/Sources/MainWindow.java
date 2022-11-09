@@ -6,6 +6,7 @@ import Themes.DarkTheme.DarkTheme;
 import javax.swing.*;
 import javax.swing.border.AbstractBorder;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
 import java.time.LocalDate;
@@ -72,6 +73,7 @@ public class MainWindow extends JDialog {
 
         AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),3,30,0,0,20);
         BookSummary.setBorder(roundBrd);
+        BookSummary.setFont(new Font("Arial", Font.BOLD, 15));
         contentPane.getRootPane().setDefaultButton(CancelFiltersBtn);
         JSpane.setBorder(null);
 
