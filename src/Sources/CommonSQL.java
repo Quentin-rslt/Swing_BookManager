@@ -255,7 +255,7 @@ public class CommonSQL {
     public static void editReading(EditReadingDlg diag,String title, String author, MainWindow parent,ManageReading reading){
         if(diag.isValid()){
             String sql = "UPDATE Reading SET StartReading=?, EndReading=?" +
-                    "WHERE Title='"+title+"' AND Author='"+author+"' AND ID='"+reading.getRow()+"'";//Edit in bdd the item that we want to change the reading date
+                    "WHERE Title='"+title+"' AND Author='"+author+"' AND ID='"+parent.getRowReading()+"'";//Edit in bdd the item that we want to change the reading date
             String AvNumQry = "UPDATE Book SET AvReadingTime=?, NumberReading=? WHERE Title='"+title+"' AND Author='"+author+"'";
             try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql); PreparedStatement AvNumPstmt = conn.prepareStatement(AvNumQry)) {
                 // execute the uptdate statement
@@ -269,7 +269,7 @@ public class CommonSQL {
 
                 parent.getContentPanel().updateUI();
                 parent.fillReadingsList(title,author);
-                reading.getReadingsTable().setRowSelectionInterval(reading.getRow(), reading.getRow());//Focus on the reading that we edit
+                parent.getReadingsTable().setRowSelectionInterval(parent.getRowReading(), parent.getRowReading());//Focus on the reading that we edit
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
             }

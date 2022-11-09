@@ -15,13 +15,17 @@ public class ManageReading {
     private String m_startReading = "";
     private String m_endReading = "";
     final JPopupMenu m_popup;
-    private int m_row;
 
     public ManageReading(MainWindow parent, String title, String author, JTable ReadingsTable) {
         this.m_readingsTable = ReadingsTable;
         setMTitle(title);
         setAuthor(author);
-        parent.fillReadingsList(getMTitle(),getAuthor());
+        for(int i=0; i<m_readingsTable.getRowCount();i++){
+            MouseListener[] mouseListeners =  m_readingsTable.getMouseListeners();
+            for (MouseListener mouseListener : mouseListeners) {
+                m_readingsTable.removeMouseListener(mouseListener);
+            }
+        }
 
         m_popup = new JPopupMenu();//Create a popup menu to delete a reading an edit this reading
         JMenuItem cut = new JMenuItem("Supprimer", new ImageIcon(getImageCut()));
@@ -29,28 +33,28 @@ public class ManageReading {
         m_popup.add(cut);
         m_popup.add(edit);
 
-
-        ReadingsTable.addMouseListener(new MouseAdapter() {
+        m_readingsTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent evt) {
-            setRow(ReadingsTable.rowAtPoint(evt.getPoint()));
-            parent.setRowReading(getRow());
-            setStartReading(m_startReading = ReadingsTable.getValueAt(getRow(), 0).toString());
-            setEndReading(m_endReading = ReadingsTable.getValueAt(getRow(), 1).toString());
+                parent.setRowReading(m_readingsTable.rowAtPoint(evt.getPoint()));
+                m_readingsTable.setRowSelectionInterval(parent.getRowReading(), parent.getRowReading());//we focus the row when we right on the item
+
+                setStartReading(m_startReading = m_readingsTable.getValueAt(parent.getRowReading(), 0).toString());
+                setEndReading(m_endReading = m_readingsTable.getValueAt(parent.getRowReading(), 1).toString());
                 if(evt.getButton() == MouseEvent.BUTTON3) {
-                    ReadingsTable.setRowSelectionInterval(getRow(), getRow());//we focus the row when we right on the item
-                    m_popup.show(ReadingsTable, evt.getX(), evt.getY());//show a popup to edit the reading
+                    m_readingsTable.setRowSelectionInterval(parent.getRowReading(), parent.getRowReading());//we focus the row when we right on the item
+                    m_popup.show(m_readingsTable, evt.getX(), evt.getY());//show a popup to edit the reading
                 }
-//                if(evt.getClickCount() == 2 && evt.getButton() == MouseEvent.BUTTON1){
-//                    EditReadingDlg diag = openEditReadingDlg(getMTitle(), getAuthor(),getStartReading(), getEndReading());//Open a dialog where we can edit the date reading
-//                    editReading(diag,getMTitle(), getAuthor(), parent, ManageReading.this);
-//                }
+                if(evt.getClickCount() == 2 && evt.getButton() == MouseEvent.BUTTON1){
+                    EditReadingDlg diag = openEditReadingDlg(getMTitle(), getAuthor(),getStartReading(), getEndReading());//Open a dialog where we can edit the date reading
+                    editReading(diag,getMTitle(), getAuthor(), parent, ManageReading.this);
+                }
             }
         });
         cut.addActionListener((ActionEvent evt) ->{
-            String ReadingQry = "DELETE FROM Reading WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"' AND ID='"+getRow()+"'";//Delete in bdd the item that we want delete
+            String ReadingQry = "DELETE FROM Reading WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"' AND ID='"+parent.getRowReading()+"'";//Delete in bdd the item that we want delete
             String AvNumQry = "UPDATE Book SET AvReadingTime=?, NumberReading=? WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";
-            if(ReadingsTable.getRowCount()>1){//If there is more than one reading you don't need to know if the person really wants to delete the book
+            if(m_readingsTable.getRowCount()>1){//If there is more than one reading you don't need to know if the person really wants to delete the book
                 try (Connection conn = connect(); PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry); PreparedStatement AvNumPstmt = conn.prepareStatement(AvNumQry)) {
                     ReadingPstmt.executeUpdate();
                     AvNumPstmt.setInt(1, averageTime(getMTitle(), getAuthor()));
@@ -60,9 +64,8 @@ public class ManageReading {
                     parent.getContentPanel().updateUI();
                     parent.fillReadingsList(getMTitle(),getAuthor());
                     resetIdReading(getMTitle(), getAuthor(), getRowCount());//refresh all ID in the table ReadingDate
-                    setRow(getRow()-1);
-                    parent.setRowReading(getRow());
-                    ReadingsTable.setRowSelectionInterval(getRow(), getRow());
+                    parent.setRowReading(parent.getRowReading()-1);
+                    m_readingsTable.setRowSelectionInterval(parent.getRowReading(), parent.getRowReading());
                     //load bdd in MainWindow
                     parent.loadDB(parent.isFiltered());
                     isItInFilteredBookList(getMTitle(), getAuthor(), parent, true);
@@ -93,14 +96,8 @@ public class ManageReading {
     public String getEndReading() {
         return m_endReading;
     }
-    public int getRow() {
-        return m_row;
-    }
     public int getRowCount(){
         return m_readingsTable.getRowCount();
-    }
-    public JTable getReadingsTable() {
-        return m_readingsTable;
     }
 
     public void setAuthor(String m_author) {
@@ -114,9 +111,6 @@ public class ManageReading {
     }
     public void setEndReading(String m_dateReading) {
         this.m_endReading = m_dateReading;
-    }
-    public void setRow(int m_row) {
-        this.m_row = m_row;
     }
     public void resetIdReading(String title, String author, int rowCount){
         String ReadingQry = "DELETE FROM Reading WHERE Title='"+title+"' AND Author='"+author+"'";//clear all the table
