@@ -59,7 +59,7 @@ public class MenuBar {
             int good = importDB(parent);
             if(good==1) {
                 parent.setIsFiltered(false);
-                parent.loadDB(parent.isFiltered());
+                parent.fillBookTable(parent.isFiltered());
                 parent.setMTitle(parent.getBooksTable().getValueAt(0, 0).toString());
                 parent.setAuthor(parent.getBooksTable().getValueAt(0, 1).toString());
                 parent.setRowSelected(0);
@@ -78,7 +78,7 @@ public class MenuBar {
             int good = importCSV(parent);
             if(good==1) {
                 parent.setIsFiltered(false);
-                parent.loadDB(parent.isFiltered());
+                parent.fillBookTable(parent.isFiltered());
                 parent.setMTitle(parent.getBooksTable().getValueAt(0, 0).toString());
                 parent.setAuthor(parent.getBooksTable().getValueAt(0, 1).toString());
                 parent.loadComponents(getMTitle(), getAuthor());//reload changes made to the book
@@ -134,7 +134,7 @@ public class MenuBar {
         manageTagMenuItem.addActionListener((e->{
             openManageTagsDlg();
             parent.getContentPanel().updateUI();
-            parent.loadDB(parent.isFiltered());
+            parent.fillBookTable(parent.isFiltered());
             isItInFilteredBookList(title,author,parent, false);
             if(parent.isFastSearch()){
                 parent.fastSearchBook(parent.getBookFastSearch().getText());

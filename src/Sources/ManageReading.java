@@ -62,12 +62,12 @@ public class ManageReading {
                     AvNumPstmt.executeUpdate();
 
                     parent.getContentPanel().updateUI();
-                    parent.fillReadingsList(getMTitle(),getAuthor());
+                    parent.fillReadingTable(getMTitle(),getAuthor());
                     resetIdReading(getMTitle(), getAuthor(), getRowCount());//refresh all ID in the table ReadingDate
                     parent.setRowReading(parent.getRowReading()-1);
                     m_readingsTable.setRowSelectionInterval(parent.getRowReading(), parent.getRowReading());
                     //load bdd in MainWindow
-                    parent.loadDB(parent.isFiltered());
+                    parent.fillBookTable(parent.isFiltered());
                     isItInFilteredBookList(getMTitle(), getAuthor(), parent, true);
                 } catch (SQLException e) {
                     System.out.println(e.getMessage());

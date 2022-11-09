@@ -68,7 +68,7 @@ public class MainWindow extends JDialog {
         setModal(true);
         connectionDB();
         setIsFiltered(false);
-        loadDB(isFiltered());
+        fillBookTable(isFiltered());
 
         AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),3,30,0,0,20);
         BookSummary.setBorder(roundBrd);
@@ -116,8 +116,12 @@ public class MainWindow extends JDialog {
                     setAuthor(BooksTable.getValueAt(getRowSelected(), 1).toString());
                     loadComponents(getMTitle(), getAuthor());
                 }
-                if(evt.getButton() == MouseEvent.BUTTON3) {//if we right click show a popup to edit the book
+                if(evt.getButton() == MouseEvent.BUTTON3) {//if we right-click show a popup to edit the book
                     m_popup.show(BooksTable, evt.getX(), evt.getY());
+                }
+                if(evt.getClickCount() == 2 && evt.getButton() == MouseEvent.BUTTON1){
+                    EditBookDlg diag = openEditBookDlg(getMTitle(),getAuthor());
+                    editBook(diag, getMTitle(),getAuthor(),MainWindow.this);
                 }
             }
         });
@@ -138,7 +142,7 @@ public class MainWindow extends JDialog {
         openManageTags.addActionListener((ActionEvent evt)->{
             openManageTagsDlg(getMTitle(), getAuthor());
             contentPane.updateUI();
-            loadDB(isFiltered());
+            fillBookTable(isFiltered());
             isItInFilteredBookList(getMTitle(),getAuthor(),this,false);
             if(isFastSearch()){
                 fastSearchBook(BookFastSearch.getText());
@@ -151,7 +155,7 @@ public class MainWindow extends JDialog {
         CancelFiltersBtn.addActionListener((ActionEvent e) -> {
             contentPane.updateUI();
             setIsFiltered(false);
-            loadDB(isFiltered());
+            fillBookTable(isFiltered());
             isItInFilteredBookList(getMTitle(),getAuthor(),this,false);
             if(isFastSearch()){
                 fastSearchBook(getBookFastSearch().getText());
@@ -160,7 +164,7 @@ public class MainWindow extends JDialog {
         BookManageTagsBtn.addActionListener((ActionEvent e) -> {
             openManageTagsDlg();
             contentPane.updateUI();
-            loadDB(isFiltered());
+            fillBookTable(isFiltered());
             isItInFilteredBookList(getMTitle(),getAuthor(),this, false);
             if(isFastSearch()){
                 fastSearchBook(BookFastSearch.getText());
@@ -288,7 +292,7 @@ public class MainWindow extends JDialog {
             System.exit(0);
         }
     }
-    public void loadDB(boolean isFiltered){
+    public void fillBookTable(boolean isFiltered){
         m_tableBookModel.setRowCount(0);
         CancelFiltersBtn.setEnabled(isFiltered);
         try(Connection conn = connect()){
@@ -299,7 +303,7 @@ public class MainWindow extends JDialog {
                         "INNER JOIN Reading ON Reading.Title=Book.Title AND Reading.Author=Book.Author ");
 
                 if (m_filtersDiag.getTags().getSizeTags()>0) {
-                    qry.append("INNER JOIN Tagging ON Book.ID=Tagging.IdBook ").append("INNER JOIN Tags ON Tagging.idTag=Tags.ID ").append("WHERE Tags.Tag IN(");
+                    qry.append("INNER JOIN Tagging ON Book.ID=Tagging.IdBook INNER JOIN Tags ON Tagging.idTag=Tags.ID WHERE Tags.Tag IN(");
                     for(int i = 0; i<m_filtersDiag.getTags().getSizeTags();i++){
                         if(i<m_filtersDiag.getTags().getSizeTags()-1){
                             qry.append("'").append(m_filtersDiag.getTags().getTag(i).getTextTag()).append("', ");
@@ -363,7 +367,7 @@ public class MainWindow extends JDialog {
             System.exit(0);
         }
     }
-    public void fillReadingsList(String title, String author) {
+    public void fillReadingTable(String title, String author) {
         setMTitle(title);
         setAuthor(author);
         m_tableReadingModel.setRowCount(0);
@@ -415,7 +419,7 @@ public class MainWindow extends JDialog {
     }
     public void loadComponents(String title, String author){
         Tags tags = new Tags();
-        fillReadingsList(title,author);
+        fillReadingTable(title,author);
         m_manageReading = new ManageReading(MainWindow.this, getMTitle(), getAuthor(), ReadingsTable);
         ReadingsTable.setRowSelectionInterval(getRowReading(),getRowReading());
         BooksTable.setRowSelectionInterval(getRowSelected(), getRowSelected());
@@ -502,7 +506,11 @@ public class MainWindow extends JDialog {
                     findLast =true;
                 }
             }
-            CountBookLbl.setText("Livre : " +getBooksTable().getRowCount());
+            if(getBooksTable().getRowCount()>1) {
+                CountBookLbl.setText("Livres : " + getBooksTable().getRowCount());
+            }else{
+                CountBookLbl.setText("Livre : " + getBooksTable().getRowCount());
+            }
 
             //Image
             ResultSet ImageQry = m_statement.executeQuery("SELECT Image FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
@@ -528,6 +536,7 @@ public class MainWindow extends JDialog {
         PersonalNoteLabel.setText("Ma note :");
         FirstReadingLabel.setText("Première lecture :");
         LastReadingLabel.setText("Dernière lecture :");
+        CountBookLbl.setText("Livre : 0");
         BookSummary.setText("");
         BookTagsPanel.removeAll();
         BookPhotoPanel.removeAll();
@@ -538,7 +547,7 @@ public class MainWindow extends JDialog {
         isFiltered = filtered;
     }
     public void fastSearchBook(String text){
-        loadDB(isFiltered());
+        fillBookTable(isFiltered());
         setFastSearch(!text.isBlank());
         for(int row = 0 ; row < getBooksTable().getRowCount() ; row++) {
             int cellsNotCorrespondingToFilter = 0;

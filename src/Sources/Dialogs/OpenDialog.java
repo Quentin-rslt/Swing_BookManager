@@ -40,7 +40,7 @@ public class OpenDialog {
         EditReadingDlg diag = new EditReadingDlg(title, author,startDate,endDate);
         diag.setIconImage(getImageEdit());
         diag.setTitle("Modifier une lecture");
-        diag.setSize(500,210);
+        diag.setSize(500,220);
         diag.setLocationRelativeTo(null);
         diag.setVisible(true);
 
