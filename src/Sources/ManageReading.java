@@ -47,7 +47,7 @@ public class ManageReading {
                 }
                 if(evt.getClickCount() == 2 && evt.getButton() == MouseEvent.BUTTON1){
                     EditReadingDlg diag = openEditReadingDlg(getMTitle(), getAuthor(),getStartReading(), getEndReading());//Open a dialog where we can edit the date reading
-                    editReading(diag,getMTitle(), getAuthor(), parent, ManageReading.this);
+                    editReading(diag,getMTitle(), getAuthor(), parent);
                 }
             }
         });
@@ -79,7 +79,7 @@ public class ManageReading {
         });
         edit.addActionListener((ActionEvent evt) ->{
             EditReadingDlg diag = openEditReadingDlg(getMTitle(), getAuthor(),getStartReading(), getEndReading());//Open a dialog where we can edit the date reading
-            editReading(diag,getMTitle(), getAuthor(), parent,this);
+            editReading(diag,getMTitle(), getAuthor(), parent);
         });
     }
 

@@ -252,7 +252,7 @@ public class CommonSQL {
             }
         }
     }
-    public static void editReading(EditReadingDlg diag,String title, String author, MainWindow parent,ManageReading reading){
+    public static void editReading(EditReadingDlg diag,String title, String author, MainWindow parent){
         if(diag.isValid()){
             String sql = "UPDATE Reading SET StartReading=?, EndReading=?" +
                     "WHERE Title='"+title+"' AND Author='"+author+"' AND ID='"+parent.getRowReading()+"'";//Edit in bdd the item that we want to change the reading date
