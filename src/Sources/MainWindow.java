@@ -73,7 +73,7 @@ public class MainWindow extends JDialog {
 
         AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),3,30,0,0,20);
         BookSummary.setBorder(roundBrd);
-        BookSummary.setFont(new Font("Arial", Font.BOLD, 15));
+        BookSummary.setFont(new Font("Arial", Font.BOLD, 13));
         contentPane.getRootPane().setDefaultButton(CancelFiltersBtn);
         JSpane.setBorder(null);
 
