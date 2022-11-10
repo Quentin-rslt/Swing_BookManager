@@ -24,15 +24,13 @@ public class ManageTagsDlg extends JDialog {
     private Tags m_tags;
     final JPopupMenu m_popup;
     private int m_row;
+    private int m_TagsNumber;
 
     public ManageTagsDlg() {
         setContentPane(contentPane);
         setModal(true);
         this.m_tags = new Tags();
         fillTagsList();
-        AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),3,30,0,0,0);
-        TagsPanel.setBackground(new Color(51,45,45));
-        TagsPanel.setBorder(roundBrd);
 
         m_popup = new JPopupMenu();//Create a popup menu to delete a reading an edit this reading
         JMenuItem cut = new JMenuItem("Supprimer", new ImageIcon(getImageCut()));
@@ -103,13 +101,14 @@ public class ManageTagsDlg extends JDialog {
                 if (evt.getKeyCode()== KeyEvent.VK_ENTER){
                     boolean tagFind = fillPaneTags(getTags(), TagsPanel, AddTagTxtF);
                     if(!tagFind) {
-                        getTags().getTag(getTags().getSizeTags()-1).setBorderColor(TagsPanel.getBackground());
+                        getTags().getTag(getTags().getSizeTags()-1).setBorderColor(contentPane.getBackground());
                         try (Connection conn = connect()) {
                             String TagsInsertQry = "INSERT INTO Tags (Tag,Color)" +
                                     " SELECT '" + getTags().getTag(getTags().getSizeTags() - 1).getTextTag() + "', '" + getTags().getTag(getTags().getSizeTags() - 1).getColor() + "'" +
                                     " WHERE NOT EXISTS(SELECT * FROM Tags WHERE Tag='" + getTags().getTag(getTags().getSizeTags() - 1).getTextTag() + "' AND Color='" + getTags().getTag(getTags().getSizeTags() - 1).getColor() + "')";
                             PreparedStatement TagsInsertPstmt = conn.prepareStatement(TagsInsertQry);
                             TagsInsertPstmt.executeUpdate();
+                            TagsPanel.setPreferredSize(new Dimension(400, (m_TagsNumber+1)*11));
                         } catch (SQLException e) {
                             System.out.println(e.getMessage());
                         }
@@ -126,9 +125,7 @@ public class ManageTagsDlg extends JDialog {
         setModal(true);
         this.m_tags = new Tags();
         fillTagsList(title, author);
-        AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),3,30,0,0,0);
-        TagsPanel.setBackground(new Color(51,45,45));
-        TagsPanel.setBorder(roundBrd);
+
         AddTagCb.setEditable(true);
         AddTagPanel.add(AddTagCb);
         fillThemeCB();
@@ -222,8 +219,9 @@ public class ManageTagsDlg extends JDialog {
             if (!Objects.equals(AddTagCb.getSelectedItem(), "")) {
                 if (evt.getKeyCode()== KeyEvent.VK_ENTER){
                     boolean tagFind = fillPaneTags(getTags(), TagsPanel, AddTagCb,true);
+                    TagsPanel.setPreferredSize(new Dimension(400, (m_TagsNumber+1)*15));
                     if(!tagFind) {
-                        getTags().getTag(getTags().getSizeTags()-1).setBorderColor(TagsPanel.getBackground());
+                        getTags().getTag(getTags().getSizeTags()-1).setBorderColor(contentPane.getBackground());
                         String TaggingQry = "INSERT INTO Tagging (IdBook,IdTag) " +
                                 "VALUES (?,?);";
                         try (Connection conn = connect(); PreparedStatement TaggingPstmt = conn.prepareStatement(TaggingQry)) {
@@ -268,21 +266,23 @@ public class ManageTagsDlg extends JDialog {
     public void fillTagsList(){
         TagsPanel.removeAll();
         Tags tags = new Tags();
-        TagsPanel.setPreferredSize(new Dimension(300, 170));
+
         try(Connection conn = connect()){
             Statement statement = conn.createStatement();
             ResultSet qry = statement.executeQuery("SELECT Tag, Color FROM Tags ORDER BY Tag ASC");
 
             while (qry.next()){
+                m_TagsNumber = qry.getRow();
                 String textTag = qry.getString(1);
                 int colorTag = qry.getInt(2);
 
                 tags.createTag(textTag);
                 tags.getTag(tags.getSizeTags()-1).setColor(colorTag);
-                tags.getTag(tags.getSizeTags()-1).setBorderColor(new Color(51,45,45));
+                tags.getTag(tags.getSizeTags()-1).setBorderColor(contentPane.getBackground());
 
                 TagsPanel.add(tags.getTag(tags.getSizeTags()-1));
             }
+            TagsPanel.setPreferredSize(new Dimension(400, m_TagsNumber*12));
             setTags(tags);
 
             qry.close();
@@ -296,7 +296,6 @@ public class ManageTagsDlg extends JDialog {
     public void fillTagsList(String title, String author){
         TagsPanel.removeAll();
         Tags tags = new Tags();
-        TagsPanel.setPreferredSize(new Dimension(300, 170));
         try(Connection conn = connect()){
             Statement statement = conn.createStatement();
             String strQry = "SELECT Tag, Color FROM Tags ";
@@ -308,15 +307,18 @@ public class ManageTagsDlg extends JDialog {
 
             ResultSet qry = statement.executeQuery(strQry);
             while (qry.next()){
+                m_TagsNumber = qry.getRow();
                 String textTag = qry.getString(1);
                 int colorTag = qry.getInt(2);
 
                 tags.createTag(textTag);
                 tags.getTag(tags.getSizeTags()-1).setColor(colorTag);
-                tags.getTag(tags.getSizeTags()-1).setBorderColor(new Color(51,45,45));
+                tags.getTag(tags.getSizeTags()-1).setBorderColor(contentPane.getBackground());
 
                 TagsPanel.add(tags.getTag(tags.getSizeTags()-1));
             }
+            TagsPanel.setPreferredSize(new Dimension(400, m_TagsNumber*15));
+            System.out.println(m_TagsNumber*13);
             setTags(tags);
 
             qry.close();
