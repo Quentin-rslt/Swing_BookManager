@@ -1,10 +1,8 @@
 package Sources.Dialogs;
 
-import Sources.RoundBorderCp;
 import Sources.Tags;
 
 import javax.swing.*;
-import javax.swing.border.AbstractBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
@@ -219,7 +217,6 @@ public class ManageTagsDlg extends JDialog {
             if (!Objects.equals(AddTagCb.getSelectedItem(), "")) {
                 if (evt.getKeyCode()== KeyEvent.VK_ENTER){
                     boolean tagFind = fillPaneTags(getTags(), TagsPanel, AddTagCb,true);
-                    TagsPanel.setPreferredSize(new Dimension(400, (m_TagsNumber+1)*15));
                     if(!tagFind) {
                         getTags().getTag(getTags().getSizeTags()-1).setBorderColor(contentPane.getBackground());
                         String TaggingQry = "INSERT INTO Tagging (IdBook,IdTag) " +
@@ -236,7 +233,8 @@ public class ManageTagsDlg extends JDialog {
                             TaggingPstmt.setInt(1, getIdBook(title, author));
                             TaggingPstmt.setInt(2, getIdTag(getTags().getTag(getTags().getSizeTags() - 1).getTextTag(), getTags().getTag(getTags().getSizeTags() - 1).getColor()));
                             TaggingPstmt.executeUpdate();
-
+                            m_TagsNumber=m_TagsNumber+1;
+                            TagsPanel.setPreferredSize(new Dimension(400, (m_TagsNumber)*15));
                         } catch (SQLException e) {
                             System.out.println(e.getMessage());
                         }
