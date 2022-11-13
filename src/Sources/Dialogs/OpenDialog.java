@@ -29,7 +29,7 @@ public class OpenDialog {
     public static AddReading openAddReadingDlg(String title, String author){
         AddReading diag = new AddReading(title, author);
         diag.setTitle("Ajouter une lecture");
-        diag.setSize(550,250);
+        diag.setSize(550,265);
         diag.setIconImage(getImageAdd());
         diag.setLocationRelativeTo(null);
         diag.setVisible(true);

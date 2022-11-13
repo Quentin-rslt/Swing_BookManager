@@ -77,6 +77,9 @@ public class MainWindow extends JDialog {
         contentPane.getRootPane().setDefaultButton(CancelFiltersBtn);
         JSpane.setBorder(null);
 
+        BooksTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        ReadingsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
         m_popup = new JPopupMenu();//Create a popup menu to delete a reading an edit this reading
         JMenuItem add = new JMenuItem("Ajouter une lecture", new ImageIcon(getImageAdd()));
         JMenuItem cut = new JMenuItem("Supprimer", new ImageIcon(getImageCut()));
