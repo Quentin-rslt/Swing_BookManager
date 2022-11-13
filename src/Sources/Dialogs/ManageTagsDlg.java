@@ -106,7 +106,7 @@ public class ManageTagsDlg extends JDialog {
                                     " WHERE NOT EXISTS(SELECT * FROM Tags WHERE Tag='" + getTags().getTag(getTags().getSizeTags() - 1).getTextTag() + "' AND Color='" + getTags().getTag(getTags().getSizeTags() - 1).getColor() + "')";
                             PreparedStatement TagsInsertPstmt = conn.prepareStatement(TagsInsertQry);
                             TagsInsertPstmt.executeUpdate();
-                            TagsPanel.setPreferredSize(new Dimension(400, (m_TagsNumber+1)*11));
+                            //TagsPanel.setPreferredSize(new Dimension(400, (m_TagsNumber+1)*11));
                         } catch (SQLException e) {
                             System.out.println(e.getMessage());
                         }
@@ -234,7 +234,7 @@ public class ManageTagsDlg extends JDialog {
                             TaggingPstmt.setInt(2, getIdTag(getTags().getTag(getTags().getSizeTags() - 1).getTextTag(), getTags().getTag(getTags().getSizeTags() - 1).getColor()));
                             TaggingPstmt.executeUpdate();
                             m_TagsNumber=m_TagsNumber+1;
-                            TagsPanel.setPreferredSize(new Dimension(400, (m_TagsNumber)*15));
+                            //TagsPanel.setPreferredSize(new Dimension(400, (m_TagsNumber)*15));
                         } catch (SQLException e) {
                             System.out.println(e.getMessage());
                         }
@@ -280,7 +280,7 @@ public class ManageTagsDlg extends JDialog {
 
                 TagsPanel.add(tags.getTag(tags.getSizeTags()-1));
             }
-            TagsPanel.setPreferredSize(new Dimension(400, m_TagsNumber*12));
+            //TagsPanel.setPreferredSize(new Dimension(400, m_TagsNumber*11));
             setTags(tags);
 
             qry.close();
@@ -315,8 +315,7 @@ public class ManageTagsDlg extends JDialog {
 
                 TagsPanel.add(tags.getTag(tags.getSizeTags()-1));
             }
-            TagsPanel.setPreferredSize(new Dimension(400, m_TagsNumber*15));
-            System.out.println(m_TagsNumber*13);
+            //TagsPanel.setPreferredSize(new Dimension(400, m_TagsNumber*15));
             setTags(tags);
 
             qry.close();
