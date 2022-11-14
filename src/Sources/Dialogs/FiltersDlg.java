@@ -146,9 +146,9 @@ public class FiltersDlg extends JDialog {
         FiltersTagCB.getEditor().getEditorComponent().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                super.mouseClicked(e);
-                FiltersTagCB.showPopup();
-                FiltersTagCB.setSelectedIndex(0);
+            super.mouseClicked(e);
+            FiltersTagCB.showPopup();
+            FiltersTagCB.setSelectedIndex(0);
             }
         });
         FiltersTagsPanel.addMouseListener(new MouseAdapter() {

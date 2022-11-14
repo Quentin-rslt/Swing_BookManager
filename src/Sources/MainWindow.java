@@ -364,6 +364,10 @@ public class MainWindow extends JDialog {
             else
                 BooksTable.setBorder(roundBrdMin);
 
+            BooksTable.getTableHeader().setResizingAllowed(false);
+            BooksTable.getColumnModel().getColumn(0).setPreferredWidth((int) ((BooksTable.getPreferredScrollableViewportSize().width)/1.5));
+            BooksTable.getColumnModel().getColumn(1).setPreferredWidth((BooksTable.getPreferredScrollableViewportSize().width)/3);
+
             rs.close();
             conn.close();
             m_statement.close();

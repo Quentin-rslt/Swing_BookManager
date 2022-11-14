@@ -163,6 +163,7 @@
                   <component id="916ec" class="javax.swing.JTable" binding="BooksTable">
                     <constraints/>
                     <properties>
+                      <autoResizeMode value="0"/>
                       <editingRow value="0"/>
                       <focusable value="false"/>
                       <preferredScrollableViewportSize width="470" height="464"/>

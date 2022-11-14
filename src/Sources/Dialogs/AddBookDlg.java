@@ -3,6 +3,8 @@ package Sources.Dialogs;
 import Sources.RoundBorderCp;
 import Sources.Tag;
 import Sources.Tags;
+import com.toedter.calendar.JCalendar;
+import com.toedter.calendar.JDateChooser;
 
 import javax.swing.*;
 import javax.swing.border.AbstractBorder;
@@ -39,6 +41,7 @@ public class AddBookDlg extends JDialog {
     private JPanel BookTagsPanel;
     private JScrollPane JsPane;
     private JComboBox BookAuthorCB;
+    private JPanel datePanel;
     private boolean m_isValide = false;//Useful for determinate if the input are good
     private boolean m_tagIsUpdate = false;
     private Statement m_statement;
@@ -155,6 +158,22 @@ public class AddBookDlg extends JDialog {
                 }
                 initListenerTag(getTags(), m_popup, BookTagsPanel);
                 BookTagsPanel.updateUI();
+            }
+        });
+        BookTagsCB.getEditor().getEditorComponent().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+            super.mouseClicked(e);
+            BookTagsCB.showPopup();
+            BookTagsCB.setSelectedIndex(0);
+            }
+        });
+        BookAuthorCB.getEditor().getEditorComponent().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+            super.mouseClicked(e);
+            BookAuthorCB.showPopup();
+            BookAuthorCB.setSelectedIndex(0);
             }
         });
         BookTagsPanel.addMouseListener(new MouseAdapter() {

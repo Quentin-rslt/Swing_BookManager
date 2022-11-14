@@ -100,6 +100,22 @@ public class EditBookDlg extends JDialog {
             BookTagsPanel.updateUI();
             }
         });
+        BookTagsCB.getEditor().getEditorComponent().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+            super.mouseClicked(e);
+            BookTagsCB.showPopup();
+            BookTagsCB.setSelectedIndex(0);
+            }
+        });
+        BookAuthorCB.getEditor().getEditorComponent().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+            super.mouseClicked(e);
+            BookAuthorCB.showPopup();
+            BookAuthorCB.setSelectedIndex(getRowAuthorCB(getOldAuthor()));
+            }
+        });
 
         cut.addActionListener((ActionEvent evt) ->{
             Component[] componentList = BookTagsPanel.getComponents();
@@ -176,13 +192,24 @@ public class EditBookDlg extends JDialog {
     public boolean isValid() {
         return isValid;
     }
-
     public Tags getTags(){
         return this.m_tags;
     }
-
     public boolean getTagIsUpdate() {
         return m_isUpdate;
+    }
+    public int getRowAuthorCB(String author){
+        int row = 0;
+
+        while(row<BookAuthorCB.getItemCount()){
+            if(author.equals(BookAuthorCB.getItemAt(row))) {
+                break;
+            }
+            else{
+                row++;
+            }
+        }
+        return row;
     }
 
     public void setTagIsUpdate(boolean m_isUpdate) {

@@ -245,6 +245,14 @@ public class ManageTagsDlg extends JDialog {
             TagsPanel.updateUI();
             }
         });
+        AddTagCb.getEditor().getEditorComponent().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+            super.mouseClicked(e);
+            AddTagCb.showPopup();
+            AddTagCb.setSelectedIndex(0);
+            }
+        });
     }
 
     public int getRow() {
