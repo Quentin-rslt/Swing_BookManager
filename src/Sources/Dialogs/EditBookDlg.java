@@ -9,6 +9,7 @@ import javax.swing.border.AbstractBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -282,9 +283,10 @@ public class EditBookDlg extends JDialog {
             fillThemeCB();
             conn.close();
             statement.close();
-        } catch ( Exception e ) {
+        } catch ( SQLException e ) {
             System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-            System.exit(0);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
         }
     }
     public void fillThemeCB(){

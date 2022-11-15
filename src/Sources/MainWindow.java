@@ -373,9 +373,8 @@ public class MainWindow extends JDialog {
             rs.close();
             conn.close();
             m_statement.close();
-        } catch ( Exception e ) {
+        } catch ( SQLException e ) {
             System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-            System.exit(0);
         }
     }
     public void fillReadingTable(String title, String author) {
@@ -384,6 +383,7 @@ public class MainWindow extends JDialog {
         m_tableReadingModel.setRowCount(0);
         try (Connection conn = connect()) {
             Statement m_statement = conn.createStatement();
+
             ResultSet qry = m_statement.executeQuery("SELECT StartReading, EndReading FROM Reading WHERE Title='" + title + "' AND Author='" + author + "'");
 
             while (qry.next()) {
@@ -423,9 +423,8 @@ public class MainWindow extends JDialog {
             qry.close();
             conn.close();
             m_statement.close();
-        } catch (Exception e) {
+        } catch (SQLException e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
-            System.exit(0);
         }
     }
     public void loadComponents(String title, String author){
@@ -437,10 +436,11 @@ public class MainWindow extends JDialog {
         FiltersBookBtn.setEnabled(true);
         BookManageTagsBtn.setEnabled(true);
         try(Connection conn = connect()) {
-            Class.forName("org.sqlite.JDBC");
             m_statement = conn.createStatement();
 
             //Title label
+
+
             ResultSet titleQry = m_statement.executeQuery("SELECT Title FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
             TitleLabel.setText(titleQry.getString(1));
 
@@ -531,9 +531,8 @@ public class MainWindow extends JDialog {
 
             conn.close();
             m_statement.close();
-        } catch ( Exception e ) {
+        } catch ( SQLException e ) {
             System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-            System.exit(0);
         }
     }
     public void initComponents(){
