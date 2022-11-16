@@ -178,8 +178,8 @@ public class MainWindow extends JDialog {
         BookFastSearch.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
-            super.keyReleased(e);
-            fastSearchBook(BookFastSearch.getText());
+                super.keyReleased(e);
+                fastSearchBook(BookFastSearch.getText());
             }
         });
     }
@@ -294,7 +294,6 @@ public class MainWindow extends JDialog {
             m_statement.close();
         } catch ( Exception e ) {
             System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-            System.exit(0);
         }
     }
     public void fillBookTable(boolean isFiltered){
@@ -373,7 +372,7 @@ public class MainWindow extends JDialog {
             rs.close();
             conn.close();
             m_statement.close();
-        } catch ( SQLException e ) {
+        } catch ( Exception e ) {
             System.err.println( e.getClass().getName() + ": " + e.getMessage() );
         }
     }
@@ -383,7 +382,6 @@ public class MainWindow extends JDialog {
         m_tableReadingModel.setRowCount(0);
         try (Connection conn = connect()) {
             Statement m_statement = conn.createStatement();
-
             ResultSet qry = m_statement.executeQuery("SELECT StartReading, EndReading FROM Reading WHERE Title='" + title + "' AND Author='" + author + "'");
 
             while (qry.next()) {
@@ -423,7 +421,7 @@ public class MainWindow extends JDialog {
             qry.close();
             conn.close();
             m_statement.close();
-        } catch (SQLException e) {
+        } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
         }
     }
@@ -436,11 +434,10 @@ public class MainWindow extends JDialog {
         FiltersBookBtn.setEnabled(true);
         BookManageTagsBtn.setEnabled(true);
         try(Connection conn = connect()) {
+            Class.forName("org.sqlite.JDBC");
             m_statement = conn.createStatement();
 
             //Title label
-
-
             ResultSet titleQry = m_statement.executeQuery("SELECT Title FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
             TitleLabel.setText(titleQry.getString(1));
 
@@ -531,7 +528,7 @@ public class MainWindow extends JDialog {
 
             conn.close();
             m_statement.close();
-        } catch ( SQLException e ) {
+        } catch ( Exception e ) {
             System.err.println( e.getClass().getName() + ": " + e.getMessage() );
         }
     }
@@ -619,4 +616,3 @@ public class MainWindow extends JDialog {
         this.rowReading = rowReading;
     }
 }
-

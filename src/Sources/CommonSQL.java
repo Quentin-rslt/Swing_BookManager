@@ -61,19 +61,11 @@ public class CommonSQL {
             try (Connection conn = connect(); PreparedStatement BookPstmt = conn.prepareStatement(BookQry); PreparedStatement AvNumPstmt = conn.prepareStatement(AvNumQry);
                  PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry); PreparedStatement TaggingPstmt = conn.prepareStatement(TaggingQry)) {
 
-                if(diag.getNewBookTitle().contains("'")) {
-                    String title = diag.getNewBookTitle().replace("'", "''");
-                    ReadingPstmt.setString(2, title);
-                    BookPstmt.setString(1, title);
-                    ReadingPstmt.setInt(1, getIdReading(title, diag.getNewBookAuthor()));
-                }else{
-                    BookPstmt.setString(1, diag.getNewBookTitle());
-                    ReadingPstmt.setString(2, diag.getNewBookTitle());
-                    ReadingPstmt.setInt(1, getIdReading(diag.getNewBookTitle(), diag.getNewBookAuthor()));
-                }
-
+                ReadingPstmt.setInt(1, getIdReading(diag.getNewBookTitle(), diag.getNewBookAuthor()));
+                ReadingPstmt.setString(2, diag.getNewBookTitle());
                 ReadingPstmt.setString(3, diag.getNewBookAuthor());
 
+                BookPstmt.setString(1, diag.getNewBookTitle());
                 BookPstmt.setString(2, diag.getNewBookAuthor());
                 BookPstmt.setString(3, getNameOfBook());
                 BookPstmt.setString(4, diag.getNewBookNumberOP());
@@ -122,14 +114,8 @@ public class CommonSQL {
                 }
                 if(parent.isFiltered() || parent.isFastSearch()) {
                     if (isInFilteredList(diag.getNewBookTitle(), diag.getNewBookAuthor(), parent.getBooksTable())) {
-                        if(diag.getNewBookTitle().contains("'")) {
-                            String title = diag.getNewBookTitle().replace("'", "''");
-                            parent.setMTitle(title);
-                        }else{
-                            parent.setMTitle(diag.getNewBookTitle());
-                        }
-
                         parent.fillBookTable(parent.isFiltered());
+                        parent.setMTitle(diag.getNewBookTitle());
                         parent.setAuthor(diag.getNewBookAuthor());
                         parent.setRowReading(0);
                         parent.setRowSelected(parent.getRowSelectedByBook(getMTitle(), getAuthor()));
@@ -142,14 +128,8 @@ public class CommonSQL {
                         JOptionPane.showMessageDialog(jFrame, "Le livre créé ne correspond pas aux critères appliqué", "WARNING", JOptionPane.WARNING_MESSAGE);
                     }
                 }else{
-                    if(diag.getNewBookTitle().contains("'")) {
-                        String title = diag.getNewBookTitle().replace("'", "''");
-                        parent.setMTitle(title);
-                    }else{
-                        parent.setMTitle(diag.getNewBookTitle());
-                    }
-
                     parent.fillBookTable(parent.isFiltered());
+                    parent.setMTitle(diag.getNewBookTitle());
                     parent.setAuthor(diag.getNewBookAuthor());
                     parent.setRowReading(0);
                     parent.setRowSelected(parent.getRowSelectedByBook(getMTitle(), getAuthor()));
@@ -166,9 +146,6 @@ public class CommonSQL {
     }
     public static void editBook(EditBookDlg diag, String title, String author, MainWindow parent){
         if (diag.isValid()){
-            if(title.contains("'")) {
-                title = title.replace("'", "''");
-            }
             String BookQry = "UPDATE Book SET Title=?, Author=?, Image=?, NumberOP=?, NotePerso=?, NoteBabelio=?, ReleaseYear=?, Summary=?"+
                     "WHERE Title='"+title+"' AND Author='"+author+"'";//Edit in bdd the book that we want to change
             String ReadingQry = "UPDATE Reading SET Title=?, Author=?"+
@@ -271,15 +248,11 @@ public class CommonSQL {
                 parent.setRowReading(parent.getManageReading().getRowCount()-1);
             }catch (SQLException e){
                 System.out.println(e.getMessage());
-                System.exit(0);
             }
         }
     }
     public static void editReading(EditReadingDlg diag,String title, String author, MainWindow parent){
         if(diag.isValid()){
-            if(title.contains("'")) {
-                title = title.replace("'", "''");
-            }
             String sql = "UPDATE Reading SET StartReading=?, EndReading=?" +
                     "WHERE Title='"+title+"' AND Author='"+author+"' AND ID='"+parent.getRowReading()+"'";//Edit in bdd the item that we want to change the reading date
             String AvNumQry = "UPDATE Book SET AvReadingTime=?, NumberReading=? WHERE Title='"+title+"' AND Author='"+author+"'";
@@ -387,7 +360,6 @@ public class CommonSQL {
             statement.close();
         }catch (Exception e){
             System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-            System.exit(0);
         }
         return i;
     }
@@ -402,7 +374,6 @@ public class CommonSQL {
             statement.close();
         }catch (Exception e){
             System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-            System.exit(0);
         }
         return i;
     }
@@ -417,7 +388,6 @@ public class CommonSQL {
             statement.close();
         }catch (Exception e){
             System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-            System.exit(0);
         }
         return i;
     }
@@ -432,7 +402,6 @@ public class CommonSQL {
             statement.close();
         }catch (Exception e){
             System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-            System.exit(0);
         }
         return name;
     }
@@ -451,7 +420,6 @@ public class CommonSQL {
             statement.close();
         }catch (Exception e){
             System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-            System.exit(0);
         }
 
         return tags;
