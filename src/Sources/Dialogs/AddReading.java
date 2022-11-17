@@ -58,68 +58,70 @@ public class AddReading extends JDialog {
                 dispose();
             });
         ReadingOkBtn.addActionListener((ActionEvent evt)-> {
-                //System.out.println(getNewStartReading()+" - "+getNewEndReading());
-                String sql = "SELECT Title, Author, StartReading, EndReading FROM Reading WHERE Title='"+getMtitle()+"' AND Author='"+getAuthor()+"'";
-                try (Connection conn = connect()){
-                    Statement statement = conn.createStatement();
-                    ResultSet qry = statement.executeQuery(sql);
+            if(getMtitle().contains("'")){
+                setMtitle(getMtitle().replace("'","''"));
+            }
+            String sql = "SELECT Title, Author, StartReading, EndReading FROM Reading WHERE Title='"+getMtitle()+"' AND Author='"+getAuthor()+"'";
+            try (Connection conn = connect()){
+                Statement statement = conn.createStatement();
+                ResultSet qry = statement.executeQuery(sql);
 
-                    Date enDate =new Date();
-                    Date startDate = new Date();
-                    if(!isNotDone() && !isDateUnknown()){
-                        enDate =new SimpleDateFormat("yyyy-MM-dd").parse(getNewEndReading());
-                        startDate = new SimpleDateFormat("yyyy-MM-dd").parse(getNewStartReading());
-                    }
-                    boolean readingFound =false;
-                    while (qry.next() && !readingFound){
-                        if (!isDateUnknown() && !isNotDone() && Objects.equals(qry.getString(3), getNewStartReading())
-                                && Objects.equals(qry.getString(4), getNewEndReading())){
-                            JFrame jFrame = new JFrame();
-                            JOptionPane.showMessageDialog(jFrame, "Les dates de lecture existent déjà !");
-                            readingFound = true;//
-                        } else if (!isDateUnknown() && isNotDone() && Objects.equals(qry.getString(3), getNewStartReading()) && !Objects.equals(getNewStartReading(), getNewEndReading())) {
-                            JFrame jFrame = new JFrame();
-                            JOptionPane.showMessageDialog(jFrame, "La date de début de lecture existe déjà !");
-                            readingFound = true;//
-                        } else if (!isDateUnknown() && !isNotDone() && Objects.equals(qry.getString(3), getNewStartReading()) && !Objects.equals(getNewStartReading(), getNewEndReading())) {
-                            JFrame jFrame = new JFrame();
-                            JOptionPane.showMessageDialog(jFrame, "La date de début de lecture existe déjà !");
-                            readingFound = true;//
-                        } else if (!isDateUnknown() && !isNotDone() && Objects.equals(qry.getString(4), getNewEndReading()) && !Objects.equals(getNewStartReading(), getNewEndReading())) {
-                            JFrame jFrame = new JFrame();
-                            JOptionPane.showMessageDialog(jFrame, "La date de fin de lecture existe déjà !");
-                            readingFound = true;//
-                        }
-                    }
-                    if (!readingFound && isDateUnknown()){
-                        setIsValid(true);
-                        setVisible(false);
-                        dispose();
-                    } else if (!readingFound && isNotDone()) {
-                        setIsValid(true);
-                        setVisible(false);
-                        dispose();
-                    } else if (!readingFound && !Objects.equals(getNewStartReading(), getNewEndReading()) && !isDateUnknown() && !isNotDone() && startDate.compareTo(enDate)<0){
-                        setIsValid(true);
-                        setVisible(false);
-                        dispose();
-                    } else if (!readingFound && !Objects.equals(getNewStartReading(), getNewEndReading()) && !isDateUnknown() && !isNotDone() && startDate.compareTo(enDate)>0) {
-                        setIsValid(false);
-                        JFrame jFrame = new JFrame();
-                        JOptionPane.showMessageDialog(jFrame, "La date de début de lecture ne peut pas être après à la fin de lecture !");
-                    } else if(!readingFound && Objects.equals(getNewStartReading(), getNewEndReading())
-                            && !isDateUnknown() && !isNotDone()){
-                        setIsValid(false);
-                        JFrame jFrame = new JFrame();
-                        JOptionPane.showMessageDialog(jFrame, "La date de début de lecture ne peut pas être identique à la fin de lecture !");
-                    }
-                    conn.close();
-                    statement.close();
-                }catch (Exception e){
-                    System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-                    System.exit(0);
+                Date enDate =new Date();
+                Date startDate = new Date();
+                if(!isNotDone() && !isDateUnknown()){
+                    enDate =new SimpleDateFormat("yyyy-MM-dd").parse(getNewEndReading());
+                    startDate = new SimpleDateFormat("yyyy-MM-dd").parse(getNewStartReading());
                 }
-            });
+                boolean readingFound =false;
+                while (qry.next() && !readingFound){
+                    if (!isDateUnknown() && !isNotDone() && Objects.equals(qry.getString(3), getNewStartReading())
+                            && Objects.equals(qry.getString(4), getNewEndReading())){
+                        JFrame jFrame = new JFrame();
+                        JOptionPane.showMessageDialog(jFrame, "Les dates de lecture existent déjà !");
+                        readingFound = true;//
+                    } else if (!isDateUnknown() && isNotDone() && Objects.equals(qry.getString(3), getNewStartReading()) && !Objects.equals(getNewStartReading(), getNewEndReading())) {
+                        JFrame jFrame = new JFrame();
+                        JOptionPane.showMessageDialog(jFrame, "La date de début de lecture existe déjà !");
+                        readingFound = true;//
+                    } else if (!isDateUnknown() && !isNotDone() && Objects.equals(qry.getString(3), getNewStartReading()) && !Objects.equals(getNewStartReading(), getNewEndReading())) {
+                        JFrame jFrame = new JFrame();
+                        JOptionPane.showMessageDialog(jFrame, "La date de début de lecture existe déjà !");
+                        readingFound = true;//
+                    } else if (!isDateUnknown() && !isNotDone() && Objects.equals(qry.getString(4), getNewEndReading()) && !Objects.equals(getNewStartReading(), getNewEndReading())) {
+                        JFrame jFrame = new JFrame();
+                        JOptionPane.showMessageDialog(jFrame, "La date de fin de lecture existe déjà !");
+                        readingFound = true;//
+                    }
+                }
+                if (!readingFound && isDateUnknown()){
+                    setIsValid(true);
+                    setVisible(false);
+                    dispose();
+                } else if (!readingFound && isNotDone()) {
+                    setIsValid(true);
+                    setVisible(false);
+                    dispose();
+                } else if (!readingFound && !Objects.equals(getNewStartReading(), getNewEndReading()) && !isDateUnknown() && !isNotDone() && startDate.compareTo(enDate)<0){
+                    setIsValid(true);
+                    setVisible(false);
+                    dispose();
+                } else if (!readingFound && !Objects.equals(getNewStartReading(), getNewEndReading()) && !isDateUnknown() && !isNotDone() && startDate.compareTo(enDate)>0) {
+                    setIsValid(false);
+                    JFrame jFrame = new JFrame();
+                    JOptionPane.showMessageDialog(jFrame, "La date de début de lecture ne peut pas être après à la fin de lecture !");
+                } else if(!readingFound && Objects.equals(getNewStartReading(), getNewEndReading())
+                        && !isDateUnknown() && !isNotDone()){
+                    setIsValid(false);
+                    JFrame jFrame = new JFrame();
+                    JOptionPane.showMessageDialog(jFrame, "La date de début de lecture ne peut pas être identique à la fin de lecture !");
+                }
+                conn.close();
+                statement.close();
+            }catch (Exception e){
+                System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+                System.exit(0);
+            }
+        });
     }
 
     public String getMtitle() {
@@ -174,7 +176,12 @@ public class AddReading extends JDialog {
         this.m_isValid = bool;
     }
     public void initComponents(){
-        ReadingTitleLabel.setText("Nom du livre : "+getMtitle());
+        if(getMtitle().contains("''''")){
+            setMtitle(getMtitle().replace("''''", "'"));
+            ReadingTitleLabel.setText("Nom du livre : "+getMtitle());
+        }else{
+            ReadingTitleLabel.setText("Nom du livre : "+getMtitle());
+        }
         ReadingAuthorLabel.setText("Nom de l'auteur : "+getAuthor());
 
         Date startDate = new Date();

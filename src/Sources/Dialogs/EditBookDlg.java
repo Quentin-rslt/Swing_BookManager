@@ -230,8 +230,12 @@ public class EditBookDlg extends JDialog {
         try(Connection conn = connect()) {
             Statement statement = conn.createStatement();
             //Title
-            ResultSet titleQry = statement.executeQuery("SELECT Title FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
-            BookTitleTextField.setText(titleQry.getString(1));
+            if(title.contains("''''")){
+                String newTitle = title.replace("''''", "'");
+                BookTitleTextField.setText(newTitle);
+            }else{
+                BookTitleTextField.setText(title);
+            }
 
             //Author
             ResultSet authorQry = statement.executeQuery("SELECT Author FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");

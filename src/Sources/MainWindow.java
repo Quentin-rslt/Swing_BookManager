@@ -427,8 +427,12 @@ public class MainWindow extends JDialog {
     }
     public void loadComponents(String title, String author){
         Tags tags = new Tags();
+        if(title.contains("''")){
+            title = title.replace("'", "''");
+        }
+
         fillReadingTable(title,author);
-        m_manageReading = new ManageReading(MainWindow.this, getMTitle(), getAuthor(), ReadingsTable);
+        m_manageReading = new ManageReading(MainWindow.this, title, getAuthor(), ReadingsTable);
         ReadingsTable.setRowSelectionInterval(getRowReading(),getRowReading());
         BooksTable.setRowSelectionInterval(getRowSelected(), getRowSelected());
         FiltersBookBtn.setEnabled(true);
@@ -438,8 +442,12 @@ public class MainWindow extends JDialog {
             m_statement = conn.createStatement();
 
             //Title label
-            ResultSet titleQry = m_statement.executeQuery("SELECT Title FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
-            TitleLabel.setText(titleQry.getString(1));
+            if(title.contains("''''")){
+                String newTitle = title.replace("''''", "'");
+                TitleLabel.setText(newTitle);
+            }else{
+                TitleLabel.setText(title);
+            }
 
             //Tags Label
             ResultSet tagsQry = m_statement.executeQuery("SELECT Tag,Color FROM Tags JOIN Tagging on Tags.ID=Tagging.IdTag " +
