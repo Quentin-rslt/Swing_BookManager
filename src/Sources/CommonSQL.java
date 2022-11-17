@@ -60,8 +60,15 @@ public class CommonSQL {
                     "VALUES (?,?,?,?,?);";
             String TaggingQry = "INSERT INTO Tagging (IdBook,IdTag) " +
                     "VALUES (?,?);";
-            String AvNumQry = "UPDATE Book SET AvReadingTime=?, NumberReading=?"+
-                    "WHERE Title='"+newTitle+"' AND Author='"+diag.getNewBookAuthor()+"'";
+            String AvNumQry;
+            if(newTitle.contains("''")){
+                String newTitleV2 = newTitle.replace("''","''''");
+                AvNumQry = "UPDATE Book SET AvReadingTime=?, NumberReading=?"+
+                        "WHERE Title='"+newTitleV2+"' AND Author='"+diag.getNewBookAuthor()+"'";
+            }else{
+                AvNumQry = "UPDATE Book SET AvReadingTime=?, NumberReading=?"+
+                        "WHERE Title='"+newTitle+"' AND Author='"+diag.getNewBookAuthor()+"'";
+            }
             parent.getContentPanel().updateUI();
             try (Connection conn = connect(); PreparedStatement BookPstmt = conn.prepareStatement(BookQry); PreparedStatement AvNumPstmt = conn.prepareStatement(AvNumQry);
                  PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry); PreparedStatement TaggingPstmt = conn.prepareStatement(TaggingQry)) {
@@ -94,6 +101,7 @@ public class CommonSQL {
                 BookPstmt.executeUpdate();//Insert the new Book in table Book
                 ReadingPstmt.executeUpdate();//Insert the new reading
 
+                System.out.println(averageTime(newTitle, diag.getNewBookAuthor()));
                 AvNumPstmt.setInt(1, averageTime(newTitle, diag.getNewBookAuthor()));
                 AvNumPstmt.setInt(2, getNumberOfReading(newTitle, diag.getNewBookAuthor()));
                 AvNumPstmt.executeUpdate();
@@ -125,9 +133,6 @@ public class CommonSQL {
                         parent.setRowReading(0);
                         parent.setRowSelected(parent.getRowSelectedByBook(getMTitle(), getAuthor()));
                         parent.loadComponents(getMTitle(), getAuthor());//reload changes made to the book
-                        parent.getBooksTable().setRowSelectionInterval(parent.getRowSelectedByBook(getMTitle(), getAuthor()), parent.getRowSelectedByBook(getMTitle(), getAuthor()));//focus on the edited book
-                        parent.fillReadingTable(getMTitle(), getAuthor());
-                        parent.getReadingsTable().setRowSelectionInterval(0, 0);
                     } else {
                         JFrame jFrame = new JFrame();
                         JOptionPane.showMessageDialog(jFrame, "Le livre créé ne correspond pas aux critères appliqué", "WARNING", JOptionPane.WARNING_MESSAGE);
@@ -139,9 +144,6 @@ public class CommonSQL {
                     parent.setRowReading(0);
                     parent.setRowSelected(parent.getRowSelectedByBook(getMTitle(), getAuthor()));
                     parent.loadComponents(getMTitle(), getAuthor());//reload changes made to the book
-                    parent.getBooksTable().setRowSelectionInterval(parent.getRowSelectedByBook(getMTitle(), getAuthor()), parent.getRowSelectedByBook(getMTitle(), getAuthor()));//focus on the edited book
-                    parent.fillReadingTable(getMTitle(), getAuthor());
-                    parent.getReadingsTable().setRowSelectionInterval(0, 0);
                 }
 
             } catch (SQLException e) {
@@ -215,10 +217,14 @@ public class CommonSQL {
     }
     public static void addReading(AddReading diag, MainWindow parent){
         if (diag.getIsValid()){
+            String title = diag.getMtitle();
+            if(diag.getMtitle().contains("'")){
+                title = diag.getMtitle().replace("'", "''");
+            }
             String ReadingQry = "INSERT INTO Reading (ID,Title,Author,StartReading, EndReading) " +
                     "VALUES (?,?,?,?,?);";
             String AvNumQry = "UPDATE Book SET AvReadingTime=?, NumberReading=?"+
-                    "WHERE Title='"+diag.getMtitle()+"' AND Author='"+diag.getAuthor()+"'";
+                    "WHERE Title='"+title+"' AND Author='"+diag.getAuthor()+"'";
             parent.getContentPanel().updateUI();
             try(Connection conn = connect(); PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry); PreparedStatement AvNumPstmt = conn.prepareStatement(AvNumQry)){
                 ReadingPstmt.setInt(1, getIdReading(diag.getMtitle(), diag.getAuthor()));
@@ -246,15 +252,13 @@ public class CommonSQL {
                 parent.setMTitle(diag.getMtitle());
                 parent.setAuthor(diag.getAuthor());
                 parent.fillBookTable(parent.isFiltered());
+                parent.setRowReading(parent.getManageReading().getRowCount()-1);
                 parent.loadComponents(diag.getMtitle(), diag.getAuthor());
-                //Focus in the jtable on a reading created from an existing book
-                parent.getBooksTable().setRowSelectionInterval(parent.getRowSelectedByBook(diag.getMtitle(), diag.getAuthor()), parent.getRowSelectedByBook(diag.getMtitle(), diag.getAuthor()));
-                parent.fillReadingTable(getMTitle(), getAuthor());
                 if(parent.isFastSearch()){
                     parent.fastSearchBook(parent.getBookFastSearch().getText());
                 }
                 parent.getReadingsTable().setRowSelectionInterval(parent.getManageReading().getRowCount()-1,parent.getManageReading().getRowCount()-1);
-                parent.setRowReading(parent.getManageReading().getRowCount()-1);
+
             }catch (SQLException e){
                 System.out.println(e.getMessage());
             }
@@ -275,17 +279,12 @@ public class CommonSQL {
                 AvNumPstmt.setInt(2, getNumberOfReading(title, author));
                 AvNumPstmt.executeUpdate();
 
-                parent.getContentPanel().updateUI();
-                parent.fillReadingTable(title,author);
-                parent.getReadingsTable().setRowSelectionInterval(parent.getRowReading(), parent.getRowReading());//Focus on the reading that we edit
+                //if the book is no longer in the filters then load on the first line
+                parent.fillBookTable(parent.isFiltered());
+                isItInFilteredBookList(title,author,parent, false);
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
             }
-
-            //if the book is no longer in the filters then load on the first line
-            parent.fillBookTable(parent.isFiltered());
-            isItInFilteredBookList(diag.getMtitle(),author,parent, false);
-
         }
     }
     public static void filtersBook(FiltersDlg diag, String title , String author, MainWindow parent){
@@ -434,6 +433,9 @@ public class CommonSQL {
         return tags;
     }
     public static int averageTime(String title, String author) {
+        if(title.contains("'")){
+            title = title.replace("'","''");
+        }
         String sql = "SELECT StartReading, EndReading FROM Reading WHERE Title='" + title + "' AND Author='" + author + "'";
         long days = 0;
         int dateValid = 0;
@@ -464,10 +466,14 @@ public class CommonSQL {
     }
     public static int getNumberOfReading(String title, String author){
         int i;
+        if(title.contains("'")){
+            title = title.replace("'","''");
+        }
         try (Connection conn = connect()) {
             Statement statement = conn.createStatement();
             ResultSet CountReadingQry = statement.executeQuery("SELECT COUNT(*) FROM Reading WHERE Title='"+title+"' AND Author='"+author+ "'");
             i = CountReadingQry.getInt(1);
+            System.out.println(i);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

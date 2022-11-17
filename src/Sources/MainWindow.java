@@ -93,7 +93,13 @@ public class MainWindow extends JDialog {
         m_popup.add(openManageTags);
 
         if(BooksTable.getRowCount() != 0) {//Vérif if the table is not empty; when starting the app, load and focus on the first book of the table
-            setMTitle(BooksTable.getValueAt(0, 0).toString());
+            if(BooksTable.getValueAt(0, 0).toString().contains("'")){
+                String title = BooksTable.getValueAt(0, 0).toString().replace("'", "''");
+                setMTitle(title);
+            }
+            else{
+                setMTitle(BooksTable.getValueAt(0, 0).toString());
+            }
             setAuthor(BooksTable.getValueAt(0, 1).toString());
             setRowReading(0);
             setRowSelected(0);
@@ -117,7 +123,13 @@ public class MainWindow extends JDialog {
                 if(newLine != getRowSelected()) {
                     setRowSelected(BooksTable.rowAtPoint(evt.getPoint()));
                     setRowReading(0);
-                    setMTitle(BooksTable.getValueAt(getRowSelected(), 0).toString()); //get the value of the column of the table
+                    if(BooksTable.getValueAt(getRowSelected(), 0).toString().contains("'")){
+                        String title = BooksTable.getValueAt(getRowSelected(), 0).toString().replace("'", "''");
+                        setMTitle(title);
+                    }
+                    else{
+                        setMTitle(BooksTable.getValueAt(getRowSelected(), 0).toString());
+                    }
                     setAuthor(BooksTable.getValueAt(getRowSelected(), 1).toString());
                     loadComponents(getMTitle(), getAuthor());
                 }
@@ -349,6 +361,9 @@ public class MainWindow extends JDialog {
                 String author = rs.getString("Author");//Retrieve the author
 
                 String[] header = {"Titre","Auteur"};
+                if(title.contains("''")){
+                    title = title.replace("''","'");
+                }
                 Object[] data = {title, author};
 
                 m_tableBookModel.setColumnIdentifiers(header);//Create the header
@@ -430,6 +445,7 @@ public class MainWindow extends JDialog {
         if(title.contains("''")){
             title = title.replace("'", "''");
         }
+        //System.out.println(getMTitle());
 
         fillReadingTable(title,author);
         m_manageReading = new ManageReading(MainWindow.this, title, getAuthor(), ReadingsTable);

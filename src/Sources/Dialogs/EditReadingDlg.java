@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.Objects;
 
 import static Sources.CommonSQL.connect;
+import static Sources.MainWindow.getMTitle;
 
 public class EditReadingDlg extends JDialog {
     private JPanel contentPane;

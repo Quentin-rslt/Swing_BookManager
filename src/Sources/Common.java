@@ -192,8 +192,12 @@ public class Common {
         }
     }
     public static void isItInFilteredBookList(String title, String author, MainWindow parent, boolean bookDelete){
-        if(isInFilteredList(title,author, parent.getBooksTable())){
-            parent.setRowSelected(parent.getRowSelectedByBook(title, author));
+        String newTitle = title;
+        if(title.contains("''")){
+            newTitle = title.replace("''", "'");
+        }
+        if(isInFilteredList(newTitle,author, parent.getBooksTable())){
+            parent.setRowSelected(parent.getRowSelectedByBook(newTitle, author));
             parent.loadComponents(title, author);//reload changes made to the book
         }
         else{
