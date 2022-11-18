@@ -234,6 +234,26 @@ public class Common {
             });
         }
     }
+    public static void resetApp(MainWindow mainWindow, boolean reset){
+        Component[] components = mainWindow.getContentPanel().getComponents();
+        JButton btn = mainWindow.getAddBookBtn();
+        btn.setForeground(mainWindow.getForeground());
+        btn.setBackground(mainWindow.getBackground());
+        if(!reset){
+            for(Component component : components){
+                component.setVisible(false);
+            }
+            btn.setVisible(true);
+            btn.setText("Votre base est vide veuiller ajouter un nouveau livre");
+            mainWindow.getContentPanel().add(btn);
+        }
+        else{
+            for(Component component : components){
+                component.setVisible(true);
+            }
+            btn.setVisible(false);
+        }
+    }
 
     public static boolean isInFilteredList(String title, String author, JTable table){
         boolean isFiltered=false;

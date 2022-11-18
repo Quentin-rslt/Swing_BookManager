@@ -102,9 +102,8 @@ public class MainWindow extends JDialog {
             setJMenuBar(createMenuBar(this));
 
             FiltersBookBtn.setEnabled(true);
-            BookManageTagsBtn.setEnabled(true);
         }else{
-            BookManageTagsBtn.setEnabled(false);
+            resetApp(this,false);
             FiltersBookBtn.setEnabled(false);
         }
 
@@ -555,6 +554,9 @@ public class MainWindow extends JDialog {
         BookPhotoPanel.removeAll();
         contentPane.updateUI();
         contentPane.setBorder(null);
+        if(getNumberOfBook() == 0){
+            resetApp(this, false);
+        }
     }
     public void setIsFiltered(Boolean filtered) {
         isFiltered = filtered;
@@ -620,5 +622,8 @@ public class MainWindow extends JDialog {
 
     public void setRowReading(int rowReading) {
         this.rowReading = rowReading;
+    }
+    public JButton getAddBookBtn() {
+        return AddBookBtn;
     }
 }

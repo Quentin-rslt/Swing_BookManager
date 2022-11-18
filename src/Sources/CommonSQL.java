@@ -48,6 +48,7 @@ public class CommonSQL {
     }
     public static void addBook(AddBookDlg diag, MainWindow parent){
         if (diag.isValide()){
+            resetApp(parent, true);
             String BookQry = "INSERT INTO Book (Title,Author,Image,NumberOP,NotePerso,NoteBabelio,ReleaseYear,Summary) " +
                     "VALUES (?,?,?,?,?,?,?,?);";
             String ReadingQry = "INSERT INTO Reading (ID,Title,Author,StartReading, EndReading) " +
@@ -444,6 +445,17 @@ public class CommonSQL {
         try (Connection conn = connect()) {
             Statement statement = conn.createStatement();
             ResultSet CountReadingQry = statement.executeQuery("SELECT COUNT(*) FROM Reading WHERE Title='"+title+"' AND Author='"+author+ "'");
+            i = CountReadingQry.getInt(1);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return i;
+    }
+    public static int getNumberOfBook(){
+        int i;
+        try (Connection conn = connect()) {
+            Statement statement = conn.createStatement();
+            ResultSet CountReadingQry = statement.executeQuery("SELECT COUNT(*) FROM Book");
             i = CountReadingQry.getInt(1);
         } catch (SQLException e) {
             throw new RuntimeException(e);
