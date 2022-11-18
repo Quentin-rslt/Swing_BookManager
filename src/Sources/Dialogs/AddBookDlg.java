@@ -48,7 +48,6 @@ public class AddBookDlg extends JDialog {
 
     public AddBookDlg() {
         this.m_tags = new Tags();
-
         setContentPane(contentPane);
         setModal(true);
         initComponents();
@@ -149,13 +148,13 @@ public class AddBookDlg extends JDialog {
         BookTagsCB.getEditor().getEditorComponent().addKeyListener(new java.awt.event.KeyAdapter() {
             @Override
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                if (!Objects.equals(BookTagsCB.getSelectedItem(), "")) {
-                    if (evt.getKeyCode()==KeyEvent.VK_ENTER){
-                        fillPaneTags(getTags(), BookTagsPanel, BookTagsCB, true);
-                    }
+            if (!Objects.equals(BookTagsCB.getSelectedItem(), "")) {
+                if (evt.getKeyCode()==KeyEvent.VK_ENTER){
+                    fillPaneTags(getTags(), BookTagsPanel, BookTagsCB, true);
                 }
-                initListenerTag(getTags(), m_popup, BookTagsPanel);
-                BookTagsPanel.updateUI();
+            }
+            initListenerTag(getTags(), m_popup, BookTagsPanel);
+            BookTagsPanel.updateUI();
             }
         });
         BookTagsCB.getEditor().getEditorComponent().addMouseListener(new MouseAdapter() {

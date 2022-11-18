@@ -93,18 +93,13 @@ public class MainWindow extends JDialog {
         m_popup.add(openManageTags);
 
         if(BooksTable.getRowCount() != 0) {//Vérif if the table is not empty; when starting the app, load and focus on the first book of the table
-            if(BooksTable.getValueAt(0, 0).toString().contains("'")){
-                String title = BooksTable.getValueAt(0, 0).toString().replace("'", "''");
-                setMTitle(title);
-            }
-            else{
-                setMTitle(BooksTable.getValueAt(0, 0).toString());
-            }
+
+            setMTitle(BooksTable.getValueAt(0, 0).toString());
             setAuthor(BooksTable.getValueAt(0, 1).toString());
             setRowReading(0);
             setRowSelected(0);
             loadComponents(getMTitle(), getAuthor());
-            setJMenuBar(createMenuBar(this,getMTitle(),getAuthor()));
+            setJMenuBar(createMenuBar(this));
 
             FiltersBookBtn.setEnabled(true);
             BookManageTagsBtn.setEnabled(true);
@@ -123,13 +118,7 @@ public class MainWindow extends JDialog {
                 if(newLine != getRowSelected()) {
                     setRowSelected(BooksTable.rowAtPoint(evt.getPoint()));
                     setRowReading(0);
-                    if(BooksTable.getValueAt(getRowSelected(), 0).toString().contains("'")){
-                        String title = BooksTable.getValueAt(getRowSelected(), 0).toString().replace("'", "''");
-                        setMTitle(title);
-                    }
-                    else{
-                        setMTitle(BooksTable.getValueAt(getRowSelected(), 0).toString());
-                    }
+                    setMTitle(BooksTable.getValueAt(getRowSelected(), 0).toString());
                     setAuthor(BooksTable.getValueAt(getRowSelected(), 1).toString());
                     loadComponents(getMTitle(), getAuthor());
                 }
@@ -137,8 +126,8 @@ public class MainWindow extends JDialog {
                     m_popup.show(BooksTable, evt.getX(), evt.getY());
                 }
                 if(evt.getClickCount() == 2 && evt.getButton() == MouseEvent.BUTTON1){
-                    EditBookDlg diag = openEditBookDlg(getMTitle(),getAuthor());
-                    editBook(diag, getMTitle(),getAuthor(),MainWindow.this);
+                    EditBookDlg diag = openEditBookDlg();
+                    editBook(diag,MainWindow.this);
                 }
             }
         });
@@ -149,31 +138,31 @@ public class MainWindow extends JDialog {
         });
         cut.addActionListener((ActionEvent evt) -> deleteBook(this));
         edit.addActionListener((ActionEvent evt) -> {
-            EditBookDlg diag = openEditBookDlg(getMTitle(),getAuthor());
-            editBook(diag, getMTitle(),getAuthor(),this);
+            EditBookDlg diag = openEditBookDlg();
+            editBook(diag,this);
         });
         add.addActionListener((ActionEvent evt) -> {
-            AddReading diag = openAddReadingDlg(getMTitle(),getAuthor());
+            AddReading diag = openAddReadingDlg();
             addReading(diag, this);
         });
         openManageTags.addActionListener((ActionEvent evt)->{
             openManageTagsDlg(getMTitle(), getAuthor());
             contentPane.updateUI();
             fillBookTable(isFiltered());
-            isItInFilteredBookList(getMTitle(),getAuthor(),this,false);
+            isItInFilteredBookList(this,false);
             if(isFastSearch()){
                 fastSearchBook(BookFastSearch.getText());
             }
         });
         FiltersBookBtn.addActionListener((ActionEvent e)-> {
             m_filtersDiag = openFilterDlg();
-            filtersBook(m_filtersDiag, getMTitle() , getAuthor(), this);
+            filtersBook(m_filtersDiag, this);
         });
         CancelFiltersBtn.addActionListener((ActionEvent e) -> {
             contentPane.updateUI();
             setIsFiltered(false);
             fillBookTable(isFiltered());
-            isItInFilteredBookList(getMTitle(),getAuthor(),this,false);
+            isItInFilteredBookList(this,false);
             if(isFastSearch()){
                 fastSearchBook(getBookFastSearch().getText());
             }
@@ -182,7 +171,7 @@ public class MainWindow extends JDialog {
             openManageTagsDlg();
             contentPane.updateUI();
             fillBookTable(isFiltered());
-            isItInFilteredBookList(getMTitle(),getAuthor(),this, false);
+            isItInFilteredBookList(this, false);
             if(isFastSearch()){
                 fastSearchBook(BookFastSearch.getText());
             }
@@ -328,11 +317,11 @@ public class MainWindow extends JDialog {
                             qry.append("'").append(m_filtersDiag.getTags().getTag(i).getTextTag()).append("') ");
                         }
                     }
-                    qry.append("AND Book.Title LIKE '%").append(m_filtersDiag.getMTitle()).append("%'");
+                    qry.append("AND Book.Title LIKE '%").append(m_filtersDiag.getFilterTitle()).append("%'");
                 }else {
-                    qry.append("WHERE Book.Title LIKE '%").append(m_filtersDiag.getMTitle()).append("%'");
+                    qry.append("WHERE Book.Title LIKE '%").append(m_filtersDiag.getFilterTitle()).append("%'");
                 }
-                qry.append("AND Book.Author LIKE '%").append(m_filtersDiag.getAuthor()).append("%'").append("AND Book.ReleaseYear BETWEEN '").append(m_filtersDiag.getFirstDatRelease()).append("' AND '").append(m_filtersDiag.getLastDateRelease()).append("'").append("AND Book.NotePerso BETWEEN '").append(m_filtersDiag.getFirstNote()).append("' AND '").append(m_filtersDiag.getLastNote()).append("'").append("AND Book.NumberOP BETWEEN '").append(m_filtersDiag.getFirstNumberOP()).append("' AND '").append(m_filtersDiag.getLastNumberOP()).append("'").append("AND Book.NumberReading BETWEEN '").append(m_filtersDiag.getFirstNumberOR()).append("' AND '").append(m_filtersDiag.getLastNumberOR()).append("'").append("AND Book.AvReadingTime BETWEEN '").append(m_filtersDiag.getFirstAvTime()).append("' AND '").append(m_filtersDiag.getLastAvTime()).append("'").append("AND Book.NoteBabelio BETWEEN '").append(m_filtersDiag.getFirstNoteBB()).append("' AND '").append(m_filtersDiag.getLastNoteBB()).append("'");
+                qry.append("AND Book.Author LIKE '%").append(m_filtersDiag.getFilterAuthor()).append("%'").append("AND Book.ReleaseYear BETWEEN '").append(m_filtersDiag.getFirstDatRelease()).append("' AND '").append(m_filtersDiag.getLastDateRelease()).append("'").append("AND Book.NotePerso BETWEEN '").append(m_filtersDiag.getFirstNote()).append("' AND '").append(m_filtersDiag.getLastNote()).append("'").append("AND Book.NumberOP BETWEEN '").append(m_filtersDiag.getFirstNumberOP()).append("' AND '").append(m_filtersDiag.getLastNumberOP()).append("'").append("AND Book.NumberReading BETWEEN '").append(m_filtersDiag.getFirstNumberOR()).append("' AND '").append(m_filtersDiag.getLastNumberOR()).append("'").append("AND Book.AvReadingTime BETWEEN '").append(m_filtersDiag.getFirstAvTime()).append("' AND '").append(m_filtersDiag.getLastAvTime()).append("'").append("AND Book.NoteBabelio BETWEEN '").append(m_filtersDiag.getFirstNoteBB()).append("' AND '").append(m_filtersDiag.getLastNoteBB()).append("'");
                 if(m_filtersDiag.isFiltered()){
                     qry.append("AND Reading.StartReading BETWEEN '").append(m_filtersDiag.getFirstStartDate()).append("' AND '").append(m_filtersDiag.getLastStartDate()).append("'").append("AND Reading.EndReading BETWEEN '").append(m_filtersDiag.getFirstEndDate()).append("' AND '").append(m_filtersDiag.getLastEndDate()).append("'");
                 }
@@ -380,7 +369,7 @@ public class MainWindow extends JDialog {
 
             if(BooksTable.getRowCount()>0) {
                 BooksTable.getTableHeader().setResizingAllowed(false);
-                BooksTable.getColumnModel().getColumn(0).setPreferredWidth((int) ((BooksTable.getPreferredScrollableViewportSize().width) / 1.5));
+                BooksTable.getColumnModel().getColumn(0).setPreferredWidth((int) ((BooksTable.getPreferredScrollableViewportSize().width+1) / 1.5));
                 BooksTable.getColumnModel().getColumn(1).setPreferredWidth((BooksTable.getPreferredScrollableViewportSize().width) / 3);
             }
 
@@ -440,14 +429,8 @@ public class MainWindow extends JDialog {
     }
     public void loadComponents(String title, String author){
         Tags tags = new Tags();
-        //System.out.println(title);
-        if(title.contains("''")){
-            title = title.replace("'", "''");
-        }
-        //System.out.println(title);
-
         fillReadingTable(title,author);
-        m_manageReading = new ManageReading(MainWindow.this, getMTitle(), getAuthor(), ReadingsTable);
+        m_manageReading = new ManageReading(MainWindow.this, ReadingsTable);
         ReadingsTable.setRowSelectionInterval(getRowReading(),getRowReading());
         BooksTable.setRowSelectionInterval(getRowSelected(), getRowSelected());
         FiltersBookBtn.setEnabled(true);
@@ -547,7 +530,7 @@ public class MainWindow extends JDialog {
             ResultSet ImageQry = m_statement.executeQuery("SELECT Image FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
             addImageToPanel(ImageQry.getString(1),BookPhotoPanel);
 
-            setJMenuBar(createMenuBar(this, getMTitle(), getAuthor()));
+            setJMenuBar(createMenuBar(this));
 
             conn.close();
             m_statement.close();
@@ -613,7 +596,7 @@ public class MainWindow extends JDialog {
         if(getRowReading()+1>getReadingsTable().getRowCount()){
             setRowReading(0);
         }
-        isItInFilteredBookList(getMTitle(),getAuthor(),this, false);
+        isItInFilteredBookList(this, false);
     }
 
     public static void main(String[] args) {
@@ -626,7 +609,7 @@ public class MainWindow extends JDialog {
         MainWindow parent = new MainWindow();
         parent.setTitle("Book manager");
         parent.setSize(1500,844);
-        parent.setJMenuBar(createMenuBar(parent, getMTitle(), getAuthor()));
+        parent.setJMenuBar(createMenuBar(parent));
         parent.setLocationRelativeTo(null);
         parent.setVisible(true);
         System.exit(0);

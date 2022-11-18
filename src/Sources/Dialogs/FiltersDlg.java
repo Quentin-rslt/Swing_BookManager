@@ -126,21 +126,21 @@ public class FiltersDlg extends JDialog {
         FiltersTagCB.getEditor().getEditorComponent().addKeyListener(new java.awt.event.KeyAdapter() {
             @Override
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                if (!Objects.equals(FiltersTagCB.getEditor().getItem().toString(), "")) {
-                    if (evt.getKeyCode()== KeyEvent.VK_ENTER){
-                        fillPaneTags(getTags(), FiltersTagsPanel, FiltersTagCB, false);
-                    } else{
-                        FiltersTagCB.showPopup();
-                        for (int i=0; i<FiltersTagCB.getItemCount();i++){
-                            if(Objects.equals(FiltersTagCB.getEditor().getItem().toString(), FiltersTagCB.getItemAt(i))){
-                                FiltersTagCB.setSelectedIndex(i);
-                                FiltersTagCB.showPopup();
-                            }
+            if (!Objects.equals(FiltersTagCB.getEditor().getItem().toString(), "")) {
+                if (evt.getKeyCode()== KeyEvent.VK_ENTER){
+                    fillPaneTags(getTags(), FiltersTagsPanel, FiltersTagCB, false);
+                } else{
+                    FiltersTagCB.showPopup();
+                    for (int i=0; i<FiltersTagCB.getItemCount();i++){
+                        if(Objects.equals(FiltersTagCB.getEditor().getItem().toString(), FiltersTagCB.getItemAt(i))){
+                            FiltersTagCB.setSelectedIndex(i);
+                            FiltersTagCB.showPopup();
                         }
                     }
                 }
-                initListenerTag(getTags(), m_popup, FiltersTagsPanel);
-                FiltersTagsPanel.updateUI();
+            }
+            initListenerTag(getTags(), m_popup, FiltersTagsPanel);
+            FiltersTagsPanel.updateUI();
             }
         });
         FiltersTagCB.getEditor().getEditorComponent().addMouseListener(new MouseAdapter() {
@@ -186,10 +186,10 @@ public class FiltersDlg extends JDialog {
     public Tags getTags(){
         return this.m_tags;
     }
-    public String getMTitle(){
+    public String getFilterTitle(){
         return FiltersTitleTextField.getText();
     }
-    public String getAuthor(){
+    public String getFilterAuthor(){
         return FiltersAuthorTextField.getText();
     }
     public String getFirstDatRelease(){

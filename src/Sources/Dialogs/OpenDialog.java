@@ -16,8 +16,8 @@ public class OpenDialog {
 
         return diag;
     }
-    public static EditBookDlg openEditBookDlg(String title, String author){
-        EditBookDlg diag = new EditBookDlg(title, author);
+    public static EditBookDlg openEditBookDlg(){
+        EditBookDlg diag = new EditBookDlg();
         diag.setTitle("Modifier un livre");
         diag.setIconImage(getImageEdit());
         diag.setSize(1000,730);
@@ -26,8 +26,8 @@ public class OpenDialog {
 
         return diag;
     }
-    public static AddReading openAddReadingDlg(String title, String author){
-        AddReading diag = new AddReading(title, author);
+    public static AddReading openAddReadingDlg(){
+        AddReading diag = new AddReading();
         diag.setTitle("Ajouter une lecture");
         diag.setSize(550,265);
         diag.setIconImage(getImageAdd());
@@ -36,8 +36,8 @@ public class OpenDialog {
 
         return diag;
     }
-    public static EditReadingDlg openEditReadingDlg(String title, String author, String startDate, String endDate){
-        EditReadingDlg diag = new EditReadingDlg(title, author,startDate,endDate);
+    public static EditReadingDlg openEditReadingDlg(String startDate, String endDate){
+        EditReadingDlg diag = new EditReadingDlg(startDate,endDate);
         diag.setIconImage(getImageEdit());
         diag.setTitle("Modifier une lecture");
         diag.setSize(500,220);

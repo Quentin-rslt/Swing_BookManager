@@ -9,6 +9,8 @@ import java.util.Date;
 import java.util.Objects;
 
 import static Sources.CommonSQL.*;
+import static Sources.MainWindow.getAuthor;
+import static Sources.MainWindow.getMTitle;
 
 public class AddReading extends JDialog {
     private JPanel contentPane;
@@ -21,15 +23,15 @@ public class AddReading extends JDialog {
     private JCheckBox ReadingUnknownCheckBox;
     private JCheckBox ReadingNotDoneCheckBox;
 
-    private String m_title;
-    private String m_author;
+    private final String m_title;
+    private final String m_author;
     private boolean m_isValid = false;
 
-    public AddReading(String title, String author) {
+    public AddReading() {
         setContentPane(contentPane);
         setModal(true);
-        setMtitle(title);
-        setAuthor(author);
+        this.m_title = getMTitle();
+        this.m_author = getAuthor();
         initComponents();
         ReadingUnknownCheckBox.addActionListener((ActionEvent e) ->{
                 if (isDateUnknown()){
@@ -58,10 +60,7 @@ public class AddReading extends JDialog {
                 dispose();
             });
         ReadingOkBtn.addActionListener((ActionEvent evt)-> {
-            if(getMtitle().contains("'")){
-                setMtitle(getMtitle().replace("'","''"));
-            }
-            String sql = "SELECT Title, Author, StartReading, EndReading FROM Reading WHERE Title='"+getMtitle()+"' AND Author='"+getAuthor()+"'";
+            String sql = "SELECT Title, Author, StartReading, EndReading FROM Reading WHERE Title='"+this.m_title+"' AND Author='"+this.m_author+"'";
             try (Connection conn = connect()){
                 Statement statement = conn.createStatement();
                 ResultSet qry = statement.executeQuery(sql);
@@ -123,13 +122,6 @@ public class AddReading extends JDialog {
             }
         });
     }
-
-    public String getMtitle() {
-        return m_title;
-    }
-    public String getAuthor() {
-        return m_author;
-    }
     public String getNewEndReading() {
         String end = "";
         if(!isDateUnknown() && !isNotDone()){
@@ -166,23 +158,12 @@ public class AddReading extends JDialog {
         return ReadingNotDoneCheckBox.isSelected();
     }
 
-    public void setMtitle(String m_title) {
-        this.m_title = m_title;
-    }
-    public void setAuthor(String m_author) {
-        this.m_author = m_author;
-    }
     public void setIsValid(boolean bool){
         this.m_isValid = bool;
     }
     public void initComponents(){
-        if(getMtitle().contains("''''")){
-            setMtitle(getMtitle().replace("''''", "'"));
-            ReadingTitleLabel.setText("Nom du livre : "+getMtitle());
-        }else{
-            ReadingTitleLabel.setText("Nom du livre : "+getMtitle());
-        }
-        ReadingAuthorLabel.setText("Nom de l'auteur : "+getAuthor());
+        ReadingTitleLabel.setText("Nom du livre : "+this.m_title);
+        ReadingAuthorLabel.setText("Nom de l'auteur : "+this.m_author);
 
         Date startDate = new Date();
         SpinnerDateModel NewBookStartReadingSpinModel = new SpinnerDateModel(startDate, null, startDate, Calendar.YEAR);

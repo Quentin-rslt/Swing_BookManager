@@ -15,14 +15,14 @@ import static Sources.MainWindow.getAuthor;
 import static Sources.MainWindow.getMTitle;
 
 public class MenuBar {
-    public static JMenuBar createMenuBar(MainWindow parent, String title, String author) {
+    public static JMenuBar createMenuBar(MainWindow parent) {
         JMenu helpMenu = new JMenu("Aide");
         JMenuItem aboutMenuItem = new JMenuItem("A propos");
         helpMenu.add(aboutMenuItem);
 
         JMenuBar menuBar = new JMenuBar();
         menuBar.add(createFileMenu(parent));
-        menuBar.add(createEditMenu(parent, title, author));
+        menuBar.add(createEditMenu(parent));
         menuBar.add(createViewMenu());
         menuBar.add(helpMenu);
 
@@ -113,7 +113,7 @@ public class MenuBar {
 
         return fileMenu;
     }
-    public static JMenu createEditMenu(MainWindow parent, String title, String author){
+    public static JMenu createEditMenu(MainWindow parent){
         //Add menu
         JMenu addMenu = new JMenu("Ajouter ");
         JMenuItem addBookMenuItem = new JMenuItem("Un livre");
@@ -123,7 +123,7 @@ public class MenuBar {
         }));
         JMenuItem addReadingMenuItem = new JMenuItem("Une lecture");
         addReadingMenuItem.addActionListener((e->{
-            AddReading diag = openAddReadingDlg(title, author);
+            AddReading diag = openAddReadingDlg();
             addReading(diag, parent);
         }));
         addMenu.add(addBookMenuItem);
@@ -135,7 +135,7 @@ public class MenuBar {
             openManageTagsDlg();
             parent.getContentPanel().updateUI();
             parent.fillBookTable(parent.isFiltered());
-            isItInFilteredBookList(title,author,parent, false);
+            isItInFilteredBookList(parent, false);
             if(parent.isFastSearch()){
                 parent.fastSearchBook(parent.getBookFastSearch().getText());
             }
@@ -144,8 +144,8 @@ public class MenuBar {
         //Edit book
         JMenuItem editBookMenuItem = new JMenuItem("Modifier le livre");
         editBookMenuItem.addActionListener((e->{
-            EditBookDlg diag = openEditBookDlg(title, author);
-            editBook(diag, title,author,parent);
+            EditBookDlg diag = openEditBookDlg();
+            editBook(diag,parent);
         }));
 
         //Delete book
@@ -157,7 +157,7 @@ public class MenuBar {
         filterMenuItem.addActionListener((e -> {
             FiltersDlg diag = openFilterDlg();
             parent.setDiagFilters(diag);
-            filtersBook(diag, title , author, parent);
+            filtersBook(diag, parent);
         }));
 
         //Edit Menu

@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.Objects;
 
 import static Sources.CommonSQL.connect;
+import static Sources.MainWindow.getAuthor;
 import static Sources.MainWindow.getMTitle;
 
 public class EditReadingDlg extends JDialog {
@@ -23,17 +24,17 @@ public class EditReadingDlg extends JDialog {
     private JCheckBox BookUnknownDateReadingCheckBox;
     private JCheckBox BookNotDoneReadChecbox;
     private JSpinner BookNewStartReadingSpin;
-    private String m_title;
-    private String m_author;
+    private final String m_title;
+    private final String m_author;
     private String m_startReading;
     private String m_endReading;
     private boolean m_isValid = false;
 
-    public EditReadingDlg(String title, String author, String startReading, String endReading) {
+    public EditReadingDlg(String startReading, String endReading) {
         setContentPane(contentPane);
         setModal(true);
-        setMtitle(title);
-        setAuthor(author);
+        this.m_title = getMTitle();
+        this.m_author = getAuthor();
         setStartReading(startReading);
         setEndReading(endReading);
         initComponent();
@@ -43,10 +44,7 @@ public class EditReadingDlg extends JDialog {
             dispose();
         });
         OkBtn.addActionListener((ActionEvent evt) ->{
-            if(getMtitle().contains("'")){
-                setMtitle(getMtitle().replace("'","''"));
-            }
-            String sql = "SELECT Title, Author, StartReading, EndReading FROM Reading WHERE Title='"+getMtitle()+"' AND Author='"+getAuthor()+"'";
+            String sql = "SELECT Title, Author, StartReading, EndReading FROM Reading WHERE Title='"+this.m_title+"' AND Author='"+this.m_author+"'";
             try (Connection connection = connect()){
                 Statement statement = connection.createStatement();
                 ResultSet qry = statement.executeQuery(sql);
@@ -182,12 +180,6 @@ public class EditReadingDlg extends JDialog {
             return formater.format(BookNewStartReadingSpin.getValue());
         }
     }
-    public String getAuthor() {
-        return m_author;
-    }
-    public String getMtitle() {
-        return m_title;
-    }
     public boolean isValid() {
         return m_isValid;
     }
@@ -204,25 +196,14 @@ public class EditReadingDlg extends JDialog {
     public void setStartReading(String m_dateReading) {
         this.m_startReading = m_dateReading;
     }
-    public void setAuthor(String m_author) {
-        this.m_author = m_author;
-    }
-    public void setMtitle(String m_title) {
-        this.m_title = m_title;
-    }
     public void setIsValid(boolean m_isValid) {
         this.m_isValid = m_isValid;
     }
     public void initComponent(){
         try {
             //Retrieves the data entered as a parameter from the constructor, and therefore from the DB
-            if(getMtitle().contains("''''")){
-                setMtitle(getMtitle().replace("''''", "'"));
-                BookTitleLable.setText("Nom du livre : "+getMtitle());
-            }else{
-                BookTitleLable.setText("Nom du livre : "+getMtitle());
-            }
-            BookAuthorLabel.setText("Auteur : "+getAuthor());
+            BookTitleLable.setText("Nom du livre : "+this.m_title);
+            BookAuthorLabel.setText("Auteur : "+this.m_author);
 
             Date endDate = new Date();
             SpinnerDateModel NewBookEndReadingSpinModel = new SpinnerDateModel();

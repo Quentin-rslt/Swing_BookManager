@@ -18,6 +18,8 @@ import java.util.Objects;
 import static Sources.Common.*;
 import static Sources.CommonSQL.*;
 import static Sources.Dialogs.OpenDialog.openEditTagDlg;
+import static Sources.MainWindow.getAuthor;
+import static Sources.MainWindow.getMTitle;
 
 public class EditBookDlg extends JDialog {
     private JPanel contentPane;
@@ -41,11 +43,11 @@ public class EditBookDlg extends JDialog {
     final JPopupMenu m_popup;
     Tags m_tags = new Tags();
 
-    public EditBookDlg(String title, String author) {
+    public EditBookDlg() {
         setContentPane(contentPane);
         setModal(true);
-        setOldTitle(title);
-        setOldAuthor(author);
+        setOldTitle(getMTitle());
+        setOldAuthor(getAuthor());
 
         m_popup = new JPopupMenu();//Create a popup menu to delete a reading an edit this reading
         JMenuItem cut = new JMenuItem("Supprimer", new ImageIcon(getImageCut()));
@@ -59,18 +61,18 @@ public class EditBookDlg extends JDialog {
         JsPane.setBorder(null);
 
         BookOkBtn.addActionListener((ActionEvent e) ->{
-                if (!Objects.equals(getNewTitle(), "") && !Objects.equals(getNewAuthor(), "") && !Objects.equals(getNewSummary(), "")){
-                    deleteImageResource(getOldTitle(), getOldAuthor());
-                    setIsValid(true);
-                    updateImageToResource(getOldTitle(), getOldAuthor());
-                    setVisible(false);
-                    dispose();
-                }
-                else{
-                    JFrame jFrame = new JFrame();
-                    JOptionPane.showMessageDialog(jFrame, "Veuillez remplir tous les champs !");
-                }
-            });
+            if (!Objects.equals(getNewTitle(), "") && !Objects.equals(getNewAuthor(), "") && !Objects.equals(getNewSummary(), "")){
+                deleteImageResource(getOldTitle(), getOldAuthor());
+                setIsValid(true);
+                updateImageToResource(getOldTitle(), getOldAuthor());
+                setVisible(false);
+                dispose();
+            }
+            else{
+                JFrame jFrame = new JFrame();
+                JOptionPane.showMessageDialog(jFrame, "Veuillez remplir tous les champs !");
+            }
+        });
         BookBrowseBtn.addActionListener((ActionEvent e)-> selectImageOfBook(BookPhotoPanel));
         BookSummaryTextPane.addFocusListener(new FocusAdapter() {
             @Override

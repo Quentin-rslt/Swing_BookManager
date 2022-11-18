@@ -126,6 +126,7 @@
                 <properties>
                   <enabled value="false"/>
                   <focusable value="false"/>
+                  <verticalScrollBarPolicy value="22"/>
                 </properties>
                 <border type="none"/>
                 <children>
@@ -152,11 +153,12 @@
             <children>
               <scrollpane id="91a1a">
                 <constraints>
-                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="2" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
                   <enabled value="false"/>
                   <focusable value="false"/>
+                  <verticalScrollBarPolicy value="22"/>
                 </properties>
                 <border type="none"/>
                 <children>

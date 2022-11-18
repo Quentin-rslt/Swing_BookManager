@@ -147,12 +147,12 @@ public class Common {
             image = ImageIO.read(file);
             float width = image.getWidth();
             float height = image.getHeight();
-            int maxWidht = 1000;
-            if(width>maxWidht){
+            int maxWidth = 1000;
+            if(width>maxWidth){
                 float ratio = (width/height);
-                int maxHeight = (int) (maxWidht/ratio); //rescale the height of the image with a maximum width of 611px
-                Image resultingImage = image.getScaledInstance(maxWidht, maxHeight, Image.SCALE_DEFAULT);
-                outputImage = new BufferedImage(maxWidht, maxHeight, BufferedImage.TYPE_INT_RGB);
+                int maxHeight = (int) (maxWidth/ratio); //rescale the height of the image with a maximum width of 611px
+                Image resultingImage = image.getScaledInstance(maxWidth, maxHeight, Image.SCALE_DEFAULT);
+                outputImage = new BufferedImage(maxWidth, maxHeight, BufferedImage.TYPE_INT_RGB);
                 outputImage.getGraphics().drawImage(resultingImage, 0, 0, null);
                 ImageIO.write(outputImage, getFormat(file.getName()), file);
             }else{
@@ -175,11 +175,7 @@ public class Common {
                 parent.setRowSelected(parent.getRowSelected());
                 parent.setMTitle(parent.getBooksTable().getValueAt(parent.getRowSelected(), 0).toString());
                 parent.setAuthor(parent.getBooksTable().getValueAt(parent.getRowSelected(), 1).toString());
-                String newTitle = getMTitle();
-                if(getMTitle().contains("'")){
-                    newTitle = getMTitle().replace("'", "''");
-                }
-                parent.loadComponents(newTitle, getAuthor());//reload changes made to the book
+                parent.loadComponents(getMTitle(), getAuthor());//reload changes made to the book
             } else {
                 parent.initComponents();
             }
@@ -189,24 +185,16 @@ public class Common {
                 parent.setAuthor(parent.getBooksTable().getValueAt(0, 1).toString());
                 parent.setRowSelected(0);
                 parent.setRowReading(0);
-                String newTitle = getMTitle();
-                if(getMTitle().contains("'")){
-                    newTitle = getMTitle().replace("'", "''");
-                }
-                parent.loadComponents(newTitle, getAuthor());//reload changes made to the book
+                parent.loadComponents( getMTitle(), getAuthor());//reload changes made to the book
             } else {
                 parent.initComponents();
             }
         }
     }
-    public static void isItInFilteredBookList(String title, String author, MainWindow parent, boolean bookDelete){
-        String newTitle = title;
-        if(title.contains("'")){
-            newTitle = title.replace("'", "''");
-        }
-        if(isInFilteredList(title,author, parent.getBooksTable())){
-            parent.setRowSelected(parent.getRowSelectedByBook(title, author));
-            parent.loadComponents(newTitle, author);//reload changes made to the book
+    public static void isItInFilteredBookList(MainWindow parent, boolean bookDelete){
+        if(isInFilteredList(getMTitle(),getAuthor(), parent.getBooksTable())){
+            parent.setRowSelected(parent.getRowSelectedByBook(getMTitle(), getAuthor()));
+            parent.loadComponents(getMTitle(), getAuthor());//reload changes made to the book
         }
         else{
             isNotInFilteredBookList(parent, bookDelete);
