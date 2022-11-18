@@ -175,7 +175,11 @@ public class Common {
                 parent.setRowSelected(parent.getRowSelected());
                 parent.setMTitle(parent.getBooksTable().getValueAt(parent.getRowSelected(), 0).toString());
                 parent.setAuthor(parent.getBooksTable().getValueAt(parent.getRowSelected(), 1).toString());
-                parent.loadComponents(getMTitle(), getAuthor());//reload changes made to the book
+                String newTitle = getMTitle();
+                if(getMTitle().contains("'")){
+                    newTitle = getMTitle().replace("'", "''");
+                }
+                parent.loadComponents(newTitle, getAuthor());//reload changes made to the book
             } else {
                 parent.initComponents();
             }
@@ -185,7 +189,11 @@ public class Common {
                 parent.setAuthor(parent.getBooksTable().getValueAt(0, 1).toString());
                 parent.setRowSelected(0);
                 parent.setRowReading(0);
-                parent.loadComponents(getMTitle(), getAuthor());//reload changes made to the book
+                String newTitle = getMTitle();
+                if(getMTitle().contains("'")){
+                    newTitle = getMTitle().replace("'", "''");
+                }
+                parent.loadComponents(newTitle, getAuthor());//reload changes made to the book
             } else {
                 parent.initComponents();
             }
@@ -193,12 +201,12 @@ public class Common {
     }
     public static void isItInFilteredBookList(String title, String author, MainWindow parent, boolean bookDelete){
         String newTitle = title;
-        if(title.contains("''")){
-            newTitle = title.replace("''", "'");
+        if(title.contains("'")){
+            newTitle = title.replace("'", "''");
         }
-        if(isInFilteredList(newTitle,author, parent.getBooksTable())){
-            parent.setRowSelected(parent.getRowSelectedByBook(newTitle, author));
-            parent.loadComponents(title, author);//reload changes made to the book
+        if(isInFilteredList(title,author, parent.getBooksTable())){
+            parent.setRowSelected(parent.getRowSelectedByBook(title, author));
+            parent.loadComponents(newTitle, author);//reload changes made to the book
         }
         else{
             isNotInFilteredBookList(parent, bookDelete);

@@ -101,7 +101,6 @@ public class CommonSQL {
                 BookPstmt.executeUpdate();//Insert the new Book in table Book
                 ReadingPstmt.executeUpdate();//Insert the new reading
 
-                System.out.println(averageTime(newTitle, diag.getNewBookAuthor()));
                 AvNumPstmt.setInt(1, averageTime(newTitle, diag.getNewBookAuthor()));
                 AvNumPstmt.setInt(2, getNumberOfReading(newTitle, diag.getNewBookAuthor()));
                 AvNumPstmt.executeUpdate();
@@ -126,24 +125,24 @@ public class CommonSQL {
                     TaggingPstmt.executeUpdate();
                 }
                 if(parent.isFiltered() || parent.isFastSearch()) {
-                    if (isInFilteredList(newTitle, diag.getNewBookAuthor(), parent.getBooksTable())) {
+                    if (isInFilteredList(diag.getNewBookTitle(), diag.getNewBookAuthor(), parent.getBooksTable())) {
                         parent.fillBookTable(parent.isFiltered());
-                        parent.setMTitle(newTitle);
+                        parent.setMTitle(diag.getNewBookTitle());
                         parent.setAuthor(diag.getNewBookAuthor());
                         parent.setRowReading(0);
                         parent.setRowSelected(parent.getRowSelectedByBook(getMTitle(), getAuthor()));
-                        parent.loadComponents(getMTitle(), getAuthor());//reload changes made to the book
+                        parent.loadComponents(newTitle, getAuthor());//reload changes made to the book
                     } else {
                         JFrame jFrame = new JFrame();
                         JOptionPane.showMessageDialog(jFrame, "Le livre créé ne correspond pas aux critères appliqué", "WARNING", JOptionPane.WARNING_MESSAGE);
                     }
                 }else{
                     parent.fillBookTable(parent.isFiltered());
-                    parent.setMTitle(newTitle);
+                    parent.setMTitle(diag.getNewBookTitle());
                     parent.setAuthor(diag.getNewBookAuthor());
                     parent.setRowReading(0);
                     parent.setRowSelected(parent.getRowSelectedByBook(getMTitle(), getAuthor()));
-                    parent.loadComponents(getMTitle(), getAuthor());//reload changes made to the book
+                    parent.loadComponents(newTitle, getAuthor());//reload changes made to the book
                 }
 
             } catch (SQLException e) {
@@ -203,7 +202,7 @@ public class CommonSQL {
 
                 parent.getContentPanel().updateUI();
                 parent.fillBookTable(parent.isFiltered());
-                parent.setMTitle(newTitle);
+                parent.setMTitle(diag.getNewTitle());
                 parent.setAuthor(diag.getNewAuthor());
                 isItInFilteredBookList(getMTitle(),getAuthor(),parent, false);
 
@@ -218,17 +217,17 @@ public class CommonSQL {
     public static void addReading(AddReading diag, MainWindow parent){
         if (diag.getIsValid()){
             String title = diag.getMtitle();
-            if(diag.getMtitle().contains("'")){
-                title = diag.getMtitle().replace("'", "''");
+            if(diag.getMtitle().contains("''")){
+                title = diag.getMtitle().replace("''", "'");
             }
             String ReadingQry = "INSERT INTO Reading (ID,Title,Author,StartReading, EndReading) " +
                     "VALUES (?,?,?,?,?);";
             String AvNumQry = "UPDATE Book SET AvReadingTime=?, NumberReading=?"+
-                    "WHERE Title='"+title+"' AND Author='"+diag.getAuthor()+"'";
+                    "WHERE Title='"+diag.getMtitle()+"' AND Author='"+diag.getAuthor()+"'";
             parent.getContentPanel().updateUI();
             try(Connection conn = connect(); PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry); PreparedStatement AvNumPstmt = conn.prepareStatement(AvNumQry)){
                 ReadingPstmt.setInt(1, getIdReading(diag.getMtitle(), diag.getAuthor()));
-                ReadingPstmt.setString(2, diag.getMtitle());
+                ReadingPstmt.setString(2, title);
                 ReadingPstmt.setString(3, diag.getAuthor());
 
                 if(!diag.isDateUnknown()&& !diag.isNotDone()){
@@ -248,12 +247,11 @@ public class CommonSQL {
                 AvNumPstmt.setInt(2, getNumberOfReading(diag.getMtitle(), diag.getAuthor()));
                 AvNumPstmt.executeUpdate();
 
-
-                parent.setMTitle(diag.getMtitle());
+                parent.setMTitle(title);
                 parent.setAuthor(diag.getAuthor());
                 parent.fillBookTable(parent.isFiltered());
                 parent.setRowReading(parent.getManageReading().getRowCount()-1);
-                parent.loadComponents(diag.getMtitle(), diag.getAuthor());
+                parent.loadComponents(title, diag.getAuthor());
                 if(parent.isFastSearch()){
                     parent.fastSearchBook(parent.getBookFastSearch().getText());
                 }
@@ -266,22 +264,27 @@ public class CommonSQL {
     }
     public static void editReading(EditReadingDlg diag,String title, String author, MainWindow parent){
         if(diag.isValid()){
+            String newTitle = title;
+            System.out.println(title);
+            if(title.contains("''")){
+                newTitle = title.replace("''", "'");
+            }
             String sql = "UPDATE Reading SET StartReading=?, EndReading=?" +
                     "WHERE Title='"+diag.getMtitle()+"' AND Author='"+author+"' AND ID='"+parent.getRowReading()+"'";//Edit in bdd the item that we want to change the reading date
-            String AvNumQry = "UPDATE Book SET AvReadingTime=?, NumberReading=? WHERE Title='"+diag.getMtitle()+"' AND Author='"+author+"'";
+            String AvNumQry = "UPDATE Book SET AvReadingTime=?, NumberReading=? WHERE Title='"+title+"' AND Author='"+author+"'";
             try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql); PreparedStatement AvNumPstmt = conn.prepareStatement(AvNumQry)) {
                 // execute the uptdate statement
                 pstmt.setString(1, diag.getNewStartReading());
                 pstmt.setString(2, diag.getNewEndReading());
                 pstmt.executeUpdate();
 
-                AvNumPstmt.setInt(1, averageTime(title, author));
-                AvNumPstmt.setInt(2, getNumberOfReading(title, author));
+                AvNumPstmt.setInt(1, averageTime(diag.getMtitle(), author));
+                AvNumPstmt.setInt(2, getNumberOfReading(diag.getMtitle(), author));
                 AvNumPstmt.executeUpdate();
 
                 //if the book is no longer in the filters then load on the first line
                 parent.fillBookTable(parent.isFiltered());
-                isItInFilteredBookList(title,author,parent, false);
+                isItInFilteredBookList(newTitle,author,parent, false);
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
             }
@@ -473,7 +476,6 @@ public class CommonSQL {
             Statement statement = conn.createStatement();
             ResultSet CountReadingQry = statement.executeQuery("SELECT COUNT(*) FROM Reading WHERE Title='"+title+"' AND Author='"+author+ "'");
             i = CountReadingQry.getInt(1);
-            System.out.println(i);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

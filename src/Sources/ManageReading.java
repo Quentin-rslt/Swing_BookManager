@@ -18,12 +18,9 @@ public class ManageReading {
 
     public ManageReading(MainWindow parent, String title, String author, JTable ReadingsTable) {
         this.m_readingsTable = ReadingsTable;
-        if(title.contains("''")){
-            setMtitle(title.replace("''","'"));
-        }else{
-            setMtitle(title);
-        }
+        setMtitle(title);
         setAuthor(author);
+
         for(int i=0; i<m_readingsTable.getRowCount();i++){
             MouseListener[] mouseListeners =  m_readingsTable.getMouseListeners();
             for (MouseListener mouseListener : mouseListeners) {
@@ -40,19 +37,19 @@ public class ManageReading {
         m_readingsTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent evt) {
-                parent.setRowReading(m_readingsTable.rowAtPoint(evt.getPoint()));
-                m_readingsTable.setRowSelectionInterval(parent.getRowReading(), parent.getRowReading());//we focus the row when we right on the item
+            parent.setRowReading(m_readingsTable.rowAtPoint(evt.getPoint()));
+            m_readingsTable.setRowSelectionInterval(parent.getRowReading(), parent.getRowReading());//we focus the row when we right on the item
 
-                setStartReading(m_startReading = m_readingsTable.getValueAt(parent.getRowReading(), 0).toString());
-                setEndReading(m_endReading = m_readingsTable.getValueAt(parent.getRowReading(), 1).toString());
-                if(evt.getButton() == MouseEvent.BUTTON3) {
-                    m_readingsTable.setRowSelectionInterval(parent.getRowReading(), parent.getRowReading());//we focus the row when we right on the item
-                    m_popup.show(m_readingsTable, evt.getX(), evt.getY());//show a popup to edit the reading
-                }
-                if(evt.getClickCount() == 2 && evt.getButton() == MouseEvent.BUTTON1){
-                    EditReadingDlg diag = openEditReadingDlg(getMtitle(), getAuthor(),getStartReading(), getEndReading());//Open a dialog where we can edit the date reading
-                    editReading(diag, getMtitle(), getAuthor(), parent);
-                }
+            setStartReading(m_startReading = m_readingsTable.getValueAt(parent.getRowReading(), 0).toString());
+            setEndReading(m_endReading = m_readingsTable.getValueAt(parent.getRowReading(), 1).toString());
+            if(evt.getButton() == MouseEvent.BUTTON3) {
+                m_readingsTable.setRowSelectionInterval(parent.getRowReading(), parent.getRowReading());//we focus the row when we right on the item
+                m_popup.show(m_readingsTable, evt.getX(), evt.getY());//show a popup to edit the reading
+            }
+            if(evt.getClickCount() == 2 && evt.getButton() == MouseEvent.BUTTON1){
+                EditReadingDlg diag = openEditReadingDlg(getMtitle(), getAuthor(),getStartReading(), getEndReading());//Open a dialog where we can edit the date reading
+                editReading(diag, getMtitle(), getAuthor(), parent);
+            }
             }
         });
         cut.addActionListener((ActionEvent evt) ->{

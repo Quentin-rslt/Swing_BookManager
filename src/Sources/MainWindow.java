@@ -392,8 +392,6 @@ public class MainWindow extends JDialog {
         }
     }
     public void fillReadingTable(String title, String author) {
-        setMTitle(title);
-        setAuthor(author);
         m_tableReadingModel.setRowCount(0);
         try (Connection conn = connect()) {
             Statement m_statement = conn.createStatement();
@@ -442,13 +440,14 @@ public class MainWindow extends JDialog {
     }
     public void loadComponents(String title, String author){
         Tags tags = new Tags();
+        //System.out.println(title);
         if(title.contains("''")){
             title = title.replace("'", "''");
         }
-        //System.out.println(getMTitle());
+        //System.out.println(title);
 
         fillReadingTable(title,author);
-        m_manageReading = new ManageReading(MainWindow.this, title, getAuthor(), ReadingsTable);
+        m_manageReading = new ManageReading(MainWindow.this, getMTitle(), getAuthor(), ReadingsTable);
         ReadingsTable.setRowSelectionInterval(getRowReading(),getRowReading());
         BooksTable.setRowSelectionInterval(getRowSelected(), getRowSelected());
         FiltersBookBtn.setEnabled(true);
