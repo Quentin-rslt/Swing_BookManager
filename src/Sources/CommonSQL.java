@@ -48,7 +48,6 @@ public class CommonSQL {
     }
     public static void addBook(AddBookDlg diag, MainWindow parent){
         if (diag.isValide()){
-            resetApp(parent, true);
             String BookQry = "INSERT INTO Book (Title,Author,Image,NumberOP,NotePerso,NoteBabelio,ReleaseYear,Summary) " +
                     "VALUES (?,?,?,?,?,?,?,?);";
             String ReadingQry = "INSERT INTO Reading (ID,Title,Author,StartReading, EndReading) " +
@@ -133,6 +132,7 @@ public class CommonSQL {
                     parent.setRowSelected(parent.getRowSelectedByBook(getMTitle(), getAuthor()));
                     parent.loadComponents(getMTitle(), getAuthor());//reload changes made to the book
                 }
+                resetApp(parent, true);
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
             }

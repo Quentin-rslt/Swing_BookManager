@@ -91,6 +91,7 @@ public class MainWindow extends JDialog {
         m_popup.add(cut);
         m_popup.add(edit);
         m_popup.add(openManageTags);
+        setJMenuBar(createMenuBar(this));
 
         if(BooksTable.getRowCount() != 0) {//Vérif if the table is not empty; when starting the app, load and focus on the first book of the table
 
@@ -99,35 +100,34 @@ public class MainWindow extends JDialog {
             setRowReading(0);
             setRowSelected(0);
             loadComponents(getMTitle(), getAuthor());
-            setJMenuBar(createMenuBar(this));
 
             FiltersBookBtn.setEnabled(true);
         }else{
-            resetApp(this,false);
             FiltersBookBtn.setEnabled(false);
+            resetApp(this, false);
         }
 
         BooksTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent evt) {//set main UI when we clicked on an element of the array, retrieved from the db
-                super.mouseReleased(evt);
+            super.mouseReleased(evt);
 
-                int newLine= BooksTable.rowAtPoint(evt.getPoint());
+            int newLine= BooksTable.rowAtPoint(evt.getPoint());
 
-                if(newLine != getRowSelected()) {
-                    setRowSelected(BooksTable.rowAtPoint(evt.getPoint()));
-                    setRowReading(0);
-                    setMTitle(BooksTable.getValueAt(getRowSelected(), 0).toString());
-                    setAuthor(BooksTable.getValueAt(getRowSelected(), 1).toString());
-                    loadComponents(getMTitle(), getAuthor());
-                }
-                if(evt.getButton() == MouseEvent.BUTTON3) {//if we right-click show a popup to edit the book
-                    m_popup.show(BooksTable, evt.getX(), evt.getY());
-                }
-                if(evt.getClickCount() == 2 && evt.getButton() == MouseEvent.BUTTON1){
-                    EditBookDlg diag = openEditBookDlg();
-                    editBook(diag,MainWindow.this);
-                }
+            if(newLine != getRowSelected()) {
+                setRowSelected(BooksTable.rowAtPoint(evt.getPoint()));
+                setRowReading(0);
+                setMTitle(BooksTable.getValueAt(getRowSelected(), 0).toString());
+                setAuthor(BooksTable.getValueAt(getRowSelected(), 1).toString());
+                loadComponents(getMTitle(), getAuthor());
+            }
+            if(evt.getButton() == MouseEvent.BUTTON3) {//if we right-click show a popup to edit the book
+                m_popup.show(BooksTable, evt.getX(), evt.getY());
+            }
+            if(evt.getClickCount() == 2 && evt.getButton() == MouseEvent.BUTTON1){
+                EditBookDlg diag = openEditBookDlg();
+                editBook(diag,MainWindow.this);
+            }
             }
         });
         AddBookBtn.addActionListener((ActionEvent evt) -> {
@@ -552,11 +552,12 @@ public class MainWindow extends JDialog {
         BookSummary.setText("");
         BookTagsPanel.removeAll();
         BookPhotoPanel.removeAll();
-        contentPane.updateUI();
         contentPane.setBorder(null);
         if(getNumberOfBook() == 0){
+           FiltersBookBtn.setEnabled(false);
             resetApp(this, false);
         }
+        contentPane.updateUI();
     }
     public void setIsFiltered(Boolean filtered) {
         isFiltered = filtered;
@@ -611,7 +612,7 @@ public class MainWindow extends JDialog {
         MainWindow parent = new MainWindow();
         parent.setTitle("Book manager");
         parent.setSize(1500,844);
-        parent.setJMenuBar(createMenuBar(parent));
+        //parent.setJMenuBar(createMenuBar(parent));
         parent.setLocationRelativeTo(null);
         parent.setVisible(true);
         System.exit(0);
@@ -622,8 +623,5 @@ public class MainWindow extends JDialog {
 
     public void setRowReading(int rowReading) {
         this.rowReading = rowReading;
-    }
-    public JButton getAddBookBtn() {
-        return AddBookBtn;
     }
 }

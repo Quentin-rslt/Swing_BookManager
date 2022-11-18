@@ -8,9 +8,7 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -25,6 +23,7 @@ import static Sources.CommonSQL.*;
 import static Sources.Dialogs.OpenDialog.openEditTagDlg;
 import static Sources.MainWindow.getAuthor;
 import static Sources.MainWindow.getMTitle;
+import static Sources.MenuBar.getAddReadingMenuItem;
 
 public class Common {
     private static final JFileChooser jf= new JFileChooser();
@@ -235,24 +234,26 @@ public class Common {
         }
     }
     public static void resetApp(MainWindow mainWindow, boolean reset){
-        Component[] components = mainWindow.getContentPanel().getComponents();
-        JButton btn = mainWindow.getAddBookBtn();
-        btn.setForeground(mainWindow.getForeground());
-        btn.setBackground(mainWindow.getBackground());
-        if(!reset){
-            for(Component component : components){
-                component.setVisible(false);
-            }
-            btn.setVisible(true);
-            btn.setText("Votre base est vide veuiller ajouter un nouveau livre");
-            mainWindow.getContentPanel().add(btn);
-        }
-        else{
-            for(Component component : components){
-                component.setVisible(true);
-            }
-            btn.setVisible(false);
-        }
+//        Component[] components = mainWindow.getContentPanel().getComponents();
+//        JButton btn = mainWindow.getAddBookBtn();
+//        if(!reset){
+//            mainWindow.getContentPanel().setVisible(false);
+//            btn.setContentAreaFilled(false);
+//            btn.setForeground(Color.white);
+//            btn.setText("Votre base est vide, cliquer pour ajouter un nouveau livre");
+//            mainWindow.getContentPanel().add(btn);
+//        }
+//        else{
+//            mainWindow.getContentPanel().remove(btn);
+//            for(Component component : components){
+//                component.setVisible(true);
+//            }
+//        }
+        mainWindow.getJMenuBar().getMenu(0).getItem(0).setEnabled(reset);
+        mainWindow.getJMenuBar().getMenu(1).getItem(3).setEnabled(reset);
+        mainWindow.getJMenuBar().getMenu(1).getItem(4).setEnabled(reset);
+        mainWindow.getJMenuBar().getMenu(1).getItem(6).setEnabled(reset);
+        getAddReadingMenuItem().setEnabled(reset);
     }
 
     public static boolean isInFilteredList(String title, String author, JTable table){

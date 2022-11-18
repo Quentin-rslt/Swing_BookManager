@@ -8,6 +8,7 @@ import Sources.Dialogs.FiltersDlg;
 import javax.swing.*;
 
 import static Sources.Common.isItInFilteredBookList;
+import static Sources.Common.resetApp;
 import static Sources.CommonSQL.*;
 import static Sources.Dialogs.OpenDialog.*;
 import static Sources.ImportExportData.*;
@@ -15,6 +16,7 @@ import static Sources.MainWindow.getAuthor;
 import static Sources.MainWindow.getMTitle;
 
 public class MenuBar {
+    private static JMenuItem addReadingMenuItem;
     public static JMenuBar createMenuBar(MainWindow parent) {
         JMenu helpMenu = new JMenu("Aide");
         JMenuItem aboutMenuItem = new JMenuItem("A propos");
@@ -65,6 +67,7 @@ public class MenuBar {
                 parent.setRowSelected(0);
                 parent.setRowReading(0);
                 parent.loadComponents(getMTitle(), getAuthor());//reload changes made to the book
+                resetApp(parent, true);
                 JFrame jFrame = new JFrame();
                 JOptionPane.showMessageDialog(jFrame, "L'importation des données a été effectué");
             }else if(good==0){
@@ -83,6 +86,7 @@ public class MenuBar {
                 parent.setAuthor(parent.getBooksTable().getValueAt(0, 1).toString());
                 parent.loadComponents(getMTitle(), getAuthor());//reload changes made to the book
                 parent.getBooksTable().setRowSelectionInterval(0, 0);
+                resetApp(parent, true);
                 JFrame jFrame = new JFrame();
                 JOptionPane.showMessageDialog(jFrame, "L'importation des données a été effectué");
             }else if(good==0){
@@ -121,7 +125,7 @@ public class MenuBar {
             AddBookDlg diag=openAddBookDlg();
             addBook(diag, parent);
         }));
-        JMenuItem addReadingMenuItem = new JMenuItem("Une lecture");
+        addReadingMenuItem = new JMenuItem("Une lecture");
         addReadingMenuItem.addActionListener((e->{
             AddReading diag = openAddReadingDlg();
             addReading(diag, parent);
@@ -178,5 +182,8 @@ public class MenuBar {
         viewMenu.add(logMenuItem);
 
         return viewMenu;
+    }
+    public static JMenuItem getAddReadingMenuItem() {
+        return addReadingMenuItem;
     }
 }
