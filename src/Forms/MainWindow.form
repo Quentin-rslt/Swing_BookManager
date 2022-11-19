@@ -121,20 +121,22 @@
             <children>
               <scrollpane id="cdee8">
                 <constraints>
-                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="2" fill="1" indent="0" use-parent-layout="false"/>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="3" anchor="2" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
                   <enabled value="false"/>
                   <focusable value="false"/>
+                  <opaque value="false"/>
+                  <requestFocusEnabled value="false"/>
                   <verticalScrollBarPolicy value="22"/>
                 </properties>
-                <border type="none"/>
+                <border type="empty"/>
                 <children>
                   <component id="4013e" class="javax.swing.JTable" binding="ReadingsTable">
                     <constraints/>
                     <properties>
                       <editingRow value="0"/>
-                      <focusable value="false"/>
+                      <focusable value="true"/>
                       <preferredScrollableViewportSize width="470" height="130"/>
                       <requestFocusEnabled value="false"/>
                     </properties>
@@ -158,18 +160,22 @@
                 <properties>
                   <enabled value="false"/>
                   <focusable value="false"/>
+                  <nextFocusableComponent value="cdee8"/>
+                  <opaque value="false"/>
+                  <requestFocusEnabled value="false"/>
                   <verticalScrollBarPolicy value="22"/>
                 </properties>
-                <border type="none"/>
+                <border type="empty"/>
                 <children>
                   <component id="916ec" class="javax.swing.JTable" binding="BooksTable">
                     <constraints/>
                     <properties>
                       <autoResizeMode value="0"/>
                       <editingRow value="0"/>
-                      <focusable value="false"/>
+                      <enabled value="true"/>
+                      <focusable value="true"/>
                       <preferredScrollableViewportSize width="470" height="464"/>
-                      <requestFocusEnabled value="false"/>
+                      <requestFocusEnabled value="true"/>
                     </properties>
                   </component>
                 </children>

@@ -101,6 +101,46 @@ public class MainWindow extends JDialog {
             setRowSelected(0);
             loadComponents(getMTitle(), getAuthor());
 
+            BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), "delete");
+            BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "up");
+            BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "dow");
+            BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "enter");
+
+
+            BooksTable.getActionMap().put("delete", new AbstractAction(){
+                public void actionPerformed(ActionEvent e){
+                    deleteBook(MainWindow.this);
+                }
+            });
+            BooksTable.getActionMap().put("up", new AbstractAction(){
+                public void actionPerformed(ActionEvent e){
+                    if(getRowSelected()>0) {
+                        setRowSelected(getRowSelected() - 1);
+                        setRowReading(0);
+                        setMTitle(BooksTable.getValueAt(getRowSelected(), 0).toString());
+                        setAuthor(BooksTable.getValueAt(getRowSelected(), 1).toString());
+                        loadComponents(getMTitle(), getAuthor());
+                    }
+                }
+            });
+            BooksTable.getActionMap().put("dow", new AbstractAction(){
+                public void actionPerformed(ActionEvent e){
+                    if(getRowSelected()<BooksTable.getRowCount()-1) {
+                        setRowSelected(getRowSelected() + 1);
+                        setRowReading(0);
+                        setMTitle(BooksTable.getValueAt(getRowSelected(), 0).toString());
+                        setAuthor(BooksTable.getValueAt(getRowSelected(), 1).toString());
+                        loadComponents(getMTitle(), getAuthor());
+                    }
+                }
+            });
+            BooksTable.getActionMap().put("enter", new AbstractAction(){
+                public void actionPerformed(ActionEvent e){
+                    EditBookDlg diag = openEditBookDlg();
+                    editBook(diag,MainWindow.this);
+                }
+            });
+
             FiltersBookBtn.setEnabled(true);
         }else{
             FiltersBookBtn.setEnabled(false);
@@ -111,7 +151,6 @@ public class MainWindow extends JDialog {
             @Override
             public void mouseReleased(MouseEvent evt) {//set main UI when we clicked on an element of the array, retrieved from the db
             super.mouseReleased(evt);
-
             int newLine= BooksTable.rowAtPoint(evt.getPoint());
 
             if(newLine != getRowSelected()) {

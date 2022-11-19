@@ -361,7 +361,7 @@ public class Common {
             double width = image.getWidth();
             double ratio = width/height;
             if(ratio<0.6){
-                size = new Dimension((int) (500*ratio),  500);
+                size = new Dimension((int) (570*ratio),  570);
             }else{
                 size = new Dimension(350, (int) (350/ratio));
             }

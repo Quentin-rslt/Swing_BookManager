@@ -1,11 +1,13 @@
 package Sources;
 
+import Sources.Dialogs.EditBookDlg;
 import Sources.Dialogs.EditReadingDlg;
 import javax.swing.*;
 import java.awt.event.*;
 import java.sql.*;
 import static Sources.Common.*;
 import static Sources.CommonSQL.*;
+import static Sources.Dialogs.OpenDialog.openEditBookDlg;
 import static Sources.Dialogs.OpenDialog.openEditReadingDlg;
 import static Sources.MainWindow.getAuthor;
 import static Sources.MainWindow.getMTitle;
@@ -36,9 +38,69 @@ public class ManageReading {
         m_popup.add(cut);
         m_popup.add(edit);
 
+        m_readingsTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "enter");
+        m_readingsTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "up");
+        m_readingsTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "dow");
+        m_readingsTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), "delete");
+
+        m_readingsTable.getActionMap().put("delete", new AbstractAction(){
+            public void actionPerformed(ActionEvent evt){
+                String ReadingQry = "DELETE FROM Reading WHERE Title='"+ m_title+"' AND Author='"+m_author+"' AND ID='"+parent.getRowReading()+"'";//Delete in bdd the item that we want delete
+                String AvNumQry = "UPDATE Book SET AvReadingTime=?, NumberReading=? WHERE Title='"+m_title+"' AND Author='"+m_author+"'";
+                if(m_readingsTable.getRowCount()>1){//If there is more than one reading you don't need to know if the person really wants to delete the book
+                    try (Connection conn = connect(); PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry); PreparedStatement AvNumPstmt = conn.prepareStatement(AvNumQry)) {
+                        ReadingPstmt.executeUpdate();
+                        AvNumPstmt.setInt(1, averageTime(m_title, m_author));
+                        AvNumPstmt.setInt(2, getNumberOfReading(m_title, m_author));
+                        AvNumPstmt.executeUpdate();
+
+                        parent.getContentPanel().updateUI();
+                        parent.setRowReading(parent.getRowReading()-1);
+                        m_readingsTable.setRowSelectionInterval(parent.getRowReading(), parent.getRowReading());
+                        //load bdd in MainWindow
+                        parent.fillBookTable(parent.isFiltered());
+                        isItInFilteredBookList(parent, true);
+                        resetIdReading(getRowCount());//refresh all ID in the table ReadingDate
+                    } catch (SQLException e) {
+                        System.out.println(e.getMessage());
+                    }
+                }
+                else{
+                    deleteBook(parent);
+                }
+            }
+        });
+        m_readingsTable.getActionMap().put("up", new AbstractAction(){
+            public void actionPerformed(ActionEvent e){
+                if(parent.getRowReading()>0) {
+                    parent.setRowReading(parent.getRowReading()-1);
+                    m_readingsTable.setRowSelectionInterval(parent.getRowReading(), parent.getRowReading());
+                    setStartReading(m_startReading = m_readingsTable.getValueAt(parent.getRowReading(), 0).toString());
+                    setEndReading(m_endReading = m_readingsTable.getValueAt(parent.getRowReading(), 1).toString());
+                }
+            }
+        });
+        m_readingsTable.getActionMap().put("dow", new AbstractAction(){
+            public void actionPerformed(ActionEvent e){
+                if(parent.getRowReading()<m_readingsTable.getRowCount()-1) {
+                    parent.setRowReading(parent.getRowReading()+1);
+                    m_readingsTable.setRowSelectionInterval(parent.getRowReading(), parent.getRowReading());
+                    setStartReading(m_startReading = m_readingsTable.getValueAt(parent.getRowReading(), 0).toString());
+                    setEndReading(m_endReading = m_readingsTable.getValueAt(parent.getRowReading(), 1).toString());
+                }
+            }
+        });
+        m_readingsTable.getActionMap().put("enter", new AbstractAction(){
+            public void actionPerformed(ActionEvent e){
+                EditReadingDlg diag = openEditReadingDlg(getStartReading(), getEndReading());//Open a dialog where we can edit the date reading
+                editReading(diag, parent);
+            }
+        });
+
         m_readingsTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent evt) {
+            m_readingsTable.requestFocusInWindow();
             parent.setRowReading(m_readingsTable.rowAtPoint(evt.getPoint()));
             m_readingsTable.setRowSelectionInterval(parent.getRowReading(), parent.getRowReading());//we focus the row when we right on the item
 
@@ -51,7 +113,7 @@ public class ManageReading {
             if(evt.getClickCount() == 2 && evt.getButton() == MouseEvent.BUTTON1){
                 EditReadingDlg diag = openEditReadingDlg(getStartReading(), getEndReading());//Open a dialog where we can edit the date reading
                 editReading(diag, parent);
-            }
+                }
             }
         });
         cut.addActionListener((ActionEvent evt) ->{
