@@ -4,6 +4,7 @@ import Sources.Dialogs.EditTagDlg;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.AbstractBorder;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
@@ -41,6 +42,8 @@ public class Common {
         ImageIcon icon = new ImageIcon(img);
         JLabel imgLabel = new JLabel();
         imgLabel.setIcon(icon);
+        AbstractBorder roundBrdMax = new RoundBorderCp(panel.getBackground(),3,30, 0,0,0);
+        imgLabel.setBorder(roundBrdMax);
 
         panel.updateUI();//reload the panel
         panel.removeAll();
@@ -237,7 +240,9 @@ public class Common {
 //        Component[] components = mainWindow.getContentPanel().getComponents();
 //        JButton btn = mainWindow.getAddBookBtn();
 //        if(!reset){
-//            mainWindow.getContentPanel().setVisible(false);
+//            for(Component component : components){
+//                component.setVisible(false);
+//            }
 //            btn.setContentAreaFilled(false);
 //            btn.setForeground(Color.white);
 //            btn.setText("Votre base est vide, cliquer pour ajouter un nouveau livre");

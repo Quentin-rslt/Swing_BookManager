@@ -1,13 +1,11 @@
 package Sources;
 
-import Sources.Dialogs.EditBookDlg;
 import Sources.Dialogs.EditReadingDlg;
 import javax.swing.*;
 import java.awt.event.*;
 import java.sql.*;
 import static Sources.Common.*;
 import static Sources.CommonSQL.*;
-import static Sources.Dialogs.OpenDialog.openEditBookDlg;
 import static Sources.Dialogs.OpenDialog.openEditReadingDlg;
 import static Sources.MainWindow.getAuthor;
 import static Sources.MainWindow.getMTitle;
@@ -42,6 +40,7 @@ public class ManageReading {
         m_readingsTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "up");
         m_readingsTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "dow");
         m_readingsTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), "delete");
+        m_readingsTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0), "tab");
 
         m_readingsTable.getActionMap().put("delete", new AbstractAction(){
             public void actionPerformed(ActionEvent evt){
@@ -75,8 +74,8 @@ public class ManageReading {
                 if(parent.getRowReading()>0) {
                     parent.setRowReading(parent.getRowReading()-1);
                     m_readingsTable.setRowSelectionInterval(parent.getRowReading(), parent.getRowReading());
-                    setStartReading(m_startReading = m_readingsTable.getValueAt(parent.getRowReading(), 0).toString());
-                    setEndReading(m_endReading = m_readingsTable.getValueAt(parent.getRowReading(), 1).toString());
+                    setStartReading(m_readingsTable.getValueAt(parent.getRowReading(), 0).toString());
+                    setEndReading(m_readingsTable.getValueAt(parent.getRowReading(), 1).toString());
                 }
             }
         });
@@ -85,8 +84,8 @@ public class ManageReading {
                 if(parent.getRowReading()<m_readingsTable.getRowCount()-1) {
                     parent.setRowReading(parent.getRowReading()+1);
                     m_readingsTable.setRowSelectionInterval(parent.getRowReading(), parent.getRowReading());
-                    setStartReading(m_startReading = m_readingsTable.getValueAt(parent.getRowReading(), 0).toString());
-                    setEndReading(m_endReading = m_readingsTable.getValueAt(parent.getRowReading(), 1).toString());
+                    setStartReading(m_readingsTable.getValueAt(parent.getRowReading(), 0).toString());
+                    setEndReading(m_readingsTable.getValueAt(parent.getRowReading(), 1).toString());
                 }
             }
         });
@@ -94,6 +93,13 @@ public class ManageReading {
             public void actionPerformed(ActionEvent e){
                 EditReadingDlg diag = openEditReadingDlg(getStartReading(), getEndReading());//Open a dialog where we can edit the date reading
                 editReading(diag, parent);
+            }
+        });
+        m_readingsTable.getActionMap().put("tab", new AbstractAction(){
+            public void actionPerformed(ActionEvent e){
+                if(parent.getBooksTable().getRowCount()>0) {
+                    parent.getBookFastSearch().requestFocusInWindow();
+                }
             }
         });
 
@@ -104,8 +110,8 @@ public class ManageReading {
             parent.setRowReading(m_readingsTable.rowAtPoint(evt.getPoint()));
             m_readingsTable.setRowSelectionInterval(parent.getRowReading(), parent.getRowReading());//we focus the row when we right on the item
 
-            setStartReading(m_startReading = m_readingsTable.getValueAt(parent.getRowReading(), 0).toString());
-            setEndReading(m_endReading = m_readingsTable.getValueAt(parent.getRowReading(), 1).toString());
+            setStartReading( m_readingsTable.getValueAt(parent.getRowReading(), 0).toString());
+            setEndReading(m_readingsTable.getValueAt(parent.getRowReading(), 1).toString());
             if(evt.getButton() == MouseEvent.BUTTON3) {
                 m_readingsTable.setRowSelectionInterval(parent.getRowReading(), parent.getRowReading());//we focus the row when we right on the item
                 m_popup.show(m_readingsTable, evt.getX(), evt.getY());//show a popup to edit the reading

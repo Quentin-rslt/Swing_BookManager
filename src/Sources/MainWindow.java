@@ -105,11 +105,24 @@ public class MainWindow extends JDialog {
             BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "up");
             BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "dow");
             BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "enter");
+            BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0), "tab");
+            BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_A, 0), "addReading");
+            BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_T, 0), "manageTags");
+            contentPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_A, KeyEvent.CTRL_DOWN_MASK), "addBook");
 
 
             BooksTable.getActionMap().put("delete", new AbstractAction(){
                 public void actionPerformed(ActionEvent e){
                     deleteBook(MainWindow.this);
+                }
+            });
+            BooksTable.getActionMap().put("tab", new AbstractAction(){
+                public void actionPerformed(ActionEvent e){
+                    if(BooksTable.getRowCount()>0) {
+                        ReadingsTable.requestFocusInWindow();
+                        m_manageReading.setStartReading(ReadingsTable.getValueAt(getRowReading(), 0).toString());
+                        m_manageReading.setEndReading(ReadingsTable.getValueAt(getRowReading(), 1).toString());
+                    }
                 }
             });
             BooksTable.getActionMap().put("up", new AbstractAction(){
@@ -140,6 +153,30 @@ public class MainWindow extends JDialog {
                     editBook(diag,MainWindow.this);
                 }
             });
+            BooksTable.getActionMap().put("addReading", new AbstractAction(){
+                public void actionPerformed(ActionEvent e){
+                    AddReading diag = openAddReadingDlg();
+                    addReading(diag, MainWindow.this);
+                }
+            });
+            BooksTable.getActionMap().put("manageTags", new AbstractAction(){
+                public void actionPerformed(ActionEvent e){
+                    openManageTagsDlg(getMTitle(), getAuthor());
+                    contentPane.updateUI();
+                    fillBookTable(isFiltered());
+                    isItInFilteredBookList(MainWindow.this,false);
+                    if(isFastSearch()){
+                        fastSearchBook(BookFastSearch.getText());
+                    }
+                }
+            });
+            contentPane.getActionMap().put("addBook", new AbstractAction(){
+                public void actionPerformed(ActionEvent e){
+                    setNameOfImage("");
+                    AddBookDlg diag = openAddBookDlg();
+                    addBook(diag,MainWindow.this);
+                }
+            });
 
             FiltersBookBtn.setEnabled(true);
         }else{
@@ -151,6 +188,7 @@ public class MainWindow extends JDialog {
             @Override
             public void mouseReleased(MouseEvent evt) {//set main UI when we clicked on an element of the array, retrieved from the db
             super.mouseReleased(evt);
+            BooksTable.requestFocusInWindow();
             int newLine= BooksTable.rowAtPoint(evt.getPoint());
 
             if(newLine != getRowSelected()) {
@@ -651,7 +689,6 @@ public class MainWindow extends JDialog {
         MainWindow parent = new MainWindow();
         parent.setTitle("Book manager");
         parent.setSize(1500,844);
-        //parent.setJMenuBar(createMenuBar(parent));
         parent.setLocationRelativeTo(null);
         parent.setVisible(true);
         System.exit(0);
