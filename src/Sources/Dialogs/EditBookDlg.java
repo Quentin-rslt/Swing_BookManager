@@ -298,6 +298,7 @@ public class EditBookDlg extends JDialog {
             throw new RuntimeException(e);
         }
     }
+    @SuppressWarnings("unchecked")
     public void fillThemeCB(){
         this.BookTagsCB.addItem("");
         for (int i = 0; i<loadTags().getSizeTags(); i++){

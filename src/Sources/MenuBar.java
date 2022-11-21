@@ -105,7 +105,7 @@ public class MenuBar {
 
         //Param menuItem
         JMenuItem paramMenuItem = new JMenuItem("Paramètres");
-        paramMenuItem.addActionListener((e -> openParametersDlg()));
+        paramMenuItem.addActionListener((e -> openParametersDlg(parent)));
 
         //File Menu
         JMenu fileMenu = new JMenu("Fichier");

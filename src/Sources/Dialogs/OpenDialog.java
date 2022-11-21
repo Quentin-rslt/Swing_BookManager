@@ -1,5 +1,6 @@
 package Sources.Dialogs;
 
+import Sources.MainWindow;
 import Sources.Tag;
 
 import static Sources.Common.getImageAdd;
@@ -78,13 +79,11 @@ public class OpenDialog {
 
         return diag;
     }
-    public static ParametersDlg openParametersDlg(){
-        ParametersDlg diag = new ParametersDlg();
-        diag.setSize(650,400);
+    public static void openParametersDlg(MainWindow parent){
+        ParametersDlg diag = new ParametersDlg(parent);
+        diag.setSize(650,435);
         diag.setTitle("Paramètres");
         diag.setLocationRelativeTo(null);
         diag.setVisible(true);
-
-        return diag;
     }
 }

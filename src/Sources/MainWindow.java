@@ -62,6 +62,14 @@ public class MainWindow extends JDialog {
     private boolean m_isFastSearch;
     private ManageReading m_manageReading;
     private int rowReading;
+    private int m_deletekey;
+    private int m_editKey;
+    private int m_addReadingKey;
+    private int m_manageTagsKey;
+    private int m_deleteModif;
+    private int m_editModif;
+    private int m_addReadingModif;
+    private int m_manageTagsModif;
 
 
     public MainWindow() {
@@ -101,14 +109,16 @@ public class MainWindow extends JDialog {
             setRowSelected(0);
             loadComponents(getMTitle(), getAuthor());
 
-            BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), "delete");
-            BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "up");
-            BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "dow");
-            BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "enter");
-            BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0), "tab");
-            BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_A, 0), "addReading");
-            BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_T, 0), "manageTags");
+            setAddReadingKey(KeyEvent.VK_A);
+            setManageTagsKey(KeyEvent.VK_T);
+            setEditKey(KeyEvent.VK_ENTER);
+            setDeletekey(KeyEvent.VK_DELETE);
+            setAddReadingModif(0);
+            setManageTagsModif(0);
+            setEditModif(0);
+            setDeleteModif(0);
 
+            initBinding();
 
             BooksTable.getActionMap().put("delete", new AbstractAction(){
                 public void actionPerformed(ActionEvent e){
@@ -300,6 +310,33 @@ public class MainWindow extends JDialog {
     public ManageReading getManageReading() {
         return m_manageReading;
     }
+    public int getDeletekey() {
+        return m_deletekey;
+    }
+    public int getEditKey() {
+        return m_editKey;
+    }
+    public int getAddReadingKey() {
+        return m_addReadingKey;
+    }
+    public int getManageTagsKey() {
+        return m_manageTagsKey;
+    }
+    public int getDeleteModif() {
+        return m_deleteModif;
+    }
+    public int getEditModif() {
+        return m_editModif;
+    }
+    public int getAddReadingModif() {
+        return m_addReadingModif;
+    }
+    public int getManageTagsModif() {
+        return m_manageTagsModif;
+    }
+    public int getRowReading() {
+        return rowReading;
+    }
 
     /****************************** Void ***********************************/
     public void setDiagFilters(FiltersDlg dlg){
@@ -319,6 +356,33 @@ public class MainWindow extends JDialog {
     }
     public void setAuthor(String author){
         m_author=author;
+    }
+    public void setRowReading(int rowReading) {
+        this.rowReading = rowReading;
+    }
+    public void setDeletekey(int m_deletekey) {
+        this.m_deletekey = m_deletekey;
+    }
+    public void setEditKey(int m_editKey) {
+        this.m_editKey = m_editKey;
+    }
+    public void setAddReadingKey(int m_addReadingKey) {
+        this.m_addReadingKey = m_addReadingKey;
+    }
+    public void setManageTagsKey(int m_manageTagsKey) {
+        this.m_manageTagsKey = m_manageTagsKey;
+    }
+    public void setDeleteModif(int m_deleteModif) {
+        this.m_deleteModif = m_deleteModif;
+    }
+    public void setEditModif(int m_editModif) {
+        this.m_editModif = m_editModif;
+    }
+    public void setAddReadingModif(int m_addReadingModif) {
+        this.m_addReadingModif = m_addReadingModif;
+    }
+    public void setManageTagsModif(int m_manageTagsModif) {
+        this.m_manageTagsModif = m_manageTagsModif;
     }
     public void connectionDB(){
         try (Connection conn = connect()) {
@@ -670,6 +734,16 @@ public class MainWindow extends JDialog {
         }
         isItInFilteredBookList(this, false);
     }
+    public void initBinding(){
+        BooksTable.getInputMap().clear();
+        BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(getDeletekey(), getDeleteModif()), "delete");
+        BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "up");
+        BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "dow");
+        BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(getEditKey(), getEditModif()), "enter");
+        BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0), "tab");
+        BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(getAddReadingKey(), getAddReadingModif()), "addReading");
+        BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(getManageTagsKey(), getManageTagsModif()), "manageTags");
+    }
 
     public static void main(String[] args) {
         try {
@@ -684,12 +758,5 @@ public class MainWindow extends JDialog {
         parent.setLocationRelativeTo(null);
         parent.setVisible(true);
         System.exit(0);
-    }
-    public int getRowReading() {
-        return rowReading;
-    }
-
-    public void setRowReading(int rowReading) {
-        this.rowReading = rowReading;
     }
 }
