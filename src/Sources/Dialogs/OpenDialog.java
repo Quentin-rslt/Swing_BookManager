@@ -78,4 +78,13 @@ public class OpenDialog {
 
         return diag;
     }
+    public static ParametersDlg openParametersDlg(){
+        ParametersDlg diag = new ParametersDlg();
+        diag.setSize(650,400);
+        diag.setTitle("Paramètres");
+        diag.setLocationRelativeTo(null);
+        diag.setVisible(true);
+
+        return diag;
+    }
 }

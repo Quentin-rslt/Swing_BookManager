@@ -108,7 +108,6 @@ public class MainWindow extends JDialog {
             BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0), "tab");
             BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_A, 0), "addReading");
             BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_T, 0), "manageTags");
-            contentPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_A, KeyEvent.CTRL_DOWN_MASK), "addBook");
 
 
             BooksTable.getActionMap().put("delete", new AbstractAction(){
@@ -168,13 +167,6 @@ public class MainWindow extends JDialog {
                     if(isFastSearch()){
                         fastSearchBook(BookFastSearch.getText());
                     }
-                }
-            });
-            contentPane.getActionMap().put("addBook", new AbstractAction(){
-                public void actionPerformed(ActionEvent e){
-                    setNameOfImage("");
-                    AddBookDlg diag = openAddBookDlg();
-                    addBook(diag,MainWindow.this);
                 }
             });
 
