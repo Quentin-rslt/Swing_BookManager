@@ -5,9 +5,14 @@ import Themes.DarkTheme.DarkTheme;
 
 import javax.swing.*;
 import javax.swing.border.AbstractBorder;
+import javax.swing.filechooser.FileSystemView;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -109,14 +114,7 @@ public class MainWindow extends JDialog {
             setRowSelected(0);
             loadComponents(getMTitle(), getAuthor());
 
-            setAddReadingKey(KeyEvent.VK_A);
-            setManageTagsKey(KeyEvent.VK_T);
-            setEditKey(KeyEvent.VK_ENTER);
-            setDeletekey(KeyEvent.VK_DELETE);
-            setAddReadingModif(0);
-            setManageTagsModif(0);
-            setEditModif(0);
-            setDeleteModif(0);
+            loadParameters();
 
             initBinding();
 
@@ -743,6 +741,37 @@ public class MainWindow extends JDialog {
         BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0), "tab");
         BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(getAddReadingKey(), getAddReadingModif()), "addReading");
         BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(getManageTagsKey(), getManageTagsModif()), "manageTags");
+    }
+    public void loadParameters(){
+        try {
+            Path file = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(),"BookManager/save.dat");
+            if ( Files.exists(file) ) {
+                for(String line : Files.readAllLines(file)) {
+                    String[] data = line.split(";");
+                    setAddReadingKey(Integer.parseInt(data[0]));
+                    setAddReadingModif(Integer.parseInt(data[1]));
+                    setManageTagsKey(Integer.parseInt(data[2]));
+                    setManageTagsModif(Integer.parseInt(data[3]));
+                    setEditKey(Integer.parseInt(data[4]));
+                    setEditModif(Integer.parseInt(data[5]));
+                    setDeletekey(Integer.parseInt(data[6]));
+                    setDeleteModif(Integer.parseInt(data[7]));
+                }
+            }
+            else {
+                setAddReadingKey(KeyEvent.VK_A);
+                setManageTagsKey(KeyEvent.VK_T);
+                setEditKey(KeyEvent.VK_ENTER);
+                setDeletekey(KeyEvent.VK_DELETE);
+                setAddReadingModif(0);
+                setManageTagsModif(0);
+                setEditModif(0);
+                setDeleteModif(0);
+            }
+        } catch (IOException e) {
+            System.err.println("Rechargement impossible");
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {

@@ -3,12 +3,17 @@ package Sources.Dialogs;
 import Sources.MainWindow;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileSystemView;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Objects;
 
 public class ParametersDlg extends JDialog {
@@ -42,6 +47,8 @@ public class ParametersDlg extends JDialog {
                 parent.setEditModif(getParamEditModif());
                 parent.setDeleteModif(getParamDeleteModif());
                 parent.setManageTagsModif(getParamManageTagsModif());
+
+                save();
                 parent.initBinding();
                 setVisible(false);
                 dispose();
@@ -258,5 +265,26 @@ public class ParametersDlg extends JDialog {
         fillParamCBKey();
         fillParamCBModif();
         initCBSelection(parent);
+    }
+    public void save(){
+        Path folder = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(),"BookManager/");
+        Path file = folder.resolve("save.dat");
+        try(BufferedWriter writer = Files.newBufferedWriter(file)){
+            writeData(writer, String.valueOf(getParamAddReadingKey()));
+            writeData(writer, String.valueOf(getParamAddReadingModif()));
+            writeData(writer, String.valueOf(getParamDeletekey()));
+            writeData(writer, String.valueOf(getParamDeleteModif()));
+            writeData(writer, String.valueOf(getParamEditKey()));
+            writeData(writer, String.valueOf(getParamEditModif()));
+            writeData(writer, String.valueOf(getParamManageTagsKey()));
+            writeData(writer, String.valueOf(getParamManageTagsModif()));
+        }catch (IOException e){
+            System.err.println("Sauvergarde impossible");
+            e.printStackTrace();
+        }
+    }
+    private void writeData(BufferedWriter writer, String value) throws IOException {
+        writer.write(value);
+        writer.write(';');
     }
 }
