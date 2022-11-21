@@ -31,6 +31,16 @@ public class ParametersDlg extends JDialog {
     private JComboBox ParamManageTagsModif;
     private JComboBox ParamEditModif;
     private JComboBox ParamDeleteModif;
+    private JComboBox ParamAddBookModif;
+    private JComboBox ParamAddBookKey;
+    private JComboBox ParamManageAllTagsKey;
+    private JComboBox ParamManageAllTagsModif;
+    private JComboBox ParamCritKey;
+    private JComboBox ParamCritModif;
+    private JComboBox ParamRenitKey;
+    private JComboBox ParamRenitModif;
+    private JComboBox ParamLogKey;
+    private JComboBox ParamLogModif;
 
     public ParametersDlg(MainWindow parent) {
         setContentPane(contentPane);
@@ -39,14 +49,22 @@ public class ParametersDlg extends JDialog {
         ParamSaveBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                //Keys
+                parent.setAddBookKey(getParamAddBookKey());
                 parent.setAddReadingKey(getParamAddReadingKey());
                 parent.setEditKey(getParamEditKey());
                 parent.setManageTagsKey(getParamManageTagsKey());
                 parent.setDeletekey(getParamDeletekey());
+                parent.setCritKey(getParamCritKey());
+                parent.setManageAllTagsKey(getParamManageAllTagsKey());
+                //Modifiers
+                parent.setAddBookModif(getParamAddBookModif());
                 parent.setAddReadingModif(getParamAddReadingModif());
                 parent.setEditModif(getParamEditModif());
                 parent.setDeleteModif(getParamDeleteModif());
                 parent.setManageTagsModif(getParamManageTagsModif());
+                parent.setCritModif(getParamCritModif());
+                parent.setManageAllTagsModif(getParamManageAllTagsModif());
 
                 save();
                 parent.initBinding();
@@ -61,6 +79,20 @@ public class ParametersDlg extends JDialog {
                 dispose();
             }
         });
+    }
+    public int getParamAddBookModif(){
+        int value=0;
+        try {
+            Field[] fields = KeyEvent.class.getDeclaredFields();
+            for (Field f : fields) {
+                if (f.getName().equals(getNameModifKey(ParamAddBookModif))) {
+                    value = f.getInt(getNameModifKey(ParamAddBookModif));
+                }
+            }
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+        return value;
     }
     public int getParamAddReadingModif(){
         int value=0;
@@ -118,6 +150,34 @@ public class ParametersDlg extends JDialog {
         }
         return value;
     }
+    public int getParamCritModif(){
+        int value=0;
+        try {
+            Field[] fields = KeyEvent.class.getDeclaredFields();
+            for (Field f : fields) {
+                if (f.getName().equals(getNameModifKey(ParamCritModif))) {
+                    value = f.getInt(getNameModifKey(ParamCritModif));
+                }
+            }
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+        return value;
+    }
+    public int getParamManageAllTagsModif(){
+        int value=0;
+        try {
+            Field[] fields = KeyEvent.class.getDeclaredFields();
+            for (Field f : fields) {
+                if (f.getName().equals(getNameModifKey(ParamManageAllTagsModif))) {
+                    value = f.getInt(getNameModifKey(ParamManageAllTagsModif));
+                }
+            }
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+        return value;
+    }
     public String getNameModifKey(JComboBox jComboBox){
         String name = "";
         if(Objects.requireNonNull(jComboBox.getSelectedItem()).equals("SHIFT")){
@@ -130,6 +190,20 @@ public class ParametersDlg extends JDialog {
             name = "VK_BACK_SPACE";
         }
         return name;
+    }
+    public int getParamAddBookKey() {
+        int value=0;
+        try {
+            Field[] fields = KeyEvent.class.getDeclaredFields();
+            for (Field f : fields) {
+                if (f.getName().equals(ParamAddBookKey.getSelectedItem())) {
+                    value = f.getInt(ParamAddBookKey.getSelectedItem());
+                }
+            }
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+        return value;
     }
     public int getParamManageTagsKey() {
         int value=0;
@@ -187,6 +261,34 @@ public class ParametersDlg extends JDialog {
         }
         return value;
     }
+    public int getParamCritKey() {
+        int value=0;
+        try {
+            Field[] fields = KeyEvent.class.getDeclaredFields();
+            for (Field f : fields) {
+                if (f.getName().equals(ParamCritKey.getSelectedItem())) {
+                    value = f.getInt(ParamCritKey.getSelectedItem());
+                }
+            }
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+        return value;
+    }
+    public int getParamManageAllTagsKey() {
+        int value=0;
+        try {
+            Field[] fields = KeyEvent.class.getDeclaredFields();
+            for (Field f : fields) {
+                if (f.getName().equals(ParamManageAllTagsKey.getSelectedItem())) {
+                    value = f.getInt(ParamManageAllTagsKey.getSelectedItem());
+                }
+            }
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+        return value;
+    }
     @SuppressWarnings("unchecked")
     public void fillParamCBKey(){
         Field[] fields = KeyEvent.class.getDeclaredFields();
@@ -196,6 +298,11 @@ public class ParametersDlg extends JDialog {
                 ParamEditKey.addItem(f.getName());
                 ParamDeleteKey.addItem(f.getName());
                 ParamManageTagsKey.addItem(f.getName());
+                ParamAddBookKey.addItem(f.getName());
+                ParamCritKey.addItem(f.getName());
+                ParamRenitKey.addItem(f.getName());
+                ParamLogKey.addItem(f.getName());
+                ParamManageAllTagsKey.addItem(f.getName());
             }
         }
     }
@@ -204,6 +311,11 @@ public class ParametersDlg extends JDialog {
         fillCBModif(ParamDeleteModif);
         fillCBModif(ParamEditModif);
         fillCBModif(ParamManageTagsModif);
+        fillCBModif(ParamAddBookModif);
+        fillCBModif(ParamCritModif);
+        fillCBModif(ParamLogModif);
+        fillCBModif(ParamRenitModif);
+        fillCBModif(ParamManageAllTagsModif);
     }
     @SuppressWarnings("unchecked")
     public void fillCBModif(JComboBox jComboBox){
@@ -250,12 +362,32 @@ public class ParametersDlg extends JDialog {
                     if (f.getInt(f.getName()) == parent.getManageTagsKey()) {
                         ParamManageTagsKey.setSelectedItem(f.getName());
                     }
+                    if (f.getInt(f.getName()) == parent.getAddBookKey()) {
+                        ParamAddBookKey.setSelectedItem(f.getName());
+                    }
+                    if (f.getInt(f.getName()) == parent.getCritKey()) {
+                        ParamCritKey.setSelectedItem(f.getName());
+                    }
+                    if (f.getInt(f.getName()) == parent.getManageAllTagsKey()) {
+                        ParamManageAllTagsKey.setSelectedItem(f.getName());
+                    }
+                    if (f.getInt(f.getName()) == parent.getEditKey()) {
+                        ParamLogKey.setSelectedItem(f.getName());
+                    }
+                    if (f.getInt(f.getName()) == parent.getManageTagsKey()) {
+                        ParamRenitKey.setSelectedItem(f.getName());
+                    }
                 }
             }
             initCBModifSelection(ParamAddReadingModif, parent.getAddReadingModif());
             initCBModifSelection(ParamEditModif, parent.getEditModif());
             initCBModifSelection(ParamManageTagsModif, parent.getManageTagsModif());
             initCBModifSelection(ParamDeleteModif, parent.getDeleteModif());
+            initCBModifSelection(ParamAddBookModif,parent.getAddBookModif());
+            initCBModifSelection(ParamCritModif,parent.getCritModif());
+            initCBModifSelection(ParamManageAllTagsModif,parent.getManageAllTagsModif());
+            initCBModifSelection(ParamLogModif,0);
+            initCBModifSelection(ParamRenitModif,0);
 
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
@@ -270,6 +402,8 @@ public class ParametersDlg extends JDialog {
         Path folder = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(),"BookManager/");
         Path file = folder.resolve("save.dat");
         try(BufferedWriter writer = Files.newBufferedWriter(file)){
+            writeData(writer, String.valueOf(getParamAddBookKey()));
+            writeData(writer, String.valueOf(getParamAddBookModif()));
             writeData(writer, String.valueOf(getParamAddReadingKey()));
             writeData(writer, String.valueOf(getParamAddReadingModif()));
             writeData(writer, String.valueOf(getParamDeletekey()));
@@ -278,6 +412,10 @@ public class ParametersDlg extends JDialog {
             writeData(writer, String.valueOf(getParamEditModif()));
             writeData(writer, String.valueOf(getParamManageTagsKey()));
             writeData(writer, String.valueOf(getParamManageTagsModif()));
+            writeData(writer, String.valueOf(getParamCritKey()));
+            writeData(writer, String.valueOf(getParamCritModif()));
+            writeData(writer, String.valueOf(getParamManageAllTagsKey()));
+            writeData(writer, String.valueOf(getParamManageAllTagsModif()));
         }catch (IOException e){
             System.err.println("Sauvergarde impossible");
             e.printStackTrace();

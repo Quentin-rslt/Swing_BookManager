@@ -36,12 +36,6 @@ public class ManageReading {
         m_popup.add(cut);
         m_popup.add(edit);
 
-        m_readingsTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "enter");
-        m_readingsTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "up");
-        m_readingsTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "dow");
-        m_readingsTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), "delete");
-        m_readingsTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0), "tab");
-
         m_readingsTable.getActionMap().put("delete", new AbstractAction(){
             public void actionPerformed(ActionEvent evt){
                 String ReadingQry = "DELETE FROM Reading WHERE Title='"+ m_title+"' AND Author='"+m_author+"' AND ID='"+parent.getRowReading()+"'";//Delete in bdd the item that we want delete

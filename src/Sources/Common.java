@@ -237,23 +237,6 @@ public class Common {
         }
     }
     public static void resetApp(MainWindow mainWindow, boolean reset){
-//        Component[] components = mainWindow.getContentPanel().getComponents();
-//        JButton btn = mainWindow.getAddBookBtn();
-//        if(!reset){
-//            for(Component component : components){
-//                component.setVisible(false);
-//            }
-//            btn.setContentAreaFilled(false);
-//            btn.setForeground(Color.white);
-//            btn.setText("Votre base est vide, cliquer pour ajouter un nouveau livre");
-//            mainWindow.getContentPanel().add(btn);
-//        }
-//        else{
-//            mainWindow.getContentPanel().remove(btn);
-//            for(Component component : components){
-//                component.setVisible(true);
-//            }
-//        }
         mainWindow.getJMenuBar().getMenu(0).getItem(0).setEnabled(reset);
         mainWindow.getJMenuBar().getMenu(1).getItem(3).setEnabled(reset);
         mainWindow.getJMenuBar().getMenu(1).getItem(4).setEnabled(reset);
@@ -292,7 +275,6 @@ public class Common {
             if (!isInCB) {
                 if(canCreate) {
                     EditTagDlg diag = openEditTagDlg(new Tag(Objects.requireNonNull(cb.getSelectedItem()).toString()));
-
                     if (diag.isValide()) {
                         Tag tag = new Tag(diag.getNewTextTag());
                         tag.setColor(diag.getNewColorTag().getRGB());
@@ -342,7 +324,6 @@ public class Common {
         }
         if(!tagFind){
             EditTagDlg diag = openEditTagDlg(new Tag(Objects.requireNonNull(txt.getText())));
-
             if(diag.isValide()){
                 Tag tag = new Tag(diag.getNewTextTag());
                 tag.setColor(diag.getNewColorTag().getRGB());
@@ -444,6 +425,14 @@ public class Common {
     }
     public static Image getImageEdit(){
         File fileEdit = new File("Ressource/Icons/edit.png");
+        String pathEdit = fileEdit.getAbsolutePath();
+        Image imgEdit = Toolkit.getDefaultToolkit().getImage(pathEdit);
+        imgEdit = imgEdit.getScaledInstance(18,18,Image.SCALE_AREA_AVERAGING);
+
+        return imgEdit;
+    }
+    public static Image getImageTag(){
+        File fileEdit = new File("Ressource/Icons/tag.png");
         String pathEdit = fileEdit.getAbsolutePath();
         Image imgEdit = Toolkit.getDefaultToolkit().getImage(pathEdit);
         imgEdit = imgEdit.getScaledInstance(18,18,Image.SCALE_AREA_AVERAGING);

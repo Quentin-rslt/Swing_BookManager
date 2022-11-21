@@ -7,6 +7,9 @@ import Sources.Dialogs.FiltersDlg;
 
 import javax.swing.*;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+
 import static Sources.Common.isItInFilteredBookList;
 import static Sources.Common.resetApp;
 import static Sources.CommonSQL.*;
@@ -17,6 +20,7 @@ import static Sources.MainWindow.getMTitle;
 
 public class MenuBar {
     private static JMenuItem addReadingMenuItem;
+    private static JMenuItem addBookMenuItem;
     public static JMenuBar createMenuBar(MainWindow parent) {
         JMenu helpMenu = new JMenu("Aide");
         JMenuItem aboutMenuItem = new JMenuItem("A propos");
@@ -101,10 +105,12 @@ public class MenuBar {
         //Quit menuItem
         JMenuItem eMenuItem = new JMenuItem("Quitter");
         eMenuItem.setToolTipText("Quitter l'application");
+        eMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, KeyEvent.CTRL_DOWN_MASK));
         eMenuItem.addActionListener((event) -> System.exit(0));
 
         //Param menuItem
         JMenuItem paramMenuItem = new JMenuItem("Paramètres");
+        paramMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, KeyEvent.CTRL_DOWN_MASK));
         paramMenuItem.addActionListener((e -> openParametersDlg(parent)));
 
         //File Menu
@@ -121,16 +127,19 @@ public class MenuBar {
     public static JMenu createEditMenu(MainWindow parent){
         //Add menu
         JMenu addMenu = new JMenu("Ajouter ");
-        JMenuItem addBookMenuItem = new JMenuItem("Un livre");
+        addBookMenuItem = new JMenuItem("Un livre");
         addBookMenuItem.addActionListener((e->{
             AddBookDlg diag=openAddBookDlg();
             addBook(diag, parent);
         }));
+        addBookMenuItem.setAccelerator(KeyStroke.getKeyStroke(parent.getAddBookKey(), parent.getAddBookModif()));
+
         addReadingMenuItem = new JMenuItem("Une lecture");
         addReadingMenuItem.addActionListener((e->{
             AddReading diag = openAddReadingDlg();
             addReading(diag, parent);
         }));
+        addReadingMenuItem.setAccelerator(KeyStroke.getKeyStroke(parent.getAddReadingKey(), parent.getAddReadingModif()));
         addMenu.add(addBookMenuItem);
         addMenu.add(addReadingMenuItem);
 
@@ -145,6 +154,7 @@ public class MenuBar {
                 parent.fastSearchBook(parent.getBookFastSearch().getText());
             }
         }));
+        manageTagMenuItem.setAccelerator(KeyStroke.getKeyStroke(parent.getManageAllTagsKey(), parent.getManageAllTagsModif()));
 
         //Edit book
         JMenuItem editBookMenuItem = new JMenuItem("Modifier le livre");
@@ -152,11 +162,18 @@ public class MenuBar {
             EditBookDlg diag = openEditBookDlg();
             editBook(diag,parent);
         }));
+        editBookMenuItem.setAccelerator(KeyStroke.getKeyStroke(parent.getEditKey(), parent.getEditModif()));
 
         //Delete book
         JMenuItem supprBookMenuItem = new JMenuItem("Supprimer le livre");
         supprBookMenuItem.addActionListener((e -> deleteBook(parent)));
-
+        supprBookMenuItem.setAccelerator(KeyStroke.getKeyStroke(parent.getDeletekey(), parent.getDeleteModif()));
+        supprBookMenuItem.getInputMap().put(KeyStroke.getKeyStroke(parent.getDeletekey(), parent.getDeleteModif()), "delete");
+        supprBookMenuItem.getActionMap().put("delete", new AbstractAction(){
+            public void actionPerformed(ActionEvent e){
+                deleteBook(parent);
+            }
+        });
         //Filters book
         JMenuItem filterMenuItem = new JMenuItem("Critères");
         filterMenuItem.addActionListener((e -> {
@@ -164,6 +181,7 @@ public class MenuBar {
             parent.setDiagFilters(diag);
             filtersBook(diag, parent);
         }));
+        filterMenuItem.setAccelerator(KeyStroke.getKeyStroke(parent.getCritKey(), parent.getCritModif()));
 
         //Edit Menu
         JMenu editMenu = new JMenu("Editer");
@@ -186,5 +204,8 @@ public class MenuBar {
     }
     public static JMenuItem getAddReadingMenuItem() {
         return addReadingMenuItem;
+    }
+    public static JMenuItem getAddBookMenuItem() {
+        return addBookMenuItem;
     }
 }

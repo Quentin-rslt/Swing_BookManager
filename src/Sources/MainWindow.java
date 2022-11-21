@@ -70,12 +70,18 @@ public class MainWindow extends JDialog {
     private int m_deletekey;
     private int m_editKey;
     private int m_addReadingKey;
+    private int m_addBookKey;
     private int m_manageTagsKey;
+    private int m_critKey;
+    private int m_manageAllTagsKey;
+
     private int m_deleteModif;
     private int m_editModif;
     private int m_addReadingModif;
     private int m_manageTagsModif;
-
+    private int m_addBookModif;
+    private int m_critModif;
+    private int m_manageAllTagsModif;
 
     public MainWindow() {
         setContentPane(contentPane);
@@ -97,26 +103,22 @@ public class MainWindow extends JDialog {
         JMenuItem add = new JMenuItem("Ajouter une lecture", new ImageIcon(getImageAdd()));
         JMenuItem cut = new JMenuItem("Supprimer", new ImageIcon(getImageCut()));
         JMenuItem edit = new JMenuItem("Modifier", new ImageIcon(getImageEdit()));
-
-        JMenuItem openManageTags = new JMenuItem("Gérer ses tags");
+        JMenuItem openManageTags = new JMenuItem("Gérer ses tags", new ImageIcon(getImageTag()));
 
         m_popup.add(add);
         m_popup.add(cut);
         m_popup.add(edit);
         m_popup.add(openManageTags);
-        setJMenuBar(createMenuBar(this));
+
+        loadParameters();
+        initBinding();
 
         if(BooksTable.getRowCount() != 0) {//Vérif if the table is not empty; when starting the app, load and focus on the first book of the table
-
             setMTitle(BooksTable.getValueAt(0, 0).toString());
             setAuthor(BooksTable.getValueAt(0, 1).toString());
             setRowReading(0);
             setRowSelected(0);
             loadComponents(getMTitle(), getAuthor());
-
-            loadParameters();
-
-            initBinding();
 
             BooksTable.getActionMap().put("delete", new AbstractAction(){
                 public void actionPerformed(ActionEvent e){
@@ -252,6 +254,18 @@ public class MainWindow extends JDialog {
                 fastSearchBook(BookFastSearch.getText());
             }
         });
+        BookFastSearch.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                super.focusGained(e);
+                getJMenuBar().setEnabled(false);
+            }
+            @Override
+            public void focusLost(FocusEvent e) {
+                super.focusLost(e);
+                getJMenuBar().setEnabled(true);
+            }
+        });
         BookFastSearch.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
@@ -332,6 +346,24 @@ public class MainWindow extends JDialog {
     public int getManageTagsModif() {
         return m_manageTagsModif;
     }
+    public int getAddBookKey() {
+        return m_addBookKey;
+    }
+    public int getAddBookModif() {
+        return m_addBookModif;
+    }
+    public int getCritKey() {
+        return m_critKey;
+    }
+    public int getManageAllTagsKey() {
+        return m_manageAllTagsKey;
+    }
+    public int getCritModif() {
+        return m_critModif;
+    }
+    public int getManageAllTagsModif() {
+        return m_manageAllTagsModif;
+    }
     public int getRowReading() {
         return rowReading;
     }
@@ -381,6 +413,24 @@ public class MainWindow extends JDialog {
     }
     public void setManageTagsModif(int m_manageTagsModif) {
         this.m_manageTagsModif = m_manageTagsModif;
+    }
+    public void setAddBookKey(int m_addBookKey) {
+        this.m_addBookKey = m_addBookKey;
+    }
+    public void setAddBookModif(int m_addBookModif) {
+        this.m_addBookModif = m_addBookModif;
+    }
+    public void setCritKey(int m_critKey) {
+        this.m_critKey = m_critKey;
+    }
+    public void setManageAllTagsKey(int m_manageAllTagsKey) {
+        this.m_manageAllTagsKey = m_manageAllTagsKey;
+    }
+    public void setCritModif(int m_critModif) {
+        this.m_critModif = m_critModif;
+    }
+    public void setManageAllTagsModif(int m_manageAllTagsModif) {
+        this.m_manageAllTagsModif = m_manageAllTagsModif;
     }
     public void connectionDB(){
         try (Connection conn = connect()) {
@@ -660,8 +710,6 @@ public class MainWindow extends JDialog {
             ResultSet ImageQry = m_statement.executeQuery("SELECT Image FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
             addImageToPanel(ImageQry.getString(1),BookPhotoPanel);
 
-            setJMenuBar(createMenuBar(this));
-
             conn.close();
             m_statement.close();
         } catch ( Exception e ) {
@@ -686,7 +734,7 @@ public class MainWindow extends JDialog {
         contentPane.setBorder(null);
         if(getNumberOfBook() == 0){
            FiltersBookBtn.setEnabled(false);
-            resetApp(this, false);
+           resetApp(this, false);
         }
         contentPane.updateUI();
     }
@@ -733,7 +781,10 @@ public class MainWindow extends JDialog {
         isItInFilteredBookList(this, false);
     }
     public void initBinding(){
+        setJMenuBar(createMenuBar(this));
+        contentPane.updateUI();
         BooksTable.getInputMap().clear();
+        ReadingsTable.getInputMap().clear();
         BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(getDeletekey(), getDeleteModif()), "delete");
         BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "up");
         BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "dow");
@@ -741,6 +792,12 @@ public class MainWindow extends JDialog {
         BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0), "tab");
         BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(getAddReadingKey(), getAddReadingModif()), "addReading");
         BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(getManageTagsKey(), getManageTagsModif()), "manageTags");
+
+        ReadingsTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(getEditKey(), getEditModif()), "enter");
+        ReadingsTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "up");
+        ReadingsTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "dow");
+        ReadingsTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(getDeletekey(), getDeleteModif()), "delete");
+        ReadingsTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0), "tab");
     }
     public void loadParameters(){
         try {
@@ -748,14 +805,20 @@ public class MainWindow extends JDialog {
             if ( Files.exists(file) ) {
                 for(String line : Files.readAllLines(file)) {
                     String[] data = line.split(";");
-                    setAddReadingKey(Integer.parseInt(data[0]));
-                    setAddReadingModif(Integer.parseInt(data[1]));
-                    setManageTagsKey(Integer.parseInt(data[2]));
-                    setManageTagsModif(Integer.parseInt(data[3]));
-                    setEditKey(Integer.parseInt(data[4]));
-                    setEditModif(Integer.parseInt(data[5]));
-                    setDeletekey(Integer.parseInt(data[6]));
-                    setDeleteModif(Integer.parseInt(data[7]));
+                    setAddBookKey(Integer.parseInt(data[0]));
+                    setAddBookModif(Integer.parseInt(data[1]));
+                    setAddReadingKey(Integer.parseInt(data[2]));
+                    setAddReadingModif(Integer.parseInt(data[3]));
+                    setDeletekey(Integer.parseInt(data[4]));
+                    setDeleteModif(Integer.parseInt(data[5]));
+                    setEditKey(Integer.parseInt(data[6]));
+                    setEditModif(Integer.parseInt(data[7]));
+                    setManageTagsKey(Integer.parseInt(data[8]));
+                    setManageTagsModif(Integer.parseInt(data[9]));
+                    setCritKey(Integer.parseInt(data[10]));
+                    setCritModif(Integer.parseInt(data[11]));
+                    setManageAllTagsKey(Integer.parseInt(data[12]));
+                    setManageAllTagsModif(Integer.parseInt(data[13]));
                 }
             }
             else {
@@ -763,10 +826,16 @@ public class MainWindow extends JDialog {
                 setManageTagsKey(KeyEvent.VK_T);
                 setEditKey(KeyEvent.VK_ENTER);
                 setDeletekey(KeyEvent.VK_DELETE);
+                setAddBookKey(KeyEvent.VK_M);
+                setCritKey(KeyEvent.VK_C);
+                setManageAllTagsKey(KeyEvent.VK_T);
                 setAddReadingModif(0);
                 setManageTagsModif(0);
                 setEditModif(0);
                 setDeleteModif(0);
+                setAddBookModif(KeyEvent.KEY_LOCATION_LEFT);
+                setCritModif(KeyEvent.KEY_LOCATION_STANDARD);
+                setManageAllTagsModif(KeyEvent.KEY_LOCATION_STANDARD);
             }
         } catch (IOException e) {
             System.err.println("Rechargement impossible");
