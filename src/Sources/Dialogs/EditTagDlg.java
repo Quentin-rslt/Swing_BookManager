@@ -44,7 +44,7 @@ public class EditTagDlg extends JDialog {
                 }
                 else{
                     JFrame jFrame = new JFrame();
-                    JOptionPane.showMessageDialog(jFrame, "Veuillez remplir tous les champs !");
+                    JOptionPane.showMessageDialog(jFrame, "Veuillez remplir tous les champs !", "Tag saisie invalide", JOptionPane.ERROR_MESSAGE);
                 }
             }
             else if(getTag().getTextTag().equals(getNewTextTag())){//if we want to just edit the color of a tag
@@ -55,7 +55,7 @@ public class EditTagDlg extends JDialog {
             }
             else{
                 JFrame jFrame = new JFrame();
-                JOptionPane.showMessageDialog(jFrame, "Ce tag existe déjà !");
+                JOptionPane.showMessageDialog(jFrame, "Ce tag existe déjà !", "Tag saisie invalide", JOptionPane.ERROR_MESSAGE);
             }
         });
     }

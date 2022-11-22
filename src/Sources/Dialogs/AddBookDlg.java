@@ -98,7 +98,7 @@ public class AddBookDlg extends JDialog {
                     while (bookQry.next() && !bookFind){//We browse the database until we find a book that already exists, in relation to the book created
                         if (Objects.equals(bookQry.getString(1), getNewBookTitle()) && Objects.equals(bookQry.getString(2), getNewBookAuthor())){//If the created book is already in the database, we exit the loop by setting an error dialog
                             JFrame jFrame = new JFrame();
-                            JOptionPane.showMessageDialog(jFrame, "Le livre existe déjà !");
+                            JOptionPane.showMessageDialog(jFrame, "Le livre existe déjà !", "Livre saisie invalide", JOptionPane.ERROR_MESSAGE);
                             bookFind = true;//If you have found a book, you are out of the loop
                         }
                     }
@@ -107,10 +107,10 @@ public class AddBookDlg extends JDialog {
                     }
                     if(!bookFind && Objects.equals(getNewBookAuthor(), getNewBookTitle()) && !Objects.equals(getNewBookAuthor(), "")){
                         JFrame jFrame = new JFrame();
-                        JOptionPane.showMessageDialog(jFrame, "Le nom de l'auteur et le titre d'un livre ne peut pas être identique ! ");
+                        JOptionPane.showMessageDialog(jFrame, "Le nom de l'auteur et le titre d'un livre ne peut pas être identique ! ", "Livre saisie invalide", JOptionPane.ERROR_MESSAGE);
                     } else if (!bookFind && isDateKnown() && !isNotDOne() && startDate.compareTo(enDate)>0) {
                         JFrame jFrame = new JFrame();
-                        JOptionPane.showMessageDialog(jFrame, "La date de début de lecture ne peut pas être après à la fin de lecture !");
+                        JOptionPane.showMessageDialog(jFrame, "La date de début de lecture ne peut pas être après à la fin de lecture !", "Livre saisie invalide", JOptionPane.ERROR_MESSAGE);
                     } else if (!bookFind ) {
                         addImageToResource();
                         m_isValide=true;
@@ -127,7 +127,7 @@ public class AddBookDlg extends JDialog {
             }
             else{
                 JFrame jFrame = new JFrame();
-                JOptionPane.showMessageDialog(jFrame, "Veuillez remplir tous les champs !");
+                JOptionPane.showMessageDialog(jFrame, "Veuillez remplir tous les champs !", "Livre saisie invalide", JOptionPane.ERROR_MESSAGE);
             }
         });
         BookBrowseBtn.addActionListener((ActionEvent e)-> selectImageOfBook(PreviewPhotoPanel));

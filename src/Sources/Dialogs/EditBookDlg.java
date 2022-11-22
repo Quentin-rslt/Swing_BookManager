@@ -70,7 +70,7 @@ public class EditBookDlg extends JDialog {
             }
             else{
                 JFrame jFrame = new JFrame();
-                JOptionPane.showMessageDialog(jFrame, "Veuillez remplir tous les champs !");
+                JOptionPane.showMessageDialog(jFrame, "Veuillez remplir tous les champs !", "Livre saisie invalide", JOptionPane.ERROR_MESSAGE);
             }
         });
         BookBrowseBtn.addActionListener((ActionEvent e)-> selectImageOfBook(BookPhotoPanel));

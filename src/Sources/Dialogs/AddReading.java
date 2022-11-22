@@ -76,26 +76,26 @@ public class AddReading extends JDialog {
                     if (!isDateUnknown() && !isNotDone() && Objects.equals(qry.getString(3), getNewStartReading())
                             && Objects.equals(qry.getString(4), getNewEndReading())){
                         JFrame jFrame = new JFrame();
-                        JOptionPane.showMessageDialog(jFrame, "Les dates de lecture existent déjà !");
+                        JOptionPane.showMessageDialog(jFrame, "Les dates de lecture existent déjà !", "Date saisie invalide", JOptionPane.ERROR_MESSAGE);
                         readingFound = true;//
                     } else if (!isDateUnknown() && isNotDone() && Objects.equals(qry.getString(3), getNewStartReading()) && !Objects.equals(getNewStartReading(), getNewEndReading())) {
                         JFrame jFrame = new JFrame();
-                        JOptionPane.showMessageDialog(jFrame, "La date de début de lecture existe déjà !");
+                        JOptionPane.showMessageDialog(jFrame, "La date de début de lecture existe déjà !", "Date saisie invalide", JOptionPane.ERROR_MESSAGE);
                         readingFound = true;//
                     } else if (!isDateUnknown() && !isNotDone() && Objects.equals(qry.getString(3), getNewStartReading()) && !Objects.equals(getNewStartReading(), getNewEndReading())) {
                         JFrame jFrame = new JFrame();
-                        JOptionPane.showMessageDialog(jFrame, "La date de début de lecture existe déjà !");
+                        JOptionPane.showMessageDialog(jFrame, "La date de début de lecture existe déjà !", "Date saisie invalide", JOptionPane.ERROR_MESSAGE);
                         readingFound = true;//
                     } else if (!isDateUnknown() && !isNotDone() && Objects.equals(qry.getString(4), getNewEndReading()) && !Objects.equals(getNewStartReading(), getNewEndReading())) {
                         JFrame jFrame = new JFrame();
-                        JOptionPane.showMessageDialog(jFrame, "La date de fin de lecture existe déjà !");
+                        JOptionPane.showMessageDialog(jFrame, "La date de fin de lecture existe déjà !", "Date saisie invalide", JOptionPane.ERROR_MESSAGE);
                         readingFound = true;//
                     }
                 }
                 if (!readingFound && !isDateUnknown() && !isNotDone() && startDate.compareTo(enDate)>0) {
                     setIsValid(false);
                     JFrame jFrame = new JFrame();
-                    JOptionPane.showMessageDialog(jFrame, "La date de début de lecture ne peut pas être après à la fin de lecture !");
+                    JOptionPane.showMessageDialog(jFrame, "La date de début de lecture ne peut pas être après à la fin de lecture !", "Date saisie invalide", JOptionPane.ERROR_MESSAGE);
                 }else if(!readingFound ){
                     setIsValid(true);
                     setVisible(false);

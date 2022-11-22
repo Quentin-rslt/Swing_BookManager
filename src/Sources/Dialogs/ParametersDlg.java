@@ -44,8 +44,7 @@ public class ParametersDlg extends JDialog {
     private JComboBox ParamLogKey;
     private JComboBox ParamLogModif;
     private JPanel LabelPanel;
-    private final ArrayList<String> listOfshortcutBefore = new ArrayList<>();
-    private final ArrayList<String> listOfshortcutAfter = new ArrayList<>();
+    private final ArrayList<String> listOfshortcuts = new ArrayList<>();
 
     public ParametersDlg(MainWindow parent) {
         setContentPane(contentPane);
@@ -54,8 +53,8 @@ public class ParametersDlg extends JDialog {
         ParamSaveBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                listOfshortcutAfter.clear();
-                fillListOfShortcut(listOfshortcutAfter);
+                listOfshortcuts.clear();
+                fillListOfShortcut();
                 //Keys
                 if(shortcutsIsValid()) {
                     parent.setAddBookKey(getParamAddBookKey());
@@ -314,28 +313,31 @@ public class ParametersDlg extends JDialog {
     }
     public boolean shortcutsIsValid(){
         boolean valid = true;
-        for (int j =0; j<listOfshortcutAfter.size();j++) {
-            if(!listOfshortcutAfter.get(j).equals(listOfshortcutBefore.get(j))){
-                for (int i =0; i<listOfshortcutBefore.size();i++) {
-                    if (listOfshortcutAfter.get(j).equals(listOfshortcutBefore.get(i))) {
-                        messageError(j, i,false, false);
+        for (int j = 0; j< listOfshortcuts.size(); j++) {
+            for (int i = 0; i< listOfshortcuts.size(); i++) {
+                if(i!=j) {
+                    if (listOfshortcuts.get(j).equals(listOfshortcuts.get(i))) {
+                        messageError(j, i, false, false);
                         valid = false;
-                        break;
                     }
                 }
-                String[] shortCutAfter = listOfshortcutAfter.get(j).split("-");
-                int modif = Integer.parseInt(shortCutAfter[0]);
-                int key = Integer.parseInt(shortCutAfter[1]);
-                if(modif == KeyEvent.KEY_LOCATION_LEFT && key == KeyEvent.VK_P){
-                    messageError(j,j,true, false);
-                    valid = false;
-                }
-                if(modif == KeyEvent.KEY_LOCATION_LEFT && key == KeyEvent.VK_Q){
-                    messageError(j, j,false, true);
-                    valid = false;
-                }
+            }
+            if(!valid){
+                break;
+            }
+            String[] shortCutAfter = listOfshortcuts.get(j).split("-");
+            int modif = Integer.parseInt(shortCutAfter[0]);
+            int key = Integer.parseInt(shortCutAfter[1]);
+            if(modif == KeyEvent.KEY_LOCATION_LEFT && key == KeyEvent.VK_P){
+                messageError(j,j,true, false);
+                valid = false;
+            }
+            if(modif == KeyEvent.KEY_LOCATION_LEFT && key == KeyEvent.VK_Q){
+                messageError(j, j,false, true);
+                valid = false;
             }
         }
+
         return valid;
     }
     public void messageError(int j,int i, boolean param, boolean quit){
@@ -358,27 +360,27 @@ public class ParametersDlg extends JDialog {
         JFrame jFrame = new JFrame();
         JOptionPane.showMessageDialog(jFrame, text, "Raccourcie déjà existant", JOptionPane.ERROR_MESSAGE);
     }
-    public void fillListOfShortcut(ArrayList<String> lst){
+    public void fillListOfShortcut(){
         String addReadingShortCut = getParamAddReadingModif()+"-"+getParamAddReadingKey();
-        lst.add(addReadingShortCut);
+        listOfshortcuts.add(addReadingShortCut);
 
         String addBookShortCut = getParamAddBookModif()+"-"+getParamAddBookKey();
-        lst.add(addBookShortCut);
+        listOfshortcuts.add(addBookShortCut);
 
         String addManageTagsShortCut = getParamManageTagsModif()+"-"+getParamManageTagsKey();
-        lst.add(addManageTagsShortCut);
+        listOfshortcuts.add(addManageTagsShortCut);
 
         String addEditShortCut = getParamEditModif()+"-"+getParamEditKey();
-        lst.add(addEditShortCut);
+        listOfshortcuts.add(addEditShortCut);
 
         String addDeleteShortCut = getParamDeleteModif()+"-"+getParamDeletekey();
-        lst.add(addDeleteShortCut);
+        listOfshortcuts.add(addDeleteShortCut);
 
         String addParamManageAllTagsShortCut = getParamManageAllTagsModif()+"-"+getParamManageAllTagsKey();
-        lst.add(addParamManageAllTagsShortCut);
+        listOfshortcuts.add(addParamManageAllTagsShortCut);
 
         String addCritShortCut = getParamCritModif()+"-"+getParamCritKey();
-        lst.add(addCritShortCut);
+        listOfshortcuts.add(addCritShortCut);
     }
     @SuppressWarnings("unchecked")
     public void fillParamCBKey(){
@@ -488,7 +490,7 @@ public class ParametersDlg extends JDialog {
         fillParamCBKey();
         fillParamCBModif();
         initCBSelection(parent);
-        fillListOfShortcut(listOfshortcutBefore);
+        fillListOfShortcut();
     }
     public void save(){
         Path folder = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(),"BookManager/");
