@@ -105,25 +105,13 @@ public class EditReadingDlg extends JDialog {
                         }
                     }
                 }
-                if (!dateFind && isDateReadingUnknown()){
-                    setIsValid(true);
-                    setVisible(false);
-                    dispose();
-                } else if (!dateFind && !isDateReadingUnknown() && isNotDone()) {
-                    setIsValid(true);
-                    setVisible(false);
-                    dispose();
-                } else if (!dateFind && !Objects.equals(getNewStartReading(), getNewEndReading()) && !isDateReadingUnknown() && !isNotDone() && startDate.compareTo(enDate)<0){
-                    setIsValid(true);
-                    setVisible(false);
-                    dispose();
-                } else if (!dateFind && !Objects.equals(getNewStartReading(), getNewEndReading()) && !isDateReadingUnknown() && !isNotDone() && startDate.compareTo(enDate)>0){
+                if (!dateFind && !isDateReadingUnknown() && !isNotDone() && startDate.compareTo(enDate)>0){
                     JFrame jFrame = new JFrame();
                     JOptionPane.showMessageDialog(jFrame, "La date de début de lecture ne peut pas être après à la fin de lecture !");
-                } else if(!dateFind && Objects.equals(getNewStartReading(), getNewEndReading())
-                        && !isDateReadingUnknown() && !isNotDone()){
-                    JFrame jFrame = new JFrame();
-                    JOptionPane.showMessageDialog(jFrame, "La date de début de lecture ne peut pas être identique à la fin de lecture !");
+                } else if(!dateFind) {
+                    setIsValid(true);
+                    setVisible(false);
+                    dispose();
                 }
                 connection.close();
                 statement.close();

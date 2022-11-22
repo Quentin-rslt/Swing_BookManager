@@ -105,31 +105,17 @@ public class AddBookDlg extends JDialog {
                     if(getNameOfBook().equals("")){
                         setNameOfImage("Default.jpg");
                     }
-                    if (!bookFind && isDateUnknown()&& !isNotDOne() && !Objects.equals(getNewBookAuthor(), getNewBookTitle())){
-                        addImageToResource();
-                        m_isValide=true;
-                        setVisible(false);
-                        dispose();
-                    } else if (!bookFind && !isDateUnknown() && isNotDOne() && !Objects.equals(getNewBookAuthor(), getNewBookTitle())) {
-                        addImageToResource();
-                        m_isValide=true;
-                        setVisible(false);
-                        dispose();
-                    } else if (!bookFind && !Objects.equals(getNewBookStartReading(), getNewBookEndReading()) && !isDateUnknown() && !isNotDOne()
-                            && startDate.compareTo(enDate)<0 && !Objects.equals(getNewBookAuthor(), getNewBookTitle())) {
-                        addImageToResource();
-                        m_isValide=true;
-                        setVisible(false);
-                        dispose();
-                    } else if(Objects.equals(getNewBookAuthor(), getNewBookTitle()) && !Objects.equals(getNewBookAuthor(), "")){
+                    if(!bookFind && Objects.equals(getNewBookAuthor(), getNewBookTitle()) && !Objects.equals(getNewBookAuthor(), "")){
                         JFrame jFrame = new JFrame();
                         JOptionPane.showMessageDialog(jFrame, "Le nom de l'auteur et le titre d'un livre ne peut pas être identique ! ");
-                    } else if (!Objects.equals(getNewBookStartReading(), getNewBookEndReading()) && !isDateUnknown() && !isNotDOne() && startDate.compareTo(enDate)>0) {
+                    } else if (!bookFind && isDateUnknown() && !isNotDOne() && startDate.compareTo(enDate)>0) {
                         JFrame jFrame = new JFrame();
                         JOptionPane.showMessageDialog(jFrame, "La date de début de lecture ne peut pas être après à la fin de lecture !");
-                    } else if(!bookFind && Objects.equals(getNewBookStartReading(), getNewBookEndReading()) && !isDateUnknown() && !isNotDOne()){
-                        JFrame jFrame = new JFrame();
-                        JOptionPane.showMessageDialog(jFrame, "La date de début de lecture ne peut être identique à la fin de lecture !");
+                    } else if (!bookFind ) {
+                        addImageToResource();
+                        m_isValide=true;
+                        setVisible(false);
+                        dispose();
                     }
                     conn.close();
                     m_statement.close();
@@ -279,7 +265,7 @@ public class AddBookDlg extends JDialog {
         return formater.format(BookStartReadingSpin.getValue());
     }
     public boolean isDateUnknown(){
-        return BookUnknownReadDateChecbox.isSelected();
+        return !BookUnknownReadDateChecbox.isSelected();
     }
     public boolean isNotDOne(){
         return BookNotDoneReadChecbox.isSelected();

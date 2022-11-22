@@ -74,11 +74,11 @@ public class CommonSQL {
                 BookPstmt.setString(7, diag.getNewBookReleaseYear());
                 BookPstmt.setString(8, diag.getNewBookSummary());
 
-                if(!diag.isDateUnknown() && !diag.isNotDOne()){
+                if(diag.isDateUnknown() && !diag.isNotDOne()){
                     ReadingPstmt.setString(4, diag.getNewBookStartReading());
                     ReadingPstmt.setString(5, diag.getNewBookEndReading());
 
-                } else if (!diag.isDateUnknown() && diag.isNotDOne()) {
+                } else if (diag.isDateUnknown() && diag.isNotDOne()) {
                     ReadingPstmt.setString(4, diag.getNewBookStartReading());
                     ReadingPstmt.setString(5, "Pas fini");
                 } else {
@@ -432,7 +432,7 @@ public class CommonSQL {
                     LocalDate start = LocalDate.parse(qry.getString(1));
                     LocalDate stop = LocalDate.parse(qry.getString(2));
                     days = days + ChronoUnit.DAYS.between(start, stop);
-                    average= (int) (days/dateValid);
+                    average= (int) (days/dateValid)+1;
                 }
             }
         } catch (SQLException e) {

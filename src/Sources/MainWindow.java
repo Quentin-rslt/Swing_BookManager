@@ -581,7 +581,7 @@ public class MainWindow extends JDialog {
                 if (!isOk) {
                     LocalDate start = LocalDate.parse(qry.getString("StartReading"));
                     LocalDate stop = LocalDate.parse(qry.getString("EndReading"));
-                    days = ChronoUnit.DAYS.between(start, stop);
+                    days = ChronoUnit.DAYS.between(start, stop)+1;
                     StdDays = days + " jours";
                 }
 
@@ -826,14 +826,14 @@ public class MainWindow extends JDialog {
                 setManageTagsKey(KeyEvent.VK_T);
                 setEditKey(KeyEvent.VK_ENTER);
                 setDeletekey(KeyEvent.VK_DELETE);
-                setAddBookKey(KeyEvent.VK_M);
+                setAddBookKey(KeyEvent.VK_A);
                 setCritKey(KeyEvent.VK_C);
                 setManageAllTagsKey(KeyEvent.VK_T);
                 setAddReadingModif(0);
                 setManageTagsModif(0);
                 setEditModif(0);
                 setDeleteModif(0);
-                setAddBookModif(KeyEvent.KEY_LOCATION_LEFT);
+                setAddBookModif(KeyEvent.KEY_LOCATION_STANDARD);
                 setCritModif(KeyEvent.KEY_LOCATION_STANDARD);
                 setManageAllTagsModif(KeyEvent.KEY_LOCATION_STANDARD);
             }

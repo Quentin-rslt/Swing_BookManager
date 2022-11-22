@@ -92,27 +92,14 @@ public class AddReading extends JDialog {
                         readingFound = true;//
                     }
                 }
-                if (!readingFound && isDateUnknown()){
-                    setIsValid(true);
-                    setVisible(false);
-                    dispose();
-                } else if (!readingFound && isNotDone()) {
-                    setIsValid(true);
-                    setVisible(false);
-                    dispose();
-                } else if (!readingFound && !Objects.equals(getNewStartReading(), getNewEndReading()) && !isDateUnknown() && !isNotDone() && startDate.compareTo(enDate)<0){
-                    setIsValid(true);
-                    setVisible(false);
-                    dispose();
-                } else if (!readingFound && !Objects.equals(getNewStartReading(), getNewEndReading()) && !isDateUnknown() && !isNotDone() && startDate.compareTo(enDate)>0) {
+                if (!readingFound && !isDateUnknown() && !isNotDone() && startDate.compareTo(enDate)>0) {
                     setIsValid(false);
                     JFrame jFrame = new JFrame();
                     JOptionPane.showMessageDialog(jFrame, "La date de début de lecture ne peut pas être après à la fin de lecture !");
-                } else if(!readingFound && Objects.equals(getNewStartReading(), getNewEndReading())
-                        && !isDateUnknown() && !isNotDone()){
-                    setIsValid(false);
-                    JFrame jFrame = new JFrame();
-                    JOptionPane.showMessageDialog(jFrame, "La date de début de lecture ne peut pas être identique à la fin de lecture !");
+                }else if(!readingFound ){
+                    setIsValid(true);
+                    setVisible(false);
+                    dispose();
                 }
                 conn.close();
                 statement.close();
