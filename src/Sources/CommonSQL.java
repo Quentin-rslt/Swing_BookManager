@@ -74,11 +74,11 @@ public class CommonSQL {
                 BookPstmt.setString(7, diag.getNewBookReleaseYear());
                 BookPstmt.setString(8, diag.getNewBookSummary());
 
-                if(diag.isDateUnknown() && !diag.isNotDOne()){
+                if(diag.isDateKnown() && !diag.isNotDOne()){
                     ReadingPstmt.setString(4, diag.getNewBookStartReading());
                     ReadingPstmt.setString(5, diag.getNewBookEndReading());
 
-                } else if (diag.isDateUnknown() && diag.isNotDOne()) {
+                } else if (diag.isDateKnown() && diag.isNotDOne()) {
                     ReadingPstmt.setString(4, diag.getNewBookStartReading());
                     ReadingPstmt.setString(5, "Pas fini");
                 } else {

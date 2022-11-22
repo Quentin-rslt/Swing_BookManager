@@ -163,7 +163,7 @@
             <properties/>
             <border type="none"/>
             <children>
-              <grid id="a621e" layout-manager="GridLayoutManager" row-count="9" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+              <grid id="a621e" binding="LabelPanel" layout-manager="GridLayoutManager" row-count="9" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                 <margin top="0" left="0" bottom="0" right="5"/>
                 <constraints border-constraint="West"/>
                 <properties/>
@@ -187,20 +187,38 @@
                       </component>
                     </children>
                   </grid>
-                  <grid id="10077" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                  <grid id="ab3a5" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                     <margin top="0" left="0" bottom="0" right="0"/>
                     <constraints>
-                      <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                      <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties/>
                     <border type="none"/>
                     <children>
-                      <component id="fc32d" class="javax.swing.JLabel">
+                      <component id="11109" class="javax.swing.JLabel">
                         <constraints>
                           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                         </constraints>
                         <properties>
-                          <text value="Supprimer"/>
+                          <text value="Ajouter livre"/>
+                        </properties>
+                      </component>
+                    </children>
+                  </grid>
+                  <grid id="5be35" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                    <margin top="0" left="0" bottom="0" right="0"/>
+                    <constraints>
+                      <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties/>
+                    <border type="none"/>
+                    <children>
+                      <component id="6c39b" class="javax.swing.JLabel">
+                        <constraints>
+                          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                        </constraints>
+                        <properties>
+                          <text value="Gérer les tags"/>
                         </properties>
                       </component>
                     </children>
@@ -223,10 +241,28 @@
                       </component>
                     </children>
                   </grid>
+                  <grid id="10077" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                    <margin top="0" left="0" bottom="0" right="0"/>
+                    <constraints>
+                      <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties/>
+                    <border type="none"/>
+                    <children>
+                      <component id="fc32d" class="javax.swing.JLabel">
+                        <constraints>
+                          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                        </constraints>
+                        <properties>
+                          <text value="Supprimer"/>
+                        </properties>
+                      </component>
+                    </children>
+                  </grid>
                   <grid id="892d" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                     <margin top="0" left="0" bottom="0" right="0"/>
                     <constraints>
-                      <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                      <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties/>
                     <border type="none"/>
@@ -237,60 +273,6 @@
                         </constraints>
                         <properties>
                           <text value="Gérer ses tags"/>
-                        </properties>
-                      </component>
-                    </children>
-                  </grid>
-                  <grid id="ab3a5" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-                    <margin top="0" left="0" bottom="0" right="0"/>
-                    <constraints>
-                      <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
-                    </constraints>
-                    <properties/>
-                    <border type="none"/>
-                    <children>
-                      <component id="11109" class="javax.swing.JLabel">
-                        <constraints>
-                          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                        </constraints>
-                        <properties>
-                          <text value="Ajouter livre"/>
-                        </properties>
-                      </component>
-                    </children>
-                  </grid>
-                  <grid id="3def8" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-                    <margin top="0" left="0" bottom="0" right="0"/>
-                    <constraints>
-                      <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
-                    </constraints>
-                    <properties/>
-                    <border type="none"/>
-                    <children>
-                      <component id="e469e" class="javax.swing.JLabel">
-                        <constraints>
-                          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                        </constraints>
-                        <properties>
-                          <text value="Rénitialisation filtre"/>
-                        </properties>
-                      </component>
-                    </children>
-                  </grid>
-                  <grid id="5be35" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-                    <margin top="0" left="0" bottom="0" right="0"/>
-                    <constraints>
-                      <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
-                    </constraints>
-                    <properties/>
-                    <border type="none"/>
-                    <children>
-                      <component id="6c39b" class="javax.swing.JLabel">
-                        <constraints>
-                          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                        </constraints>
-                        <properties>
-                          <text value="Gérer les tags"/>
                         </properties>
                       </component>
                     </children>
@@ -316,7 +298,7 @@
                   <grid id="d113d" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                     <margin top="0" left="0" bottom="0" right="0"/>
                     <constraints>
-                      <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                      <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties/>
                     <border type="none"/>
@@ -327,6 +309,24 @@
                         </constraints>
                         <properties>
                           <text value="Log"/>
+                        </properties>
+                      </component>
+                    </children>
+                  </grid>
+                  <grid id="3def8" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                    <margin top="0" left="0" bottom="0" right="0"/>
+                    <constraints>
+                      <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties/>
+                    <border type="none"/>
+                    <children>
+                      <component id="e469e" class="javax.swing.JLabel">
+                        <constraints>
+                          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                        </constraints>
+                        <properties>
+                          <text value="Rénitialisation filtre"/>
                         </properties>
                       </component>
                     </children>
@@ -356,35 +356,18 @@
                       </component>
                     </children>
                   </grid>
-                  <grid id="8b3d3" layout-manager="BorderLayout" hgap="0" vgap="0">
+                  <grid id="bedbf" layout-manager="BorderLayout" hgap="0" vgap="0">
                     <constraints>
-                      <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                      <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties/>
                     <border type="none"/>
                     <children>
-                      <component id="d5354" class="javax.swing.JComboBox" binding="ParamDeleteModif">
+                      <component id="f6b43" class="javax.swing.JComboBox" binding="ParamAddBookModif">
                         <constraints border-constraint="West"/>
                         <properties/>
                       </component>
-                      <component id="40295" class="javax.swing.JComboBox" binding="ParamDeleteKey">
-                        <constraints border-constraint="Center"/>
-                        <properties/>
-                      </component>
-                    </children>
-                  </grid>
-                  <grid id="27da7" layout-manager="BorderLayout" hgap="0" vgap="0">
-                    <constraints>
-                      <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
-                    </constraints>
-                    <properties/>
-                    <border type="none"/>
-                    <children>
-                      <component id="8e16c" class="javax.swing.JComboBox" binding="ParamEditModif">
-                        <constraints border-constraint="West"/>
-                        <properties/>
-                      </component>
-                      <component id="1873c" class="javax.swing.JComboBox" binding="ParamEditKey">
+                      <component id="8d1fc" class="javax.swing.JComboBox" binding="ParamAddBookKey">
                         <constraints border-constraint="Center"/>
                         <properties/>
                       </component>
@@ -407,39 +390,37 @@
                       </component>
                     </children>
                   </grid>
-                  <grid id="bedbf" layout-manager="BorderLayout" hgap="0" vgap="0">
+                  <grid id="27da7" layout-manager="BorderLayout" hgap="0" vgap="0">
                     <constraints>
-                      <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                      <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties/>
                     <border type="none"/>
                     <children>
-                      <component id="f6b43" class="javax.swing.JComboBox" binding="ParamAddBookModif">
+                      <component id="8e16c" class="javax.swing.JComboBox" binding="ParamEditModif">
                         <constraints border-constraint="West"/>
                         <properties/>
                       </component>
-                      <component id="8d1fc" class="javax.swing.JComboBox" binding="ParamAddBookKey">
+                      <component id="1873c" class="javax.swing.JComboBox" binding="ParamEditKey">
                         <constraints border-constraint="Center"/>
                         <properties/>
                       </component>
                     </children>
                   </grid>
-                  <grid id="63c9c" layout-manager="BorderLayout" hgap="0" vgap="0">
+                  <grid id="8b3d3" layout-manager="BorderLayout" hgap="0" vgap="0">
                     <constraints>
-                      <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                      <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties/>
                     <border type="none"/>
                     <children>
-                      <component id="779f7" class="javax.swing.JComboBox" binding="ParamRenitModif">
+                      <component id="d5354" class="javax.swing.JComboBox" binding="ParamDeleteModif">
                         <constraints border-constraint="West"/>
                         <properties/>
                       </component>
-                      <component id="9a557" class="javax.swing.JComboBox" binding="ParamRenitKey">
+                      <component id="40295" class="javax.swing.JComboBox" binding="ParamDeleteKey">
                         <constraints border-constraint="Center"/>
-                        <properties>
-                          <model/>
-                        </properties>
+                        <properties/>
                       </component>
                     </children>
                   </grid>
@@ -483,7 +464,7 @@
                   </grid>
                   <grid id="39920" layout-manager="BorderLayout" hgap="0" vgap="0">
                     <constraints>
-                      <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                      <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties/>
                     <border type="none"/>
@@ -495,6 +476,25 @@
                       <component id="54b22" class="javax.swing.JComboBox" binding="ParamLogKey">
                         <constraints border-constraint="Center"/>
                         <properties/>
+                      </component>
+                    </children>
+                  </grid>
+                  <grid id="63c9c" layout-manager="BorderLayout" hgap="0" vgap="0">
+                    <constraints>
+                      <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties/>
+                    <border type="none"/>
+                    <children>
+                      <component id="779f7" class="javax.swing.JComboBox" binding="ParamRenitModif">
+                        <constraints border-constraint="West"/>
+                        <properties/>
+                      </component>
+                      <component id="9a557" class="javax.swing.JComboBox" binding="ParamRenitKey">
+                        <constraints border-constraint="Center"/>
+                        <properties>
+                          <model/>
+                        </properties>
                       </component>
                     </children>
                   </grid>

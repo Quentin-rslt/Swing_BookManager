@@ -108,7 +108,7 @@ public class AddBookDlg extends JDialog {
                     if(!bookFind && Objects.equals(getNewBookAuthor(), getNewBookTitle()) && !Objects.equals(getNewBookAuthor(), "")){
                         JFrame jFrame = new JFrame();
                         JOptionPane.showMessageDialog(jFrame, "Le nom de l'auteur et le titre d'un livre ne peut pas être identique ! ");
-                    } else if (!bookFind && isDateUnknown() && !isNotDOne() && startDate.compareTo(enDate)>0) {
+                    } else if (!bookFind && isDateKnown() && !isNotDOne() && startDate.compareTo(enDate)>0) {
                         JFrame jFrame = new JFrame();
                         JOptionPane.showMessageDialog(jFrame, "La date de début de lecture ne peut pas être après à la fin de lecture !");
                     } else if (!bookFind ) {
@@ -264,7 +264,7 @@ public class AddBookDlg extends JDialog {
         SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd");//set the date format returned to have the day, month and year
         return formater.format(BookStartReadingSpin.getValue());
     }
-    public boolean isDateUnknown(){
+    public boolean isDateKnown(){
         return !BookUnknownReadDateChecbox.isSelected();
     }
     public boolean isNotDOne(){

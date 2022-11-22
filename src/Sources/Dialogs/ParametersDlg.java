@@ -4,6 +4,7 @@ import Sources.MainWindow;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -14,6 +15,7 @@ import java.lang.reflect.Modifier;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class ParametersDlg extends JDialog {
@@ -41,6 +43,9 @@ public class ParametersDlg extends JDialog {
     private JComboBox ParamRenitModif;
     private JComboBox ParamLogKey;
     private JComboBox ParamLogModif;
+    private JPanel LabelPanel;
+    private final ArrayList<String> listOfshortcutBefore = new ArrayList<>();
+    private final ArrayList<String> listOfshortcutAfter = new ArrayList<>();
 
     public ParametersDlg(MainWindow parent) {
         setContentPane(contentPane);
@@ -49,27 +54,31 @@ public class ParametersDlg extends JDialog {
         ParamSaveBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                listOfshortcutAfter.clear();
+                fillListOfShortcut(listOfshortcutAfter);
                 //Keys
-                parent.setAddBookKey(getParamAddBookKey());
-                parent.setAddReadingKey(getParamAddReadingKey());
-                parent.setEditKey(getParamEditKey());
-                parent.setManageTagsKey(getParamManageTagsKey());
-                parent.setDeletekey(getParamDeletekey());
-                parent.setCritKey(getParamCritKey());
-                parent.setManageAllTagsKey(getParamManageAllTagsKey());
-                //Modifiers
-                parent.setAddBookModif(getParamAddBookModif());
-                parent.setAddReadingModif(getParamAddReadingModif());
-                parent.setEditModif(getParamEditModif());
-                parent.setDeleteModif(getParamDeleteModif());
-                parent.setManageTagsModif(getParamManageTagsModif());
-                parent.setCritModif(getParamCritModif());
-                parent.setManageAllTagsModif(getParamManageAllTagsModif());
+                if(shortcutsIsValid()) {
+                    parent.setAddBookKey(getParamAddBookKey());
+                    parent.setAddReadingKey(getParamAddReadingKey());
+                    parent.setEditKey(getParamEditKey());
+                    parent.setManageTagsKey(getParamManageTagsKey());
+                    parent.setDeletekey(getParamDeletekey());
+                    parent.setCritKey(getParamCritKey());
+                    parent.setManageAllTagsKey(getParamManageAllTagsKey());
+                    //Modifiers
+                    parent.setAddBookModif(getParamAddBookModif());
+                    parent.setAddReadingModif(getParamAddReadingModif());
+                    parent.setEditModif(getParamEditModif());
+                    parent.setDeleteModif(getParamDeleteModif());
+                    parent.setManageTagsModif(getParamManageTagsModif());
+                    parent.setCritModif(getParamCritModif());
+                    parent.setManageAllTagsModif(getParamManageAllTagsModif());
 
-                save();
-                parent.initBinding();
-                setVisible(false);
-                dispose();
+                    save();
+                    parent.initBinding();
+                    setVisible(false);
+                    dispose();
+                }
             }
         });
         ParamCancelBtn.addActionListener(new ActionListener() {
@@ -87,6 +96,7 @@ public class ParametersDlg extends JDialog {
             for (Field f : fields) {
                 if (f.getName().equals(getNameModifKey(ParamAddBookModif))) {
                     value = f.getInt(getNameModifKey(ParamAddBookModif));
+                    break;
                 }
             }
         } catch (IllegalAccessException e) {
@@ -101,6 +111,7 @@ public class ParametersDlg extends JDialog {
             for (Field f : fields) {
                 if (f.getName().equals(getNameModifKey(ParamAddReadingModif))) {
                     value = f.getInt(getNameModifKey(ParamAddReadingModif));
+                    break;
                 }
             }
         } catch (IllegalAccessException e) {
@@ -115,6 +126,7 @@ public class ParametersDlg extends JDialog {
             for (Field f : fields) {
                 if (f.getName().equals(getNameModifKey(ParamDeleteModif))) {
                     value = f.getInt(getNameModifKey(ParamDeleteModif));
+                    break;
                 }
             }
         } catch (IllegalAccessException e) {
@@ -129,6 +141,7 @@ public class ParametersDlg extends JDialog {
             for (Field f : fields) {
                 if (f.getName().equals(getNameModifKey(ParamEditModif))) {
                     value = f.getInt(getNameModifKey(ParamEditModif));
+                    break;
                 }
             }
         } catch (IllegalAccessException e) {
@@ -143,6 +156,7 @@ public class ParametersDlg extends JDialog {
             for (Field f : fields) {
                 if (f.getName().equals(getNameModifKey(ParamManageTagsModif))) {
                     value = f.getInt(getNameModifKey(ParamManageTagsModif));
+                    break;
                 }
             }
         } catch (IllegalAccessException e) {
@@ -157,6 +171,7 @@ public class ParametersDlg extends JDialog {
             for (Field f : fields) {
                 if (f.getName().equals(getNameModifKey(ParamCritModif))) {
                     value = f.getInt(getNameModifKey(ParamCritModif));
+                    break;
                 }
             }
         } catch (IllegalAccessException e) {
@@ -171,6 +186,7 @@ public class ParametersDlg extends JDialog {
             for (Field f : fields) {
                 if (f.getName().equals(getNameModifKey(ParamManageAllTagsModif))) {
                     value = f.getInt(getNameModifKey(ParamManageAllTagsModif));
+                    break;
                 }
             }
         } catch (IllegalAccessException e) {
@@ -198,6 +214,7 @@ public class ParametersDlg extends JDialog {
             for (Field f : fields) {
                 if (f.getName().equals(ParamAddBookKey.getSelectedItem())) {
                     value = f.getInt(ParamAddBookKey.getSelectedItem());
+                    break;
                 }
             }
         } catch (IllegalAccessException e) {
@@ -212,6 +229,7 @@ public class ParametersDlg extends JDialog {
             for (Field f : fields) {
                 if (f.getName().equals(ParamManageTagsKey.getSelectedItem())) {
                     value = f.getInt(ParamManageTagsKey.getSelectedItem());
+                    break;
                 }
             }
         } catch (IllegalAccessException e) {
@@ -226,6 +244,7 @@ public class ParametersDlg extends JDialog {
             for (Field f : fields) {
                 if (f.getName().equals(ParamDeleteKey.getSelectedItem())) {
                     value = f.getInt(ParamDeleteKey.getSelectedItem());
+                    break;
                 }
             }
         } catch (IllegalAccessException e) {
@@ -240,6 +259,7 @@ public class ParametersDlg extends JDialog {
             for (Field f : fields) {
                 if (f.getName().equals(ParamEditKey.getSelectedItem())) {
                     value = f.getInt(ParamEditKey.getSelectedItem());
+                    break;
                 }
             }
         } catch (IllegalAccessException e) {
@@ -254,6 +274,7 @@ public class ParametersDlg extends JDialog {
             for (Field f : fields) {
                 if (f.getName().equals(ParamAddReadingKey.getSelectedItem())) {
                     value = f.getInt(ParamAddReadingKey.getSelectedItem());
+                    break;
                 }
             }
         } catch (IllegalAccessException e) {
@@ -268,6 +289,7 @@ public class ParametersDlg extends JDialog {
             for (Field f : fields) {
                 if (f.getName().equals(ParamCritKey.getSelectedItem())) {
                     value = f.getInt(ParamCritKey.getSelectedItem());
+                    break;
                 }
             }
         } catch (IllegalAccessException e) {
@@ -282,12 +304,81 @@ public class ParametersDlg extends JDialog {
             for (Field f : fields) {
                 if (f.getName().equals(ParamManageAllTagsKey.getSelectedItem())) {
                     value = f.getInt(ParamManageAllTagsKey.getSelectedItem());
+                    break;
                 }
             }
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
         return value;
+    }
+    public boolean shortcutsIsValid(){
+        boolean valid = true;
+        for (int j =0; j<listOfshortcutAfter.size();j++) {
+            if(!listOfshortcutAfter.get(j).equals(listOfshortcutBefore.get(j))){
+                for (int i =0; i<listOfshortcutBefore.size();i++) {
+                    if (listOfshortcutAfter.get(j).equals(listOfshortcutBefore.get(i))) {
+                        messageError(j, i,false, false);
+                        valid = false;
+                        break;
+                    }
+                }
+                String[] shortCutAfter = listOfshortcutAfter.get(j).split("-");
+                int modif = Integer.parseInt(shortCutAfter[0]);
+                int key = Integer.parseInt(shortCutAfter[1]);
+                if(modif == KeyEvent.KEY_LOCATION_LEFT && key == KeyEvent.VK_P){
+                    messageError(j,j,true, false);
+                    valid = false;
+                }
+                if(modif == KeyEvent.KEY_LOCATION_LEFT && key == KeyEvent.VK_Q){
+                    messageError(j, j,false, true);
+                    valid = false;
+                }
+            }
+        }
+        return valid;
+    }
+    public void messageError(int j,int i, boolean param, boolean quit){
+        String text;
+        Component[] components = LabelPanel.getComponents();
+        JPanel jPanelAfter = (JPanel) components[j];
+        JLabel jLabelAfter = (JLabel) jPanelAfter.getComponent(0);
+
+        JPanel jPanelBefore = (JPanel) components[i];
+        JLabel jLabelBefore = (JLabel) jPanelBefore.getComponent(0);
+
+        text = "Le raccourcie saisie pour \""+jLabelAfter.getText()+"\"  existe déjà pour ";
+        if(param && !quit){
+            text = text +"accéder aux paramètres";
+        }else if(!param && quit){
+            text = text + "quitter l'application";
+        }else{
+            text = text + "le raccourcie \""+jLabelBefore.getText()+"\"";
+        }
+        JFrame jFrame = new JFrame();
+        JOptionPane.showMessageDialog(jFrame, text, "Raccourcie déjà existant", JOptionPane.ERROR_MESSAGE);
+    }
+    public void fillListOfShortcut(ArrayList<String> lst){
+        String addReadingShortCut = getParamAddReadingModif()+"-"+getParamAddReadingKey();
+        lst.add(addReadingShortCut);
+
+        String addBookShortCut = getParamAddBookModif()+"-"+getParamAddBookKey();
+        lst.add(addBookShortCut);
+
+        String addManageTagsShortCut = getParamManageTagsModif()+"-"+getParamManageTagsKey();
+        lst.add(addManageTagsShortCut);
+
+        String addEditShortCut = getParamEditModif()+"-"+getParamEditKey();
+        lst.add(addEditShortCut);
+
+        String addDeleteShortCut = getParamDeleteModif()+"-"+getParamDeletekey();
+        lst.add(addDeleteShortCut);
+
+        String addParamManageAllTagsShortCut = getParamManageAllTagsModif()+"-"+getParamManageAllTagsKey();
+        lst.add(addParamManageAllTagsShortCut);
+
+        String addCritShortCut = getParamCritModif()+"-"+getParamCritKey();
+        lst.add(addCritShortCut);
     }
     @SuppressWarnings("unchecked")
     public void fillParamCBKey(){
@@ -371,10 +462,10 @@ public class ParametersDlg extends JDialog {
                     if (f.getInt(f.getName()) == parent.getManageAllTagsKey()) {
                         ParamManageAllTagsKey.setSelectedItem(f.getName());
                     }
-                    if (f.getInt(f.getName()) == parent.getEditKey()) {
+                    if (f.getInt(f.getName()) ==0) {
                         ParamLogKey.setSelectedItem(f.getName());
                     }
-                    if (f.getInt(f.getName()) == parent.getManageTagsKey()) {
+                    if (f.getInt(f.getName()) ==0) {
                         ParamRenitKey.setSelectedItem(f.getName());
                     }
                 }
@@ -397,6 +488,7 @@ public class ParametersDlg extends JDialog {
         fillParamCBKey();
         fillParamCBModif();
         initCBSelection(parent);
+        fillListOfShortcut(listOfshortcutBefore);
     }
     public void save(){
         Path folder = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(),"BookManager/");
