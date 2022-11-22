@@ -207,102 +207,38 @@ public class ParametersDlg extends JDialog {
         return name;
     }
     public int getParamAddBookKey() {
-        int value=0;
-        try {
-            Field[] fields = KeyEvent.class.getDeclaredFields();
-            for (Field f : fields) {
-                if (f.getName().equals(ParamAddBookKey.getSelectedItem())) {
-                    value = f.getInt(ParamAddBookKey.getSelectedItem());
-                    break;
-                }
-            }
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-        return value;
+        return valueKey(ParamAddBookKey);
     }
     public int getParamManageTagsKey() {
-        int value=0;
-        try {
-            Field[] fields = KeyEvent.class.getDeclaredFields();
-            for (Field f : fields) {
-                if (f.getName().equals(ParamManageTagsKey.getSelectedItem())) {
-                    value = f.getInt(ParamManageTagsKey.getSelectedItem());
-                    break;
-                }
-            }
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-        return value;
+        return valueKey(ParamManageTagsKey);
     }
     public int getParamDeletekey() {
-        int value=0;
-        try {
-            Field[] fields = KeyEvent.class.getDeclaredFields();
-            for (Field f : fields) {
-                if (f.getName().equals(ParamDeleteKey.getSelectedItem())) {
-                    value = f.getInt(ParamDeleteKey.getSelectedItem());
-                    break;
-                }
-            }
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-        return value;
+        return valueKey(ParamDeleteKey);
     }
     public int getParamEditKey() {
-        int value=0;
-        try {
-            Field[] fields = KeyEvent.class.getDeclaredFields();
-            for (Field f : fields) {
-                if (f.getName().equals(ParamEditKey.getSelectedItem())) {
-                    value = f.getInt(ParamEditKey.getSelectedItem());
-                    break;
-                }
-            }
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-        return value;
+        return valueKey(ParamEditKey);
     }
     public int getParamAddReadingKey() {
-        int value=0;
-        try {
-            Field[] fields = KeyEvent.class.getDeclaredFields();
-            for (Field f : fields) {
-                if (f.getName().equals(ParamAddReadingKey.getSelectedItem())) {
-                    value = f.getInt(ParamAddReadingKey.getSelectedItem());
-                    break;
-                }
-            }
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-        return value;
+        return valueKey(ParamAddReadingKey);
     }
     public int getParamCritKey() {
-        int value=0;
-        try {
-            Field[] fields = KeyEvent.class.getDeclaredFields();
-            for (Field f : fields) {
-                if (f.getName().equals(ParamCritKey.getSelectedItem())) {
-                    value = f.getInt(ParamCritKey.getSelectedItem());
-                    break;
-                }
-            }
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-        return value;
+        return valueKey(ParamCritKey);
     }
     public int getParamManageAllTagsKey() {
+        return valueKey(ParamManageAllTagsKey);
+    }
+    public int valueKey(JComboBox comboBox){
         int value=0;
         try {
             Field[] fields = KeyEvent.class.getDeclaredFields();
             for (Field f : fields) {
-                if (f.getName().equals(ParamManageAllTagsKey.getSelectedItem())) {
-                    value = f.getInt(ParamManageAllTagsKey.getSelectedItem());
+                String name = f.getName();
+                if(f.getName().contains("VK_")) {
+                    name= f.getName().replace("VK_", "");
+                }
+
+                if (name.equals(comboBox.getSelectedItem())) {
+                    value = f.getInt(f.getName());
                     break;
                 }
             }
@@ -387,15 +323,22 @@ public class ParametersDlg extends JDialog {
         Field[] fields = KeyEvent.class.getDeclaredFields();
         for (Field f : fields) {
             if (Modifier.isStatic(f.getModifiers()) && !Modifier.isPrivate(f.getModifiers())) {
-                ParamAddReadingKey.addItem(f.getName());
-                ParamEditKey.addItem(f.getName());
-                ParamDeleteKey.addItem(f.getName());
-                ParamManageTagsKey.addItem(f.getName());
-                ParamAddBookKey.addItem(f.getName());
-                ParamCritKey.addItem(f.getName());
-                ParamRenitKey.addItem(f.getName());
-                ParamLogKey.addItem(f.getName());
-                ParamManageAllTagsKey.addItem(f.getName());
+                if(!f.getName().contains("KEY_")) {
+                    String name = f.getName();
+                    if (f.getName().contains("VK_")) {
+                        name = f.getName().replace("VK_", "");
+                    }
+
+                    ParamAddReadingKey.addItem(name);
+                    ParamEditKey.addItem(name);
+                    ParamDeleteKey.addItem(name);
+                    ParamManageTagsKey.addItem(name);
+                    ParamAddBookKey.addItem(name);
+                    ParamCritKey.addItem(name);
+                    ParamRenitKey.addItem(name);
+                    ParamLogKey.addItem(name);
+                    ParamManageAllTagsKey.addItem(name);
+                }
             }
         }
     }
@@ -443,32 +386,36 @@ public class ParametersDlg extends JDialog {
 
             for (Field f : fields) {
                 if (Modifier.isStatic(f.getModifiers()) && !Modifier.isPrivate(f.getModifiers())) {
+                    String name = f.getName();
+                    if(f.getName().contains("VK_")) {
+                        name= f.getName().replace("VK_", "");
+                    }
                     if (f.getInt(f.getName()) == parent.getAddReadingKey()) {
-                        ParamAddReadingKey.setSelectedItem(f.getName());
+                        ParamAddReadingKey.setSelectedItem(name);
                     }
                     if (f.getInt(f.getName()) == parent.getEditKey()) {
-                        ParamEditKey.setSelectedItem(f.getName());
+                        ParamEditKey.setSelectedItem(name);
                     }
                     if (f.getInt(f.getName()) == parent.getDeletekey()) {
-                        ParamDeleteKey.setSelectedItem(f.getName());
+                        ParamDeleteKey.setSelectedItem(name);
                     }
                     if (f.getInt(f.getName()) == parent.getManageTagsKey()) {
-                        ParamManageTagsKey.setSelectedItem(f.getName());
+                        ParamManageTagsKey.setSelectedItem(name);
                     }
                     if (f.getInt(f.getName()) == parent.getAddBookKey()) {
-                        ParamAddBookKey.setSelectedItem(f.getName());
+                        ParamAddBookKey.setSelectedItem(name);
                     }
                     if (f.getInt(f.getName()) == parent.getCritKey()) {
-                        ParamCritKey.setSelectedItem(f.getName());
+                        ParamCritKey.setSelectedItem(name);
                     }
                     if (f.getInt(f.getName()) == parent.getManageAllTagsKey()) {
-                        ParamManageAllTagsKey.setSelectedItem(f.getName());
+                        ParamManageAllTagsKey.setSelectedItem(name);
                     }
                     if (f.getInt(f.getName()) ==0) {
-                        ParamLogKey.setSelectedItem(f.getName());
+                        ParamLogKey.setSelectedItem(name);
                     }
                     if (f.getInt(f.getName()) ==0) {
-                        ParamRenitKey.setSelectedItem(f.getName());
+                        ParamRenitKey.setSelectedItem(name);
                     }
                 }
             }
