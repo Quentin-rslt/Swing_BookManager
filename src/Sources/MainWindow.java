@@ -475,6 +475,8 @@ public class MainWindow extends JDialog {
     }
     public void fillBookTable(boolean isFiltered){
         m_tableBookModel.setRowCount(0);
+        CancelFiltersBtn.setEnabled(isFiltered);
+        getJMenuBar().getMenu(1).getItem(7).setEnabled(isFiltered);
         try(Connection conn = connect()){
             m_statement = conn.createStatement();
             ResultSet rs;
@@ -608,8 +610,6 @@ public class MainWindow extends JDialog {
         m_manageReading = new ManageReading(MainWindow.this, ReadingsTable);
         ReadingsTable.setRowSelectionInterval(getRowReading(),getRowReading());
         BooksTable.setRowSelectionInterval(getRowSelected(), getRowSelected());
-        CancelFiltersBtn.setEnabled(isFiltered);
-        getJMenuBar().getMenu(1).getItem(7).setEnabled(isFiltered);
         FiltersBookBtn.setEnabled(true);
         BookManageTagsBtn.setEnabled(true);
         try(Connection conn = connect()) {
