@@ -456,11 +456,11 @@ public class Common {
 
         return imgEdit;
     }
-    public static Image getLogo(){
+    public static Image getLogo(int w, int h){
         File fileLogo = new File("Ressource/Icons/logo_BookManager.png");
         String pathLogo = fileLogo.getAbsolutePath();
         Image logo = Toolkit.getDefaultToolkit().getImage(pathLogo);
-        logo = logo.getScaledInstance(18,18,Image.SCALE_AREA_AVERAGING);
+        logo = logo.getScaledInstance(w,h,Image.SCALE_AREA_AVERAGING);
 
         return logo;
     }

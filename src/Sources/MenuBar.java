@@ -22,6 +22,7 @@ public class MenuBar {
     public static JMenuBar createMenuBar(MainWindow parent) {
         JMenu helpMenu = new JMenu("Aide");
         JMenuItem aboutMenuItem = new JMenuItem("A propos");
+        aboutMenuItem.addActionListener(e -> openAboutDlg());
         helpMenu.add(aboutMenuItem);
 
         JMenuBar menuBar = new JMenuBar();

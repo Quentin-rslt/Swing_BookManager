@@ -90,4 +90,11 @@ public class OpenDialog {
         diag.setLocationRelativeTo(null);
         diag.setVisible(true);
     }
+    public static void openAboutDlg(){
+        AboutDlg diag = new AboutDlg();
+        diag.setSize(480,280);
+        diag.setTitle("A propos");
+        diag.setLocationRelativeTo(null);
+        diag.setVisible(true);
+    }
 }
