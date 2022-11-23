@@ -157,7 +157,7 @@ public class MainWindow extends JDialog {
                     }
                 }
             });
-            BooksTable.getActionMap().put("enter", new AbstractAction(){
+            BooksTable.getActionMap().put("edit", new AbstractAction(){
                 public void actionPerformed(ActionEvent e){
                     EditBookDlg diag = openEditBookDlg();
                     editBook(diag,MainWindow.this);
@@ -784,10 +784,14 @@ public class MainWindow extends JDialog {
         contentPane.updateUI();
         BooksTable.getInputMap().clear();
         ReadingsTable.getInputMap().clear();
+        BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(getEditKey(), getEditModif()), "edit");
+        BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(getDeletekey(), getDeleteModif()), "delete");
         BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "up");
         BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "dow");
         BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0), "tab");
 
+        ReadingsTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(getEditKey(), getEditModif()), "edit");
+        ReadingsTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(getDeletekey(), getDeleteModif()), "delete");
         ReadingsTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "up");
         ReadingsTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "dow");
         ReadingsTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0), "tab");

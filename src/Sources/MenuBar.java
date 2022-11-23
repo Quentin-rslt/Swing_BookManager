@@ -3,8 +3,6 @@ package Sources;
 import Sources.Dialogs.*;
 
 import javax.swing.*;
-
-import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
 import static Sources.Common.isItInFilteredBookList;
@@ -177,7 +175,7 @@ public class MenuBar {
         JMenu editBookRead = new JMenu("Modifier");
         JMenu deleteBookRead = new JMenu("Supprimer");
         //Edit book
-        editBookMenuItem = new JMenuItem("Modifier le livre");
+        editBookMenuItem = new JMenuItem("Le livre");
         editBookMenuItem.addActionListener((e->{
             EditBookDlg diag = openEditBookDlg();
             editBook(diag,parent);
@@ -185,12 +183,12 @@ public class MenuBar {
         editBookMenuItem.setAccelerator(KeyStroke.getKeyStroke(parent.getEditKey(), parent.getEditModif()));
 
         //Delete book
-        supprBookMenuItem = new JMenuItem("Supprimer le livre");
+        supprBookMenuItem = new JMenuItem("Le livre");
         supprBookMenuItem.addActionListener((e -> deleteBook(parent)));
         supprBookMenuItem.setAccelerator(KeyStroke.getKeyStroke(parent.getDeletekey(), parent.getDeleteModif()));
 
         //Edit reading
-        editReadingMenuItem = new JMenuItem("Modifier la lecture");
+        editReadingMenuItem = new JMenuItem("La lecture");
         editReadingMenuItem.addActionListener((e->{
             EditReadingDlg diag = openEditReadingDlg(parent.getManageReading().getStartReading(),parent.getManageReading().getEndReading());
             editReading(diag,parent);
@@ -198,7 +196,7 @@ public class MenuBar {
         editReadingMenuItem.setAccelerator(KeyStroke.getKeyStroke(parent.getEditKey(), parent.getEditModif()));
 
         //Delete reading
-        supprReadingMenuItem = new JMenuItem("Supprimer la lecture");
+        supprReadingMenuItem = new JMenuItem("La lecture");
         supprReadingMenuItem.addActionListener((e -> deleteReading(parent)));
         supprReadingMenuItem.setAccelerator(KeyStroke.getKeyStroke(parent.getDeletekey(), parent.getDeleteModif()));
 

@@ -61,7 +61,7 @@ public class ManageReading {
                 }
             }
         });
-        m_readingsTable.getActionMap().put("enter", new AbstractAction(){
+        m_readingsTable.getActionMap().put("edit", new AbstractAction(){
             public void actionPerformed(ActionEvent e){
                 EditReadingDlg diag = openEditReadingDlg(getStartReading(), getEndReading());//Open a dialog where we can edit the date reading
                 editReading(diag, parent);
