@@ -25,6 +25,7 @@ import static Sources.Dialogs.OpenDialog.openEditTagDlg;
 import static Sources.MainWindow.getAuthor;
 import static Sources.MainWindow.getMTitle;
 import static Sources.MenuBar.getAddReadingMenuItem;
+import static Sources.MenuBar.getManageTagsMenuItem;
 
 public class Common {
     private static final JFileChooser jf= new JFileChooser();
@@ -241,7 +242,9 @@ public class Common {
         mainWindow.getJMenuBar().getMenu(1).getItem(3).setEnabled(reset);
         mainWindow.getJMenuBar().getMenu(1).getItem(4).setEnabled(reset);
         mainWindow.getJMenuBar().getMenu(1).getItem(6).setEnabled(reset);
+        mainWindow.getJMenuBar().getMenu(1).getItem(7).setEnabled(false);
         getAddReadingMenuItem().setEnabled(reset);
+        getManageTagsMenuItem().setEnabled(reset);
     }
 
     public static boolean isInFilteredList(String title, String author, JTable table){

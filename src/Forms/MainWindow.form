@@ -80,7 +80,7 @@
                   <enabled value="false"/>
                   <horizontalTextPosition value="11"/>
                   <margin top="5" left="10" bottom="5" right="10"/>
-                  <text value="Rénitialiser les filtres"/>
+                  <text value="Rénitialiser les critères"/>
                   <verticalAlignment value="0"/>
                 </properties>
               </component>

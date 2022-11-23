@@ -20,7 +20,7 @@ import static Sources.MainWindow.getMTitle;
 
 public class MenuBar {
     private static JMenuItem addReadingMenuItem;
-    private static JMenuItem addBookMenuItem;
+    private static JMenuItem manageTagsMenuItem;
     public static JMenuBar createMenuBar(MainWindow parent) {
         JMenu helpMenu = new JMenu("Aide");
         JMenuItem aboutMenuItem = new JMenuItem("A propos");
@@ -127,7 +127,7 @@ public class MenuBar {
     public static JMenu createEditMenu(MainWindow parent){
         //Add menu
         JMenu addMenu = new JMenu("Ajouter ");
-        addBookMenuItem = new JMenuItem("Un livre");
+        JMenuItem addBookMenuItem = new JMenuItem("Un livre");
         addBookMenuItem.addActionListener((e->{
             AddBookDlg diag=openAddBookDlg();
             addBook(diag, parent);
@@ -144,8 +144,10 @@ public class MenuBar {
         addMenu.add(addReadingMenuItem);
 
         //Manage menu
-        JMenuItem manageTagMenuItem = new JMenuItem("Gérer les tags");
-        manageTagMenuItem.addActionListener((e->{
+        //All tags
+        JMenu manageMenu = new JMenu("Gérer ");
+        JMenuItem manageAllTagsMenuItem = new JMenuItem("Les tags");
+        manageAllTagsMenuItem.addActionListener((e->{
             openManageTagsDlg();
             parent.getContentPanel().updateUI();
             parent.fillBookTable(parent.isFiltered());
@@ -154,7 +156,21 @@ public class MenuBar {
                 parent.fastSearchBook(parent.getBookFastSearch().getText());
             }
         }));
-        manageTagMenuItem.setAccelerator(KeyStroke.getKeyStroke(parent.getManageAllTagsKey(), parent.getManageAllTagsModif()));
+        manageAllTagsMenuItem.setAccelerator(KeyStroke.getKeyStroke(parent.getManageAllTagsKey(), parent.getManageAllTagsModif()));
+        //Only tags of one book
+        manageTagsMenuItem = new JMenuItem("Ses tags");
+        manageTagsMenuItem.addActionListener((e->{
+            openManageTagsDlg(getMTitle(),getAuthor());
+            parent.getContentPanel().updateUI();
+            parent.fillBookTable(parent.isFiltered());
+            isItInFilteredBookList(parent, false);
+            if(parent.isFastSearch()){
+                parent.fastSearchBook(parent.getBookFastSearch().getText());
+            }
+        }));
+        manageTagsMenuItem.setAccelerator(KeyStroke.getKeyStroke(parent.getManageTagsKey(), parent.getManageTagsModif()));
+        manageMenu.add(manageAllTagsMenuItem);
+        manageMenu.add(manageTagsMenuItem);
 
         //Edit book
         JMenuItem editBookMenuItem = new JMenuItem("Modifier le livre");
@@ -174,6 +190,7 @@ public class MenuBar {
                 deleteBook(parent);
             }
         });
+
         //Filters book
         JMenuItem filterMenuItem = new JMenuItem("Critères");
         filterMenuItem.addActionListener((e -> {
@@ -183,15 +200,29 @@ public class MenuBar {
         }));
         filterMenuItem.setAccelerator(KeyStroke.getKeyStroke(parent.getCritKey(), parent.getCritModif()));
 
+        //Reset Filters
+        JMenuItem resetFilterMenuItem = new JMenuItem("Rénitialiser les critères");
+        resetFilterMenuItem.addActionListener(e -> {
+            parent.getContentPanel().updateUI();
+            parent.setIsFiltered(false);
+            parent.fillBookTable(parent.isFiltered());
+            isItInFilteredBookList(parent,false);
+            if(parent.isFastSearch()){
+                parent.fastSearchBook(parent.getBookFastSearch().getText());
+            }
+        });
+        resetFilterMenuItem.setAccelerator(KeyStroke.getKeyStroke(parent.getResetKey(), parent.getResetModif()));
+
         //Edit Menu
         JMenu editMenu = new JMenu("Editer");
         editMenu.add(addMenu);
-        editMenu.add(manageTagMenuItem);
+        editMenu.add(manageMenu);
         editMenu.addSeparator();
         editMenu.add(editBookMenuItem);
         editMenu.add(supprBookMenuItem);
         editMenu.addSeparator();
         editMenu.add(filterMenuItem);
+        editMenu.add(resetFilterMenuItem);
 
         return editMenu;
     }
@@ -205,7 +236,8 @@ public class MenuBar {
     public static JMenuItem getAddReadingMenuItem() {
         return addReadingMenuItem;
     }
-    public static JMenuItem getAddBookMenuItem() {
-        return addBookMenuItem;
+
+    public static JMenuItem getManageTagsMenuItem() {
+        return manageTagsMenuItem;
     }
 }

@@ -74,6 +74,7 @@ public class MainWindow extends JDialog {
     private int m_manageTagsKey;
     private int m_critKey;
     private int m_manageAllTagsKey;
+    private int m_resetKey;
 
     private int m_deleteModif;
     private int m_editModif;
@@ -82,12 +83,15 @@ public class MainWindow extends JDialog {
     private int m_addBookModif;
     private int m_critModif;
     private int m_manageAllTagsModif;
+    private int m_resetModif;
 
     public MainWindow() {
         setContentPane(contentPane);
         setModal(true);
         connectionDB();
         setIsFiltered(false);
+        loadParameters();
+        initBinding();
         fillBookTable(isFiltered());
 
         AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),3,30,0,0,20);
@@ -109,9 +113,6 @@ public class MainWindow extends JDialog {
         m_popup.add(cut);
         m_popup.add(edit);
         m_popup.add(openManageTags);
-
-        loadParameters();
-        initBinding();
 
         if(BooksTable.getRowCount() != 0) {//Vérif if the table is not empty; when starting the app, load and focus on the first book of the table
             setMTitle(BooksTable.getValueAt(0, 0).toString());
@@ -160,23 +161,6 @@ public class MainWindow extends JDialog {
                 public void actionPerformed(ActionEvent e){
                     EditBookDlg diag = openEditBookDlg();
                     editBook(diag,MainWindow.this);
-                }
-            });
-            BooksTable.getActionMap().put("addReading", new AbstractAction(){
-                public void actionPerformed(ActionEvent e){
-                    AddReading diag = openAddReadingDlg();
-                    addReading(diag, MainWindow.this);
-                }
-            });
-            BooksTable.getActionMap().put("manageTags", new AbstractAction(){
-                public void actionPerformed(ActionEvent e){
-                    openManageTagsDlg(getMTitle(), getAuthor());
-                    contentPane.updateUI();
-                    fillBookTable(isFiltered());
-                    isItInFilteredBookList(MainWindow.this,false);
-                    if(isFastSearch()){
-                        fastSearchBook(BookFastSearch.getText());
-                    }
                 }
             });
 
@@ -364,6 +348,12 @@ public class MainWindow extends JDialog {
     public int getManageAllTagsModif() {
         return m_manageAllTagsModif;
     }
+    public int getResetKey() {
+        return m_resetKey;
+    }
+    public int getResetModif() {
+        return m_resetModif;
+    }
     public int getRowReading() {
         return rowReading;
     }
@@ -432,6 +422,12 @@ public class MainWindow extends JDialog {
     public void setManageAllTagsModif(int m_manageAllTagsModif) {
         this.m_manageAllTagsModif = m_manageAllTagsModif;
     }
+    public void setResetKey(int m_resetKey) {
+        this.m_resetKey = m_resetKey;
+    }
+    public void setResetModif(int m_resetModif) {
+        this.m_resetModif = m_resetModif;
+    }
     public void connectionDB(){
         try (Connection conn = connect()) {
             Class.forName("org.sqlite.JDBC");
@@ -479,7 +475,6 @@ public class MainWindow extends JDialog {
     }
     public void fillBookTable(boolean isFiltered){
         m_tableBookModel.setRowCount(0);
-        CancelFiltersBtn.setEnabled(isFiltered);
         try(Connection conn = connect()){
             m_statement = conn.createStatement();
             ResultSet rs;
@@ -613,6 +608,8 @@ public class MainWindow extends JDialog {
         m_manageReading = new ManageReading(MainWindow.this, ReadingsTable);
         ReadingsTable.setRowSelectionInterval(getRowReading(),getRowReading());
         BooksTable.setRowSelectionInterval(getRowSelected(), getRowSelected());
+        CancelFiltersBtn.setEnabled(isFiltered);
+        getJMenuBar().getMenu(1).getItem(7).setEnabled(isFiltered);
         FiltersBookBtn.setEnabled(true);
         BookManageTagsBtn.setEnabled(true);
         try(Connection conn = connect()) {
@@ -790,8 +787,6 @@ public class MainWindow extends JDialog {
         BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "dow");
         BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(getEditKey(), getEditModif()), "enter");
         BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0), "tab");
-        BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(getAddReadingKey(), getAddReadingModif()), "addReading");
-        BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(getManageTagsKey(), getManageTagsModif()), "manageTags");
 
         ReadingsTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(getEditKey(), getEditModif()), "enter");
         ReadingsTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "up");
@@ -819,6 +814,8 @@ public class MainWindow extends JDialog {
                     setCritModif(Integer.parseInt(data[11]));
                     setManageAllTagsKey(Integer.parseInt(data[12]));
                     setManageAllTagsModif(Integer.parseInt(data[13]));
+                    setResetKey(Integer.parseInt(data[14]));
+                    setResetModif(Integer.parseInt(data[15]));
                 }
             }
             else {
@@ -836,6 +833,8 @@ public class MainWindow extends JDialog {
                 setAddBookModif(KeyEvent.KEY_LOCATION_STANDARD);
                 setCritModif(KeyEvent.KEY_LOCATION_STANDARD);
                 setManageAllTagsModif(KeyEvent.KEY_LOCATION_STANDARD);
+                setResetKey(KeyEvent.VK_R);
+                setResetModif(KeyEvent.KEY_LOCATION_STANDARD);
             }
         } catch (IOException e) {
             System.err.println("Rechargement impossible");

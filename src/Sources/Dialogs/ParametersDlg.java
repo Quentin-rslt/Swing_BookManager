@@ -37,8 +37,8 @@ public class ParametersDlg extends JDialog {
     private JComboBox ParamManageAllTagsModif;
     private JComboBox ParamCritKey;
     private JComboBox ParamCritModif;
-    private JComboBox ParamRenitKey;
-    private JComboBox ParamRenitModif;
+    private JComboBox ParamResetKey;
+    private JComboBox ParamResetModif;
     private JComboBox ParamLogKey;
     private JComboBox ParamLogModif;
     private JPanel LabelPanel;
@@ -60,6 +60,7 @@ public class ParametersDlg extends JDialog {
                 parent.setDeletekey(getParamDeletekey());
                 parent.setCritKey(getParamCritKey());
                 parent.setManageAllTagsKey(getParamManageAllTagsKey());
+                parent.setResetKey(getParamResetKey());
                 //Modifiers
                 parent.setAddBookModif(getParamAddBookModif());
                 parent.setAddReadingModif(getParamAddReadingModif());
@@ -68,6 +69,7 @@ public class ParametersDlg extends JDialog {
                 parent.setManageTagsModif(getParamManageTagsModif());
                 parent.setCritModif(getParamCritModif());
                 parent.setManageAllTagsModif(getParamManageAllTagsModif());
+                parent.setResetModif(getParamResetModif());
 
                 save();
                 parent.initBinding();
@@ -101,6 +103,7 @@ public class ParametersDlg extends JDialog {
     public int getParamManageAllTagsModif(){
         return valueModif(ParamManageAllTagsModif);
     }
+    public int getParamResetModif(){return valueModif(ParamResetModif);}
     public String getNameModifKey(JComboBox jComboBox){
         String name = "";
         if(Objects.requireNonNull(jComboBox.getSelectedItem()).equals("SHIFT")){
@@ -150,6 +153,7 @@ public class ParametersDlg extends JDialog {
     public int getParamManageAllTagsKey() {
         return valueKey(ParamManageAllTagsKey);
     }
+    public int getParamResetKey(){return valueKey(ParamResetKey);}
     public int valueKey(JComboBox comboBox){
         int value=0;
         try {
@@ -208,7 +212,7 @@ public class ParametersDlg extends JDialog {
         JPanel jPanelBefore = (JPanel) components[i];
         JLabel jLabelBefore = (JLabel) jPanelBefore.getComponent(0);
 
-        text = "Le raccourcie saisie pour \""+jLabelAfter.getText()+"\"  existe déjà pour ";
+        text = "Le raccourcie \""+jLabelAfter.getText()+"\"  existe déjà pour ";
         if(param && !quit){
             text = text +"accéder aux paramètres";
         }else if(!param && quit){
@@ -240,6 +244,9 @@ public class ParametersDlg extends JDialog {
 
         String addCritShortCut = getParamCritModif()+"-"+getParamCritKey();
         listOfshortcuts.add(addCritShortCut);
+
+        String addResetShortCut = getParamResetModif()+"-"+getParamResetKey();
+        listOfshortcuts.add(addResetShortCut);
     }
     @SuppressWarnings("unchecked")
     public void fillParamCBKey(){
@@ -258,7 +265,7 @@ public class ParametersDlg extends JDialog {
                     ParamManageTagsKey.addItem(name);
                     ParamAddBookKey.addItem(name);
                     ParamCritKey.addItem(name);
-                    ParamRenitKey.addItem(name);
+                    ParamResetKey.addItem(name);
                     ParamLogKey.addItem(name);
                     ParamManageAllTagsKey.addItem(name);
                 }
@@ -273,7 +280,7 @@ public class ParametersDlg extends JDialog {
         fillCBModif(ParamAddBookModif);
         fillCBModif(ParamCritModif);
         fillCBModif(ParamLogModif);
-        fillCBModif(ParamRenitModif);
+        fillCBModif(ParamResetModif);
         fillCBModif(ParamManageAllTagsModif);
     }
     @SuppressWarnings("unchecked")
@@ -346,8 +353,8 @@ public class ParametersDlg extends JDialog {
         initCBKeySelection(ParamLogKey, 0);
         initCBModifSelection(ParamLogModif,0);
 
-        initCBKeySelection(ParamRenitKey, 0);
-        initCBModifSelection(ParamRenitModif,0);
+        initCBKeySelection(ParamResetKey, parent.getResetKey());
+        initCBModifSelection(ParamResetModif,parent.getResetModif());
     }
     public void initComponents(MainWindow parent){
         fillParamCBKey();
@@ -373,6 +380,8 @@ public class ParametersDlg extends JDialog {
             writeData(writer, String.valueOf(getParamCritModif()));
             writeData(writer, String.valueOf(getParamManageAllTagsKey()));
             writeData(writer, String.valueOf(getParamManageAllTagsModif()));
+            writeData(writer, String.valueOf(getParamResetKey()));
+            writeData(writer, String.valueOf(getParamResetModif()));
         }catch (IOException e){
             System.err.println("Sauvergarde impossible");
             JFrame jFrame = new JFrame();
