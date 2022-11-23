@@ -170,7 +170,7 @@ public class ManageTagsDlg extends JDialog {
                     EditTagDlg diag = openEditTagDlg(getTags().getTag(i));
                     if(diag.isValide()){
                         if(!diag.getNewTextTag().equals(getTags().getTag(i).getTextTag())){
-                            String TaggingSuppQry = "DELETE FROM Tagging WHERE IdTag='"+getIdTag(getTags().getTag(i).getTextTag(), getTags().getTag(i).getColor())+"'";
+                            String TaggingSuppQry = "DELETE FROM Tagging WHERE IdTag='"+getIdTag(getTags().getTag(i).getTextTag(), getTags().getTag(i).getColor())+"' AND IdBook='"+getIdBook(title, author)+"'";
                             String TaggingQry = "INSERT INTO Tagging (IdBook,IdTag) " +
                                     "VALUES (?,?);";
                             String TagsQry = "INSERT INTO Tags (Tag,Color)"+
