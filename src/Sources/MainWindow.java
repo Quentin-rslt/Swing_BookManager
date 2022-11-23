@@ -554,7 +554,9 @@ public class MainWindow extends JDialog {
             conn.close();
             m_statement.close();
         } catch ( Exception e ) {
-            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+            System.out.println(e.getMessage());
+            JFrame jf = new JFrame();
+            JOptionPane.showMessageDialog(jf, e.getMessage(), "Chargement tableau livre impossible", JOptionPane.ERROR_MESSAGE);
         }
     }
     public void fillReadingTable(String title, String author) {
@@ -601,7 +603,9 @@ public class MainWindow extends JDialog {
             conn.close();
             m_statement.close();
         } catch (Exception e) {
-            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.out.println(e.getMessage());
+            JFrame jf = new JFrame();
+            JOptionPane.showMessageDialog(jf, e.getMessage(), "Chargement tableau lecture impossible", JOptionPane.ERROR_MESSAGE);
         }
     }
     public void loadComponents(String title, String author){
@@ -712,7 +716,9 @@ public class MainWindow extends JDialog {
             conn.close();
             m_statement.close();
         } catch ( Exception e ) {
-            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+            System.out.println(e.getMessage());
+            JFrame jf = new JFrame();
+            JOptionPane.showMessageDialog(jf, e.getMessage(), "Chargement composants impossible", JOptionPane.ERROR_MESSAGE);
         }
     }
     public void initComponents(){
@@ -839,8 +845,9 @@ public class MainWindow extends JDialog {
                 setResetModif(KeyEvent.KEY_LOCATION_STANDARD);
             }
         } catch (IOException e) {
-            System.err.println("Rechargement impossible");
-            e.printStackTrace();
+            System.out.println(e.getMessage());
+            JFrame jf = new JFrame();
+            JOptionPane.showMessageDialog(jf, e.getMessage(), "Rechargement shortcut impossible", JOptionPane.ERROR_MESSAGE);
         }
     }
 

@@ -100,27 +100,24 @@ public class FiltersDlg extends JDialog {
                 FiltersSecEndRSpin.setEnabled(true);
             }
         });
-        IsFilteredCheckBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(isFiltered()){
-                    FiltersFirstStartRSpin.setEnabled(true);
-                    FiltersSecStartRSpin.setEnabled(true);
-                    FiltersFirstEndRSpin.setEnabled(true);
-                    FiltersSecEndRSpin.setEnabled(true);
-                    NotDoneReadChecbox.setEnabled(true);
-                    UnknownReadDateChecbox.setEnabled(true);
-                    ReadDateLabel.setEnabled(true);
-                }
-                else{
-                    FiltersFirstStartRSpin.setEnabled(false);
-                    FiltersSecStartRSpin.setEnabled(false);
-                    FiltersFirstEndRSpin.setEnabled(false);
-                    FiltersSecEndRSpin.setEnabled(false);
-                    NotDoneReadChecbox.setEnabled(false);
-                    UnknownReadDateChecbox.setEnabled(false);
-                    ReadDateLabel.setEnabled(false);
-                }
+        IsFilteredCheckBox.addActionListener(e -> {
+            if(isFiltered()){
+                FiltersFirstStartRSpin.setEnabled(true);
+                FiltersSecStartRSpin.setEnabled(true);
+                FiltersFirstEndRSpin.setEnabled(true);
+                FiltersSecEndRSpin.setEnabled(true);
+                NotDoneReadChecbox.setEnabled(true);
+                UnknownReadDateChecbox.setEnabled(true);
+                ReadDateLabel.setEnabled(true);
+            }
+            else{
+                FiltersFirstStartRSpin.setEnabled(false);
+                FiltersSecStartRSpin.setEnabled(false);
+                FiltersFirstEndRSpin.setEnabled(false);
+                FiltersSecEndRSpin.setEnabled(false);
+                NotDoneReadChecbox.setEnabled(false);
+                UnknownReadDateChecbox.setEnabled(false);
+                ReadDateLabel.setEnabled(false);
             }
         });
         FiltersTagCB.getEditor().getEditorComponent().addKeyListener(new java.awt.event.KeyAdapter() {
@@ -388,15 +385,18 @@ public class FiltersDlg extends JDialog {
             fillSortCB();
             fillTagsCB();
         }catch (Exception e){
-            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-            System.exit(0);
+            System.out.println(e.getMessage());
+            JFrame jf = new JFrame();
+            JOptionPane.showMessageDialog(jf, e.getMessage(), "Chargement composants impossible", JOptionPane.ERROR_MESSAGE);
         }
     }
+    @SuppressWarnings("unchecked")
     public void fillSortCB(){
         for (String s : Arrays.asList("Titre", "Auteur", "Année de sortie", "Nombre de page","Nombre de lecture","Temps moyen de lecture", "Note Babelio", "Note personelle", "Date de début de lecture", "Date de fin de lecture")) {
             FiltersSortCB.addItem(s);
         }
     }
+    @SuppressWarnings("unchecked")
     public void fillTagsCB(){
         this.FiltersTagCB.addItem("");
         for (int i = 0; i<loadTags().getSizeTags(); i++){

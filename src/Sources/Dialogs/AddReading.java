@@ -104,8 +104,9 @@ public class AddReading extends JDialog {
                 conn.close();
                 statement.close();
             }catch (Exception e){
-                System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-                System.exit(0);
+                System.out.println(e.getMessage());
+                JFrame jf = new JFrame();
+                JOptionPane.showMessageDialog(jf, e.getMessage(), "Validation lecture impossible", JOptionPane.ERROR_MESSAGE);
             }
         });
     }

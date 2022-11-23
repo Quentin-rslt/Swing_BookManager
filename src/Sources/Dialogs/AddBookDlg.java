@@ -119,10 +119,10 @@ public class AddBookDlg extends JDialog {
                     }
                     conn.close();
                     m_statement.close();
-                } catch ( SQLException e ) {
-                    System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-                } catch (ParseException e) {
-                    throw new RuntimeException(e);
+                } catch (SQLException | ParseException e ) {
+                    System.out.println(e.getMessage());
+                    JFrame jf = new JFrame();
+                    JOptionPane.showMessageDialog(jf, e.getMessage(), "Validation livre impossible", JOptionPane.ERROR_MESSAGE);
                 }
             }
             else{

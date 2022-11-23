@@ -85,8 +85,9 @@ public class EditTagDlg extends JDialog {
             conn.close();
             statement.close();
         }catch (Exception e){
-            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-            System.exit(0);
+            System.out.println(e.getMessage());
+            JFrame jf = new JFrame();
+            JOptionPane.showMessageDialog(jf, e.getMessage(), "Recherche tag impossible", JOptionPane.ERROR_MESSAGE);
         }
         return tagFind;
     }
@@ -105,10 +106,8 @@ public class EditTagDlg extends JDialog {
         //TagColorPanel.add(this.m_ColorChooser);
         m_ColorChooser.setColor(getTag().getBackground());
         AbstractColorChooserPanel[] panels = m_ColorChooser.getChooserPanels();
-        for (AbstractColorChooserPanel panel: panels)
-        {
-            if ("HSL".equals(panel.getDisplayName()))
-            {
+        for (AbstractColorChooserPanel panel: panels) {
+            if ("HSL".equals(panel.getDisplayName())) {
                 TagColorPanel.add(panel);
             }
         }

@@ -59,7 +59,9 @@ public class Common {
                 Files.copy(src, dest);
                 rescaleResolutionImage(dest.toFile());
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                System.out.println(e.getMessage());
+                JFrame jf = new JFrame();
+                JOptionPane.showMessageDialog(jf, e.getMessage(), "Ajout image ressource impossible", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -73,7 +75,9 @@ public class Common {
                 Files.copy(src, dest);
                 rescaleResolutionImage(dest.toFile());
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                System.out.println(e.getMessage());
+                JFrame jf = new JFrame();
+                JOptionPane.showMessageDialog(jf, e.getMessage(), "MAJ image ressource impossible", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -83,8 +87,10 @@ public class Common {
             Path dest = Paths.get(folder+"/"+ getImageBDD(title, author));//delete the image of the deleted book
             try {
                 Files.delete(dest);
-            } catch (Exception evt) {
-                throw new RuntimeException(evt.getMessage(), evt);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                JFrame jf = new JFrame();
+                JOptionPane.showMessageDialog(jf, e.getMessage(), "Suppression image ressource impossible", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -96,8 +102,10 @@ public class Common {
                     file.delete();
                 }
             }
-        } catch (Exception evt) {
-            throw new RuntimeException(evt.getMessage(), evt);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            JFrame jf = new JFrame();
+            JOptionPane.showMessageDialog(jf, e.getMessage(), "Suppression image pour import impossible", JOptionPane.ERROR_MESSAGE);
         }
     }
     public static void deleteImageResource(String title, String author){
@@ -106,8 +114,10 @@ public class Common {
             Path dest = Paths.get(folder+"/"+ getImageBDD(title, author));//delete the image of the deleted book
             try {
                 Files.delete(dest);
-            } catch (Exception evt) {
-                throw new RuntimeException(evt.getMessage(), evt);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                JFrame jf = new JFrame();
+                JOptionPane.showMessageDialog(jf, e.getMessage(), "Suppression image ressource impossible", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -164,7 +174,9 @@ public class Common {
             }
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.out.println(e.getMessage());
+            JFrame jf = new JFrame();
+            JOptionPane.showMessageDialog(jf, e.getMessage(), "Rescale image impossible", JOptionPane.ERROR_MESSAGE);
         }
     }
     public static void isNotInFilteredBookList(MainWindow parent, boolean bookDelete){
@@ -307,8 +319,9 @@ public class Common {
                     connection.close();
                     statement.close();
                 } catch (Exception e) {
-                    System.exit(0);
                     System.out.println(e.getMessage());
+                    JFrame jf = new JFrame();
+                    JOptionPane.showMessageDialog(jf, e.getMessage(), "Ajout tag impossible", JOptionPane.ERROR_MESSAGE);
                 }
             }
 

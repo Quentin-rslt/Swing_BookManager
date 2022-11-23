@@ -58,6 +58,8 @@ public class ManageTagsDlg extends JDialog {
                         break;
                     } catch (SQLException e) {
                         System.out.println(e.getMessage());
+                        JFrame jf = new JFrame();
+                        JOptionPane.showMessageDialog(jf, e.getMessage(), "Supression tag impossible", JOptionPane.ERROR_MESSAGE);
                     }
                 }
                 i++;
@@ -84,6 +86,8 @@ public class ManageTagsDlg extends JDialog {
                             break;
                         }catch (SQLException e) {
                             System.out.println(e.getMessage());
+                            JFrame jf = new JFrame();
+                            JOptionPane.showMessageDialog(jf, e.getMessage(), "Edition tag impossible", JOptionPane.ERROR_MESSAGE);
                         }
                     }
                 }
@@ -109,6 +113,8 @@ public class ManageTagsDlg extends JDialog {
                             //TagsPanel.setPreferredSize(new Dimension(400, (m_TagsNumber+1)*11));
                         } catch (SQLException e) {
                             System.out.println(e.getMessage());
+                            JFrame jf = new JFrame();
+                            JOptionPane.showMessageDialog(jf, e.getMessage(), "Ajout tag impossible", JOptionPane.ERROR_MESSAGE);
                         }
                     }
                 }
@@ -155,6 +161,8 @@ public class ManageTagsDlg extends JDialog {
                         break;
                     } catch (SQLException e) {
                         System.out.println(e.getMessage());
+                        JFrame jf = new JFrame();
+                        JOptionPane.showMessageDialog(jf, e.getMessage(), "Supression tag impossible", JOptionPane.ERROR_MESSAGE);
                     }
                 }
                 i++;
@@ -188,6 +196,8 @@ public class ManageTagsDlg extends JDialog {
                                 TaggingInsertPstmt.executeUpdate();
                             }catch (SQLException e) {
                                 System.out.println(e.getMessage());
+                                JFrame jf = new JFrame();
+                                JOptionPane.showMessageDialog(jf, e.getMessage(), "Edition tag impossible", JOptionPane.ERROR_MESSAGE);
                             }
                         }
                         else{
@@ -199,6 +209,8 @@ public class ManageTagsDlg extends JDialog {
                                 TagsUpdatePstmt.executeUpdate();
                             }catch (SQLException e) {
                                 System.out.println(e.getMessage());
+                                JFrame jf = new JFrame();
+                                JOptionPane.showMessageDialog(jf, e.getMessage(), "Edition tag impossible", JOptionPane.ERROR_MESSAGE);
                             }
                         }
                         fillTagsList(title, author);
@@ -237,6 +249,8 @@ public class ManageTagsDlg extends JDialog {
                             //TagsPanel.setPreferredSize(new Dimension(400, (m_TagsNumber)*15));
                         } catch (SQLException e) {
                             System.out.println(e.getMessage());
+                            JFrame jf = new JFrame();
+                            JOptionPane.showMessageDialog(jf, e.getMessage(), "Ajout tag impossible", JOptionPane.ERROR_MESSAGE);
                         }
                     }
                 }
@@ -295,8 +309,9 @@ public class ManageTagsDlg extends JDialog {
             conn.close();
             statement.close();
         } catch ( Exception e ) {
-            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-            System.exit(0);
+            System.out.println(e.getMessage());
+            JFrame jf = new JFrame();
+            JOptionPane.showMessageDialog(jf, e.getMessage(), "Chargement des tags impossible", JOptionPane.ERROR_MESSAGE);
         }
     }
     public void fillTagsList(String title, String author){
@@ -330,10 +345,12 @@ public class ManageTagsDlg extends JDialog {
             conn.close();
             statement.close();
         } catch ( Exception e ) {
-            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-            System.exit(0);
+            System.out.println(e.getMessage());
+            JFrame jf = new JFrame();
+            JOptionPane.showMessageDialog(jf, e.getMessage(), "Chargement des tags impossible", JOptionPane.ERROR_MESSAGE);
         }
     }
+    @SuppressWarnings("unchecked")
     public void fillThemeCB(){
         this.AddTagCb.addItem("");
         for (int i = 0; i<loadTags().getSizeTags(); i++){

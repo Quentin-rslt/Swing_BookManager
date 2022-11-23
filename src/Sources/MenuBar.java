@@ -5,8 +5,7 @@ import Sources.Dialogs.*;
 import javax.swing.*;
 import java.awt.event.KeyEvent;
 
-import static Sources.Common.isItInFilteredBookList;
-import static Sources.Common.resetApp;
+import static Sources.Common.*;
 import static Sources.CommonSQL.*;
 import static Sources.Dialogs.OpenDialog.*;
 import static Sources.ImportExportData.*;
@@ -128,6 +127,7 @@ public class MenuBar {
         JMenu addMenu = new JMenu("Ajouter ");
         JMenuItem addBookMenuItem = new JMenuItem("Un livre");
         addBookMenuItem.addActionListener((e->{
+            setNameOfImage("");
             AddBookDlg diag=openAddBookDlg();
             addBook(diag, parent);
         }));

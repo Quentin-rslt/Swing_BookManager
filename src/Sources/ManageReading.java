@@ -133,6 +133,8 @@ public class ManageReading {
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+            JFrame jf = new JFrame();
+            JOptionPane.showMessageDialog(jf, e.getMessage(), "Remise à zéro id lecture impossible", JOptionPane.ERROR_MESSAGE);
         }
 
     }
