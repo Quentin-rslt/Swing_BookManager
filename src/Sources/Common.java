@@ -24,8 +24,7 @@ import static Sources.CommonSQL.*;
 import static Sources.Dialogs.OpenDialog.openEditTagDlg;
 import static Sources.MainWindow.getAuthor;
 import static Sources.MainWindow.getMTitle;
-import static Sources.MenuBar.getAddReadingMenuItem;
-import static Sources.MenuBar.getManageTagsMenuItem;
+import static Sources.MenuBar.*;
 
 public class Common {
     private static final JFileChooser jf= new JFileChooser();
@@ -239,12 +238,14 @@ public class Common {
     }
     public static void resetApp(MainWindow mainWindow, boolean reset){
         mainWindow.getJMenuBar().getMenu(0).getItem(0).setEnabled(reset);
-        mainWindow.getJMenuBar().getMenu(1).getItem(3).setEnabled(reset);
-        mainWindow.getJMenuBar().getMenu(1).getItem(4).setEnabled(reset);
-        mainWindow.getJMenuBar().getMenu(1).getItem(6).setEnabled(reset);
-        mainWindow.getJMenuBar().getMenu(1).getItem(7).setEnabled(false);
+        getSupprBookMenuItem().setEnabled(reset);
+        getSupprReadingMenuItem().setEnabled(reset);
+        getEditBookMenuItem().setEnabled(reset);
+        getEditReadingMenuItem().setEnabled(reset);
         getAddReadingMenuItem().setEnabled(reset);
         getManageTagsMenuItem().setEnabled(reset);
+        mainWindow.getJMenuBar().getMenu(1).getItem(6).setEnabled(reset);
+        mainWindow.getJMenuBar().getMenu(1).getItem(7).setEnabled(false);
     }
 
     public static boolean isInFilteredList(String title, String author, JTable table){

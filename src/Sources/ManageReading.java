@@ -38,29 +38,7 @@ public class ManageReading {
 
         m_readingsTable.getActionMap().put("delete", new AbstractAction(){
             public void actionPerformed(ActionEvent evt){
-                String ReadingQry = "DELETE FROM Reading WHERE Title='"+ m_title+"' AND Author='"+m_author+"' AND ID='"+parent.getRowReading()+"'";//Delete in bdd the item that we want delete
-                String AvNumQry = "UPDATE Book SET AvReadingTime=?, NumberReading=? WHERE Title='"+m_title+"' AND Author='"+m_author+"'";
-                if(m_readingsTable.getRowCount()>1){//If there is more than one reading you don't need to know if the person really wants to delete the book
-                    try (Connection conn = connect(); PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry); PreparedStatement AvNumPstmt = conn.prepareStatement(AvNumQry)) {
-                        ReadingPstmt.executeUpdate();
-                        AvNumPstmt.setInt(1, averageTime(m_title, m_author));
-                        AvNumPstmt.setInt(2, getNumberOfReading(m_title, m_author));
-                        AvNumPstmt.executeUpdate();
-
-                        parent.getContentPanel().updateUI();
-                        parent.setRowReading(parent.getRowReading()-1);
-                        m_readingsTable.setRowSelectionInterval(parent.getRowReading(), parent.getRowReading());
-                        //load bdd in MainWindow
-                        parent.fillBookTable(parent.isFiltered());
-                        isItInFilteredBookList(parent, true);
-                        resetIdReading(getRowCount());//refresh all ID in the table ReadingDate
-                    } catch (SQLException e) {
-                        System.out.println(e.getMessage());
-                    }
-                }
-                else{
-                    deleteBook(parent);
-                }
+                deleteReading(parent);
             }
         });
         m_readingsTable.getActionMap().put("up", new AbstractAction(){
@@ -116,31 +94,7 @@ public class ManageReading {
                 }
             }
         });
-        cut.addActionListener((ActionEvent evt) ->{
-            String ReadingQry = "DELETE FROM Reading WHERE Title='"+ m_title+"' AND Author='"+m_author+"' AND ID='"+parent.getRowReading()+"'";//Delete in bdd the item that we want delete
-            String AvNumQry = "UPDATE Book SET AvReadingTime=?, NumberReading=? WHERE Title='"+m_title+"' AND Author='"+m_author+"'";
-            if(m_readingsTable.getRowCount()>1){//If there is more than one reading you don't need to know if the person really wants to delete the book
-                try (Connection conn = connect(); PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry); PreparedStatement AvNumPstmt = conn.prepareStatement(AvNumQry)) {
-                    ReadingPstmt.executeUpdate();
-                    AvNumPstmt.setInt(1, averageTime(m_title, m_author));
-                    AvNumPstmt.setInt(2, getNumberOfReading(m_title, m_author));
-                    AvNumPstmt.executeUpdate();
-
-                    parent.getContentPanel().updateUI();
-                    parent.setRowReading(parent.getRowReading()-1);
-                    m_readingsTable.setRowSelectionInterval(parent.getRowReading(), parent.getRowReading());
-                    //load bdd in MainWindow
-                    parent.fillBookTable(parent.isFiltered());
-                    isItInFilteredBookList(parent, true);
-                    resetIdReading(getRowCount());//refresh all ID in the table ReadingDate
-                } catch (SQLException e) {
-                    System.out.println(e.getMessage());
-                }
-            }
-            else{
-                deleteBook(parent);
-            }
-        });
+        cut.addActionListener((ActionEvent evt) ->deleteReading(parent));
         edit.addActionListener((ActionEvent evt) ->{
             EditReadingDlg diag = openEditReadingDlg(getStartReading(), getEndReading());//Open a dialog where we can edit the date reading
             editReading(diag, parent);

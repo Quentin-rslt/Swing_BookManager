@@ -610,6 +610,8 @@ public class MainWindow extends JDialog {
         m_manageReading = new ManageReading(MainWindow.this, ReadingsTable);
         ReadingsTable.setRowSelectionInterval(getRowReading(),getRowReading());
         BooksTable.setRowSelectionInterval(getRowSelected(), getRowSelected());
+        m_manageReading.setStartReading(ReadingsTable.getValueAt(getRowReading(), 0).toString());
+        m_manageReading.setEndReading(ReadingsTable.getValueAt(getRowReading(), 1).toString());
         FiltersBookBtn.setEnabled(true);
         BookManageTagsBtn.setEnabled(true);
         try(Connection conn = connect()) {
@@ -782,16 +784,12 @@ public class MainWindow extends JDialog {
         contentPane.updateUI();
         BooksTable.getInputMap().clear();
         ReadingsTable.getInputMap().clear();
-        BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(getDeletekey(), getDeleteModif()), "delete");
         BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "up");
         BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "dow");
-        BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(getEditKey(), getEditModif()), "enter");
         BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0), "tab");
 
-        ReadingsTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(getEditKey(), getEditModif()), "enter");
         ReadingsTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "up");
         ReadingsTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "dow");
-        ReadingsTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(getDeletekey(), getDeleteModif()), "delete");
         ReadingsTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0), "tab");
     }
     public void loadParameters(){

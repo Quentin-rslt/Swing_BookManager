@@ -263,6 +263,33 @@ public class CommonSQL {
             }
         }
     }
+    public static void deleteReading(MainWindow parent){
+        String ReadingQry = "DELETE FROM Reading WHERE Title='"+ getMTitle()+"' AND Author='"+getAuthor()+"' AND ID='"+parent.getRowReading()+"'";//Delete in bdd the item that we want delete
+        String AvNumQry = "UPDATE Book SET AvReadingTime=?, NumberReading=? WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";
+        if(parent.getReadingsTable().getRowCount()>1){//If there is more than one reading you don't need to know if the person really wants to delete the book
+            try (Connection conn = connect(); PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry); PreparedStatement AvNumPstmt = conn.prepareStatement(AvNumQry)) {
+                ReadingPstmt.executeUpdate();
+                AvNumPstmt.setInt(1, averageTime(getMTitle(), getAuthor()));
+                AvNumPstmt.setInt(2, getNumberOfReading(getMTitle(), getAuthor()));
+                AvNumPstmt.executeUpdate();
+
+                parent.getContentPanel().updateUI();
+                if(parent.getRowReading()>0) {
+                    parent.setRowReading(parent.getRowReading() - 1);
+                }
+                parent.getReadingsTable().setRowSelectionInterval(parent.getRowReading(), parent.getRowReading());
+                //load bdd in MainWindow
+                parent.fillBookTable(parent.isFiltered());
+                isItInFilteredBookList(parent, true);
+                parent.getManageReading().resetIdReading(parent.getManageReading().getRowCount());//refresh all ID in the table ReadingDate
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+        else{
+            deleteBook(parent);
+        }
+    }
     public static void filtersBook(FiltersDlg diag, MainWindow parent){
         if(diag.getIsValid()) {
             if(parent.isFiltered()){

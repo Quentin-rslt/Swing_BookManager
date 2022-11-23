@@ -1,9 +1,6 @@
 package Sources;
 
-import Sources.Dialogs.AddBookDlg;
-import Sources.Dialogs.AddReading;
-import Sources.Dialogs.EditBookDlg;
-import Sources.Dialogs.FiltersDlg;
+import Sources.Dialogs.*;
 
 import javax.swing.*;
 
@@ -21,6 +18,10 @@ import static Sources.MainWindow.getMTitle;
 public class MenuBar {
     private static JMenuItem addReadingMenuItem;
     private static JMenuItem manageTagsMenuItem;
+    private static JMenuItem editBookMenuItem;
+    private static JMenuItem editReadingMenuItem;
+    private static JMenuItem supprBookMenuItem;
+    private static JMenuItem supprReadingMenuItem;
     public static JMenuBar createMenuBar(MainWindow parent) {
         JMenu helpMenu = new JMenu("Aide");
         JMenuItem aboutMenuItem = new JMenuItem("A propos");
@@ -172,8 +173,11 @@ public class MenuBar {
         manageMenu.add(manageAllTagsMenuItem);
         manageMenu.add(manageTagsMenuItem);
 
+        //Edit delete book and reading
+        JMenu editBookRead = new JMenu("Modifier");
+        JMenu deleteBookRead = new JMenu("Supprimer");
         //Edit book
-        JMenuItem editBookMenuItem = new JMenuItem("Modifier le livre");
+        editBookMenuItem = new JMenuItem("Modifier le livre");
         editBookMenuItem.addActionListener((e->{
             EditBookDlg diag = openEditBookDlg();
             editBook(diag,parent);
@@ -181,15 +185,22 @@ public class MenuBar {
         editBookMenuItem.setAccelerator(KeyStroke.getKeyStroke(parent.getEditKey(), parent.getEditModif()));
 
         //Delete book
-        JMenuItem supprBookMenuItem = new JMenuItem("Supprimer le livre");
+        supprBookMenuItem = new JMenuItem("Supprimer le livre");
         supprBookMenuItem.addActionListener((e -> deleteBook(parent)));
         supprBookMenuItem.setAccelerator(KeyStroke.getKeyStroke(parent.getDeletekey(), parent.getDeleteModif()));
-        supprBookMenuItem.getInputMap().put(KeyStroke.getKeyStroke(parent.getDeletekey(), parent.getDeleteModif()), "delete");
-        supprBookMenuItem.getActionMap().put("delete", new AbstractAction(){
-            public void actionPerformed(ActionEvent e){
-                deleteBook(parent);
-            }
-        });
+
+        //Edit reading
+        editReadingMenuItem = new JMenuItem("Modifier la lecture");
+        editReadingMenuItem.addActionListener((e->{
+            EditReadingDlg diag = openEditReadingDlg(parent.getManageReading().getStartReading(),parent.getManageReading().getEndReading());
+            editReading(diag,parent);
+        }));
+        editReadingMenuItem.setAccelerator(KeyStroke.getKeyStroke(parent.getEditKey(), parent.getEditModif()));
+
+        //Delete reading
+        supprReadingMenuItem = new JMenuItem("Supprimer la lecture");
+        supprReadingMenuItem.addActionListener((e -> deleteReading(parent)));
+        supprReadingMenuItem.setAccelerator(KeyStroke.getKeyStroke(parent.getDeletekey(), parent.getDeleteModif()));
 
         //Filters book
         JMenuItem filterMenuItem = new JMenuItem("Critères");
@@ -199,6 +210,11 @@ public class MenuBar {
             filtersBook(diag, parent);
         }));
         filterMenuItem.setAccelerator(KeyStroke.getKeyStroke(parent.getCritKey(), parent.getCritModif()));
+
+        editBookRead.add(editBookMenuItem);
+        editBookRead.add(editReadingMenuItem);
+        deleteBookRead.add(supprBookMenuItem);
+        deleteBookRead.add(supprReadingMenuItem);
 
         //Reset Filters
         JMenuItem resetFilterMenuItem = new JMenuItem("Rénitialiser les critères");
@@ -218,8 +234,8 @@ public class MenuBar {
         editMenu.add(addMenu);
         editMenu.add(manageMenu);
         editMenu.addSeparator();
-        editMenu.add(editBookMenuItem);
-        editMenu.add(supprBookMenuItem);
+        editMenu.add(editBookRead);
+        editMenu.add(deleteBookRead);
         editMenu.addSeparator();
         editMenu.add(filterMenuItem);
         editMenu.add(resetFilterMenuItem);
@@ -239,5 +255,20 @@ public class MenuBar {
 
     public static JMenuItem getManageTagsMenuItem() {
         return manageTagsMenuItem;
+    }
+    public static JMenuItem getEditBookMenuItem() {
+        return editBookMenuItem;
+    }
+
+    public static JMenuItem getEditReadingMenuItem() {
+        return editReadingMenuItem;
+    }
+
+    public static JMenuItem getSupprBookMenuItem() {
+        return supprBookMenuItem;
+    }
+
+    public static JMenuItem getSupprReadingMenuItem() {
+        return supprReadingMenuItem;
     }
 }
