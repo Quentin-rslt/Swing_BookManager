@@ -859,6 +859,7 @@ public class MainWindow extends JDialog {
         }
 
         MainWindow parent = new MainWindow();
+        parent.setIconImage(getLogo());
         parent.setTitle("Book manager");
         parent.setSize(1500,844);
         parent.setLocationRelativeTo(null);
