@@ -22,7 +22,7 @@ import static Sources.Dialogs.OpenDialog.openEditTagDlg;
 public class AddBookDlg extends JDialog {
     private JPanel contentPane;
     private JButton ValidateBtn;
-    private JButton CancelBtn;
+    private JButton ResetBtn;
     private JPanel PreviewPhotoPanel;
     private JTextField BookNameTextField;
     private JSpinner BookPersonalNoteSpin;
@@ -51,7 +51,6 @@ public class AddBookDlg extends JDialog {
         setContentPane(contentPane);
         setModal(true);
         initComponents();
-        initComponents(true);
 
         m_popup = new JPopupMenu();//Create a popup menu to delete a reading an edit this reading
         JMenuItem cut = new JMenuItem("Supprimer", new ImageIcon(getImageCut()));
@@ -80,10 +79,11 @@ public class AddBookDlg extends JDialog {
                 BookEndReadingSpin.setEnabled(true);
             }
         });
-        CancelBtn.addActionListener((ActionEvent e) -> {//Quit dlg without taking into account the input
-            m_isValide = false;
-            setVisible(false);
-            dispose();
+        ResetBtn.addActionListener((ActionEvent e) -> {//Quit dlg without taking into account the input
+            setTags(new Tags());
+            BookTagsPanel.removeAll();
+            resetComponents();
+            contentPane.updateUI();
         });
         ValidateBtn.addActionListener((ActionEvent evt) -> {
             String sql = "SELECT Title, Author, StartReading, EndReading FROM Reading";
@@ -280,6 +280,9 @@ public class AddBookDlg extends JDialog {
         return this.m_tagIsUpdate;
     }
 
+    public void setTags(Tags tags){
+        this.m_tags = tags;
+    }
     public void setTagIsUpdate(boolean update){
         this.m_tagIsUpdate = update;
     }
@@ -310,27 +313,28 @@ public class AddBookDlg extends JDialog {
         SpinnerModel BookNumberOPSM = new SpinnerNumberModel(0, 0, 9999999, 1);
         BookNumberOPSpin.setModel(BookNumberOPSM);
 
-        fillThemeCB();
-        fillAuthorCB(BookAuthorCB);
-    }
-    public void initComponents(boolean bool){
-        BookNameTextField.setEnabled(bool);
-        BookAuthorCB.setEnabled(bool);
-        BookReleaseYearSpin.setEnabled(bool);
-        BookNumberOPSpin.setEnabled(bool);
-        BookPersonalNoteSpin.setEnabled(bool);
-        BookNoteBblSpin.setEnabled(bool);
-        BookSummaryTextPane.setEnabled(bool);
-        BookReleaseYearSpin.setEnabled(bool);
-        BookBrowseBtn.setEnabled(bool);
-        PreviewPhotoPanel.updateUI();
-        PreviewPhotoPanel.removeAll();
         AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),3,25,18,0,20);
         BookSummaryTextPane.setBorder(roundBrd);
         JsPane.setBorder(null);
+
+        fillThemeCB();
+        fillAuthorCB(BookAuthorCB);
+    }
+    public void resetComponents(){
+        BookNameTextField.setText("");
+        BookAuthorCB.setSelectedIndex(0);
+        BookTagsCB.setSelectedIndex(0);
+        BookUnknownReadDateChecbox.setSelected(false);
+        BookNotDoneReadChecbox.setSelected(false);
+        BookSummaryTextPane.setText("");
+        BookEndReadingSpin.setEnabled(true);
+        BookStartReadingSpin.setEnabled(true);
+        PreviewPhotoPanel.removeAll();
+        initComponents();
     }
     @SuppressWarnings("unchecked")
     public void fillThemeCB(){
+        this.BookTagsCB.removeAllItems();
         this.BookTagsCB.addItem("");
         for (int i = 0; i<loadTags().getSizeTags(); i++){
             this.BookTagsCB.addItem(loadTags().getTag(i).getTextTag());

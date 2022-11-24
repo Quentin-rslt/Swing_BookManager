@@ -14,7 +14,7 @@ import static Sources.CommonSQL.*;
 public class EditTagDlg extends JDialog {
     private JPanel contentPane;
     private JButton TagOkBtn;
-    private JButton TagCancelBtn;
+    private JButton TagResetBtn;
     private JTextField TagNameTextField;
     private JPanel TagColorPanel;
     final JColorChooser m_ColorChooser = new JColorChooser();
@@ -29,10 +29,8 @@ public class EditTagDlg extends JDialog {
         this.m_tag = tag;
         initComponents();
 
-        TagCancelBtn.addActionListener((ActionEvent e)-> {//Quit dlg without taking into account the input
-            setIsValid(false);
-            setVisible(false);
-            dispose();
+        TagResetBtn.addActionListener((ActionEvent e)-> {//Quit dlg without taking into account the input
+            initComponents();
         });
         TagOkBtn.addActionListener((ActionEvent e) ->{
             if(!textTagFind()){//is not in DB

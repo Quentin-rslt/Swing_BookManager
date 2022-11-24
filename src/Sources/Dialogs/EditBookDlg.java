@@ -36,7 +36,7 @@ public class EditBookDlg extends JDialog {
     private JComboBox BookTagsCB;
     private JPanel BookTagsPanel;
     private JComboBox BookAuthorCB;
-    private JButton CancelBtn;
+    private JButton ResetBtn;
     private boolean m_isUpdate;
     private String m_oldTitle;
     private String m_oldAuthor;
@@ -74,13 +74,12 @@ public class EditBookDlg extends JDialog {
                 JOptionPane.showMessageDialog(jFrame, "Veuillez remplir tous les champs !", "Livre saisie invalide", JOptionPane.ERROR_MESSAGE);
             }
         });
-        CancelBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setIsValid(false);
-                setVisible(false);
-                dispose();
-            }
+        ResetBtn.addActionListener(e -> {
+            setTags(new Tags());
+            BookTagsCB.setSelectedIndex(0);
+            BookTagsPanel.removeAll();
+            loadDB(getOldTitle(),getOldAuthor());
+            initListenerTag(getTags(), m_popup, BookTagsPanel);
         });
         BookBrowseBtn.addActionListener((ActionEvent e)-> selectImageOfBook(BookPhotoPanel));
         BookSummaryTextPane.addFocusListener(new FocusAdapter() {
@@ -223,6 +222,9 @@ public class EditBookDlg extends JDialog {
         return row;
     }
 
+    public void setTags(Tags tags){
+        this.m_tags = tags;
+    }
     public void setTagIsUpdate(boolean m_isUpdate) {
         this.m_isUpdate = m_isUpdate;
     }
@@ -308,6 +310,7 @@ public class EditBookDlg extends JDialog {
     }
     @SuppressWarnings("unchecked")
     public void fillThemeCB(){
+        this.BookTagsCB.removeAllItems();
         this.BookTagsCB.addItem("");
         for (int i = 0; i<loadTags().getSizeTags(); i++){
             this.BookTagsCB.addItem(loadTags().getTag(i).getTextTag());

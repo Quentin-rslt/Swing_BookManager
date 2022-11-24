@@ -15,7 +15,7 @@ import static Sources.MainWindow.getMTitle;
 public class AddReading extends JDialog {
     private JPanel contentPane;
     private JButton ReadingOkBtn;
-    private JButton ReadingConcelBtn;
+    private JButton ResetBtn;
     private JLabel ReadingTitleLabel;
     private JLabel ReadingAuthorLabel;
     private JSpinner ReadingNewStartDateSpin;
@@ -54,11 +54,14 @@ public class AddReading extends JDialog {
                     ReadingNewEndDateSpin.setEnabled(true);
                 }
             });
-        ReadingConcelBtn.addActionListener((ActionEvent e)-> {
-                setIsValid(false);
-                setVisible(false);
-                dispose();
-            });
+        ResetBtn.addActionListener((ActionEvent e)-> {
+            initComponents();
+            ReadingNewStartDateSpin.setEnabled(true);
+            ReadingNewEndDateSpin.setEnabled(true);
+            ReadingUnknownCheckBox.setSelected(false);
+            ReadingNotDoneCheckBox.setSelected(false);
+            contentPane.updateUI();
+        });
         ReadingOkBtn.addActionListener((ActionEvent evt)-> {
             String sql = "SELECT Title, Author, StartReading, EndReading FROM Reading WHERE Title='"+this.m_title+"' AND Author='"+this.m_author+"'";
             try (Connection conn = connect()){

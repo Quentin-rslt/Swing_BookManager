@@ -342,6 +342,7 @@ public class CommonSQL {
     }
     @SuppressWarnings("unchecked")
     public static void fillAuthorCB(JComboBox authorCB){
+        authorCB.removeAllItems();
         try (Connection conn = connect()) {
             Statement statement = conn.createStatement();
             ResultSet authorRs = statement.executeQuery("SELECT Author FROM Book  GROUP BY Author");

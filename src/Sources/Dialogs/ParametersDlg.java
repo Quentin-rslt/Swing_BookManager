@@ -22,7 +22,7 @@ public class ParametersDlg extends JDialog {
     private JComboBox ParamChoiceLangCB;
     private JButton ParamCreateThemeBtn;
     private JComboBox ParamChoiceThemeCB;
-    private JButton ParamCancelBtn;
+    private JButton ParamResetBtn;
     private JButton ParamSaveBtn;
     private JComboBox ParamManageTagsKey;
     private JComboBox ParamEditBookKey;
@@ -85,9 +85,8 @@ public class ParametersDlg extends JDialog {
                 dispose();
             }
         });
-        ParamCancelBtn.addActionListener(e -> {
-            setVisible(false);
-            dispose();
+        ParamResetBtn.addActionListener(e -> {
+            initCBSelection(parent);
         });
     }
     public int getParamAddBookModif(){
@@ -333,6 +332,9 @@ public class ParametersDlg extends JDialog {
                     }
                     if (f.getInt(f.getName()) == keyModif && f.getName().equals("VK_BACK_SPACE")) {
                         jComboBox.setSelectedItem("ALT");
+                    }
+                    if(keyModif==0){
+                        jComboBox.setSelectedIndex(0);
                     }
                 }
             }
