@@ -36,11 +36,6 @@ public class ManageReading {
         m_popup.add(cut);
         m_popup.add(edit);
 
-        m_readingsTable.getActionMap().put("delete", new AbstractAction(){
-            public void actionPerformed(ActionEvent evt){
-                deleteReading(parent);
-            }
-        });
         m_readingsTable.getActionMap().put("up", new AbstractAction(){
             public void actionPerformed(ActionEvent e){
                 if(parent.getRowReading()>0) {
@@ -59,12 +54,6 @@ public class ManageReading {
                     setStartReading(m_readingsTable.getValueAt(parent.getRowReading(), 0).toString());
                     setEndReading(m_readingsTable.getValueAt(parent.getRowReading(), 1).toString());
                 }
-            }
-        });
-        m_readingsTable.getActionMap().put("edit", new AbstractAction(){
-            public void actionPerformed(ActionEvent e){
-                EditReadingDlg diag = openEditReadingDlg(getStartReading(), getEndReading());//Open a dialog where we can edit the date reading
-                editReading(diag, parent);
             }
         });
         m_readingsTable.getActionMap().put("tab", new AbstractAction(){

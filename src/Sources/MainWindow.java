@@ -67,8 +67,10 @@ public class MainWindow extends JDialog {
     private boolean m_isFastSearch;
     private ManageReading m_manageReading;
     private int rowReading;
-    private int m_deletekey;
-    private int m_editKey;
+    private int m_deleteBookKey;
+    private int m_editBookKey;
+    private int m_deleteReadKey;
+    private int m_editReadKey;
     private int m_addReadingKey;
     private int m_addBookKey;
     private int m_manageTagsKey;
@@ -76,8 +78,10 @@ public class MainWindow extends JDialog {
     private int m_manageAllTagsKey;
     private int m_resetKey;
 
-    private int m_deleteModif;
-    private int m_editModif;
+    private int m_deleteBookModif;
+    private int m_editBookModif;
+    private int m_deleteReadModif;
+    private int m_editReadModif;
     private int m_addReadingModif;
     private int m_manageTagsModif;
     private int m_addBookModif;
@@ -121,11 +125,6 @@ public class MainWindow extends JDialog {
             setRowSelected(0);
             loadComponents(getMTitle(), getAuthor());
 
-            BooksTable.getActionMap().put("delete", new AbstractAction(){
-                public void actionPerformed(ActionEvent e){
-                    deleteBook(MainWindow.this);
-                }
-            });
             BooksTable.getActionMap().put("tab", new AbstractAction(){
                 public void actionPerformed(ActionEvent e){
                     if(BooksTable.getRowCount()>0) {
@@ -155,12 +154,6 @@ public class MainWindow extends JDialog {
                         setAuthor(BooksTable.getValueAt(getRowSelected(), 1).toString());
                         loadComponents(getMTitle(), getAuthor());
                     }
-                }
-            });
-            BooksTable.getActionMap().put("edit", new AbstractAction(){
-                public void actionPerformed(ActionEvent e){
-                    EditBookDlg diag = openEditBookDlg();
-                    editBook(diag,MainWindow.this);
                 }
             });
 
@@ -306,11 +299,17 @@ public class MainWindow extends JDialog {
     public ManageReading getManageReading() {
         return m_manageReading;
     }
-    public int getDeletekey() {
-        return m_deletekey;
+    public int getEditBookModif() {
+        return m_editBookModif;
     }
-    public int getEditKey() {
-        return m_editKey;
+    public int getEditBookKey() {
+        return m_editBookKey;
+    }
+    public int getEditReadModif() {
+        return m_editReadModif;
+    }
+    public int getEditReadKey() {
+        return m_editReadKey;
     }
     public int getAddReadingKey() {
         return m_addReadingKey;
@@ -318,11 +317,17 @@ public class MainWindow extends JDialog {
     public int getManageTagsKey() {
         return m_manageTagsKey;
     }
-    public int getDeleteModif() {
-        return m_deleteModif;
+    public int getDeleteBookModif() {
+        return m_deleteBookModif;
     }
-    public int getEditModif() {
-        return m_editModif;
+    public int getDeleteBookKey() {
+        return m_deleteBookKey;
+    }
+    public int getDeleteReadModif() {
+        return m_deleteReadModif;
+    }
+    public int getDeleteReadKey() {
+        return m_deleteReadKey;
     }
     public int getAddReadingModif() {
         return m_addReadingModif;
@@ -380,11 +385,11 @@ public class MainWindow extends JDialog {
     public void setRowReading(int rowReading) {
         this.rowReading = rowReading;
     }
-    public void setDeletekey(int m_deletekey) {
-        this.m_deletekey = m_deletekey;
+    public void setDeleteBookKey(int m_deletekey) {
+        this.m_deleteBookKey = m_deletekey;
     }
-    public void setEditKey(int m_editKey) {
-        this.m_editKey = m_editKey;
+    public void setEditBookKey(int m_editKey) {
+        this.m_editBookKey = m_editKey;
     }
     public void setAddReadingKey(int m_addReadingKey) {
         this.m_addReadingKey = m_addReadingKey;
@@ -392,11 +397,23 @@ public class MainWindow extends JDialog {
     public void setManageTagsKey(int m_manageTagsKey) {
         this.m_manageTagsKey = m_manageTagsKey;
     }
-    public void setDeleteModif(int m_deleteModif) {
-        this.m_deleteModif = m_deleteModif;
+    public void setDeleteBookModif(int m_deleteModif) {
+        this.m_deleteBookModif = m_deleteModif;
     }
-    public void setEditModif(int m_editModif) {
-        this.m_editModif = m_editModif;
+    public void setEditBookModif(int m_editModif) {
+        this.m_editBookModif = m_editModif;
+    }
+    public void setDeleteReadKey(int m_deleteReadKey) {
+        this.m_deleteReadKey = m_deleteReadKey;
+    }
+    public void setEditReadKey(int m_editReadKey) {
+        this.m_editReadKey = m_editReadKey;
+    }
+    public void setDeleteReadModif(int m_deleteReadModif) {
+        this.m_deleteReadModif = m_deleteReadModif;
+    }
+    public void setEditReadModif(int m_editReadModif) {
+        this.m_editReadModif = m_editReadModif;
     }
     public void setAddReadingModif(int m_addReadingModif) {
         this.m_addReadingModif = m_addReadingModif;
@@ -788,16 +805,10 @@ public class MainWindow extends JDialog {
     public void initBinding(){
         setJMenuBar(createMenuBar(this));
         contentPane.updateUI();
-        BooksTable.getInputMap().clear();
-        ReadingsTable.getInputMap().clear();
-        BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(getEditKey(), getEditModif()), "edit");
-        BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(getDeletekey(), getDeleteModif()), "delete");
         BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "up");
         BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "dow");
         BooksTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0), "tab");
 
-        ReadingsTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(getEditKey(), getEditModif()), "edit");
-        ReadingsTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(getDeletekey(), getDeleteModif()), "delete");
         ReadingsTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "up");
         ReadingsTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "dow");
         ReadingsTable.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0), "tab");
@@ -810,34 +821,51 @@ public class MainWindow extends JDialog {
                     String[] data = line.split(";");
                     setAddBookKey(Integer.parseInt(data[0]));
                     setAddBookModif(Integer.parseInt(data[1]));
+
                     setAddReadingKey(Integer.parseInt(data[2]));
                     setAddReadingModif(Integer.parseInt(data[3]));
-                    setDeletekey(Integer.parseInt(data[4]));
-                    setDeleteModif(Integer.parseInt(data[5]));
-                    setEditKey(Integer.parseInt(data[6]));
-                    setEditModif(Integer.parseInt(data[7]));
-                    setManageTagsKey(Integer.parseInt(data[8]));
-                    setManageTagsModif(Integer.parseInt(data[9]));
-                    setCritKey(Integer.parseInt(data[10]));
-                    setCritModif(Integer.parseInt(data[11]));
-                    setManageAllTagsKey(Integer.parseInt(data[12]));
-                    setManageAllTagsModif(Integer.parseInt(data[13]));
-                    setResetKey(Integer.parseInt(data[14]));
-                    setResetModif(Integer.parseInt(data[15]));
+
+                    setDeleteBookKey(Integer.parseInt(data[4]));
+                    setDeleteBookModif(Integer.parseInt(data[5]));
+
+                    setEditBookKey(Integer.parseInt(data[6]));
+                    setEditBookModif(Integer.parseInt(data[7]));
+
+                    setDeleteReadKey(Integer.parseInt(data[8]));
+                    setDeleteReadModif(Integer.parseInt(data[9]));
+
+                    setEditReadKey(Integer.parseInt(data[10]));
+                    setEditReadModif(Integer.parseInt(data[11]));
+
+                    setManageTagsKey(Integer.parseInt(data[12]));
+                    setManageTagsModif(Integer.parseInt(data[13]));
+
+                    setCritKey(Integer.parseInt(data[14]));
+                    setCritModif(Integer.parseInt(data[15]));
+
+                    setManageAllTagsKey(Integer.parseInt(data[16]));
+                    setManageAllTagsModif(Integer.parseInt(data[17]));
+
+                    setResetKey(Integer.parseInt(data[18]));
+                    setResetModif(Integer.parseInt(data[19]));
                 }
             }
             else {
                 setAddReadingKey(KeyEvent.VK_A);
                 setManageTagsKey(KeyEvent.VK_T);
-                setEditKey(KeyEvent.VK_ENTER);
-                setDeletekey(KeyEvent.VK_DELETE);
+                setEditBookKey(KeyEvent.VK_E);
+                setDeleteBookKey(KeyEvent.VK_D);
+                setEditReadKey(KeyEvent.VK_E);
+                setDeleteReadKey(KeyEvent.VK_D);
                 setAddBookKey(KeyEvent.VK_A);
                 setCritKey(KeyEvent.VK_C);
                 setManageAllTagsKey(KeyEvent.VK_T);
                 setAddReadingModif(0);
                 setManageTagsModif(0);
-                setEditModif(0);
-                setDeleteModif(0);
+                setEditBookModif(0);
+                setDeleteBookModif(0);
+                setEditReadModif(KeyEvent.KEY_LOCATION_STANDARD);
+                setDeleteReadModif(KeyEvent.KEY_LOCATION_STANDARD);
                 setAddBookModif(KeyEvent.KEY_LOCATION_STANDARD);
                 setCritModif(KeyEvent.KEY_LOCATION_STANDARD);
                 setManageAllTagsModif(KeyEvent.KEY_LOCATION_STANDARD);

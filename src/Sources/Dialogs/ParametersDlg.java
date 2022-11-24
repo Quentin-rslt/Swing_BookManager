@@ -25,12 +25,12 @@ public class ParametersDlg extends JDialog {
     private JButton ParamCancelBtn;
     private JButton ParamSaveBtn;
     private JComboBox ParamManageTagsKey;
-    private JComboBox ParamEditKey;
-    private JComboBox ParamDeleteKey;
+    private JComboBox ParamEditBookKey;
+    private JComboBox ParamDeleteBookKey;
     private JComboBox ParamAddReadingModif;
     private JComboBox ParamManageTagsModif;
-    private JComboBox ParamEditModif;
-    private JComboBox ParamDeleteModif;
+    private JComboBox ParamEditBookModif;
+    private JComboBox ParamDeleteBookModif;
     private JComboBox ParamAddBookModif;
     private JComboBox ParamAddBookKey;
     private JComboBox ParamManageAllTagsKey;
@@ -42,6 +42,10 @@ public class ParametersDlg extends JDialog {
     private JComboBox ParamLogKey;
     private JComboBox ParamLogModif;
     private JPanel LabelPanel;
+    private JComboBox ParamEditReadModif;
+    private JComboBox ParamDeleteReadModif;
+    private JComboBox ParamEditReadKey;
+    private JComboBox ParamDeleteReadKey;
     private final ArrayList<String> listOfshortcuts = new ArrayList<>();
 
     public ParametersDlg(MainWindow parent) {
@@ -55,17 +59,21 @@ public class ParametersDlg extends JDialog {
                 //Keys
                 parent.setAddBookKey(getParamAddBookKey());
                 parent.setAddReadingKey(getParamAddReadingKey());
-                parent.setEditKey(getParamEditKey());
+                parent.setEditBookKey(getParamEditBookKey());
+                parent.setDeleteBookKey(getParamDeleteBookKey());
+                parent.setEditReadKey(getParamEditReadKey());
+                parent.setDeleteReadKey(getParamDeleteReadKey());
                 parent.setManageTagsKey(getParamManageTagsKey());
-                parent.setDeletekey(getParamDeletekey());
                 parent.setCritKey(getParamCritKey());
                 parent.setManageAllTagsKey(getParamManageAllTagsKey());
                 parent.setResetKey(getParamResetKey());
                 //Modifiers
                 parent.setAddBookModif(getParamAddBookModif());
                 parent.setAddReadingModif(getParamAddReadingModif());
-                parent.setEditModif(getParamEditModif());
-                parent.setDeleteModif(getParamDeleteModif());
+                parent.setEditBookModif(getParamEditBookModif());
+                parent.setDeleteBookModif(getParamDeleteBookModif());
+                parent.setEditReadModif(getParamEditReadModif());
+                parent.setDeleteReadModif(getParamDeleteReadModif());
                 parent.setManageTagsModif(getParamManageTagsModif());
                 parent.setCritModif(getParamCritModif());
                 parent.setManageAllTagsModif(getParamManageAllTagsModif());
@@ -88,11 +96,17 @@ public class ParametersDlg extends JDialog {
     public int getParamAddReadingModif(){
         return valueModif(ParamAddReadingModif);
     }
-    public int getParamDeleteModif(){
-        return valueModif(ParamDeleteModif);
+    public int getParamDeleteBookModif(){
+        return valueModif(ParamDeleteBookModif);
     }
-    public int getParamEditModif(){
-        return valueModif(ParamEditModif);
+    public int getParamEditBookModif(){
+        return valueModif(ParamEditBookModif);
+    }
+    public int getParamDeleteReadModif(){
+        return valueModif(ParamDeleteReadModif);
+    }
+    public int getParamEditReadModif(){
+        return valueModif(ParamEditReadModif);
     }
     public int getParamManageTagsModif(){
         return valueModif(ParamManageTagsModif);
@@ -138,11 +152,17 @@ public class ParametersDlg extends JDialog {
     public int getParamManageTagsKey() {
         return valueKey(ParamManageTagsKey);
     }
-    public int getParamDeletekey() {
-        return valueKey(ParamDeleteKey);
+    public int getParamDeleteBookKey() {
+        return valueKey(ParamDeleteBookKey);
     }
-    public int getParamEditKey() {
-        return valueKey(ParamEditKey);
+    public int getParamEditBookKey() {
+        return valueKey(ParamEditBookKey);
+    }
+    public int getParamDeleteReadKey() {
+        return valueKey(ParamDeleteReadKey);
+    }
+    public int getParamEditReadKey() {
+        return valueKey(ParamEditReadKey);
     }
     public int getParamAddReadingKey() {
         return valueKey(ParamAddReadingKey);
@@ -233,11 +253,17 @@ public class ParametersDlg extends JDialog {
         String addManageTagsShortCut = getParamManageTagsModif()+"-"+getParamManageTagsKey();
         listOfshortcuts.add(addManageTagsShortCut);
 
-        String addEditShortCut = getParamEditModif()+"-"+getParamEditKey();
-        listOfshortcuts.add(addEditShortCut);
+        String addEditBookShortCut = getParamEditBookModif()+"-"+ getParamEditBookKey();
+        listOfshortcuts.add(addEditBookShortCut);
 
-        String addDeleteShortCut = getParamDeleteModif()+"-"+getParamDeletekey();
-        listOfshortcuts.add(addDeleteShortCut);
+        String addDeleteBookShortCut = getParamDeleteBookModif()+"-"+ getParamDeleteBookKey();
+        listOfshortcuts.add(addDeleteBookShortCut);
+
+        String addEditReadShortCut = getParamEditReadModif()+"-"+ getParamEditReadKey();
+        listOfshortcuts.add(addEditReadShortCut);
+
+        String addDeleteReadShortCut = getParamDeleteReadModif()+"-"+ getParamDeleteReadKey();
+        listOfshortcuts.add(addDeleteReadShortCut);
 
         String addParamManageAllTagsShortCut = getParamManageAllTagsModif()+"-"+getParamManageAllTagsKey();
         listOfshortcuts.add(addParamManageAllTagsShortCut);
@@ -260,8 +286,10 @@ public class ParametersDlg extends JDialog {
                     }
 
                     ParamAddReadingKey.addItem(name);
-                    ParamEditKey.addItem(name);
-                    ParamDeleteKey.addItem(name);
+                    ParamEditBookKey.addItem(name);
+                    ParamDeleteBookKey.addItem(name);
+                    ParamEditReadKey.addItem(name);
+                    ParamDeleteReadKey.addItem(name);
                     ParamManageTagsKey.addItem(name);
                     ParamAddBookKey.addItem(name);
                     ParamCritKey.addItem(name);
@@ -274,8 +302,10 @@ public class ParametersDlg extends JDialog {
     }
     public void fillParamCBModif(){
         fillCBModif(ParamAddReadingModif);
-        fillCBModif(ParamDeleteModif);
-        fillCBModif(ParamEditModif);
+        fillCBModif(ParamDeleteBookModif);
+        fillCBModif(ParamEditBookModif);
+        fillCBModif(ParamDeleteReadModif);
+        fillCBModif(ParamEditReadModif);
         fillCBModif(ParamManageTagsModif);
         fillCBModif(ParamAddBookModif);
         fillCBModif(ParamCritModif);
@@ -338,11 +368,17 @@ public class ParametersDlg extends JDialog {
         initCBKeySelection(ParamManageTagsKey, parent.getManageTagsKey());
         initCBModifSelection(ParamManageTagsModif, parent.getManageTagsModif());
 
-        initCBKeySelection(ParamEditKey, parent.getEditKey());
-        initCBModifSelection(ParamEditModif, parent.getEditModif());
+        initCBKeySelection(ParamEditBookKey, parent.getEditBookKey());
+        initCBModifSelection(ParamEditBookModif, parent.getEditBookModif());
 
-        initCBKeySelection(ParamDeleteKey, parent.getDeletekey());
-        initCBModifSelection(ParamDeleteModif, parent.getDeleteModif());
+        initCBKeySelection(ParamDeleteBookKey, parent.getDeleteBookKey());
+        initCBModifSelection(ParamDeleteBookModif, parent.getDeleteBookModif());
+
+        initCBKeySelection(ParamEditReadKey, parent.getEditReadKey());
+        initCBModifSelection(ParamEditReadModif, parent.getEditReadModif());
+
+        initCBKeySelection(ParamDeleteReadKey, parent.getDeleteReadKey());
+        initCBModifSelection(ParamDeleteReadModif, parent.getDeleteReadModif());
 
         initCBKeySelection(ParamManageAllTagsKey, parent.getManageAllTagsKey());
         initCBModifSelection(ParamManageAllTagsModif,parent.getManageAllTagsModif());
@@ -368,18 +404,31 @@ public class ParametersDlg extends JDialog {
         try(BufferedWriter writer = Files.newBufferedWriter(file)){
             writeData(writer, String.valueOf(getParamAddBookKey()));
             writeData(writer, String.valueOf(getParamAddBookModif()));
+
             writeData(writer, String.valueOf(getParamAddReadingKey()));
             writeData(writer, String.valueOf(getParamAddReadingModif()));
-            writeData(writer, String.valueOf(getParamDeletekey()));
-            writeData(writer, String.valueOf(getParamDeleteModif()));
-            writeData(writer, String.valueOf(getParamEditKey()));
-            writeData(writer, String.valueOf(getParamEditModif()));
+
+            writeData(writer, String.valueOf(getParamDeleteBookKey()));
+            writeData(writer, String.valueOf(getParamDeleteBookModif()));
+
+            writeData(writer, String.valueOf(getParamEditBookKey()));
+            writeData(writer, String.valueOf(getParamEditBookModif()));
+
+            writeData(writer, String.valueOf(getParamDeleteReadKey()));
+            writeData(writer, String.valueOf(getParamDeleteReadModif()));
+
+            writeData(writer, String.valueOf(getParamEditReadKey()));
+            writeData(writer, String.valueOf(getParamEditReadModif()));
+
             writeData(writer, String.valueOf(getParamManageTagsKey()));
             writeData(writer, String.valueOf(getParamManageTagsModif()));
+
             writeData(writer, String.valueOf(getParamCritKey()));
             writeData(writer, String.valueOf(getParamCritModif()));
+
             writeData(writer, String.valueOf(getParamManageAllTagsKey()));
             writeData(writer, String.valueOf(getParamManageAllTagsModif()));
+
             writeData(writer, String.valueOf(getParamResetKey()));
             writeData(writer, String.valueOf(getParamResetModif()));
         }catch (IOException e){

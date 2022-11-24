@@ -45,7 +45,7 @@
                 <border type="none"/>
                 <children/>
               </grid>
-              <grid id="cd80c" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+              <grid id="cd80c" layout-manager="GridLayoutManager" row-count="6" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="0">
                 <margin top="0" left="10" bottom="0" right="0"/>
                 <constraints border-constraint="Center"/>
                 <properties/>
@@ -53,20 +53,52 @@
                 <children>
                   <component id="aaf39" class="javax.swing.JLabel" binding="nameAppLabel">
                     <constraints>
-                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="9" fill="0" indent="0" use-parent-layout="false"/>
+                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="9" fill="0" indent="1" use-parent-layout="false"/>
                     </constraints>
                     <properties>
                       <text value="BookManager V.dev"/>
                     </properties>
                   </component>
-                  <component id="d1a85" class="javax.swing.JTextPane" binding="InfosAppTextPane">
+                  <component id="cb8b0" class="javax.swing.JSeparator">
                     <constraints>
-                      <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                      <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties/>
+                  </component>
+                  <component id="86333" class="javax.swing.JTextPane" binding="InfosFlatLafTextPane">
+                    <constraints>
+                      <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
                         <preferred-size width="150" height="50"/>
                       </grid>
                     </constraints>
                     <properties>
                       <focusable value="false"/>
+                    </properties>
+                  </component>
+                  <component id="ef597" class="javax.swing.JTextPane" binding="InfosIntelIJTextPane">
+                    <constraints>
+                      <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                        <preferred-size width="150" height="50"/>
+                      </grid>
+                    </constraints>
+                    <properties>
+                      <focusable value="false"/>
+                    </properties>
+                  </component>
+                  <component id="1638" class="javax.swing.JLabel" binding="LinkFlatLaf">
+                    <constraints>
+                      <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="9" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text value="Label"/>
+                    </properties>
+                  </component>
+                  <component id="8ed0a" class="javax.swing.JLabel" binding="LinkIntelIJ">
+                    <constraints>
+                      <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="9" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text value="Label"/>
                     </properties>
                   </component>
                 </children>

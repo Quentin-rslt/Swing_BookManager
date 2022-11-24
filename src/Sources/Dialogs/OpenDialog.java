@@ -12,6 +12,7 @@ public class OpenDialog {
         diag.setTitle("Ajout d'un livre");
         diag.setIconImage(getImageAdd());
         diag.setSize(1000,730);
+        diag.setResizable(false);
         diag.setLocationRelativeTo(null);
         diag.setVisible(true);
 
@@ -21,6 +22,7 @@ public class OpenDialog {
         EditBookDlg diag = new EditBookDlg();
         diag.setTitle("Modification du livre : " +getMTitle());
         diag.setIconImage(getImageEdit());
+        diag.setResizable(false);
         diag.setSize(1000,730);
         diag.setLocationRelativeTo(null);
         diag.setVisible(true);
@@ -31,6 +33,7 @@ public class OpenDialog {
         AddReading diag = new AddReading();
         diag.setTitle("Ajout d'une lecture pour le livre : "+getMTitle());
         diag.setSize(550,265);
+        diag.setResizable(false);
         diag.setIconImage(getImageAdd());
         diag.setLocationRelativeTo(null);
         diag.setVisible(true);
@@ -42,6 +45,7 @@ public class OpenDialog {
         diag.setIconImage(getImageEdit());
         diag.setTitle("Modification d'une lecture");
         diag.setSize(500,220);
+        diag.setResizable(false);
         diag.setLocationRelativeTo(null);
         diag.setVisible(true);
 
@@ -50,6 +54,7 @@ public class OpenDialog {
     public static FiltersDlg openFilterDlg(){
         FiltersDlg diag = new FiltersDlg();
         diag.setTitle("Critères de recherche");
+        diag.setResizable(false);
         diag.setSize(730,700);
         diag.setLocationRelativeTo(null);
         diag.setVisible(true);
@@ -75,6 +80,7 @@ public class OpenDialog {
     public static EditTagDlg openEditTagDlg(Tag tag){
         EditTagDlg diag = new EditTagDlg(tag);
         diag.setSize(780,490);
+        diag.setResizable(false);
         diag.setIconImage(getImageEdit());
         diag.setTitle("Modification du tag : " +tag.getTextTag());
         diag.setLocationRelativeTo(null);
@@ -93,6 +99,7 @@ public class OpenDialog {
     public static void openAboutDlg(){
         AboutDlg diag = new AboutDlg();
         diag.setSize(480,280);
+        diag.setResizable(false);
         diag.setTitle("A propos");
         diag.setLocationRelativeTo(null);
         diag.setVisible(true);

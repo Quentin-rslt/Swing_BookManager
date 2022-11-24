@@ -181,12 +181,12 @@ public class MenuBar {
             EditBookDlg diag = openEditBookDlg();
             editBook(diag,parent);
         }));
-        editBookMenuItem.setAccelerator(KeyStroke.getKeyStroke(parent.getEditKey(), parent.getEditModif()));
+        editBookMenuItem.setAccelerator(KeyStroke.getKeyStroke(parent.getEditBookKey(), parent.getEditBookModif()));
 
         //Delete book
         supprBookMenuItem = new JMenuItem("Le livre");
         supprBookMenuItem.addActionListener((e -> deleteBook(parent)));
-        supprBookMenuItem.setAccelerator(KeyStroke.getKeyStroke(parent.getDeletekey(), parent.getDeleteModif()));
+        supprBookMenuItem.setAccelerator(KeyStroke.getKeyStroke(parent.getDeleteBookKey(), parent.getDeleteBookModif()));
 
         //Edit reading
         editReadingMenuItem = new JMenuItem("La lecture");
@@ -194,12 +194,12 @@ public class MenuBar {
             EditReadingDlg diag = openEditReadingDlg(parent.getManageReading().getStartReading(),parent.getManageReading().getEndReading());
             editReading(diag,parent);
         }));
-        editReadingMenuItem.setAccelerator(KeyStroke.getKeyStroke(parent.getEditKey(), parent.getEditModif()));
+        editReadingMenuItem.setAccelerator(KeyStroke.getKeyStroke(parent.getEditReadKey(), parent.getEditReadModif()));
 
         //Delete reading
         supprReadingMenuItem = new JMenuItem("La lecture");
         supprReadingMenuItem.addActionListener((e -> deleteReading(parent)));
-        supprReadingMenuItem.setAccelerator(KeyStroke.getKeyStroke(parent.getDeletekey(), parent.getDeleteModif()));
+        supprReadingMenuItem.setAccelerator(KeyStroke.getKeyStroke(parent.getDeleteReadKey(), parent.getDeleteReadModif()));
 
         //Filters book
         JMenuItem filterMenuItem = new JMenuItem("Critères");
