@@ -1,7 +1,5 @@
 package Sources.Dialogs;
 
-import Sources.MainWindow;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -45,9 +43,7 @@ public class AboutDlg extends JDialog {
         nameAppLabel.setFont(new Font("Arial", Font.BOLD, 20));
 
         LinkFlatLaf.setForeground(GitBtn.getBackground());
-        LinkFlatLaf.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        LinkFlatLaf.addMouseListener(new MouseAdapter()
-        {
+        LinkFlatLaf.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 try {
@@ -67,9 +63,7 @@ public class AboutDlg extends JDialog {
             }
         });
         LinkIntelIJ.setForeground(GitBtn.getBackground());
-        LinkIntelIJ.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        LinkIntelIJ.addMouseListener(new MouseAdapter()
-        {
+        LinkIntelIJ.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 try {
@@ -86,6 +80,15 @@ public class AboutDlg extends JDialog {
             @Override
             public void mouseExited(MouseEvent e) {
                 LinkIntelIJ.setForeground(GitBtn.getBackground());
+            }
+        });
+
+        GitBtn.addActionListener( e -> {
+            try {
+                Desktop.getDesktop().browse(new URI("https://github.com/Quentin-rslt/BookManager"));
+            }
+            catch (IOException | URISyntaxException e1) {
+                e1.printStackTrace();
             }
         });
     }

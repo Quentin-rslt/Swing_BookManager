@@ -221,7 +221,7 @@ public class AddBookDlg extends JDialog {
             @Override
             public void focusGained(FocusEvent e) {
                 super.focusGained(e);
-                RoundBorderCp roundBrd = new RoundBorderCp(JsPane.getBackground(),2,25,18,0,20);
+                RoundBorderCp roundBrd = new RoundBorderCp(new Color(197,62,62),2,25,18,0,20);
                 BookSummaryTextPane.setBorder(roundBrd);
             }
 
