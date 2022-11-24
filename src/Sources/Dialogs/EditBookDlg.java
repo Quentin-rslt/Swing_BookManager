@@ -36,6 +36,7 @@ public class EditBookDlg extends JDialog {
     private JComboBox BookTagsCB;
     private JPanel BookTagsPanel;
     private JComboBox BookAuthorCB;
+    private JButton CancelBtn;
     private boolean m_isUpdate;
     private String m_oldTitle;
     private String m_oldAuthor;
@@ -71,6 +72,14 @@ public class EditBookDlg extends JDialog {
             else{
                 JFrame jFrame = new JFrame();
                 JOptionPane.showMessageDialog(jFrame, "Veuillez remplir tous les champs !", "Livre saisie invalide", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+        CancelBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setIsValid(false);
+                setVisible(false);
+                dispose();
             }
         });
         BookBrowseBtn.addActionListener((ActionEvent e)-> selectImageOfBook(BookPhotoPanel));
