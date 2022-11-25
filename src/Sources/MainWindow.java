@@ -46,6 +46,7 @@ public class MainWindow extends JDialog {
     private JTextField BookFastSearch;
     private JTable ReadingsTable;
     private JLabel CountBookLbl;
+    private JScrollPane BooksJsPane;
     private final DefaultTableModel m_tableBookModel = new DefaultTableModel(){//Create a Jtable with the tablemodel not editable
         public boolean isCellEditable(int rowIndex, int colIndex) {
             return false; //Disallow the editing of any cell
@@ -627,25 +628,23 @@ public class MainWindow extends JDialog {
     }
     public void loadComponents(String title, String author){
         Tags tags = new Tags();
+
         fillReadingTable(title,author);
         m_manageReading = new ManageReading(MainWindow.this, ReadingsTable);
         ReadingsTable.setRowSelectionInterval(getRowReading(),getRowReading());
-        BooksTable.setRowSelectionInterval(getRowSelected(), getRowSelected());
         m_manageReading.setStartReading(ReadingsTable.getValueAt(getRowReading(), 0).toString());
         m_manageReading.setEndReading(ReadingsTable.getValueAt(getRowReading(), 1).toString());
+
+        BooksTable.setRowSelectionInterval(getRowSelected(), getRowSelected());
+        BooksJsPane.getVerticalScrollBar().setValue(getRowSelected() * 21);
+
         FiltersBookBtn.setEnabled(true);
         BookManageTagsBtn.setEnabled(true);
         try(Connection conn = connect()) {
             Class.forName("org.sqlite.JDBC");
             m_statement = conn.createStatement();
 
-            //Title label
-            if(title.contains("''''")){
-                String newTitle = title.replace("''''", "'");
-                TitleLabel.setText(newTitle);
-            }else{
-                TitleLabel.setText(title);
-            }
+            TitleLabel.setText(title);
 
             //Tags Label
             ResultSet tagsQry = m_statement.executeQuery("SELECT Tag,Color FROM Tags JOIN Tagging on Tags.ID=Tagging.IdTag " +
