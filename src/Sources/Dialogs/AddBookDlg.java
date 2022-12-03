@@ -16,7 +16,6 @@ import java.util.Objects;
 
 import static Sources.Common.*;
 import static Sources.CommonSQL.*;
-import static Sources.Common.getImageEdit;
 import static Sources.Dialogs.OpenDialog.openEditTagDlg;
 
 public class AddBookDlg extends JDialog {
@@ -53,8 +52,8 @@ public class AddBookDlg extends JDialog {
         initComponents();
 
         m_popup = new JPopupMenu();//Create a popup menu to delete a reading an edit this reading
-        JMenuItem cut = new JMenuItem("Supprimer", new ImageIcon(getImageCut()));
-        JMenuItem edit = new JMenuItem("Modifier", new ImageIcon(getImageEdit()));
+        JMenuItem cut = new JMenuItem("Supprimer", new ImageIcon(getLogo("remove.png")));
+        JMenuItem edit = new JMenuItem("Modifier", new ImageIcon(getLogo("edit.png")));
         m_popup.add(cut);
         m_popup.add(edit);
 

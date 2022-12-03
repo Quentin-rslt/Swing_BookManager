@@ -56,7 +56,7 @@ public class FiltersDlg extends JDialog {
         initComponents();
 
         m_popup = new JPopupMenu();//Create a popup menu to delete a reading an edit this reading
-        JMenuItem cut = new JMenuItem("Supprimer", new ImageIcon(getImageCut()));
+        JMenuItem cut = new JMenuItem("Supprimer", new ImageIcon(getLogo("remove.png")));
         m_popup.add(cut);
 
         FiltersOkBtn.addActionListener((ActionEvent e)-> {

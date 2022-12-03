@@ -138,6 +138,8 @@ public class Common {
                     ImageIcon icon = new ImageIcon(img);
                     JLabel imgLabel = new JLabel();
                     imgLabel.setIcon(icon);
+                    AbstractBorder roundBrdMax = new RoundBorderCp(panel.getBackground(),3,30, 0,0,0);
+                    imgLabel.setBorder(roundBrdMax);
 
                     panel.updateUI();//reload the panel
                     panel.removeAll();
@@ -424,37 +426,13 @@ public class Common {
     public static String getFormat(String name){
         return name.substring(name.lastIndexOf('.')+1);
     }
-    public static Image getImageAdd(){
-        File fileAdd = new File("Ressource/Icons/add.png");
-        String pathAdd = fileAdd.getAbsolutePath();
-        Image imgAdd = Toolkit.getDefaultToolkit().getImage(pathAdd);
-        imgAdd = imgAdd.getScaledInstance(18,18,Image.SCALE_AREA_AVERAGING);
+    public static Image getLogo(String name){
+        File fileParam = new File("Ressource/Icons/"+name);
+        String path = fileParam.getAbsolutePath();
+        Image img = Toolkit.getDefaultToolkit().getImage(path);
+        img = img.getScaledInstance(18,18,Image.SCALE_AREA_AVERAGING);
 
-        return imgAdd;
-    }
-    public static Image getImageCut(){
-        File fileRemove = new File("Ressource/Icons/remove.png");
-        String pathRemove = fileRemove.getAbsolutePath();
-        Image imgRemove = Toolkit.getDefaultToolkit().getImage(pathRemove);
-        imgRemove = imgRemove.getScaledInstance(18,18,Image.SCALE_AREA_AVERAGING);
-
-        return imgRemove;
-    }
-    public static Image getImageEdit(){
-        File fileEdit = new File("Ressource/Icons/edit.png");
-        String pathEdit = fileEdit.getAbsolutePath();
-        Image imgEdit = Toolkit.getDefaultToolkit().getImage(pathEdit);
-        imgEdit = imgEdit.getScaledInstance(18,18,Image.SCALE_AREA_AVERAGING);
-
-        return imgEdit;
-    }
-    public static Image getImageTag(){
-        File fileEdit = new File("Ressource/Icons/tag.png");
-        String pathEdit = fileEdit.getAbsolutePath();
-        Image imgEdit = Toolkit.getDefaultToolkit().getImage(pathEdit);
-        imgEdit = imgEdit.getScaledInstance(18,18,Image.SCALE_AREA_AVERAGING);
-
-        return imgEdit;
+        return img;
     }
     public static Image getLogo(int w, int h){
         File fileLogo = new File("Ressource/Icons/logo_BookManager.png");

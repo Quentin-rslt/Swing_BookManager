@@ -109,10 +109,10 @@ public class MainWindow extends JDialog {
         ReadingsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         m_popup = new JPopupMenu();//Create a popup menu to delete a reading an edit this reading
-        JMenuItem add = new JMenuItem("Ajouter une lecture", new ImageIcon(getImageAdd()));
-        JMenuItem cut = new JMenuItem("Supprimer", new ImageIcon(getImageCut()));
-        JMenuItem edit = new JMenuItem("Modifier", new ImageIcon(getImageEdit()));
-        JMenuItem openManageTags = new JMenuItem("Gérer ses tags", new ImageIcon(getImageTag()));
+        JMenuItem add = new JMenuItem("Ajouter une lecture", new ImageIcon(getLogo("add.png")));
+        JMenuItem cut = new JMenuItem("Supprimer", new ImageIcon(getLogo("remove.png")));
+        JMenuItem edit = new JMenuItem("Modifier", new ImageIcon(getLogo("edit.png")));
+        JMenuItem openManageTags = new JMenuItem("Gérer ses tags", new ImageIcon(getLogo("tag.png")));
 
         m_popup.add(add);
         m_popup.add(cut);
@@ -636,7 +636,7 @@ public class MainWindow extends JDialog {
         m_manageReading.setEndReading(ReadingsTable.getValueAt(getRowReading(), 1).toString());
 
         BooksTable.setRowSelectionInterval(getRowSelected(), getRowSelected());
-        BooksJsPane.getVerticalScrollBar().setValue(getRowSelected() * 21);
+//        BooksJsPane.getVerticalScrollBar().setValue(getRowSelected() * 21);
 
         FiltersBookBtn.setEnabled(true);
         BookManageTagsBtn.setEnabled(true);

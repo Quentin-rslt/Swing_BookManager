@@ -31,8 +31,8 @@ public class ManageTagsDlg extends JDialog {
         fillTagsList();
 
         m_popup = new JPopupMenu();//Create a popup menu to delete a reading an edit this reading
-        JMenuItem cut = new JMenuItem("Supprimer", new ImageIcon(getImageCut()));
-        JMenuItem edit = new JMenuItem("Modifier", new ImageIcon(getImageEdit()));
+        JMenuItem cut = new JMenuItem("Supprimer", new ImageIcon(getLogo("remove.png")));
+        JMenuItem edit = new JMenuItem("Modifier", new ImageIcon(getLogo("edit.png")));
         m_popup.add(cut);
         m_popup.add(edit);
 
@@ -135,8 +135,8 @@ public class ManageTagsDlg extends JDialog {
         fillThemeCB();
 
         m_popup = new JPopupMenu();//Create a popup menu to delete a reading an edit this reading
-        JMenuItem cut = new JMenuItem("Supprimer", new ImageIcon(getImageCut()));
-        JMenuItem edit = new JMenuItem("Modifier", new ImageIcon(getImageEdit()));
+        JMenuItem cut = new JMenuItem("Supprimer", new ImageIcon(getLogo("remove.png")));
+        JMenuItem edit = new JMenuItem("Modifier", new ImageIcon(getLogo("edit.png")));
         m_popup.add(cut);
         m_popup.add(edit);
 
