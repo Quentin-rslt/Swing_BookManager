@@ -10,7 +10,7 @@ import java.util.Objects;
 
 import static Sources.BookManager.CommonBookManager.*;
 import static Sources.BookManager.CommonBookManagerSQL.*;
-import static Sources.BookManager.Dialogs.OpenDialog.openEditTagDlg;
+import static Sources.BookManager.Dialogs.OpenBookManagerDialog.openEditTagDlg;
 
 public class ManageTagsDlg extends JDialog {
     private JPanel contentPane;

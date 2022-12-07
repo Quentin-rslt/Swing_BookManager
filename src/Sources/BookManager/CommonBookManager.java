@@ -24,9 +24,9 @@ import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static Sources.BookManager.CommonBookManagerSQL.*;
-import static Sources.BookManager.Dialogs.OpenDialog.openEditTagDlg;
+import static Sources.BookManager.Dialogs.OpenBookManagerDialog.openEditTagDlg;
 import static Sources.BookManager.BookManager.*;
-import static Sources.MenuBar.*;
+import static Sources.BookManager.MenuBarBookManager.*;
 
 public class CommonBookManager {
     private static final JFileChooser jf= new JFileChooser();

@@ -29,13 +29,13 @@ import static Sources.BookManager.CommonBookManager.*;
 import static Sources.BookManager.CommonBookManager.isItInFilteredBookList;
 import static Sources.BookManager.CommonBookManagerSQL.*;
 import static Sources.BookManager.CommonBookManagerSQL.filtersBook;
-import static Sources.BookManager.Dialogs.OpenDialog.*;
-import static Sources.BookManager.Dialogs.OpenDialog.openManageTagsDlg;
-import static Sources.MenuBar.createMenuBar;
+import static Sources.BookManager.Dialogs.OpenBookManagerDialog.*;
+import static Sources.BookManager.Dialogs.OpenBookManagerDialog.openManageTagsDlg;
+import static Sources.BookManager.MenuBarBookManager.createMenuBar;
 
 public class BookManager {
     private JPanel contentPane;
-    private JTabbedPane BuySentPane;
+    private JPanel BuySellPane;
     private JLabel PersonalNoteLabel;
     private JLabel FirstReadingLabel;
     private JLabel LastReadingLabel;
@@ -849,8 +849,8 @@ public class BookManager {
     public void setContentPanel(JPanel contentPane) {
         this.contentPane = contentPane;
     }
-    public void setBuySentPane(JTabbedPane buySentPane) {
-        BuySentPane = buySentPane;
+    public void setBuySellPane(JPanel buySentPane) {
+        BuySellPane = buySentPane;
     }
     public void setPersonalNoteLabel(JLabel personalNoteLabel) {
         PersonalNoteLabel = personalNoteLabel;
@@ -923,7 +923,7 @@ public class BookManager {
     }
     public void setComponents(MainWindow parent){
         setContentPanel(parent.getContentPanel());
-        setBuySentPane(parent.getBuySentPane());
+        setBuySellPane(parent.getBuySellPane());
         setPersonalNoteLabel(parent.getPersonalNoteLabel());
         setFirstReadingLabel(parent.getFirstReadingLabel());
         setLastReadingLabel(parent.getLastReadingLabel());

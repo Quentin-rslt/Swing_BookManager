@@ -11,7 +11,7 @@ import static Sources.BookManager.CommonBookManagerSQL.*;
 
 public class MainWindow extends JDialog {
     private JPanel contentPane;
-    private JTabbedPane BuySentPane;
+    private JPanel BuySellPane;
     private JLabel PersonalNoteLabel;
     private JLabel FirstReadingLabel;
     private JLabel LastReadingLabel;
@@ -47,8 +47,8 @@ public class MainWindow extends JDialog {
     public JPanel getContentPanel(){
         return this.contentPane;
     }
-    public JTabbedPane getBuySentPane() {
-        return BuySentPane;
+    public JPanel getBuySellPane() {
+        return BuySellPane;
     }
 
     public JLabel getPersonalNoteLabel() {
@@ -196,7 +196,7 @@ public class MainWindow extends JDialog {
         MainWindow parent = new MainWindow();
         parent.setIconImage(getLogo(18, 18));
         parent.setTitle("Book manager");
-        parent.setSize(1500,844);
+        parent.setSize(1520,855);
         parent.setLocationRelativeTo(null);
         parent.setVisible(true);
         System.exit(0);
