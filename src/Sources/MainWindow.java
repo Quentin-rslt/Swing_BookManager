@@ -25,6 +25,7 @@ import static Sources.MenuBar.createMenuBar;
 
 public class MainWindow extends JDialog {
     private JPanel contentPane;
+    private JTabbedPane BuySentPane;
     private JLabel PersonalNoteLabel;
     private JLabel FirstReadingLabel;
     private JLabel LastReadingLabel;
@@ -46,7 +47,7 @@ public class MainWindow extends JDialog {
     private JTextField BookFastSearch;
     private JTable ReadingsTable;
     private JLabel CountBookLbl;
-    private JScrollPane BooksJsPane;
+    private JPanel BooksPane;
     private final DefaultTableModel m_tableBookModel = new DefaultTableModel(){//Create a Jtable with the tablemodel not editable
         public boolean isCellEditable(int rowIndex, int colIndex) {
             return false; //Disallow the editing of any cell
@@ -636,7 +637,6 @@ public class MainWindow extends JDialog {
         m_manageReading.setEndReading(ReadingsTable.getValueAt(getRowReading(), 1).toString());
 
         BooksTable.setRowSelectionInterval(getRowSelected(), getRowSelected());
-//        BooksJsPane.getVerticalScrollBar().setValue(getRowSelected() * 21);
 
         FiltersBookBtn.setEnabled(true);
         BookManageTagsBtn.setEnabled(true);
