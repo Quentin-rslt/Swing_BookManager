@@ -1,6 +1,9 @@
-package Sources;
+package Sources.BookManager;
 
-import Sources.Dialogs.EditTagDlg;
+import Sources.BookManager.Dialogs.EditTagDlg;
+import Sources.RoundBorderCp;
+import Sources.Tag;
+import Sources.Tags;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -20,13 +23,12 @@ import java.sql.*;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static Sources.CommonSQL.*;
-import static Sources.Dialogs.OpenDialog.openEditTagDlg;
-import static Sources.MainWindow.getAuthor;
-import static Sources.MainWindow.getMTitle;
+import static Sources.BookManager.CommonBookManagerSQL.*;
+import static Sources.BookManager.Dialogs.OpenDialog.openEditTagDlg;
+import static Sources.BookManager.BookManager.*;
 import static Sources.MenuBar.*;
 
-public class Common {
+public class CommonBookManager {
     private static final JFileChooser jf= new JFileChooser();
     private static String m_nameImage ="";
     public static void addImageToPanel(String nom,JPanel panel){//Apply to our panel an image with path
@@ -181,7 +183,7 @@ public class Common {
             JOptionPane.showMessageDialog(jf, e.getMessage(), "Rescale image impossible", JOptionPane.ERROR_MESSAGE);
         }
     }
-    public static void isNotInFilteredBookList(MainWindow parent, boolean bookDelete){
+    public static void isNotInFilteredBookList(BookManager parent, boolean bookDelete){
         if(bookDelete) {
             if (parent.getBooksTable().getRowCount() > 0) {
                 if (parent.getRowSelected() > 0) {
@@ -207,7 +209,7 @@ public class Common {
             }
         }
     }
-    public static void isItInFilteredBookList(MainWindow parent, boolean bookDelete){
+    public static void isItInFilteredBookList(BookManager parent, boolean bookDelete){
         if(isInFilteredList(getMTitle(),getAuthor(), parent.getBooksTable())){
             parent.setRowSelected(parent.getRowSelectedByBook(getMTitle(), getAuthor()));
             parent.loadComponents(getMTitle(), getAuthor());//reload changes made to the book
@@ -250,16 +252,16 @@ public class Common {
             });
         }
     }
-    public static void resetApp(MainWindow mainWindow, boolean reset){
-        mainWindow.getJMenuBar().getMenu(0).getItem(0).setEnabled(reset);
+    public static void resetApp(BookManager bookManager, boolean reset){
+        bookManager.getMainWindow().getJMenuBar().getMenu(0).getItem(0).setEnabled(reset);
         getSupprBookMenuItem().setEnabled(reset);
         getSupprReadingMenuItem().setEnabled(reset);
         getEditBookMenuItem().setEnabled(reset);
         getEditReadingMenuItem().setEnabled(reset);
         getAddReadingMenuItem().setEnabled(reset);
         getManageTagsMenuItem().setEnabled(reset);
-        mainWindow.getJMenuBar().getMenu(1).getItem(6).setEnabled(reset);
-        mainWindow.getJMenuBar().getMenu(1).getItem(7).setEnabled(false);
+        bookManager.getMainWindow().getJMenuBar().getMenu(1).getItem(6).setEnabled(reset);
+        bookManager.getMainWindow().getJMenuBar().getMenu(1).getItem(7).setEnabled(false);
     }
 
     public static boolean isInFilteredList(String title, String author, JTable table){

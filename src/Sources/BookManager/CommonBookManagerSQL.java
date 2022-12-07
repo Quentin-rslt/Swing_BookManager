@@ -1,6 +1,7 @@
-package Sources;
+package Sources.BookManager;
 
-import Sources.Dialogs.*;
+import Sources.BookManager.Dialogs.*;
+import Sources.Tags;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
@@ -12,12 +13,11 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
-import static Sources.Common.*;
-import static Sources.MainWindow.getAuthor;
-import static Sources.MainWindow.getMTitle;
+import static Sources.BookManager.CommonBookManager.*;
+import static Sources.BookManager.BookManager.*;
 
-public class CommonSQL {
-    public static void deleteBook(MainWindow parent){
+public class CommonBookManagerSQL {
+    public static void deleteBook(BookManager parent){
         JFrame jFrame = new JFrame();
         int n = JOptionPane.showConfirmDialog(//Open a optionPane to verify if the user really want to delete the book return 0 il they want and 1 if they refuse
                 jFrame,
@@ -48,7 +48,7 @@ public class CommonSQL {
             }
         }
     }
-    public static void addBook(AddBookDlg diag, MainWindow parent){
+    public static void addBook(AddBookDlg diag, BookManager parent){
         if (diag.isValide()){
             String BookQry = "INSERT INTO Book (Title,Author,Image,NumberOP,NotePerso,NoteBabelio,ReleaseYear,Summary) " +
                     "VALUES (?,?,?,?,?,?,?,?);";
@@ -142,7 +142,7 @@ public class CommonSQL {
             }
         }
     }
-    public static void editBook(EditBookDlg diag, MainWindow parent){
+    public static void editBook(EditBookDlg diag, BookManager parent){
         if (diag.isValid()){
             String BookQry = "UPDATE Book SET Title=?, Author=?, Image=?, NumberOP=?, NotePerso=?, NoteBabelio=?, ReleaseYear=?, Summary=?"+
                     "WHERE Title='"+diag.getOldTitle()+"' AND Author='"+diag.getOldAuthor()+"'";//Edit in bdd the book that we want to change
@@ -204,7 +204,7 @@ public class CommonSQL {
             }
         }
     }
-    public static void addReading(AddReading diag, MainWindow parent){
+    public static void addReading(AddReading diag, BookManager parent){
         if (diag.getIsValid()){
             String ReadingQry = "INSERT INTO Reading (ID,Title,Author,StartReading, EndReading) " +
                     "VALUES (?,?,?,?,?);";
@@ -248,7 +248,7 @@ public class CommonSQL {
             }
         }
     }
-    public static void editReading(EditReadingDlg diag, MainWindow parent){
+    public static void editReading(EditReadingDlg diag, BookManager parent){
         if(diag.isValid()){
             String sql = "UPDATE Reading SET StartReading=?, EndReading=?" +
                     "WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"' AND ID='"+parent.getRowReading()+"'";//Edit in bdd the item that we want to change the reading date
@@ -273,7 +273,7 @@ public class CommonSQL {
             }
         }
     }
-    public static void deleteReading(MainWindow parent){
+    public static void deleteReading(BookManager parent){
         String ReadingQry = "DELETE FROM Reading WHERE Title='"+ getMTitle()+"' AND Author='"+getAuthor()+"' AND ID='"+parent.getRowReading()+"'";//Delete in bdd the item that we want delete
         String AvNumQry = "UPDATE Book SET AvReadingTime=?, NumberReading=? WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";
         if(parent.getReadingsTable().getRowCount()>1){//If there is more than one reading you don't need to know if the person really wants to delete the book
@@ -302,7 +302,7 @@ public class CommonSQL {
             deleteBook(parent);
         }
     }
-    public static void filtersBook(FiltersDlg diag, MainWindow parent){
+    public static void filtersBook(FiltersDlg diag, BookManager parent){
         if(diag.getIsValid()) {
             if(parent.isFiltered()){
                 parent.fillBookTable(parent.isFiltered());

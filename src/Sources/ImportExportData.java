@@ -1,5 +1,7 @@
 package Sources;
 
+import Sources.BookManager.BookManager;
+
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -13,8 +15,8 @@ import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static Sources.Common.*;
-import static Sources.CommonSQL.*;
+import static Sources.BookManager.CommonBookManager.*;
+import static Sources.BookManager.CommonBookManagerSQL.*;
 
 public class ImportExportData {
     public static String escapeSpecialCharacters(String data) {
@@ -128,13 +130,13 @@ public class ImportExportData {
         }
         return good;
     }
-    public static int importCSV(MainWindow panel){
+    public static int importCSV(BookManager panel){
         int good = 0;
         JFileChooser jf = new JFileChooser();
         jf.setPreferredSize(new Dimension(850,600));
         jf.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         jf.setDialogTitle("Sélectionnner un dossier");
-        int rVal = jf.showOpenDialog(panel);
+        int rVal = jf.showOpenDialog(panel.getContentPanel());
         if (JFileChooser.APPROVE_OPTION == rVal){ //Opens the file panel to select an image
             String path = jf.getSelectedFile().getPath();
 
@@ -290,7 +292,7 @@ public class ImportExportData {
             throw new RuntimeException(e);
         }
     }
-    public static int importDB(MainWindow panel){
+    public static int importDB(BookManager panel){
         int good = 0;
         JFileChooser jf = new JFileChooser();
         jf.setPreferredSize(new Dimension(850,600));
@@ -299,7 +301,7 @@ public class ImportExportData {
         jf.setDialogTitle("Sélectionnner une database");
         int rVal;
         do {
-            rVal = jf.showOpenDialog(panel);
+            rVal = jf.showOpenDialog(panel.getContentPanel());
             if (JFileChooser.APPROVE_OPTION == rVal) { //Opens the file panel to select an image
                 Path src = Path.of(jf.getSelectedFile().getPath());
                 Path folder = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(), "BookManager");

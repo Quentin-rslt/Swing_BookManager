@@ -1,10 +1,10 @@
-package Sources.Dialogs;
+package Sources.BookManager.Dialogs;
 
-import Sources.MainWindow;
+import Sources.BookManager.BookManager;
 import Sources.Tag;
 
-import static Sources.Common.*;
-import static Sources.MainWindow.getMTitle;
+import static Sources.BookManager.CommonBookManager.*;
+import static Sources.BookManager.BookManager.*;
 
 public class OpenDialog {
     public static AddBookDlg openAddBookDlg(){
@@ -89,7 +89,7 @@ public class OpenDialog {
 
         return diag;
     }
-    public static void openParametersDlg(MainWindow parent){
+    public static void openParametersDlg(BookManager parent){
         ParametersDlg diag = new ParametersDlg(parent);
         diag.setSize(650,505);
         diag.setIconImage(getLogo("param.png"));

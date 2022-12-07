@@ -1,16 +1,16 @@
 package Sources;
 
-import Sources.Dialogs.*;
+import Sources.BookManager.BookManager;
+import Sources.BookManager.Dialogs.*;
 
 import javax.swing.*;
 import java.awt.event.KeyEvent;
 
-import static Sources.Common.*;
-import static Sources.CommonSQL.*;
-import static Sources.Dialogs.OpenDialog.*;
+import static Sources.BookManager.CommonBookManager.*;
+import static Sources.BookManager.CommonBookManagerSQL.*;
+import static Sources.BookManager.Dialogs.OpenDialog.*;
 import static Sources.ImportExportData.*;
-import static Sources.MainWindow.getAuthor;
-import static Sources.MainWindow.getMTitle;
+import static Sources.BookManager.BookManager.*;
 
 public class MenuBar {
     private static JMenuItem addReadingMenuItem;
@@ -19,7 +19,7 @@ public class MenuBar {
     private static JMenuItem editReadingMenuItem;
     private static JMenuItem supprBookMenuItem;
     private static JMenuItem supprReadingMenuItem;
-    public static JMenuBar createMenuBar(MainWindow parent) {
+    public static JMenuBar createMenuBar(BookManager parent) {
         JMenu helpMenu = new JMenu("Aide");
         JMenuItem aboutMenuItem = new JMenuItem("A propos");
         aboutMenuItem.addActionListener(e -> openAboutDlg());
@@ -33,7 +33,7 @@ public class MenuBar {
 
         return menuBar;
     }
-    private static JMenu createFileMenu(MainWindow parent){
+    private static JMenu createFileMenu(BookManager parent){
         //Export menu
         JMenu exportMenu = new JMenu("Exporter");
         JMenuItem exportDBMenuItem = new JMenuItem("Database");
@@ -123,7 +123,7 @@ public class MenuBar {
 
         return fileMenu;
     }
-    public static JMenu createEditMenu(MainWindow parent){
+    public static JMenu createEditMenu(BookManager parent){
         //Add menu
         JMenu addMenu = new JMenu("Ajouter ");
         JMenuItem addBookMenuItem = new JMenuItem("Un livre");

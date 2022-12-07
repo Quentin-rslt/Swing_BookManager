@@ -1,4 +1,4 @@
-package Sources.Dialogs;
+package Sources.BookManager.Dialogs;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -8,9 +8,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 
-import static Sources.CommonSQL.*;
-import static Sources.MainWindow.getAuthor;
-import static Sources.MainWindow.getMTitle;
+import static Sources.BookManager.CommonBookManagerSQL.*;
+import static Sources.BookManager.BookManager.*;
 
 public class AddReading extends JDialog {
     private JPanel contentPane;

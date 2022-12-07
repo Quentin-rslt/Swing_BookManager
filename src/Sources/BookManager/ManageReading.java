@@ -1,14 +1,14 @@
-package Sources;
+package Sources.BookManager;
 
-import Sources.Dialogs.EditReadingDlg;
+import Sources.BookManager.Dialogs.EditReadingDlg;
+
 import javax.swing.*;
 import java.awt.event.*;
 import java.sql.*;
-import static Sources.Common.*;
-import static Sources.CommonSQL.*;
-import static Sources.Dialogs.OpenDialog.openEditReadingDlg;
-import static Sources.MainWindow.getAuthor;
-import static Sources.MainWindow.getMTitle;
+import static Sources.BookManager.CommonBookManager.*;
+import static Sources.BookManager.CommonBookManagerSQL.*;
+import static Sources.BookManager.Dialogs.OpenDialog.openEditReadingDlg;
+import static Sources.BookManager.BookManager.*;
 
 public class ManageReading {
     JTable m_readingsTable;
@@ -18,7 +18,7 @@ public class ManageReading {
     private String m_endReading = "";
     final JPopupMenu m_popup;
 
-    public ManageReading(MainWindow parent, JTable ReadingsTable) {
+    public ManageReading(BookManager parent, JTable ReadingsTable) {
         this.m_readingsTable = ReadingsTable;
         this.m_title = getMTitle();
         this.m_author= getAuthor();

@@ -1,4 +1,4 @@
-package Sources.Dialogs;
+package Sources.BookManager.Dialogs;
 
 import Sources.Tags;
 
@@ -11,8 +11,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 
-import static Sources.Common.*;
-import static Sources.CommonSQL.*;
+import static Sources.BookManager.CommonBookManager.*;
+import static Sources.BookManager.CommonBookManagerSQL.*;
 
 public class FiltersDlg extends JDialog {
     private JPanel contentPane;

@@ -1,4 +1,4 @@
-package Sources.Dialogs;
+package Sources.BookManager.Dialogs;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -10,9 +10,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 
-import static Sources.CommonSQL.connect;
-import static Sources.MainWindow.getAuthor;
-import static Sources.MainWindow.getMTitle;
+import static Sources.BookManager.CommonBookManagerSQL.connect;
+import static Sources.BookManager.BookManager.*;
 
 public class EditReadingDlg extends JDialog {
     private JPanel contentPane;
