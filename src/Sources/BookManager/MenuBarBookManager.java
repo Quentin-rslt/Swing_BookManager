@@ -1,6 +1,7 @@
 package Sources.BookManager;
 
 import Sources.BookManager.Dialogs.*;
+import Sources.MainWindow;
 
 import javax.swing.*;
 import java.awt.event.KeyEvent;
@@ -20,7 +21,7 @@ public class MenuBarBookManager {
     private static JMenuItem editReadingMenuItem;
     private static JMenuItem supprBookMenuItem;
     private static JMenuItem supprReadingMenuItem;
-    public static JMenuBar createMenuBar(BookManager parent) {
+    public static JMenuBar createMenuBar(MainWindow parent) {
         JMenu helpMenu = new JMenu("Aide");
         JMenuItem aboutMenuItem = new JMenuItem("A propos");
         aboutMenuItem.addActionListener(e -> openAboutDlg());
@@ -34,7 +35,7 @@ public class MenuBarBookManager {
 
         return menuBar;
     }
-    private static JMenu createFileMenu(BookManager parent){
+    private static JMenu createFileMenu(MainWindow parent){
         //Export menu
         JMenu exportMenu = new JMenu("Exporter");
         JMenuItem exportDBMenuItem = new JMenuItem("Database");
@@ -64,13 +65,13 @@ public class MenuBarBookManager {
         importDBMenuItem.addActionListener((e -> {
             int good = importDB(parent);
             if(good==1) {
-                parent.setIsFiltered(false);
-                parent.fillBookTable(parent.isFiltered());
-                parent.setMTitle(parent.getBooksTable().getValueAt(0, 0).toString());
-                parent.setAuthor(parent.getBooksTable().getValueAt(0, 1).toString());
-                parent.setRowSelected(0);
-                parent.setRowReading(0);
-                parent.loadComponents(getMTitle(), getAuthor());//reload changes made to the book
+                parent.getM_bookManager().setIsFiltered(false);
+                parent.getM_bookManager().fillBookTable(parent.getM_bookManager().isFiltered());
+                parent.getM_bookManager().setMTitle(parent.getBooksTable().getValueAt(0, 0).toString());
+                parent.getM_bookManager().setAuthor(parent.getBooksTable().getValueAt(0, 1).toString());
+                parent.getM_bookManager().setRowSelected(0);
+                parent.getM_bookManager().setRowReading(0);
+                parent.getM_bookManager().loadComponents(getMTitle(), getAuthor());//reload changes made to the book
                 resetBookManager(parent, true);
                 JFrame jFrame = new JFrame();
                 JOptionPane.showMessageDialog(jFrame, "L'importation des données a été effectué");
@@ -84,11 +85,11 @@ public class MenuBarBookManager {
         importCsvMenuItem.addActionListener((e -> {
             int good = importCSV(parent);
             if(good==1) {
-                parent.setIsFiltered(false);
-                parent.fillBookTable(parent.isFiltered());
-                parent.setMTitle(parent.getBooksTable().getValueAt(0, 0).toString());
-                parent.setAuthor(parent.getBooksTable().getValueAt(0, 1).toString());
-                parent.loadComponents(getMTitle(), getAuthor());//reload changes made to the book
+                parent.getM_bookManager().setIsFiltered(false);
+                parent.getM_bookManager().fillBookTable(parent.getM_bookManager().isFiltered());
+                parent.getM_bookManager().setMTitle(parent.getBooksTable().getValueAt(0, 0).toString());
+                parent.getM_bookManager().setAuthor(parent.getBooksTable().getValueAt(0, 1).toString());
+                parent.getM_bookManager().loadComponents(getMTitle(), getAuthor());//reload changes made to the book
                 parent.getBooksTable().setRowSelectionInterval(0, 0);
                 resetBookManager(parent, true);
                 JFrame jFrame = new JFrame();
@@ -124,7 +125,7 @@ public class MenuBarBookManager {
 
         return fileMenu;
     }
-    public static JMenu createEditMenu(BookManager parent){
+    public static JMenu createEditMenu(MainWindow parent){
         //Add menu
         JMenu addMenu = new JMenu("Ajouter ");
         JMenuItem addBookMenuItem = new JMenuItem("Un livre");
@@ -151,10 +152,10 @@ public class MenuBarBookManager {
         manageAllTagsMenuItem.addActionListener((e->{
             openManageTagsDlg();
             parent.getContentPanel().updateUI();
-            parent.fillBookTable(parent.isFiltered());
+            parent.getM_bookManager().fillBookTable(parent.getM_bookManager().isFiltered());
             isItInFilteredBookList(parent, false);
-            if(parent.isFastSearch()){
-                parent.fastSearchBook(parent.getBookFastSearch().getText());
+            if(parent.getM_bookManager().isFastSearch()){
+                parent.getM_bookManager().fastSearchBook(parent.getBookFastSearch().getText());
             }
         }));
         manageAllTagsMenuItem.setAccelerator(KeyStroke.getKeyStroke(parent.getManageAllTagsKey(), parent.getManageAllTagsModif()));
@@ -163,10 +164,10 @@ public class MenuBarBookManager {
         manageTagsMenuItem.addActionListener((e->{
             openManageTagsDlg(getMTitle(),getAuthor());
             parent.getContentPanel().updateUI();
-            parent.fillBookTable(parent.isFiltered());
+            parent.getM_bookManager().fillBookTable(parent.getM_bookManager().isFiltered());
             isItInFilteredBookList(parent, false);
-            if(parent.isFastSearch()){
-                parent.fastSearchBook(parent.getBookFastSearch().getText());
+            if(parent.getM_bookManager().isFastSearch()){
+                parent.getM_bookManager().fastSearchBook(parent.getBookFastSearch().getText());
             }
         }));
         manageTagsMenuItem.setAccelerator(KeyStroke.getKeyStroke(parent.getManageTagsKey(), parent.getManageTagsModif()));

@@ -131,7 +131,7 @@ public class ImportExportData {
         }
         return good;
     }
-    public static int importCSV(BookManager panel){
+    public static int importCSV(MainWindow panel){
         int good = 0;
         JFileChooser jf = new JFileChooser();
         jf.setPreferredSize(new Dimension(850,600));
@@ -293,7 +293,7 @@ public class ImportExportData {
             throw new RuntimeException(e);
         }
     }
-    public static int importDB(BookManager panel){
+    public static int importDB(MainWindow panel){
         int good = 0;
         JFileChooser jf = new JFileChooser();
         jf.setPreferredSize(new Dimension(850,600));

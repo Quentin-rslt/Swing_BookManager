@@ -1,55 +1,57 @@
 package Sources.BookManager;
+import Sources.MainWindow;
+
 import static Sources.BookManager.BookManager.*;
 import static Sources.BookManager.MenuBarBookManager.*;
 import static Sources.Common.isInFilteredList;
 
 public class CommonBookManager {
-    public static void isNotInFilteredBookList(BookManager bookManager, boolean bookDelete){
+    public static void isNotInFilteredBookList(MainWindow parent, boolean bookDelete){
         if(bookDelete) {
-            if (bookManager.getBooksTable().getRowCount() > 0) {
-                if (bookManager.getRowSelected() > 0) {
-                    bookManager.setRowSelected(bookManager.getRowSelected() - 1);
+            if (parent.getBooksTable().getRowCount() > 0) {
+                if (parent.getM_bookManager().getRowSelected() > 0) {
+                    parent.getM_bookManager().setRowSelected(parent.getM_bookManager().getRowSelected() - 1);
                 }
-                bookManager.setRowReading(0);
-                bookManager.setRowSelected(bookManager.getRowSelected());
-                bookManager.setMTitle(bookManager.getBooksTable().getValueAt(bookManager.getRowSelected(), 0).toString());
-                bookManager.setAuthor(bookManager.getBooksTable().getValueAt(bookManager.getRowSelected(), 1).toString());
-                bookManager.loadComponents(getMTitle(), getAuthor());//reload changes made to the book
+                parent.getM_bookManager().setRowReading(0);
+                parent.getM_bookManager().setRowSelected(parent.getM_bookManager().getRowSelected());
+                parent.getM_bookManager().setMTitle(parent.getBooksTable().getValueAt(parent.getM_bookManager().getRowSelected(), 0).toString());
+                parent.getM_bookManager().setAuthor(parent.getBooksTable().getValueAt(parent.getM_bookManager().getRowSelected(), 1).toString());
+                parent.getM_bookManager().loadComponents(getMTitle(), getAuthor());//reload changes made to the book
             } else {
-                bookManager.initComponents();
+                parent.getM_bookManager().initComponents();
             }
         }else {
-            if (bookManager.getBooksTable().getRowCount() > 0) {
-                bookManager.setMTitle(bookManager.getBooksTable().getValueAt(0, 0).toString());
-                bookManager.setAuthor(bookManager.getBooksTable().getValueAt(0, 1).toString());
-                bookManager.setRowSelected(0);
-                bookManager.setRowReading(0);
-                bookManager.loadComponents( getMTitle(), getAuthor());//reload changes made to the book
+            if (parent.getBooksTable().getRowCount() > 0) {
+                parent.getM_bookManager().setMTitle(parent.getBooksTable().getValueAt(0, 0).toString());
+                parent.getM_bookManager().setAuthor(parent.getBooksTable().getValueAt(0, 1).toString());
+                parent.getM_bookManager().setRowSelected(0);
+                parent.getM_bookManager().setRowReading(0);
+                parent.getM_bookManager().loadComponents( getMTitle(), getAuthor());//reload changes made to the book
             } else {
-                bookManager.initComponents();
+                parent.getM_bookManager().initComponents();
             }
         }
     }
-    public static void isItInFilteredBookList(BookManager bookManager, boolean bookDelete){
-        if(isInFilteredList(getMTitle(),getAuthor(), bookManager.getBooksTable())){
-            bookManager.setRowSelected(bookManager.getRowSelectedByBook(getMTitle(), getAuthor()));
-            bookManager.loadComponents(getMTitle(), getAuthor());//reload changes made to the book
+    public static void isItInFilteredBookList(MainWindow parent, boolean bookDelete){
+        if(isInFilteredList(getMTitle(),getAuthor(), parent.getBooksTable())){
+            parent.getM_bookManager().setRowSelected(parent.getM_bookManager().getRowSelectedByBook(getMTitle(), getAuthor()));
+            parent.getM_bookManager().loadComponents(getMTitle(), getAuthor());//reload changes made to the book
         }
         else{
-            isNotInFilteredBookList(bookManager, bookDelete);
+            isNotInFilteredBookList(parent, bookDelete);
         }
     }
 
-    public static void resetBookManager(BookManager bookManager, boolean reset){
-        bookManager.getMainWindow().getJMenuBar().getMenu(0).getItem(0).setEnabled(reset);
+    public static void resetBookManager(MainWindow parent, boolean reset){
+        parent.getM_bookManager().getMainWindow().getJMenuBar().getMenu(0).getItem(0).setEnabled(reset);
         getSupprBookMenuItem().setEnabled(reset);
         getSupprReadingMenuItem().setEnabled(reset);
         getEditBookMenuItem().setEnabled(reset);
         getEditReadingMenuItem().setEnabled(reset);
         getAddReadingMenuItem().setEnabled(reset);
         getManageTagsMenuItem().setEnabled(reset);
-        bookManager.getMainWindow().getJMenuBar().getMenu(1).getItem(6).setEnabled(reset);
-        bookManager.getMainWindow().getJMenuBar().getMenu(1).getItem(7).setEnabled(false);
+        parent.getM_bookManager().getMainWindow().getJMenuBar().getMenu(1).getItem(6).setEnabled(reset);
+        parent.getM_bookManager().getMainWindow().getJMenuBar().getMenu(1).getItem(7).setEnabled(false);
     }
 
 }
