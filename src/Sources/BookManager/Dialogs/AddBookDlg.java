@@ -1,5 +1,6 @@
 package Sources.BookManager.Dialogs;
 
+import Sources.Dialogs.EditTagDlg;
 import Sources.RoundBorderCp;
 import Sources.Tag;
 import Sources.Tags;
@@ -14,9 +15,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 
-import static Sources.BookManager.CommonBookManager.*;
 import static Sources.BookManager.CommonBookManagerSQL.*;
-import static Sources.BookManager.Dialogs.OpenBookManagerDialog.openEditTagDlg;
+import static Sources.Dialogs.OpenDialogs.*;
+import static Sources.Common.*;
+import static Sources.CommonSQL.*;
 
 public class AddBookDlg extends JDialog {
     private JPanel contentPane;
@@ -101,7 +103,7 @@ public class AddBookDlg extends JDialog {
                             bookFind = true;//If you have found a book, you are out of the loop
                         }
                     }
-                    if(getNameOfBook().equals("")){
+                    if(getNameOfImage().equals("")){
                         setNameOfImage("Default.jpg");
                     }
                     if(!bookFind && Objects.equals(getNewBookAuthor(), getNewBookTitle()) && !Objects.equals(getNewBookAuthor(), "")){
@@ -129,7 +131,7 @@ public class AddBookDlg extends JDialog {
                 JOptionPane.showMessageDialog(jFrame, "Veuillez remplir tous les champs !", "Livre saisie invalide", JOptionPane.ERROR_MESSAGE);
             }
         });
-        BookBrowseBtn.addActionListener((ActionEvent e)-> selectImageOfBook(PreviewPhotoPanel));
+        BookBrowseBtn.addActionListener((ActionEvent e)-> selectImage(PreviewPhotoPanel));
         BookTagsCB.getEditor().getEditorComponent().addKeyListener(new java.awt.event.KeyAdapter() {
             @Override
             public void keyReleased(java.awt.event.KeyEvent evt) {
@@ -316,7 +318,7 @@ public class AddBookDlg extends JDialog {
         BookSummaryTextPane.setBorder(roundBrd);
         JsPane.setBorder(null);
 
-        fillThemeCB();
+        fillTagsCB(BookTagsCB);
         fillAuthorCB(BookAuthorCB);
     }
     public void resetComponents(){
@@ -330,13 +332,5 @@ public class AddBookDlg extends JDialog {
         BookStartReadingSpin.setEnabled(true);
         PreviewPhotoPanel.removeAll();
         initComponents();
-    }
-    @SuppressWarnings("unchecked")
-    public void fillThemeCB(){
-        this.BookTagsCB.removeAllItems();
-        this.BookTagsCB.addItem("");
-        for (int i = 0; i<loadTags().getSizeTags(); i++){
-            this.BookTagsCB.addItem(loadTags().getTag(i).getTextTag());
-        }
     }
 }

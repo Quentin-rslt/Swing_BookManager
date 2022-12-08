@@ -11,8 +11,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 
-import static Sources.BookManager.CommonBookManager.*;
+import static Sources.Common.*;
 import static Sources.BookManager.CommonBookManagerSQL.*;
+import static Sources.CommonSQL.loadTags;
 
 public class FiltersDlg extends JDialog {
     private JPanel contentPane;
@@ -394,7 +395,7 @@ public class FiltersDlg extends JDialog {
             ReadDateLabel.setEnabled(false);
 
             fillSortCB();
-            fillTagsCB();
+            fillTagsCB(FiltersTagCB);
         }catch (Exception e){
             System.out.println(e.getMessage());
             JFrame jf = new JFrame();
@@ -419,14 +420,6 @@ public class FiltersDlg extends JDialog {
         FiltersSortCB.removeAllItems();
         for (String s : Arrays.asList("Titre", "Auteur", "Année de sortie", "Nombre de page","Nombre de lecture","Temps moyen de lecture", "Note Babelio", "Note personelle", "Date de début de lecture", "Date de fin de lecture")) {
             FiltersSortCB.addItem(s);
-        }
-    }
-    @SuppressWarnings("unchecked")
-    public void fillTagsCB(){
-        FiltersTagCB.removeAllItems();
-        this.FiltersTagCB.addItem("");
-        for (int i = 0; i<loadTags().getSizeTags(); i++){
-            this.FiltersTagCB.addItem(loadTags().getTag(i).getTextTag());
         }
     }
 }

@@ -8,8 +8,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 
-import static Sources.BookManager.CommonBookManagerSQL.*;
 import static Sources.BookManager.BookManager.*;
+import static Sources.CommonSQL.connect;
 
 public class AddReading extends JDialog {
     private JPanel contentPane;

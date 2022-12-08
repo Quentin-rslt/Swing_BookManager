@@ -30,8 +30,10 @@ import static Sources.BookManager.CommonBookManager.isItInFilteredBookList;
 import static Sources.BookManager.CommonBookManagerSQL.*;
 import static Sources.BookManager.CommonBookManagerSQL.filtersBook;
 import static Sources.BookManager.Dialogs.OpenBookManagerDialog.*;
-import static Sources.BookManager.Dialogs.OpenBookManagerDialog.openManageTagsDlg;
 import static Sources.BookManager.MenuBarBookManager.createMenuBar;
+import static Sources.Common.*;
+import static Sources.CommonSQL.connect;
+import static Sources.Dialogs.OpenDialogs.*;
 
 public class BookManager {
     private JPanel contentPane;
@@ -174,7 +176,7 @@ public class BookManager {
             FiltersBookBtn.setEnabled(true);
         }else{
             FiltersBookBtn.setEnabled(false);
-            resetApp(this, false);
+            resetBookManager(this, false);
         }
 
         BooksTable.addMouseListener(new MouseAdapter() {
@@ -719,7 +721,7 @@ public class BookManager {
         contentPane.setBorder(null);
         if(getNumberOfBook() == 0){
             FiltersBookBtn.setEnabled(false);
-            resetApp(this, false);
+            resetBookManager(this, false);
         }
         contentPane.updateUI();
     }

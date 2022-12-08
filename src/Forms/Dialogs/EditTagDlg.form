@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="Sources.BookManager.Dialogs.EditTagDlg">
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="Sources.Dialogs.EditTagDlg">
   <grid id="cbd77" binding="contentPane" layout-manager="BorderLayout" hgap="5" vgap="5">
     <constraints>
       <xy x="48" y="54" width="436" height="297"/>

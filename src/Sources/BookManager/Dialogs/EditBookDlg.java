@@ -1,5 +1,6 @@
 package Sources.BookManager.Dialogs;
 
+import Sources.Dialogs.EditTagDlg;
 import Sources.RoundBorderCp;
 import Sources.Tag;
 import Sources.Tags;
@@ -15,10 +16,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 
-import static Sources.BookManager.CommonBookManager.*;
 import static Sources.BookManager.CommonBookManagerSQL.*;
-import static Sources.BookManager.Dialogs.OpenBookManagerDialog.openEditTagDlg;
+import static Sources.Dialogs.OpenDialogs.*;
 import static Sources.BookManager.BookManager.*;
+import static Sources.Common.*;
+import static Sources.CommonSQL.*;
 
 public class EditBookDlg extends JDialog {
     private JPanel contentPane;
@@ -80,7 +82,7 @@ public class EditBookDlg extends JDialog {
             loadDB(getOldTitle(),getOldAuthor());
             initListenerTag(getTags(), m_popup, BookTagsPanel);
         });
-        BookBrowseBtn.addActionListener((ActionEvent e)-> selectImageOfBook(BookPhotoPanel));
+        BookBrowseBtn.addActionListener((ActionEvent e)-> selectImage(BookPhotoPanel));
         BookSummaryTextPane.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
@@ -298,21 +300,13 @@ public class EditBookDlg extends JDialog {
             ResultSet ImageQry = statement.executeQuery("SELECT Image FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
             addImageToPanel(ImageQry.getString(1),BookPhotoPanel);
             setNameOfImage(ImageQry.getString(1));
-            fillThemeCB();
+            fillTagsCB(BookTagsCB);
             conn.close();
             statement.close();
         } catch (SQLException | ParseException e ) {
             System.out.println(e.getMessage());
             JFrame jf = new JFrame();
             JOptionPane.showMessageDialog(jf, e.getMessage(), "Chargement du livre impossible", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-    @SuppressWarnings("unchecked")
-    public void fillThemeCB(){
-        this.BookTagsCB.removeAllItems();
-        this.BookTagsCB.addItem("");
-        for (int i = 0; i<loadTags().getSizeTags(); i++){
-            this.BookTagsCB.addItem(loadTags().getTag(i).getTextTag());
         }
     }
 }

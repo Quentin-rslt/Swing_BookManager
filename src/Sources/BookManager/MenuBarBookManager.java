@@ -8,6 +8,8 @@ import java.awt.event.KeyEvent;
 import static Sources.BookManager.CommonBookManager.*;
 import static Sources.BookManager.CommonBookManagerSQL.*;
 import static Sources.BookManager.Dialogs.OpenBookManagerDialog.*;
+import static Sources.Common.setNameOfImage;
+import static Sources.Dialogs.OpenDialogs.*;
 import static Sources.ImportExportData.*;
 import static Sources.BookManager.BookManager.*;
 
@@ -69,7 +71,7 @@ public class MenuBarBookManager {
                 parent.setRowSelected(0);
                 parent.setRowReading(0);
                 parent.loadComponents(getMTitle(), getAuthor());//reload changes made to the book
-                resetApp(parent, true);
+                resetBookManager(parent, true);
                 JFrame jFrame = new JFrame();
                 JOptionPane.showMessageDialog(jFrame, "L'importation des données a été effectué");
             }else if(good==0){
@@ -88,7 +90,7 @@ public class MenuBarBookManager {
                 parent.setAuthor(parent.getBooksTable().getValueAt(0, 1).toString());
                 parent.loadComponents(getMTitle(), getAuthor());//reload changes made to the book
                 parent.getBooksTable().setRowSelectionInterval(0, 0);
-                resetApp(parent, true);
+                resetBookManager(parent, true);
                 JFrame jFrame = new JFrame();
                 JOptionPane.showMessageDialog(jFrame, "L'importation des données a été effectué");
             }else if(good==0){

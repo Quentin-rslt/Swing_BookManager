@@ -1,4 +1,4 @@
-package Sources.BookManager.Dialogs;
+package Sources.Dialogs;
 
 import Sources.BookManager.BookManager;
 

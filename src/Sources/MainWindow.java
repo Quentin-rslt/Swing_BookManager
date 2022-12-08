@@ -8,6 +8,8 @@ import java.sql.*;
 
 import static Sources.BookManager.CommonBookManager.*;
 import static Sources.BookManager.CommonBookManagerSQL.*;
+import static Sources.Common.getLogo;
+import static Sources.CommonSQL.connect;
 
 public class MainWindow extends JDialog {
     private JPanel contentPane;

@@ -1,4 +1,4 @@
-package Sources.BookManager.Dialogs;
+package Sources.Dialogs;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import static Sources.BookManager.CommonBookManager.getLogo;
+import static Sources.Common.getLogo;
 
 public class AboutDlg extends JDialog {
     private JPanel contentPane;

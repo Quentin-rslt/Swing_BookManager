@@ -5,10 +5,11 @@ import Sources.BookManager.Dialogs.EditReadingDlg;
 import javax.swing.*;
 import java.awt.event.*;
 import java.sql.*;
-import static Sources.BookManager.CommonBookManager.*;
 import static Sources.BookManager.CommonBookManagerSQL.*;
 import static Sources.BookManager.Dialogs.OpenBookManagerDialog.openEditReadingDlg;
 import static Sources.BookManager.BookManager.*;
+import static Sources.Common.getLogo;
+import static Sources.CommonSQL.connect;
 
 public class ManageReading {
     JTable m_readingsTable;

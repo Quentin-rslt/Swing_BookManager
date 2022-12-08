@@ -1,23 +1,19 @@
 package Sources.BookManager;
 
 import Sources.BookManager.Dialogs.*;
-import Sources.Tags;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileSystemView;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
 import static Sources.BookManager.CommonBookManager.*;
 import static Sources.BookManager.BookManager.*;
+import static Sources.Common.*;
+import static Sources.CommonSQL.*;
 
 public class CommonBookManagerSQL {
-    public static void deleteBook(BookManager parent){
+    public static void deleteBook(BookManager bookManager){
         JFrame jFrame = new JFrame();
         int n = JOptionPane.showConfirmDialog(//Open a optionPane to verify if the user really want to delete the book return 0 il they want and 1 if they refuse
                 jFrame,
@@ -36,10 +32,10 @@ public class CommonBookManagerSQL {
                 pstmt.executeUpdate();
                 pstmt2.executeUpdate();
                 taggingPstmt.executeUpdate();
-                parent.fillBookTable(parent.isFiltered());
-                isNotInFilteredBookList(parent, true);
-                if(parent.isFastSearch()){
-                    parent.fastSearchBook(parent.getBookFastSearch().getText());
+                bookManager.fillBookTable(bookManager.isFiltered());
+                isNotInFilteredBookList(bookManager, true);
+                if(bookManager.isFastSearch()){
+                    bookManager.fastSearchBook(bookManager.getBookFastSearch().getText());
                 }
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
@@ -48,7 +44,7 @@ public class CommonBookManagerSQL {
             }
         }
     }
-    public static void addBook(AddBookDlg diag, BookManager parent){
+    public static void addBook(AddBookDlg diag, BookManager bookManager){
         if (diag.isValide()){
             String BookQry = "INSERT INTO Book (Title,Author,Image,NumberOP,NotePerso,NoteBabelio,ReleaseYear,Summary) " +
                     "VALUES (?,?,?,?,?,?,?,?);";
@@ -59,7 +55,7 @@ public class CommonBookManagerSQL {
             String AvNumQry = "UPDATE Book SET AvReadingTime=?, NumberReading=?"+
                     "WHERE Title='"+diag.getNewBookTitle()+"' AND Author='"+diag.getNewBookAuthor()+"'";
 
-            parent.getContentPanel().updateUI();
+            bookManager.getContentPanel().updateUI();
             try (Connection conn = connect(); PreparedStatement BookPstmt = conn.prepareStatement(BookQry); PreparedStatement AvNumPstmt = conn.prepareStatement(AvNumQry);
                  PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry); PreparedStatement TaggingPstmt = conn.prepareStatement(TaggingQry)) {
 
@@ -69,7 +65,7 @@ public class CommonBookManagerSQL {
 
                 BookPstmt.setString(1, diag.getNewBookTitle());
                 BookPstmt.setString(2, diag.getNewBookAuthor());
-                BookPstmt.setString(3, getNameOfBook());
+                BookPstmt.setString(3, getNameOfImage());
                 BookPstmt.setString(4, diag.getNewBookNumberOP());
                 BookPstmt.setString(5, diag.getNewBookPersonalNote());
                 BookPstmt.setString(6, diag.getNewBookBBLNote());
@@ -114,27 +110,27 @@ public class CommonBookManagerSQL {
                     TaggingPstmt.setInt(2, getIdTag(diag.getTags().getTag(i).getTextTag(), diag.getTags().getTag(i).getColor()));
                     TaggingPstmt.executeUpdate();
                 }
-                if(parent.isFiltered() || parent.isFastSearch()) {
-                    if (isInFilteredList(diag.getNewBookTitle(), diag.getNewBookAuthor(), parent.getBooksTable())) {
-                        parent.fillBookTable(parent.isFiltered());
-                        parent.setMTitle(diag.getNewBookTitle());
-                        parent.setAuthor(diag.getNewBookAuthor());
-                        parent.setRowReading(0);
-                        parent.setRowSelected(parent.getRowSelectedByBook(getMTitle(), getAuthor()));
-                        parent.loadComponents(diag.getNewBookTitle(), getAuthor());//reload changes made to the book
+                if(bookManager.isFiltered() || bookManager.isFastSearch()) {
+                    if (isInFilteredList(diag.getNewBookTitle(), diag.getNewBookAuthor(), bookManager.getBooksTable())) {
+                        bookManager.fillBookTable(bookManager.isFiltered());
+                        bookManager.setMTitle(diag.getNewBookTitle());
+                        bookManager.setAuthor(diag.getNewBookAuthor());
+                        bookManager.setRowReading(0);
+                        bookManager.setRowSelected(bookManager.getRowSelectedByBook(getMTitle(), getAuthor()));
+                        bookManager.loadComponents(diag.getNewBookTitle(), getAuthor());//reload changes made to the book
                     } else {
                         JFrame jFrame = new JFrame();
                         JOptionPane.showMessageDialog(jFrame, "Le livre créé ne correspond pas aux critères appliqué", "WARNING", JOptionPane.WARNING_MESSAGE);
                     }
                 }else{
-                    parent.fillBookTable(parent.isFiltered());
-                    parent.setMTitle(diag.getNewBookTitle());
-                    parent.setAuthor(diag.getNewBookAuthor());
-                    parent.setRowReading(0);
-                    parent.setRowSelected(parent.getRowSelectedByBook(getMTitle(), getAuthor()));
-                    parent.loadComponents(getMTitle(), getAuthor());//reload changes made to the book
+                    bookManager.fillBookTable(bookManager.isFiltered());
+                    bookManager.setMTitle(diag.getNewBookTitle());
+                    bookManager.setAuthor(diag.getNewBookAuthor());
+                    bookManager.setRowReading(0);
+                    bookManager.setRowSelected(bookManager.getRowSelectedByBook(getMTitle(), getAuthor()));
+                    bookManager.loadComponents(getMTitle(), getAuthor());//reload changes made to the book
                 }
-                resetApp(parent, true);
+                resetBookManager(bookManager, true);
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
                 JFrame jf = new JFrame();
@@ -142,7 +138,7 @@ public class CommonBookManagerSQL {
             }
         }
     }
-    public static void editBook(EditBookDlg diag, BookManager parent){
+    public static void editBook(EditBookDlg diag, BookManager bookManager){
         if (diag.isValid()){
             String BookQry = "UPDATE Book SET Title=?, Author=?, Image=?, NumberOP=?, NotePerso=?, NoteBabelio=?, ReleaseYear=?, Summary=?"+
                     "WHERE Title='"+diag.getOldTitle()+"' AND Author='"+diag.getOldAuthor()+"'";//Edit in bdd the book that we want to change
@@ -158,7 +154,7 @@ public class CommonBookManagerSQL {
                 ReadingPstmt.setString(2, diag.getNewAuthor());
                 BookPstmt.setString(1, diag.getNewTitle());
                 BookPstmt.setString(2, diag.getNewAuthor());
-                BookPstmt.setString(3, getNameOfBook());
+                BookPstmt.setString(3, getNameOfImage());
                 BookPstmt.setString(4, diag.getNewNumberPage());
                 BookPstmt.setString(5, diag.getNewPersonnalNote());
                 BookPstmt.setString(6, diag.getNewBBLNote());
@@ -188,14 +184,14 @@ public class CommonBookManagerSQL {
                     TaggingPstmt.executeUpdate();
                 }
 
-                parent.getContentPanel().updateUI();
-                parent.fillBookTable(parent.isFiltered());
-                parent.setMTitle(diag.getNewTitle());
-                parent.setAuthor(diag.getNewAuthor());
-                isItInFilteredBookList(parent, false);
+                bookManager.getContentPanel().updateUI();
+                bookManager.fillBookTable(bookManager.isFiltered());
+                bookManager.setMTitle(diag.getNewTitle());
+                bookManager.setAuthor(diag.getNewAuthor());
+                isItInFilteredBookList(bookManager, false);
 
-                if(parent.isFastSearch()){
-                    parent.fastSearchBook(parent.getBookFastSearch().getText());
+                if(bookManager.isFastSearch()){
+                    bookManager.fastSearchBook(bookManager.getBookFastSearch().getText());
                 }
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
@@ -204,13 +200,13 @@ public class CommonBookManagerSQL {
             }
         }
     }
-    public static void addReading(AddReading diag, BookManager parent){
+    public static void addReading(AddReading diag, BookManager bookManager){
         if (diag.getIsValid()){
             String ReadingQry = "INSERT INTO Reading (ID,Title,Author,StartReading, EndReading) " +
                     "VALUES (?,?,?,?,?);";
             String AvNumQry = "UPDATE Book SET AvReadingTime=?, NumberReading=?"+
                     "WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";
-            parent.getContentPanel().updateUI();
+            bookManager.getContentPanel().updateUI();
             try(Connection conn = connect(); PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry); PreparedStatement AvNumPstmt = conn.prepareStatement(AvNumQry)){
                 ReadingPstmt.setInt(1, getIdReading(getMTitle(), getAuthor()));
                 ReadingPstmt.setString(2, getMTitle());
@@ -233,13 +229,13 @@ public class CommonBookManagerSQL {
                 AvNumPstmt.setInt(2, getNumberOfReading(getMTitle(), getAuthor()));
                 AvNumPstmt.executeUpdate();
 
-                parent.setMTitle(getMTitle());
-                parent.setAuthor(getAuthor());
-                parent.fillBookTable(parent.isFiltered());
-                parent.setRowReading(parent.getManageReading().getRowCount());
-                parent.loadComponents(getMTitle(), getAuthor());
-                if(parent.isFastSearch()){
-                    parent.fastSearchBook(parent.getBookFastSearch().getText());
+                bookManager.setMTitle(getMTitle());
+                bookManager.setAuthor(getAuthor());
+                bookManager.fillBookTable(bookManager.isFiltered());
+                bookManager.setRowReading(bookManager.getManageReading().getRowCount());
+                bookManager.loadComponents(getMTitle(), getAuthor());
+                if(bookManager.isFastSearch()){
+                    bookManager.fastSearchBook(bookManager.getBookFastSearch().getText());
                 }
             }catch (SQLException e){
                 System.out.println(e.getMessage());
@@ -248,10 +244,10 @@ public class CommonBookManagerSQL {
             }
         }
     }
-    public static void editReading(EditReadingDlg diag, BookManager parent){
+    public static void editReading(EditReadingDlg diag, BookManager bookManager){
         if(diag.isValid()){
             String sql = "UPDATE Reading SET StartReading=?, EndReading=?" +
-                    "WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"' AND ID='"+parent.getRowReading()+"'";//Edit in bdd the item that we want to change the reading date
+                    "WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"' AND ID='"+bookManager.getRowReading()+"'";//Edit in bdd the item that we want to change the reading date
             String AvNumQry = "UPDATE Book SET AvReadingTime=?, NumberReading=? WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";
             try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql); PreparedStatement AvNumPstmt = conn.prepareStatement(AvNumQry)) {
                 // execute the uptdate statement
@@ -264,8 +260,8 @@ public class CommonBookManagerSQL {
                 AvNumPstmt.executeUpdate();
 
                 //if the book is no longer in the filters then load on the first line
-                parent.fillBookTable(parent.isFiltered());
-                isItInFilteredBookList(parent, false);
+                bookManager.fillBookTable(bookManager.isFiltered());
+                isItInFilteredBookList(bookManager, false);
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
                 JFrame jf = new JFrame();
@@ -273,25 +269,25 @@ public class CommonBookManagerSQL {
             }
         }
     }
-    public static void deleteReading(BookManager parent){
-        String ReadingQry = "DELETE FROM Reading WHERE Title='"+ getMTitle()+"' AND Author='"+getAuthor()+"' AND ID='"+parent.getRowReading()+"'";//Delete in bdd the item that we want delete
+    public static void deleteReading(BookManager bookManager){
+        String ReadingQry = "DELETE FROM Reading WHERE Title='"+ getMTitle()+"' AND Author='"+getAuthor()+"' AND ID='"+bookManager.getRowReading()+"'";//Delete in bdd the item that we want delete
         String AvNumQry = "UPDATE Book SET AvReadingTime=?, NumberReading=? WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";
-        if(parent.getReadingsTable().getRowCount()>1){//If there is more than one reading you don't need to know if the person really wants to delete the book
+        if(bookManager.getReadingsTable().getRowCount()>1){//If there is more than one reading you don't need to know if the person really wants to delete the book
             try (Connection conn = connect(); PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry); PreparedStatement AvNumPstmt = conn.prepareStatement(AvNumQry)) {
                 ReadingPstmt.executeUpdate();
                 AvNumPstmt.setInt(1, averageTime(getMTitle(), getAuthor()));
                 AvNumPstmt.setInt(2, getNumberOfReading(getMTitle(), getAuthor()));
                 AvNumPstmt.executeUpdate();
 
-                parent.getContentPanel().updateUI();
-                if(parent.getRowReading()>0) {
-                    parent.setRowReading(parent.getRowReading() - 1);
+                bookManager.getContentPanel().updateUI();
+                if(bookManager.getRowReading()>0) {
+                    bookManager.setRowReading(bookManager.getRowReading() - 1);
                 }
-                parent.getReadingsTable().setRowSelectionInterval(parent.getRowReading(), parent.getRowReading());
+                bookManager.getReadingsTable().setRowSelectionInterval(bookManager.getRowReading(), bookManager.getRowReading());
                 //load bdd in MainWindow
-                parent.fillBookTable(parent.isFiltered());
-                isItInFilteredBookList(parent, true);
-                parent.getManageReading().resetIdReading(parent.getManageReading().getRowCount());//refresh all ID in the table ReadingDate
+                bookManager.fillBookTable(bookManager.isFiltered());
+                isItInFilteredBookList(bookManager, true);
+                bookManager.getManageReading().resetIdReading(bookManager.getManageReading().getRowCount());//refresh all ID in the table ReadingDate
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
                 JFrame jf = new JFrame();
@@ -299,31 +295,31 @@ public class CommonBookManagerSQL {
             }
         }
         else{
-            deleteBook(parent);
+            deleteBook(bookManager);
         }
     }
-    public static void filtersBook(FiltersDlg diag, BookManager parent){
+    public static void filtersBook(FiltersDlg diag, BookManager bookManager){
         if(diag.getIsValid()) {
-            if(parent.isFiltered()){
-                parent.fillBookTable(parent.isFiltered());
+            if(bookManager.isFiltered()){
+                bookManager.fillBookTable(bookManager.isFiltered());
             }
             else{
-                parent.fillBookTable(diag.getIsValid());
-                parent.setIsFiltered(diag.getIsValid());
+                bookManager.fillBookTable(diag.getIsValid());
+                bookManager.setIsFiltered(diag.getIsValid());
             }
-            isItInFilteredBookList(parent,false);
+            isItInFilteredBookList(bookManager,false);
         }else{
-            if (parent.getBooksTable().getRowCount() > 0) {
-                parent.loadComponents(getMTitle(), getAuthor());
-                parent.getBooksTable().setRowSelectionInterval(parent.getRowSelectedByBook(getMTitle(), getAuthor()), parent.getRowSelectedByBook(getMTitle(), getAuthor()));
-                parent.getReadingsTable().setRowSelectionInterval(parent.getRowReading(),parent.getRowReading());
+            if (bookManager.getBooksTable().getRowCount() > 0) {
+                bookManager.loadComponents(getMTitle(), getAuthor());
+                bookManager.getBooksTable().setRowSelectionInterval(bookManager.getRowSelectedByBook(getMTitle(), getAuthor()), bookManager.getRowSelectedByBook(getMTitle(), getAuthor()));
+                bookManager.getReadingsTable().setRowSelectionInterval(bookManager.getRowReading(),bookManager.getRowReading());
             } else
-                parent.initComponents();
+                bookManager.initComponents();
         }
-        if(parent.isFastSearch()){
-            parent.fastSearchBook(parent.getBookFastSearch().getText());
+        if(bookManager.isFastSearch()){
+            bookManager.fastSearchBook(bookManager.getBookFastSearch().getText());
         }
-        parent.getContentPanel().updateUI();
+        bookManager.getContentPanel().updateUI();
     }
     public static void updateImageToExport(String path){
         String replaceImageQry = "UPDATE Book SET Image=?";
@@ -360,22 +356,7 @@ public class CommonBookManagerSQL {
         }
     }
 
-    public static Connection connect() {
-        Connection connection = null;
-        try {
-            Path folder = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(),"BookManager");
-            Files.createDirectories(folder);
 
-            String url = "jdbc:sqlite:"+folder+"/BookManager.db";
-
-            connection = DriverManager.getConnection(url);
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return connection;
-    }
     public static int getIdReading(String title, String author) {
         int i =0;
         try (Connection conn = connect()) {
@@ -408,22 +389,7 @@ public class CommonBookManagerSQL {
         }
         return i;
     }
-    public static int getIdTag(String tag, int color) {
-        int i =0;
-        try (Connection conn = connect()) {
-            Statement statement = conn.createStatement();
-            ResultSet idBook = statement.executeQuery("SELECT ID FROM Tags WHERE Tag='"+tag+"' AND Color='"+color+ "'");
-            i=idBook.getInt(1);
-            idBook.close();
-            conn.close();
-            statement.close();
-        }catch (Exception e){
-            System.out.println(e.getMessage());
-            JFrame jf = new JFrame();
-            JOptionPane.showMessageDialog(jf, e.getMessage(), "Récupération id tag impossible", JOptionPane.ERROR_MESSAGE);
-        }
-        return i;
-    }
+
     public static String getImageBDD(String title, String author) {
         String name ="";
         try (Connection conn = connect()) {
@@ -440,27 +406,7 @@ public class CommonBookManagerSQL {
         }
         return name;
     }
-    public static Tags loadTags(){
-        Tags tags = new Tags();
-        String sql = "SELECT Tag,Color FROM Tags";
-        try(Connection conn = connect()) {
-            Class.forName("org.sqlite.JDBC");
-            Statement statement = conn.createStatement();
-            ResultSet tagsQry = statement.executeQuery(sql);
-            while (tagsQry.next()){
-                tags.createTag(tagsQry.getString(1));
-                tags.getTag(tags.getSizeTags()-1).setColor(tagsQry.getInt(2));
-            }
-            conn.close();
-            statement.close();
-        }catch (Exception e){
-            System.out.println(e.getMessage());
-            JFrame jf = new JFrame();
-            JOptionPane.showMessageDialog(jf, e.getMessage(), "Récupération tag impossible", JOptionPane.ERROR_MESSAGE);
-        }
 
-        return tags;
-    }
     public static int averageTime(String title, String author) {
         if(title.contains("'")){
             title = title.replace("'","''");

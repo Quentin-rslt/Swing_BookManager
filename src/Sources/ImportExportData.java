@@ -15,8 +15,9 @@ import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static Sources.BookManager.CommonBookManager.*;
 import static Sources.BookManager.CommonBookManagerSQL.*;
+import static Sources.Common.*;
+import static Sources.CommonSQL.connect;
 
 public class ImportExportData {
     public static String escapeSpecialCharacters(String data) {
@@ -35,7 +36,7 @@ public class ImportExportData {
             Date today = new Date();
             SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 
-            Path folder = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(),"BookManager/Saves/CSV/"+formater.format(today));
+            Path folder = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(),"MyManager/Saves/CSV/"+formater.format(today));
             Files.createDirectories(folder);
 
             Statement statement = conn.createStatement();
@@ -281,7 +282,7 @@ public class ImportExportData {
             Connection conn = connect();
             Date today = new Date();
             SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-            Path folder = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(),"BookManager/Saves/Database/");
+            Path folder = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(),"MyManager/Saves/Database/");
             String path = folder+"/"+formater.format(today)+".db";
             Files.createDirectories(folder);
 
@@ -304,10 +305,10 @@ public class ImportExportData {
             rVal = jf.showOpenDialog(panel.getContentPanel());
             if (JFileChooser.APPROVE_OPTION == rVal) { //Opens the file panel to select an image
                 Path src = Path.of(jf.getSelectedFile().getPath());
-                Path folder = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(), "BookManager");
-                Path dest = Paths.get(folder + "/" + "BookManager.db");
+                Path folder = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(), "MyManager");
+                Path dest = Paths.get(folder + "/" + "MyManager.db");
 
-                if (!jf.getSelectedFile().getName().equals("BookManager.db")) {
+                if (!jf.getSelectedFile().getName().equals("MyManager.db")) {
                     if (acceptDB(jf.getSelectedFile())) {
                         good = 1;
                         try {

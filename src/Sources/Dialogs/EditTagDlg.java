@@ -1,4 +1,4 @@
-package Sources.BookManager.Dialogs;
+package Sources.Dialogs;
 
 import Sources.Tag;
 
@@ -9,7 +9,7 @@ import java.awt.event.ActionEvent;
 import java.sql.*;
 import java.util.Objects;
 
-import static Sources.BookManager.CommonBookManagerSQL.*;
+import static Sources.CommonSQL.connect;
 
 public class EditTagDlg extends JDialog {
     private JPanel contentPane;
