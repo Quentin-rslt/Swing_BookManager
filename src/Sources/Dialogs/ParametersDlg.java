@@ -1,6 +1,6 @@
 package Sources.Dialogs;
 
-import Sources.MainWindow;
+import Sources.BookManager.BookManager;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
@@ -48,7 +48,7 @@ public class ParametersDlg extends JDialog {
     private JComboBox ParamDeleteReadKey;
     private final ArrayList<String> listOfshortcuts = new ArrayList<>();
 
-    public ParametersDlg(MainWindow parent) {
+    public ParametersDlg(BookManager parent) {
         setContentPane(contentPane);
         setModal(true);
         initComponents(parent);
@@ -80,7 +80,7 @@ public class ParametersDlg extends JDialog {
                 parent.setResetModif(getParamResetModif());
 
                 save();
-                parent.getM_bookManager().initBinding();
+                parent.initBinding();
                 setVisible(false);
                 dispose();
             }
@@ -360,7 +360,7 @@ public class ParametersDlg extends JDialog {
             throw new RuntimeException(e);
         }
     }
-    public void initCBSelection(MainWindow parent){
+    public void initCBSelection(BookManager parent){
         initCBKeySelection(ParamAddReadingKey, parent.getAddReadingKey());
         initCBModifSelection(ParamAddReadingModif, parent.getAddReadingModif());
 
@@ -394,7 +394,7 @@ public class ParametersDlg extends JDialog {
         initCBKeySelection(ParamResetKey, parent.getResetKey());
         initCBModifSelection(ParamResetModif,parent.getResetModif());
     }
-    public void initComponents(MainWindow parent){
+    public void initComponents(BookManager parent){
         fillParamCBKey();
         fillParamCBModif();
         initCBSelection(parent);

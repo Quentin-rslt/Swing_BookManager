@@ -1,7 +1,6 @@
 package Sources.BookManager;
 
 import Sources.BookManager.Dialogs.*;
-import Sources.MainWindow;
 
 import javax.swing.*;
 import java.sql.*;
@@ -14,7 +13,7 @@ import static Sources.Common.*;
 import static Sources.CommonSQL.*;
 
 public class CommonBookManagerSQL {
-    public static void deleteBook(MainWindow parent){
+    public static void deleteBook(BookManager bookManager){
         JFrame jFrame = new JFrame();
         int n = JOptionPane.showConfirmDialog(//Open a optionPane to verify if the user really want to delete the book return 0 il they want and 1 if they refuse
                 jFrame,
@@ -33,10 +32,10 @@ public class CommonBookManagerSQL {
                 pstmt.executeUpdate();
                 pstmt2.executeUpdate();
                 taggingPstmt.executeUpdate();
-                parent.getM_bookManager().fillBookTable(parent.getM_bookManager().isFiltered());
-                isNotInFilteredBookList(parent, true);
-                if(parent.getM_bookManager().isFastSearch()){
-                    parent.getM_bookManager().fastSearchBook(parent.getBookFastSearch().getText());
+                bookManager.fillBookTable(bookManager.isFiltered());
+                isNotInFilteredBookList(bookManager, true);
+                if(bookManager.isFastSearch()){
+                    bookManager.fastSearchBook(bookManager.getBookFastSearch().getText());
                 }
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
@@ -45,7 +44,7 @@ public class CommonBookManagerSQL {
             }
         }
     }
-    public static void addBook(AddBookDlg diag, MainWindow bookManager){
+    public static void addBook(AddBookDlg diag, BookManager bookManager){
         if (diag.isValide()){
             String BookQry = "INSERT INTO Book (Title,Author,Image,NumberOP,NotePerso,NoteBabelio,ReleaseYear,Summary) " +
                     "VALUES (?,?,?,?,?,?,?,?);";
@@ -111,25 +110,25 @@ public class CommonBookManagerSQL {
                     TaggingPstmt.setInt(2, getIdTag(diag.getTags().getTag(i).getTextTag(), diag.getTags().getTag(i).getColor()));
                     TaggingPstmt.executeUpdate();
                 }
-                if(bookManager.getM_bookManager().isFiltered() || bookManager.getM_bookManager().isFastSearch()) {
+                if(bookManager.isFiltered() || bookManager.isFastSearch()) {
                     if (isInFilteredList(diag.getNewBookTitle(), diag.getNewBookAuthor(), bookManager.getBooksTable())) {
-                        bookManager.getM_bookManager().fillBookTable(bookManager.getM_bookManager().isFiltered());
-                        bookManager.getM_bookManager().setMTitle(diag.getNewBookTitle());
-                        bookManager.getM_bookManager().setAuthor(diag.getNewBookAuthor());
-                        bookManager.getM_bookManager().setRowReading(0);
-                        bookManager.getM_bookManager().setRowSelected(bookManager.getM_bookManager().getRowSelectedByBook(getMTitle(), getAuthor()));
-                        bookManager.getM_bookManager().loadComponents(diag.getNewBookTitle(), getAuthor());//reload changes made to the book
+                        bookManager.fillBookTable(bookManager.isFiltered());
+                        bookManager.setMTitle(diag.getNewBookTitle());
+                        bookManager.setAuthor(diag.getNewBookAuthor());
+                        bookManager.setRowReading(0);
+                        bookManager.setRowSelected(bookManager.getRowSelectedByBook(getMTitle(), getAuthor()));
+                        bookManager.loadComponents(diag.getNewBookTitle(), getAuthor());//reload changes made to the book
                     } else {
                         JFrame jFrame = new JFrame();
                         JOptionPane.showMessageDialog(jFrame, "Le livre créé ne correspond pas aux critères appliqué", "WARNING", JOptionPane.WARNING_MESSAGE);
                     }
                 }else{
-                    bookManager.getM_bookManager().fillBookTable(bookManager.getM_bookManager().isFiltered());
-                    bookManager.getM_bookManager().setMTitle(diag.getNewBookTitle());
-                    bookManager.getM_bookManager().setAuthor(diag.getNewBookAuthor());
-                    bookManager.getM_bookManager().setRowReading(0);
-                    bookManager.getM_bookManager().setRowSelected(bookManager.getM_bookManager().getRowSelectedByBook(getMTitle(), getAuthor()));
-                    bookManager.getM_bookManager().loadComponents(getMTitle(), getAuthor());//reload changes made to the book
+                    bookManager.fillBookTable(bookManager.isFiltered());
+                    bookManager.setMTitle(diag.getNewBookTitle());
+                    bookManager.setAuthor(diag.getNewBookAuthor());
+                    bookManager.setRowReading(0);
+                    bookManager.setRowSelected(bookManager.getRowSelectedByBook(getMTitle(), getAuthor()));
+                    bookManager.loadComponents(getMTitle(), getAuthor());//reload changes made to the book
                 }
                 resetBookManager(bookManager, true);
             } catch (SQLException e) {
@@ -139,7 +138,7 @@ public class CommonBookManagerSQL {
             }
         }
     }
-    public static void editBook(EditBookDlg diag, MainWindow parent){
+    public static void editBook(EditBookDlg diag, BookManager bookManager){
         if (diag.isValid()){
             String BookQry = "UPDATE Book SET Title=?, Author=?, Image=?, NumberOP=?, NotePerso=?, NoteBabelio=?, ReleaseYear=?, Summary=?"+
                     "WHERE Title='"+diag.getOldTitle()+"' AND Author='"+diag.getOldAuthor()+"'";//Edit in bdd the book that we want to change
@@ -185,14 +184,14 @@ public class CommonBookManagerSQL {
                     TaggingPstmt.executeUpdate();
                 }
 
-                parent.getContentPanel().updateUI();
-                parent.getM_bookManager().fillBookTable(parent.getM_bookManager().isFiltered());
-                parent.getM_bookManager().setMTitle(diag.getNewTitle());
-                parent.getM_bookManager().setAuthor(diag.getNewAuthor());
-                isItInFilteredBookList(parent, false);
+                bookManager.getContentPanel().updateUI();
+                bookManager.fillBookTable(bookManager.isFiltered());
+                bookManager.setMTitle(diag.getNewTitle());
+                bookManager.setAuthor(diag.getNewAuthor());
+                isItInFilteredBookList(bookManager, false);
 
-                if(parent.getM_bookManager().isFastSearch()){
-                    parent.getM_bookManager().fastSearchBook(parent.getBookFastSearch().getText());
+                if(bookManager.isFastSearch()){
+                    bookManager.fastSearchBook(bookManager.getBookFastSearch().getText());
                 }
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
@@ -201,13 +200,13 @@ public class CommonBookManagerSQL {
             }
         }
     }
-    public static void addReading(AddReading diag, MainWindow parent){
+    public static void addReading(AddReading diag, BookManager bookManager){
         if (diag.getIsValid()){
             String ReadingQry = "INSERT INTO Reading (ID,Title,Author,StartReading, EndReading) " +
                     "VALUES (?,?,?,?,?);";
             String AvNumQry = "UPDATE Book SET AvReadingTime=?, NumberReading=?"+
                     "WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";
-            parent.getContentPanel().updateUI();
+            bookManager.getContentPanel().updateUI();
             try(Connection conn = connect(); PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry); PreparedStatement AvNumPstmt = conn.prepareStatement(AvNumQry)){
                 ReadingPstmt.setInt(1, getIdReading(getMTitle(), getAuthor()));
                 ReadingPstmt.setString(2, getMTitle());
@@ -230,13 +229,13 @@ public class CommonBookManagerSQL {
                 AvNumPstmt.setInt(2, getNumberOfReading(getMTitle(), getAuthor()));
                 AvNumPstmt.executeUpdate();
 
-                parent.getM_bookManager().setMTitle(getMTitle());
-                parent.getM_bookManager().setAuthor(getAuthor());
-                parent.getM_bookManager().fillBookTable(parent.getM_bookManager().isFiltered());
-                parent.getM_bookManager().setRowReading(parent.getM_bookManager().getManageReading().getRowCount());
-                parent.getM_bookManager().loadComponents(getMTitle(), getAuthor());
-                if(parent.getM_bookManager().isFastSearch()){
-                    parent.getM_bookManager().fastSearchBook(parent.getBookFastSearch().getText());
+                bookManager.setMTitle(getMTitle());
+                bookManager.setAuthor(getAuthor());
+                bookManager.fillBookTable(bookManager.isFiltered());
+                bookManager.setRowReading(bookManager.getManageReading().getRowCount());
+                bookManager.loadComponents(getMTitle(), getAuthor());
+                if(bookManager.isFastSearch()){
+                    bookManager.fastSearchBook(bookManager.getBookFastSearch().getText());
                 }
             }catch (SQLException e){
                 System.out.println(e.getMessage());

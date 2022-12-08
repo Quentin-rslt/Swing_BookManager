@@ -1,13 +1,12 @@
 package Sources.Dialogs;
 
 import Sources.BookManager.BookManager;
-import Sources.MainWindow;
 import Sources.Tag;
 
 import static Sources.Common.getLogo;
 
 public class OpenDialogs {
-    public static void openParametersDlg(MainWindow parent){
+    public static void openParametersDlg(BookManager parent){
         ParametersDlg diag = new ParametersDlg(parent);
         diag.setSize(650,505);
         diag.setIconImage(getLogo("param.png"));
