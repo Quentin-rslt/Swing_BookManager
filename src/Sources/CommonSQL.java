@@ -18,10 +18,8 @@ public class CommonSQL {
             String url = "jdbc:sqlite:"+folder+"/MyManager.db";
 
             connection = DriverManager.getConnection(url);
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (SQLException | IOException e) {
+            throw new RuntimeException(e.getMessage());
         }
         return connection;
     }
@@ -35,9 +33,9 @@ public class CommonSQL {
             conn.close();
             statement.close();
         }catch (Exception e){
-            System.out.println(e.getMessage());
             JFrame jf = new JFrame();
             JOptionPane.showMessageDialog(jf, e.getMessage(), "Récupération id tag impossible", JOptionPane.ERROR_MESSAGE);
+            throw new RuntimeException(e.getMessage());
         }
         return i;
     }
@@ -55,9 +53,9 @@ public class CommonSQL {
             conn.close();
             statement.close();
         }catch (Exception e){
-            System.out.println(e.getMessage());
             JFrame jf = new JFrame();
             JOptionPane.showMessageDialog(jf, e.getMessage(), "Récupération tag impossible", JOptionPane.ERROR_MESSAGE);
+            throw new RuntimeException(e.getMessage());
         }
 
         return tags;

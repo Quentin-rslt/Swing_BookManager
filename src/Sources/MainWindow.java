@@ -1,6 +1,7 @@
 package Sources;
 
 import Sources.BookManager.BookManager;
+import Sources.BuySellManager.Transaction;
 import Themes.DarkTheme.DarkTheme;
 
 import javax.swing.*;
@@ -33,14 +34,16 @@ public class MainWindow extends JDialog {
     private JTextField BookFastSearch;
     private JTable ReadingsTable;
     private JLabel CountBookLbl;
-
     private JPanel BooksPane;
+    private JPanel BuySellPanel;
 
     public MainWindow() {
         setContentPane(contentPane);
         setModal(true);
         connectionDB();
         new BookManager(this);
+        Transaction transaction = new Transaction();
+        BuySellPane.add(transaction.getContentPane());
     }
 
     /****************************** Get ***********************************/
@@ -174,15 +177,34 @@ public class MainWindow extends JDialog {
                     "(IdBook INT, " +
                     " IdTag INT)";
 
+            String TransactionSql = "CREATE TABLE IF NOT EXISTS Transactions" +
+                    "(ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    " IsABuy BOOLEAN, " +
+                    " Name TEXT, " +
+                    " Brand TEXT, " +
+                    " Image TEXT, " +
+                    " ReleaseYear INT, " +
+                    " Date TEXT, " +
+                    " Price INT, " +
+                    " Description TEXT)";
+
+            String LinkTagTransactionSql = "CREATE TABLE IF NOT EXISTS LinkTagTransaction" +
+                    "(IdTransaction INT, " +
+                    " IdTag INT)";
+
             statement.executeUpdate(BookSql);//Create the book table
             statement.executeUpdate(ReadSql);//Create the reading table
             statement.executeUpdate(TagsSql);//Create the tags table
             statement.executeUpdate(TaggingSql);//Create the tagging table
+            statement.executeUpdate(TransactionSql);//Create the Transaction table
+            statement.executeUpdate(LinkTagTransactionSql);//Create the LinkTagTransaction table
 
             conn.close();
             statement.close();
         } catch ( Exception e ) {
             System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+            JFrame jf = new JFrame();
+            JOptionPane.showMessageDialog(jf, e.getMessage(), "Ouverture BDD impossible", JOptionPane.ERROR_MESSAGE);
         }
     }
 

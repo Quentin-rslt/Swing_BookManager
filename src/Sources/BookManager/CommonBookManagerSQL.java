@@ -38,9 +38,9 @@ public class CommonBookManagerSQL {
                     bookManager.fastSearchBook(bookManager.getBookFastSearch().getText());
                 }
             } catch (SQLException e) {
-                System.out.println(e.getMessage());
                 JFrame jf = new JFrame();
                 JOptionPane.showMessageDialog(jf, e.getMessage(), "Suppression impossible", JOptionPane.ERROR_MESSAGE);
+                throw new RuntimeException(e.getMessage());
             }
         }
     }
@@ -132,9 +132,9 @@ public class CommonBookManagerSQL {
                 }
                 resetBookManager(bookManager, true);
             } catch (SQLException e) {
-                System.out.println(e.getMessage());
                 JFrame jf = new JFrame();
                 JOptionPane.showMessageDialog(jf, e.getMessage(), "Ajout impossible", JOptionPane.ERROR_MESSAGE);
+                throw new RuntimeException(e.getMessage());
             }
         }
     }
@@ -194,9 +194,9 @@ public class CommonBookManagerSQL {
                     bookManager.fastSearchBook(bookManager.getBookFastSearch().getText());
                 }
             } catch (SQLException e) {
-                System.out.println(e.getMessage());
                 JFrame jf = new JFrame();
                 JOptionPane.showMessageDialog(jf, e.getMessage(), "Edition impossible", JOptionPane.ERROR_MESSAGE);
+                throw new RuntimeException(e.getMessage());
             }
         }
     }
@@ -238,9 +238,9 @@ public class CommonBookManagerSQL {
                     bookManager.fastSearchBook(bookManager.getBookFastSearch().getText());
                 }
             }catch (SQLException e){
-                System.out.println(e.getMessage());
                 JFrame jf = new JFrame();
                 JOptionPane.showMessageDialog(jf, e.getMessage(), "Ajout impossible", JOptionPane.ERROR_MESSAGE);
+                throw new RuntimeException(e.getMessage());
             }
         }
     }
@@ -263,9 +263,9 @@ public class CommonBookManagerSQL {
                 bookManager.fillBookTable(bookManager.isFiltered());
                 isItInFilteredBookList(bookManager, false);
             } catch (SQLException e) {
-                System.out.println(e.getMessage());
                 JFrame jf = new JFrame();
                 JOptionPane.showMessageDialog(jf, e.getMessage(), "Edtion impossible", JOptionPane.ERROR_MESSAGE);
+                throw new RuntimeException(e.getMessage());
             }
         }
     }
@@ -289,9 +289,9 @@ public class CommonBookManagerSQL {
                 isItInFilteredBookList(bookManager, true);
                 bookManager.getManageReading().resetIdReading(bookManager.getManageReading().getRowCount());//refresh all ID in the table ReadingDate
             } catch (SQLException e) {
-                System.out.println(e.getMessage());
                 JFrame jf = new JFrame();
                 JOptionPane.showMessageDialog(jf, e.getMessage(), "Supression impossible", JOptionPane.ERROR_MESSAGE);
+                throw new RuntimeException(e.getMessage());
             }
         }
         else{
@@ -331,9 +331,9 @@ public class CommonBookManagerSQL {
             replaceImagePstmt.setString(1, "Default.jpg");
             replaceImagePstmt.executeUpdate();
         }catch (SQLException e) {
-            System.out.println(e.getMessage());
             JFrame jf = new JFrame();
             JOptionPane.showMessageDialog(jf, e.getMessage(), "MAJ image impossible", JOptionPane.ERROR_MESSAGE);
+            throw new RuntimeException(e.getMessage());
         }
     }
     @SuppressWarnings("unchecked")
@@ -350,9 +350,9 @@ public class CommonBookManagerSQL {
             conn.close();
             statement.close();
         }catch (Exception e){
-            System.out.println(e.getMessage());
             JFrame jf = new JFrame();
             JOptionPane.showMessageDialog(jf, e.getMessage(), "Remplissage combobox auteur impossible", JOptionPane.ERROR_MESSAGE);
+            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -367,9 +367,9 @@ public class CommonBookManagerSQL {
             conn.close();
             statement.close();
         }catch (Exception e){
-            System.out.println(e.getMessage());
             JFrame jf = new JFrame();
             JOptionPane.showMessageDialog(jf, e.getMessage(), "Récupération id lecture impossible", JOptionPane.ERROR_MESSAGE);
+            throw new RuntimeException(e.getMessage());
         }
         return i;
     }
@@ -383,9 +383,9 @@ public class CommonBookManagerSQL {
             conn.close();
             statement.close();
         }catch (Exception e){
-            System.out.println(e.getMessage());
             JFrame jf = new JFrame();
             JOptionPane.showMessageDialog(jf, e.getMessage(), "Récupération id livre impossible", JOptionPane.ERROR_MESSAGE);
+            throw new RuntimeException(e.getMessage());
         }
         return i;
     }
@@ -400,9 +400,9 @@ public class CommonBookManagerSQL {
             conn.close();
             statement.close();
         }catch (Exception e){
-            System.out.println(e.getMessage());
             JFrame jf = new JFrame();
             JOptionPane.showMessageDialog(jf, e.getMessage(), "Récupération image impossible", JOptionPane.ERROR_MESSAGE);
+            throw new RuntimeException(e.getMessage());
         }
         return name;
     }
@@ -435,9 +435,9 @@ public class CommonBookManagerSQL {
                 }
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
             JFrame jf = new JFrame();
             JOptionPane.showMessageDialog(jf, e.getMessage(), "Temps moyens de lecture impossible", JOptionPane.ERROR_MESSAGE);
+            throw new RuntimeException(e.getMessage());
         }
         return average;
     }
@@ -448,9 +448,9 @@ public class CommonBookManagerSQL {
             ResultSet CountReadingQry = statement.executeQuery("SELECT COUNT(*) FROM Reading WHERE Title='"+title+"' AND Author='"+author+ "'");
             i = CountReadingQry.getInt(1);
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
             JFrame jf = new JFrame();
             JOptionPane.showMessageDialog(jf, e.getMessage(), "Récupération nombre lecture impossible", JOptionPane.ERROR_MESSAGE);
+            throw new RuntimeException(e.getMessage());
         }
         return i;
     }
@@ -461,9 +461,9 @@ public class CommonBookManagerSQL {
             ResultSet CountReadingQry = statement.executeQuery("SELECT COUNT(*) FROM Book");
             i = CountReadingQry.getInt(1);
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
             JFrame jf = new JFrame();
             JOptionPane.showMessageDialog(jf, e.getMessage(), "Récupération nombre livre impossible", JOptionPane.ERROR_MESSAGE);
+            throw new RuntimeException(e.getMessage());
         }
         return i;
     }

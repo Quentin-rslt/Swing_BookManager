@@ -118,9 +118,9 @@ public class EditReadingDlg extends JDialog {
                 connection.close();
                 statement.close();
             }catch (Exception e){
-                System.out.println(e.getMessage());
                 JFrame jf = new JFrame();
                 JOptionPane.showMessageDialog(jf, e.getMessage(), "Validation lecture impossible", JOptionPane.ERROR_MESSAGE);
+                throw new RuntimeException(e.getMessage());
             }
         });
         BookUnknownDateReadingCheckBox.addActionListener((ActionEvent e) ->{
@@ -225,9 +225,9 @@ public class EditReadingDlg extends JDialog {
             JSpinner.DateEditor start = new JSpinner.DateEditor(BookNewStartReadingSpin,"yyyy-MM-dd");//set the display of the JSpinner of release date
             BookNewStartReadingSpin.setEditor(start);
         }catch (Exception e){
-            System.out.println(e.getMessage());
             JFrame jf = new JFrame();
             JOptionPane.showMessageDialog(jf, e.getMessage(), "Chargemment lecture impossible", JOptionPane.ERROR_MESSAGE);
+            throw new RuntimeException(e.getMessage());
         }
     }
 }

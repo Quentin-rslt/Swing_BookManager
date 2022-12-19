@@ -122,9 +122,9 @@ public class ManageReading {
                 InsetrPstmt.executeUpdate();
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
             JFrame jf = new JFrame();
             JOptionPane.showMessageDialog(jf, e.getMessage(), "Remise à zéro id lecture impossible", JOptionPane.ERROR_MESSAGE);
+            throw new RuntimeException(e.getMessage());
         }
 
     }

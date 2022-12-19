@@ -12,8 +12,6 @@ import java.util.Date;
 import java.util.Objects;
 
 import static Sources.Common.*;
-import static Sources.BookManager.CommonBookManagerSQL.*;
-import static Sources.CommonSQL.loadTags;
 
 public class FiltersDlg extends JDialog {
     private JPanel contentPane;
@@ -106,8 +104,6 @@ public class FiltersDlg extends JDialog {
                 NotDoneReadChecbox.setEnabled(true);
                 UnknownReadDateChecbox.setEnabled(true);
                 ReadDateLabel.setEnabled(true);
-                UnknownReadDateChecbox.setSelected(false);
-                NotDoneReadChecbox.setSelected(false);
             }
             else{
                 FiltersFirstStartRSpin.setEnabled(false);
@@ -117,9 +113,9 @@ public class FiltersDlg extends JDialog {
                 NotDoneReadChecbox.setEnabled(false);
                 UnknownReadDateChecbox.setEnabled(false);
                 ReadDateLabel.setEnabled(false);
-                UnknownReadDateChecbox.setSelected(false);
-                NotDoneReadChecbox.setSelected(false);
             }
+            UnknownReadDateChecbox.setSelected(false);
+            NotDoneReadChecbox.setSelected(false);
         });
         FiltersTagCB.getEditor().getEditorComponent().addKeyListener(new java.awt.event.KeyAdapter() {
             @Override
@@ -397,9 +393,9 @@ public class FiltersDlg extends JDialog {
             fillSortCB();
             fillTagsCB(FiltersTagCB);
         }catch (Exception e){
-            System.out.println(e.getMessage());
             JFrame jf = new JFrame();
             JOptionPane.showMessageDialog(jf, e.getMessage(), "Chargement composants impossible", JOptionPane.ERROR_MESSAGE);
+            throw new RuntimeException(e.getMessage());
         }
     }
     public void resetFilters(){
