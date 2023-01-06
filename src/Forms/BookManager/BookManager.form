@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="Sources.BuySellManager.Transaction">
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="Sources.BookManager.BookManager">
   <grid id="cbd77" binding="contentPane" layout-manager="BorderLayout" hgap="0" vgap="0">
     <constraints>
-      <xy x="48" y="54" width="1487" height="674"/>
+      <xy x="48" y="54" width="1468" height="749"/>
     </constraints>
     <properties/>
     <border type="none"/>
     <children>
-      <grid id="24ea2" layout-manager="GridLayoutManager" row-count="3" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="0">
+      <grid id="db896" layout-manager="GridLayoutManager" row-count="4" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="0">
         <margin top="15" left="0" bottom="15" right="15"/>
         <constraints border-constraint="East"/>
         <properties>
@@ -15,7 +15,7 @@
         </properties>
         <border type="none"/>
         <children>
-          <grid id="fd4e6" layout-manager="GridLayoutManager" row-count="2" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+          <grid id="84d3a" layout-manager="GridLayoutManager" row-count="2" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="3"/>
             <constraints>
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -23,7 +23,7 @@
             <properties/>
             <border type="none"/>
             <children>
-              <component id="14e75" class="javax.swing.JLabel">
+              <component id="d6d35" class="javax.swing.JLabel">
                 <constraints>
                   <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -31,7 +31,7 @@
                   <text value="Recherche rapide"/>
                 </properties>
               </component>
-              <component id="2d277" class="javax.swing.JTextField" binding="TransacFastSearchTxtF">
+              <component id="7813b" class="javax.swing.JTextField" binding="BookFastSearch">
                 <constraints>
                   <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="10" fill="1" indent="0" use-parent-layout="false">
                     <preferred-size width="150" height="-1"/>
@@ -39,27 +39,27 @@
                 </constraints>
                 <properties/>
               </component>
-              <component id="6c4b2" class="javax.swing.JLabel" binding="TransacCountLbl">
+              <component id="989a4" class="javax.swing.JLabel" binding="CountBookLbl">
                 <constraints>
                   <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <text value="Transactions : 0"/>
+                  <text value="Livres : 0"/>
                 </properties>
               </component>
             </children>
           </grid>
-          <grid id="3f543" layout-manager="GridLayoutManager" row-count="1" column-count="4" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+          <grid id="44796" layout-manager="GridLayoutManager" row-count="1" column-count="4" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
-              <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+              <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
               <foreground color="-131077"/>
             </properties>
             <border type="none"/>
             <children>
-              <component id="74640" class="javax.swing.JButton" binding="TransacCriteriaBtn">
+              <component id="514b8" class="javax.swing.JButton" binding="FiltersBookBtn">
                 <constraints>
                   <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -71,7 +71,7 @@
                   <verticalAlignment value="0"/>
                 </properties>
               </component>
-              <component id="ca292" class="javax.swing.JButton" binding="TransacCancelCriteriaBtn">
+              <component id="2408f" class="javax.swing.JButton" binding="CancelFiltersBtn">
                 <constraints>
                   <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -84,7 +84,7 @@
                   <verticalAlignment value="0"/>
                 </properties>
               </component>
-              <component id="82d22" class="javax.swing.JButton" binding="TransacManageTagsBtn">
+              <component id="264a4" class="javax.swing.JButton" binding="BookManageTagsBtn">
                 <constraints>
                   <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -93,7 +93,7 @@
                   <text value="Gérer les tags"/>
                 </properties>
               </component>
-              <component id="7a33e" class="javax.swing.JButton" binding="AddTransacBtn">
+              <component id="5f2f1" class="javax.swing.JButton" binding="AddBookBtn">
                 <constraints>
                   <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -105,21 +105,55 @@
                   <margin top="5" left="0" bottom="5" right="0"/>
                   <maximumSize width="115" height="30"/>
                   <minimumSize width="115" height="30"/>
-                  <text value="Ajouter transaction"/>
+                  <text value="Ajouter un livre"/>
                   <verticalAlignment value="0"/>
                 </properties>
               </component>
             </children>
           </grid>
-          <grid id="b62c6" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+          <grid id="c1e32" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="10" right="0"/>
+            <constraints>
+              <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <scrollpane id="396ef">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="3" anchor="2" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <enabled value="false"/>
+                  <focusable value="false"/>
+                  <opaque value="false"/>
+                  <requestFocusEnabled value="false"/>
+                  <verticalScrollBarPolicy value="22"/>
+                </properties>
+                <border type="empty"/>
+                <children>
+                  <component id="8d173" class="javax.swing.JTable" binding="ReadingsTable">
+                    <constraints/>
+                    <properties>
+                      <editingRow value="0"/>
+                      <focusable value="true"/>
+                      <preferredScrollableViewportSize width="470" height="130"/>
+                      <requestFocusEnabled value="false"/>
+                    </properties>
+                  </component>
+                </children>
+              </scrollpane>
+            </children>
+          </grid>
+          <grid id="4914a" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
               <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties/>
             <border type="none"/>
             <children>
-              <scrollpane id="ddeeb" binding="TransacsJSP">
+              <scrollpane id="fae1" binding="BooksJSPane">
                 <constraints>
                   <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="2" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -138,13 +172,13 @@
           </grid>
         </children>
       </grid>
-      <grid id="c1cbb" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+      <grid id="201db" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
         <margin top="15" left="15" bottom="15" right="0"/>
         <constraints border-constraint="Center"/>
         <properties/>
         <border type="none"/>
         <children>
-          <grid id="a795d" layout-manager="BorderLayout" hgap="0" vgap="0">
+          <grid id="57d48" layout-manager="BorderLayout" hgap="0" vgap="0">
             <constraints>
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
                 <minimum-size width="950" height="-1"/>
@@ -154,13 +188,13 @@
             <properties/>
             <border type="none"/>
             <children>
-              <grid id="d1e33" layout-manager="GridLayoutManager" row-count="1" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="5">
+              <grid id="e6eae" layout-manager="GridLayoutManager" row-count="1" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="5">
                 <margin top="0" left="0" bottom="5" right="0"/>
                 <constraints border-constraint="South"/>
                 <properties/>
                 <border type="none"/>
                 <children>
-                  <grid id="a5cf" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                  <grid id="7e88b" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                     <margin top="0" left="0" bottom="0" right="0"/>
                     <constraints>
                       <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -168,35 +202,17 @@
                     <properties/>
                     <border type="none"/>
                     <children>
-                      <component id="44833" class="javax.swing.JLabel" binding="TransacSellLbl">
+                      <component id="a1714" class="javax.swing.JLabel" binding="FirstReadingLabel">
                         <constraints>
                           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false"/>
                         </constraints>
                         <properties>
-                          <text value="Vente total :"/>
+                          <text value="Première lecture : "/>
                         </properties>
                       </component>
                     </children>
                   </grid>
-                  <grid id="954a7" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-                    <margin top="0" left="0" bottom="0" right="0"/>
-                    <constraints>
-                      <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
-                    </constraints>
-                    <properties/>
-                    <border type="none"/>
-                    <children>
-                      <component id="77d51" class="javax.swing.JLabel" binding="TransacSellBuyLbl">
-                        <constraints>
-                          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false"/>
-                        </constraints>
-                        <properties>
-                          <text value="Vetnte/Achat : "/>
-                        </properties>
-                      </component>
-                    </children>
-                  </grid>
-                  <grid id="f3d93" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                  <grid id="af718" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                     <margin top="0" left="0" bottom="0" right="0"/>
                     <constraints>
                       <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -204,19 +220,19 @@
                     <properties/>
                     <border type="none"/>
                     <children>
-                      <component id="225dc" class="javax.swing.JLabel" binding="TransacBuyLbl">
+                      <component id="e5ca6" class="javax.swing.JLabel" binding="LastReadingLabel">
                         <constraints>
                           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false"/>
                         </constraints>
                         <properties>
-                          <text value="Achat total : "/>
+                          <text value="Dernière lecture : "/>
                         </properties>
                       </component>
                     </children>
                   </grid>
                 </children>
               </grid>
-              <grid id="ee92b" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+              <grid id="7bc1d" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                 <margin top="0" left="0" bottom="0" right="0"/>
                 <constraints border-constraint="West"/>
                 <properties>
@@ -225,7 +241,7 @@
                 </properties>
                 <border type="none"/>
                 <children>
-                  <grid id="dc324" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                  <grid id="ab6e5" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                     <margin top="0" left="0" bottom="0" right="0"/>
                     <constraints>
                       <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="1" fill="0" indent="0" use-parent-layout="false"/>
@@ -233,15 +249,15 @@
                     <properties/>
                     <border type="none"/>
                     <children>
-                      <component id="69395" class="javax.swing.JLabel" binding="TransacNameLbl">
+                      <component id="86af2" class="javax.swing.JLabel" binding="TitleLabel">
                         <constraints>
                           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="1" fill="0" indent="0" use-parent-layout="false"/>
                         </constraints>
                         <properties>
-                          <text value="Nom transaction"/>
+                          <text value="Titre livre"/>
                         </properties>
                       </component>
-                      <grid id="1bee8" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                      <grid id="ed52f" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                         <margin top="10" left="0" bottom="0" right="0"/>
                         <constraints>
                           <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -249,7 +265,7 @@
                         <properties/>
                         <border type="none"/>
                         <children>
-                          <grid id="5d624" binding="TransacPhotoPnl" layout-manager="BorderLayout" hgap="0" vgap="0">
+                          <grid id="c10bd" binding="BookPhotoPanel" layout-manager="BorderLayout" hgap="0" vgap="0">
                             <constraints>
                               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                             </constraints>
@@ -263,21 +279,21 @@
                   </grid>
                 </children>
               </grid>
-              <grid id="9d4d9" layout-manager="GridLayoutManager" row-count="2" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="0">
+              <grid id="42e13" layout-manager="GridLayoutManager" row-count="2" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="0">
                 <margin top="0" left="20" bottom="0" right="0"/>
                 <constraints border-constraint="Center"/>
                 <properties/>
                 <border type="none"/>
                 <children>
-                  <grid id="82345" layout-manager="GridLayoutManager" row-count="5" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-                    <margin top="17" left="0" bottom="71" right="0"/>
+                  <grid id="cf056" layout-manager="GridLayoutManager" row-count="7" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                    <margin top="17" left="0" bottom="40" right="0"/>
                     <constraints>
                       <grid row="0" column="0" row-span="1" col-span="2" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties/>
                     <border type="none"/>
                     <children>
-                      <grid id="68ad5" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                      <grid id="7c669" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                         <margin top="0" left="0" bottom="0" right="0"/>
                         <constraints>
                           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -285,7 +301,7 @@
                         <properties/>
                         <border type="none"/>
                         <children>
-                          <component id="47a86" class="javax.swing.JLabel" binding="TransacReleaseLbl">
+                          <component id="d9178" class="javax.swing.JLabel" binding="ReleaseYearLAbel">
                             <constraints>
                               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false"/>
                             </constraints>
@@ -295,7 +311,7 @@
                           </component>
                         </children>
                       </grid>
-                      <grid id="e1641" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                      <grid id="23a92" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                         <margin top="0" left="0" bottom="0" right="0"/>
                         <constraints>
                           <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -303,17 +319,53 @@
                         <properties/>
                         <border type="none"/>
                         <children>
-                          <component id="1a27" class="javax.swing.JLabel" binding="TransacDateLbl">
+                          <component id="d63c2" class="javax.swing.JLabel" binding="NumberPageLabel">
                             <constraints>
                               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false"/>
                             </constraints>
                             <properties>
-                              <text value="Date de la transaction : "/>
+                              <text value="Nombre de page : "/>
                             </properties>
                           </component>
                         </children>
                       </grid>
-                      <grid id="b1c85" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                      <grid id="70c11" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                        <margin top="0" left="0" bottom="0" right="0"/>
+                        <constraints>
+                          <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                        </constraints>
+                        <properties/>
+                        <border type="none"/>
+                        <children>
+                          <component id="5b7ae" class="javax.swing.JLabel" binding="NoteLabel">
+                            <constraints>
+                              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false"/>
+                            </constraints>
+                            <properties>
+                              <text value="Note Babelio : "/>
+                            </properties>
+                          </component>
+                        </children>
+                      </grid>
+                      <grid id="82a14" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                        <margin top="0" left="0" bottom="0" right="0"/>
+                        <constraints>
+                          <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                        </constraints>
+                        <properties/>
+                        <border type="none"/>
+                        <children>
+                          <component id="9a77c" class="javax.swing.JLabel" binding="BookTimeAverageLabel">
+                            <constraints>
+                              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false"/>
+                            </constraints>
+                            <properties>
+                              <text value="Temps moyen de lecture :"/>
+                            </properties>
+                          </component>
+                        </children>
+                      </grid>
+                      <grid id="31ff8" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                         <margin top="0" left="0" bottom="0" right="0"/>
                         <constraints>
                           <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -321,27 +373,27 @@
                         <properties/>
                         <border type="none"/>
                         <children>
-                          <component id="9b611" class="javax.swing.JLabel" binding="TransacPriceLbl">
+                          <component id="87c4a" class="javax.swing.JLabel" binding="CountReadingLabel">
                             <constraints>
                               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false"/>
                             </constraints>
                             <properties>
-                              <text value="Prix de la transaction : "/>
+                              <text value="Nombre de lecture :"/>
                             </properties>
                           </component>
                         </children>
                       </grid>
-                      <grid id="93ef2" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                      <grid id="a0d9f" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                         <margin top="0" left="0" bottom="0" right="20"/>
                         <constraints>
-                          <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                          <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
                             <maximum-size width="-1" height="50"/>
                           </grid>
                         </constraints>
                         <properties/>
                         <border type="none"/>
                         <children>
-                          <grid id="6c2b" layout-manager="BorderLayout" hgap="0" vgap="0">
+                          <grid id="18bce" layout-manager="BorderLayout" hgap="0" vgap="0">
                             <constraints>
                               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
                                 <minimum-size width="-1" height="50"/>
@@ -352,14 +404,14 @@
                             <properties/>
                             <border type="none"/>
                             <children>
-                              <scrollpane id="ac169">
+                              <scrollpane id="38e78">
                                 <constraints border-constraint="Center"/>
                                 <properties>
                                   <preferredSize width="600" height="0"/>
                                 </properties>
                                 <border type="none"/>
                                 <children>
-                                  <grid id="c50d6" binding="BookTagsPanel" layout-manager="FlowLayout" hgap="0" vgap="0" flow-align="0">
+                                  <grid id="41e02" binding="BookTagsPanel" layout-manager="FlowLayout" hgap="0" vgap="0" flow-align="0">
                                     <constraints/>
                                     <properties/>
                                     <border type="none"/>
@@ -371,27 +423,27 @@
                           </grid>
                         </children>
                       </grid>
-                      <grid id="f7107" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                      <grid id="6413f" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                         <margin top="0" left="0" bottom="0" right="0"/>
                         <constraints>
-                          <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                          <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                         </constraints>
                         <properties/>
                         <border type="none"/>
                         <children>
-                          <component id="5bebc" class="javax.swing.JLabel" binding="TransacTypeLbl">
+                          <component id="582c4" class="javax.swing.JLabel" binding="PersonalNoteLabel">
                             <constraints>
                               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false"/>
                             </constraints>
                             <properties>
-                              <text value="Type de la transaction: "/>
+                              <text value="Ma note : "/>
                             </properties>
                           </component>
                         </children>
                       </grid>
                     </children>
                   </grid>
-                  <grid id="fb94d" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                  <grid id="3402e" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                     <margin top="0" left="0" bottom="0" right="0"/>
                     <constraints>
                       <grid row="1" column="0" row-span="1" col-span="2" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -399,25 +451,25 @@
                     <properties/>
                     <border type="none"/>
                     <children>
-                      <grid id="41ec8" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="0" vgap="0">
-                        <margin top="0" left="0" bottom="15" right="0"/>
+                      <grid id="d42a7" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="0">
+                        <margin top="0" left="250" bottom="15" right="0"/>
                         <constraints>
-                          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="2" fill="0" indent="0" use-parent-layout="false"/>
+                          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="10" fill="0" indent="0" use-parent-layout="false"/>
                         </constraints>
                         <properties/>
                         <border type="none"/>
                         <children>
-                          <component id="54f02" class="javax.swing.JLabel">
+                          <component id="f4afa" class="javax.swing.JLabel">
                             <constraints>
-                              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="9" fill="0" indent="0" use-parent-layout="false"/>
+                              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="9" fill="0" indent="1" use-parent-layout="false"/>
                             </constraints>
                             <properties>
-                              <text value="Description :"/>
+                              <text value="Résumé :"/>
                             </properties>
                           </component>
                         </children>
                       </grid>
-                      <scrollpane id="2864" binding="TransacDescriptionJSP">
+                      <scrollpane id="3a79c" binding="JSpane">
                         <constraints>
                           <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false">
                             <preferred-size width="590" height="150"/>
@@ -428,7 +480,7 @@
                         </properties>
                         <border type="none"/>
                         <children>
-                          <component id="70af6" class="javax.swing.JTextPane" binding="TransacDescriptionTxtP">
+                          <component id="5adf8" class="javax.swing.JTextPane" binding="BookSummary">
                             <constraints/>
                             <properties>
                               <editable value="true"/>

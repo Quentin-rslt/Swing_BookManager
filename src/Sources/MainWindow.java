@@ -12,137 +12,21 @@ import static Sources.CommonSQL.connect;
 
 public class MainWindow extends JDialog {
     private JPanel contentPane;
-    private JPanel BuySellPane;
-    private JLabel PersonalNoteLabel;
-    private JLabel FirstReadingLabel;
-    private JLabel LastReadingLabel;
-    private JPanel BookPhotoPanel;
-    private JLabel TitleLabel;
-    private JLabel NumberPageLabel;
-    private JLabel NoteLabel;
-    private JTextPane BookSummary;
-    private JButton AddBookBtn;
-    private JButton FiltersBookBtn;
-    private JButton CancelFiltersBtn;
-    private JLabel CountReadingLabel;
-    private JLabel ReleaseYearLAbel;
-    private JLabel BookTimeAverageLabel;
-    private JPanel BookTagsPanel;
-    private JScrollPane JSpane;
-    private JButton BookManageTagsBtn;
-    private JTable BooksTable;
-    private JTextField BookFastSearch;
-    private JTable ReadingsTable;
-    private JLabel CountBookLbl;
-    private JPanel BooksPane;
-    private JPanel BuySellPanel;
+    private JPanel TransactionsPanel;
+    private JPanel BooksPanel;
 
     public MainWindow() {
         setContentPane(contentPane);
         setModal(true);
         connectionDB();
-        new BookManager(this);
+        //Book panel
+        BookManager booksManager = new BookManager(this);
+        BooksPanel.add(booksManager.getContentPane());
+        //Transaction panel
         Transaction transaction = new Transaction();
-        BuySellPane.add(transaction.getContentPane());
-    }
+        TransactionsPanel.add(transaction.getContentPane());
 
-    /****************************** Get ***********************************/
-    public JPanel getContentPanel(){
-        return this.contentPane;
     }
-    public JPanel getBuySellPane() {
-        return BuySellPane;
-    }
-
-    public JLabel getPersonalNoteLabel() {
-        return PersonalNoteLabel;
-    }
-
-    public JLabel getFirstReadingLabel() {
-        return FirstReadingLabel;
-    }
-
-    public JLabel getLastReadingLabel() {
-        return LastReadingLabel;
-    }
-
-    public JPanel getBookPhotoPanel() {
-        return BookPhotoPanel;
-    }
-
-    public JLabel getTitleLabel() {
-        return TitleLabel;
-    }
-
-    public JLabel getNumberPageLabel() {
-        return NumberPageLabel;
-    }
-
-    public JLabel getNoteLabel() {
-        return NoteLabel;
-    }
-
-    public JTextPane getBookSummary() {
-        return BookSummary;
-    }
-
-    public JButton getAddBookBtn() {
-        return AddBookBtn;
-    }
-
-    public JButton getFiltersBookBtn() {
-        return FiltersBookBtn;
-    }
-
-    public JButton getCancelFiltersBtn() {
-        return CancelFiltersBtn;
-    }
-
-    public JLabel getCountReadingLabel() {
-        return CountReadingLabel;
-    }
-
-    public JLabel getReleaseYearLAbel() {
-        return ReleaseYearLAbel;
-    }
-
-    public JLabel getBookTimeAverageLabel() {
-        return BookTimeAverageLabel;
-    }
-
-    public JPanel getBookTagsPanel() {
-        return BookTagsPanel;
-    }
-
-    public JScrollPane getJSpane() {
-        return JSpane;
-    }
-
-    public JButton getBookManageTagsBtn() {
-        return BookManageTagsBtn;
-    }
-
-    public JTable getBooksTable() {
-        return BooksTable;
-    }
-
-    public JTextField getBookFastSearch() {
-        return BookFastSearch;
-    }
-
-    public JTable getReadingsTable() {
-        return ReadingsTable;
-    }
-
-    public JLabel getCountBookLbl() {
-        return CountBookLbl;
-    }
-
-    public JPanel getBooksPane() {
-        return BooksPane;
-    }
-
-
     public void connectionDB(){
         try (Connection conn = connect()) {
             Class.forName("org.sqlite.JDBC");
@@ -185,7 +69,7 @@ public class MainWindow extends JDialog {
                     " Image TEXT, " +
                     " ReleaseYear INT, " +
                     " Date TEXT, " +
-                    " Price INT, " +
+                    " Price FLOAT, " +
                     " Description TEXT)";
 
             String LinkTagTransactionSql = "CREATE TABLE IF NOT EXISTS LinkTagTransaction" +

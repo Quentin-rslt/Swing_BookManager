@@ -5,6 +5,7 @@ import Sources.BookManager.Dialogs.AddReading;
 import Sources.BookManager.Dialogs.EditBookDlg;
 import Sources.BookManager.Dialogs.FiltersDlg;
 import Sources.MainWindow;
+import Sources.MyManagerTable;
 import Sources.RoundBorderCp;
 import Sources.Tags;
 
@@ -35,9 +36,7 @@ import static Sources.Common.*;
 import static Sources.CommonSQL.connect;
 import static Sources.Dialogs.OpenDialogs.*;
 
-public class BookManager {
-    private JPanel contentPane;
-    private JPanel BuySellPane;
+public class BookManager extends JDialog{
     private JLabel PersonalNoteLabel;
     private JLabel FirstReadingLabel;
     private JLabel LastReadingLabel;
@@ -55,17 +54,11 @@ public class BookManager {
     private JPanel BookTagsPanel;
     private JScrollPane JSpane;
     private JButton BookManageTagsBtn;
-    private JTable BooksTable;
     private JTextField BookFastSearch;
     private JTable ReadingsTable;
     private JLabel CountBookLbl;
-    private JPanel BooksPane;
-
-    private final DefaultTableModel m_tableBookModel = new DefaultTableModel(){//Create a Jtable with the tablemodel not editable
-        public boolean isCellEditable(int rowIndex, int colIndex) {
-            return false; //Disallow the editing of any cell
-        }
-    };
+    private JScrollPane BooksJSPane;
+    private JPanel contentPane;
     private final DefaultTableModel m_tableReadingModel = new DefaultTableModel(){//Create a Jtable with the tablemodel not editable
         public boolean isCellEditable(int rowIndex, int colIndex) {
             return false; //Disallow the editing of any cell
@@ -104,10 +97,14 @@ public class BookManager {
     private int m_manageAllTagsModif;
     private int m_resetModif;
     private final MainWindow m_mainWindow;
+    private final MyManagerTable BooksTable;
 
     public BookManager(MainWindow parent){
+        setContentPane(contentPane);
         m_mainWindow = parent;
-        setComponents(parent);
+
+        BooksTable = new MyManagerTable(500,455,30, 13,1, contentPane.getBackground());
+        BooksJSPane.getViewport().add(BooksTable);
 
         setIsFiltered(false);
         loadParameters();
@@ -120,7 +117,6 @@ public class BookManager {
         contentPane.getRootPane().setDefaultButton(CancelFiltersBtn);
         JSpane.setBorder(null);
 
-        BooksTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         ReadingsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         m_popup = new JPopupMenu();//Create a popup menu to delete a reading an edit this reading
@@ -374,6 +370,8 @@ public class BookManager {
     public int getRowReading() {
         return rowReading;
     }
+    public MainWindow getMainWindow(){return this.m_mainWindow;}
+    public JPanel getContentPanel(){return this.contentPane;}
 
     /****************************** Void ***********************************/
     public void setDiagFilters(FiltersDlg dlg){
@@ -459,7 +457,7 @@ public class BookManager {
     }
 
     public void fillBookTable(boolean isFiltered){
-        m_tableBookModel.setRowCount(0);
+        BooksTable.getTableModel().setRowCount(0);
         CancelFiltersBtn.setEnabled(isFiltered);
         m_mainWindow.getJMenuBar().getMenu(1).getItem(7).setEnabled(isFiltered);
         try(Connection conn = connect()){
@@ -512,23 +510,12 @@ public class BookManager {
                 String author = rs.getString("Author");//Retrieve the author
 
                 String[] header = {"Titre","Auteur"};
-                if(title.contains("''")){
-                    title = title.replace("''","'");
-                }
                 Object[] data = {title, author};
 
-                m_tableBookModel.setColumnIdentifiers(header);//Create the header
-                m_tableBookModel.addRow(data);//add to tablemodel the data
+                BooksTable.getTableModel().setColumnIdentifiers(header);//Create the header
+                BooksTable.getTableModel().addRow(data);//add to tablemodel the data
             }
-            BooksTable.setModel(m_tableBookModel);
-
-            AbstractBorder roundBrdMax = new RoundBorderCp(contentPane.getBackground(),1,30, 0,0,0);
-            AbstractBorder roundBrdMin = new RoundBorderCp(contentPane.getBackground(),1,30, BooksTable.getPreferredScrollableViewportSize().height-(BooksTable.getRowCount()*BooksTable.getRowHeight()),0,0);
-            if(BooksTable.getRowCount()>13)
-                BooksTable.setBorder(roundBrdMax);
-            else
-                BooksTable.setBorder(roundBrdMin);
-
+            BooksTable.initTable();
             if(BooksTable.getRowCount()>0) {
                 BooksTable.getTableHeader().setResizingAllowed(false);
                 BooksTable.getColumnModel().getColumn(0).setPreferredWidth((int) ((BooksTable.getPreferredScrollableViewportSize().width+1) / 1.5));
@@ -539,9 +526,9 @@ public class BookManager {
             conn.close();
             m_statement.close();
         } catch ( Exception e ) {
-            System.out.println(e.getMessage());
             JFrame jf = new JFrame();
             JOptionPane.showMessageDialog(jf, e.getMessage(), "Chargement tableau livre impossible", JOptionPane.ERROR_MESSAGE);
+            throw new RuntimeException(e.getMessage());
         }
     }
     public void fillReadingTable(String title, String author) {
@@ -685,11 +672,7 @@ public class BookManager {
                     findLast =true;
                 }
             }
-            if(getBooksTable().getRowCount()>1) {
-                CountBookLbl.setText("Livres : " + getBooksTable().getRowCount());
-            }else{
-                CountBookLbl.setText("Livre : " + getBooksTable().getRowCount());
-            }
+            CountBookLbl.setText("Livres : " + getBooksTable().getRowCount());
 
             //Image
             ResultSet ImageQry = m_statement.executeQuery("SELECT Image FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
@@ -698,9 +681,9 @@ public class BookManager {
             conn.close();
             m_statement.close();
         } catch ( Exception e ) {
-            System.out.println(e.getMessage());
             JFrame jf = new JFrame();
             JOptionPane.showMessageDialog(jf, e.getMessage(), "Chargement composants impossible", JOptionPane.ERROR_MESSAGE);
+            throw new RuntimeException(e.getMessage());
         }
     }
     public void initComponents(){
@@ -749,7 +732,7 @@ public class BookManager {
             }
             //If no cell in the line corresponds to the search
             if(cellsNotCorrespondingToFilter == getBooksTable().getColumnCount()) {
-                m_tableBookModel.removeRow(row);
+                BooksTable.getTableModel().removeRow(row);
                 BooksTable.updateUI();
                 row--;
             }
@@ -842,111 +825,5 @@ public class BookManager {
             JFrame jf = new JFrame();
             JOptionPane.showMessageDialog(jf, e.getMessage(), "Rechargement shortcut impossible", JOptionPane.ERROR_MESSAGE);
         }
-    }
-
-    /**** Getter and setter for components MainWindow ****/
-    public JPanel getContentPanel() {
-        return contentPane;
-    }
-    public void setContentPanel(JPanel contentPane) {
-        this.contentPane = contentPane;
-    }
-    public void setBuySellPane(JPanel buySentPane) {
-        BuySellPane = buySentPane;
-    }
-    public void setPersonalNoteLabel(JLabel personalNoteLabel) {
-        PersonalNoteLabel = personalNoteLabel;
-    }
-    public void setFirstReadingLabel(JLabel firstReadingLabel) {
-        FirstReadingLabel = firstReadingLabel;
-    }
-    public void setLastReadingLabel(JLabel lastReadingLabel) {
-        LastReadingLabel = lastReadingLabel;
-    }
-    public void setBookPhotoPanel(JPanel bookPhotoPanel) {
-        BookPhotoPanel = bookPhotoPanel;
-    }
-    public void setTitleLabel(JLabel titleLabel) {
-        TitleLabel = titleLabel;
-    }
-    public void setNumberPageLabel(JLabel numberPageLabel) {
-        NumberPageLabel = numberPageLabel;
-    }
-    public void setNoteLabel(JLabel noteLabel) {
-        NoteLabel = noteLabel;
-    }
-    public void setBookSummary(JTextPane bookSummary) {
-        BookSummary = bookSummary;
-    }
-    public void setAddBookBtn(JButton addBookBtn) {
-        AddBookBtn = addBookBtn;
-    }
-    public void setFiltersBookBtn(JButton filtersBookBtn) {
-        FiltersBookBtn = filtersBookBtn;
-    }
-    public void setCancelFiltersBtn(JButton cancelFiltersBtn) {
-        CancelFiltersBtn = cancelFiltersBtn;
-    }
-    public void setCountReadingLabel(JLabel countReadingLabel) {
-        CountReadingLabel = countReadingLabel;
-    }
-    public void setReleaseYearLAbel(JLabel releaseYearLAbel) {
-        ReleaseYearLAbel = releaseYearLAbel;
-    }
-    public void setBookTimeAverageLabel(JLabel bookTimeAverageLabel) {
-        BookTimeAverageLabel = bookTimeAverageLabel;
-    }
-    public void setBookTagsPanel(JPanel bookTagsPanel) {
-        BookTagsPanel = bookTagsPanel;
-    }
-    public void setJSpane(JScrollPane JSpane) {
-        this.JSpane = JSpane;
-    }
-    public void setBookManageTagsBtn(JButton bookManageTagsBtn) {
-        BookManageTagsBtn = bookManageTagsBtn;
-    }
-    public void setBooksTable(JTable booksTable) {
-        BooksTable = booksTable;
-    }
-    public void setBookFastSearch(JTextField bookFastSearch) {
-        BookFastSearch = bookFastSearch;
-    }
-    public void setReadingsTable(JTable readingsTable) {
-        ReadingsTable = readingsTable;
-    }
-    public void setCountBookLbl(JLabel countBookLbl) {
-        CountBookLbl = countBookLbl;
-    }
-    public void setBooksPane(JPanel booksPane) {
-        BooksPane = booksPane;
-    }
-    public MainWindow getMainWindow() {
-        return m_mainWindow;
-    }
-    public void setComponents(MainWindow parent){
-        setContentPanel(parent.getContentPanel());
-        setBuySellPane(parent.getBuySellPane());
-        setPersonalNoteLabel(parent.getPersonalNoteLabel());
-        setFirstReadingLabel(parent.getFirstReadingLabel());
-        setLastReadingLabel(parent.getLastReadingLabel());
-        setBookPhotoPanel(parent.getBookPhotoPanel());
-        setTitleLabel(parent.getTitleLabel());
-        setNumberPageLabel(parent.getNumberPageLabel());
-        setNoteLabel(parent.getNoteLabel());
-        setBookSummary(parent.getBookSummary());
-        setAddBookBtn(parent.getAddBookBtn());
-        setFiltersBookBtn(parent.getFiltersBookBtn());
-        setCancelFiltersBtn(parent.getCancelFiltersBtn());
-        setCountReadingLabel(parent.getCountReadingLabel());
-        setReleaseYearLAbel(parent.getReleaseYearLAbel());
-        setBookTimeAverageLabel(parent.getBookTimeAverageLabel());
-        setBookTagsPanel(parent.getBookTagsPanel());
-        setJSpane(parent.getJSpane());
-        setBookManageTagsBtn(parent.getBookManageTagsBtn());
-        setBooksTable(parent.getBooksTable());
-        setBookFastSearch(parent.getBookFastSearch());
-        setReadingsTable(parent.getReadingsTable());
-        setCountBookLbl(parent.getCountBookLbl());
-        setBooksPane(parent.getBooksPane());
     }
 }
