@@ -262,6 +262,9 @@ public class CommonBookManagerSQL {
                 //if the book is no longer in the filters then load on the first line
                 bookManager.fillBookTable(bookManager.isFiltered());
                 isItInFilteredBookList(bookManager, false);
+                if(bookManager.isFastSearch()){
+                    bookManager.fastSearchBook(bookManager.getBookFastSearch().getText());
+                }
             } catch (SQLException e) {
                 JFrame jf = new JFrame();
                 JOptionPane.showMessageDialog(jf, e.getMessage(), "Edtion impossible", JOptionPane.ERROR_MESSAGE);
@@ -288,6 +291,9 @@ public class CommonBookManagerSQL {
                 bookManager.fillBookTable(bookManager.isFiltered());
                 isItInFilteredBookList(bookManager, true);
                 bookManager.getManageReading().resetIdReading(bookManager.getManageReading().getRowCount());//refresh all ID in the table ReadingDate
+                if(bookManager.isFastSearch()){
+                    bookManager.fastSearchBook(bookManager.getBookFastSearch().getText());
+                }
             } catch (SQLException e) {
                 JFrame jf = new JFrame();
                 JOptionPane.showMessageDialog(jf, e.getMessage(), "Supression impossible", JOptionPane.ERROR_MESSAGE);
