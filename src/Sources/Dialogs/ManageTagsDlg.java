@@ -229,29 +229,30 @@ public class ManageTagsDlg extends JDialog {
             public void keyReleased(java.awt.event.KeyEvent evt) {
             if (!Objects.equals(AddTagCb.getSelectedItem(), "")) {
                 if (evt.getKeyCode()== KeyEvent.VK_ENTER){
+                    int numberTags = TagsPanel.getComponents().length;
                     boolean tagFind = fillPaneTags(getTags(), TagsPanel, AddTagCb,true);
                     if(!tagFind) {
-                        getTags().getTag(getTags().getSizeTags()-1).setBorderColor(contentPane.getBackground());
-                        String TaggingQry = "INSERT INTO Tagging (IdBook,IdTag) " +
-                                "VALUES (?,?);";
-                        try (Connection conn = connect(); PreparedStatement TaggingPstmt = conn.prepareStatement(TaggingQry)) {
+                        if(numberTags<TagsPanel.getComponents().length) {
+                            getTags().getTag(getTags().getSizeTags() - 1).setBorderColor(contentPane.getBackground());
+                            String TaggingQry = "INSERT INTO Tagging (IdBook,IdTag) " +
+                                    "VALUES (?,?);";
+                            try (Connection conn = connect(); PreparedStatement TaggingPstmt = conn.prepareStatement(TaggingQry)) {
+                                String TagsInsertQry = "INSERT INTO Tags (Tag,Color)" +
+                                        " SELECT '" + getTags().getTag(getTags().getSizeTags() - 1).getTextTag() + "', '" + getTags().getTag(getTags().getSizeTags() - 1).getColor() + "'" +
+                                        " WHERE NOT EXISTS(SELECT * FROM Tags WHERE Tag='" + getTags().getTag(getTags().getSizeTags() - 1).getTextTag() + "' AND Color='" + getTags().getTag(getTags().getSizeTags() - 1).getColor() + "')";
+                                PreparedStatement TagsInsertPstmt = conn.prepareStatement(TagsInsertQry);
+                                TagsInsertPstmt.executeUpdate();
 
-
-                            String TagsInsertQry = "INSERT INTO Tags (Tag,Color)" +
-                                    " SELECT '" + getTags().getTag(getTags().getSizeTags() - 1).getTextTag() + "', '" + getTags().getTag(getTags().getSizeTags() - 1).getColor() + "'" +
-                                    " WHERE NOT EXISTS(SELECT * FROM Tags WHERE Tag='" + getTags().getTag(getTags().getSizeTags() - 1).getTextTag() + "' AND Color='" + getTags().getTag(getTags().getSizeTags() - 1).getColor() + "')";
-                            PreparedStatement TagsInsertPstmt = conn.prepareStatement(TagsInsertQry);
-                            TagsInsertPstmt.executeUpdate();
-
-                            TaggingPstmt.setInt(1, getIdBook(title, author));
-                            TaggingPstmt.setInt(2, getIdTag(getTags().getTag(getTags().getSizeTags() - 1).getTextTag(), getTags().getTag(getTags().getSizeTags() - 1).getColor()));
-                            TaggingPstmt.executeUpdate();
-                            m_TagsNumber=m_TagsNumber+1;
-                            //TagsPanel.setPreferredSize(new Dimension(400, (m_TagsNumber)*15));
-                        } catch (SQLException e) {
-                            System.out.println(e.getMessage());
-                            JFrame jf = new JFrame();
-                            JOptionPane.showMessageDialog(jf, e.getMessage(), "Ajout tag impossible", JOptionPane.ERROR_MESSAGE);
+                                TaggingPstmt.setInt(1, getIdBook(title, author));
+                                TaggingPstmt.setInt(2, getIdTag(getTags().getTag(getTags().getSizeTags() - 1).getTextTag(), getTags().getTag(getTags().getSizeTags() - 1).getColor()));
+                                TaggingPstmt.executeUpdate();
+                                m_TagsNumber = m_TagsNumber + 1;
+                                //TagsPanel.setPreferredSize(new Dimension(400, (m_TagsNumber)*15));
+                            } catch (SQLException e) {
+                                System.out.println(e.getMessage());
+                                JFrame jf = new JFrame();
+                                JOptionPane.showMessageDialog(jf, e.getMessage(), "Ajout tag impossible", JOptionPane.ERROR_MESSAGE);
+                            }
                         }
                     }
                 }

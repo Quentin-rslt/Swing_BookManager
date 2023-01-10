@@ -352,7 +352,7 @@ public class Common {
         return isAccept;
     }
     public static String randomNameOfImage(String oldName){
-        String name="";
+        String name;
         try (Connection conn = connect()) {
             boolean find;
             Statement statement = conn.createStatement();
@@ -410,6 +410,29 @@ public class Common {
         jComboBox.addItem("");
         for (int i = 0; i<loadTags().getSizeTags(); i++){
             jComboBox.addItem(loadTags().getTag(i).getTextTag());
+        }
+    }
+    public static void searchItemCB(JComboBox cb){
+        String editorText = cb.getEditor().getItem().toString();
+        int i = 1;
+        boolean itemIsFind = false;
+        while (i < cb.getItemCount() && !itemIsFind) {
+            String itemText = cb.getItemAt(i).toString();
+            StringBuilder testItemText = new StringBuilder();
+
+            if (editorText.length()<itemText.length()) {
+                for(int y = 0; y<editorText.length();y++) {
+                    testItemText.append(itemText.charAt(y));
+                }
+                if (editorText.equals(testItemText.toString())) {
+                    ((JTextField) cb.getEditor().getEditorComponent()).setCaretPosition(testItemText.length());
+                    cb.setSelectedItem(cb.getItemAt(i));
+                    cb.getEditor().setItem(cb.getItemAt(i));
+                    ((JTextField) cb.getEditor().getEditorComponent()).moveCaretPosition(editorText.length());
+                    itemIsFind = true;
+                }
+            }
+            i++;
         }
     }
 }

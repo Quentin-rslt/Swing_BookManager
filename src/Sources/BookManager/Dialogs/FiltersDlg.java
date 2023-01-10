@@ -119,22 +119,18 @@ public class FiltersDlg extends JDialog {
         });
         FiltersTagCB.getEditor().getEditorComponent().addKeyListener(new java.awt.event.KeyAdapter() {
             @Override
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-            if (!Objects.equals(FiltersTagCB.getEditor().getItem().toString(), "")) {
-                if (evt.getKeyCode()== KeyEvent.VK_ENTER){
-                    fillPaneTags(getTags(), FiltersTagsPanel, FiltersTagCB, false);
-                } else{
-                    FiltersTagCB.showPopup();
-                    for (int i=0; i<FiltersTagCB.getItemCount();i++){
-                        if(Objects.equals(FiltersTagCB.getEditor().getItem().toString(), FiltersTagCB.getItemAt(i))){
-                            FiltersTagCB.setSelectedIndex(i);
-                            FiltersTagCB.showPopup();
+            public void keyReleased(KeyEvent evt) {
+                if (!Objects.equals(FiltersTagCB.getEditor().getItem().toString(), "")) {
+                    if (evt.getKeyCode() != KeyEvent.VK_DELETE && evt.getKeyCode() != KeyEvent.VK_BACK_SPACE) {
+                        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+                            fillPaneTags(getTags(), FiltersTagsPanel, FiltersTagCB, false);
+                        } else {
+                            searchItemCB(FiltersTagCB);
                         }
                     }
                 }
-            }
-            initListenerTag(getTags(), m_popup, FiltersTagsPanel);
-            FiltersTagsPanel.updateUI();
+                initListenerTag(getTags(), m_popup, FiltersTagsPanel);
+                FiltersTagsPanel.updateUI();
             }
         });
         FiltersTagCB.getEditor().getEditorComponent().addMouseListener(new MouseAdapter() {
