@@ -1,5 +1,7 @@
 package Sources;
 
+import Sources.Components.Tags;
+
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
 import java.io.IOException;
@@ -10,7 +12,7 @@ import java.sql.*;
 
 public class CommonSQL {
     public static Connection connect() {
-        Connection connection = null;
+        Connection connection;
         try {
             Path folder = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(),"MyManager");
             Files.createDirectories(folder);
@@ -24,7 +26,7 @@ public class CommonSQL {
         return connection;
     }
     public static int getIdTag(String tag, int color) {
-        int i =0;
+        int i;
         try (Connection conn = connect()) {
             Statement statement = conn.createStatement();
             ResultSet idBook = statement.executeQuery("SELECT ID FROM Tags WHERE Tag='"+tag+"' AND Color='"+color+ "'");

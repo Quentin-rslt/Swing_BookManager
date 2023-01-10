@@ -1,9 +1,9 @@
 package Sources.BookManager.Dialogs;
 
 import Sources.Dialogs.EditTagDlg;
-import Sources.RoundBorderCp;
-import Sources.Tag;
-import Sources.Tags;
+import Sources.Components.RoundBorderCp;
+import Sources.Components.Tag;
+import Sources.Components.Tags;
 
 import javax.swing.*;
 import javax.swing.border.AbstractBorder;

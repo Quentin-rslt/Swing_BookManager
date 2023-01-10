@@ -5,9 +5,9 @@ import Sources.BookManager.Dialogs.AddReading;
 import Sources.BookManager.Dialogs.EditBookDlg;
 import Sources.BookManager.Dialogs.FiltersDlg;
 import Sources.MainWindow;
-import Sources.MyManagerTable;
-import Sources.RoundBorderCp;
-import Sources.Tags;
+import Sources.Components.MyManagerTable;
+import Sources.Components.RoundBorderCp;
+import Sources.Components.Tags;
 
 import javax.swing.*;
 import javax.swing.border.AbstractBorder;

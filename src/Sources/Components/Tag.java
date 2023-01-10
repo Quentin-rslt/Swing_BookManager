@@ -1,4 +1,4 @@
-package Sources;
+package Sources.Components;
 
 import javax.swing.*;
 import javax.swing.border.*;

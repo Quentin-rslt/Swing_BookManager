@@ -1,4 +1,4 @@
-package Sources;
+package Sources.Components;
 
 import javax.swing.border.AbstractBorder;
 import java.awt.*;

@@ -1,7 +1,7 @@
 package Sources.Dialogs;
 
 import Sources.BookManager.BookManager;
-import Sources.Tag;
+import Sources.Components.Tag;
 
 import static Sources.Common.getLogo;
 

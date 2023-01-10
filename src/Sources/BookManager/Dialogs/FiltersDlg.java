@@ -1,6 +1,6 @@
 package Sources.BookManager.Dialogs;
 
-import Sources.Tags;
+import Sources.Components.Tags;
 
 import javax.swing.*;
 import java.awt.*;
@@ -129,6 +129,9 @@ public class FiltersDlg extends JDialog {
                         }
                     }
                 }
+                else{
+                    FiltersTagCB.setSelectedIndex(0);
+                }
                 initListenerTag(getTags(), m_popup, FiltersTagsPanel);
                 FiltersTagsPanel.updateUI();
             }
@@ -138,7 +141,6 @@ public class FiltersDlg extends JDialog {
             public void mouseClicked(MouseEvent e) {
             super.mouseClicked(e);
             FiltersTagCB.showPopup();
-            FiltersTagCB.setSelectedIndex(0);
             }
         });
         FiltersTagsPanel.addMouseListener(new MouseAdapter() {

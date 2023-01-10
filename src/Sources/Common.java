@@ -1,5 +1,8 @@
 package Sources;
 
+import Sources.Components.RoundBorderCp;
+import Sources.Components.Tag;
+import Sources.Components.Tags;
 import Sources.Dialogs.EditTagDlg;
 
 import javax.imageio.ImageIO;
@@ -413,6 +416,7 @@ public class Common {
         }
     }
     public static void searchItemCB(JComboBox cb){
+        cb.showPopup();
         String editorText = cb.getEditor().getItem().toString();
         int i = 1;
         boolean itemIsFind = false;

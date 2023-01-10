@@ -1,7 +1,7 @@
 package Sources.BuySellManager;
 
-import Sources.MyManagerTable;
-import Sources.RoundBorderCp;
+import Sources.Components.MyManagerTable;
+import Sources.Components.RoundBorderCp;
 
 import javax.swing.*;
 import javax.swing.border.AbstractBorder;

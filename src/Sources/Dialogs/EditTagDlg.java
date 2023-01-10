@@ -1,6 +1,6 @@
 package Sources.Dialogs;
 
-import Sources.Tag;
+import Sources.Components.Tag;
 
 import javax.swing.*;
 import javax.swing.colorchooser.AbstractColorChooserPanel;
