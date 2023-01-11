@@ -234,6 +234,7 @@ public class ManageTagsDlg extends JDialog {
                         int numberTags = TagsPanel.getComponents().length;
                         boolean tagFind = fillPaneTags(getTags(), TagsPanel, AddTagCb, true);
                         if (!tagFind) {
+                            // if number of tag rise, so we can create the tag, else it's that we've canceled the creation of tag
                             if (numberTags < TagsPanel.getComponents().length) {
                                 getTags().getTag(getTags().getSizeTags() - 1).setBorderColor(contentPane.getBackground());
                                 String TaggingQry = "INSERT INTO Tagging (IdBook,IdTag) " +

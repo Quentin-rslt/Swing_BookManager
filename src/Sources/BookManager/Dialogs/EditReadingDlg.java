@@ -39,10 +39,16 @@ public class EditReadingDlg extends JDialog {
         initComponent();
         ResetBtn.addActionListener((ActionEvent e)-> {
             initComponent();
-            BookUnknownDateReadingCheckBox.setSelected(false);
-            BookNotDoneReadChecbox.setSelected(false);
-            BookNewEndReadingSpin.setEnabled(true);
-            BookNewStartReadingSpin.setEnabled(true);
+            if (isDateReadingUnknown()){
+                BookNotDoneReadChecbox.setSelected(false);
+                BookNewEndReadingSpin.setEnabled(false);
+                BookNewStartReadingSpin.setEnabled(false);
+            }
+            if (isNotDone()){
+                BookUnknownDateReadingCheckBox.setSelected(false);
+                BookNewStartReadingSpin.setEnabled(true);
+                BookNewEndReadingSpin.setEnabled(false);
+            }
             contentPane.updateUI();
         });
         OkBtn.addActionListener((ActionEvent evt) ->{
