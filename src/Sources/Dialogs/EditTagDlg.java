@@ -45,7 +45,7 @@ public class EditTagDlg extends JDialog {
                     JOptionPane.showMessageDialog(jFrame, "Veuillez remplir tous les champs !", "Tag saisie invalide", JOptionPane.ERROR_MESSAGE);
                 }
             }
-            else if(getTag().getTextTag().equals(getNewTextTag())){//if we want to just edit the color of a tag
+            else if(getTag().getTextTag().equalsIgnoreCase(getNewTextTag())){//if we want to just edit the color of a tag
                 setIsUpdate(true);
                 setIsValid(true);
                 setVisible(false);

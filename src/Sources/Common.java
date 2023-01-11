@@ -234,7 +234,7 @@ public class Common {
         boolean tagFind = false;
         int i = 0;
         while(!tagFind && i<tags.getSizeTags()){
-            if(Objects.equals(cb.getSelectedItem(), tags.getTag(i).getTextTag())){
+            if(Objects.equals(Objects.requireNonNull(cb.getSelectedItem()).toString().toLowerCase(), tags.getTag(i).getTextTag().toLowerCase())){
                 JFrame jFrame = new JFrame();
                 JOptionPane.showMessageDialog(jFrame, "Vous avez déjà sélectionné ce tag !");
                 tagFind =true;
@@ -244,7 +244,7 @@ public class Common {
         if(!tagFind){
             boolean isInCB = false;
             for (int j = 0; j < cb.getItemCount(); j++) {
-                if (Objects.requireNonNull(cb.getSelectedItem()).toString().equals(cb.getItemAt(j).toString())) {
+                if (Objects.requireNonNull(cb.getSelectedItem()).toString().equalsIgnoreCase(cb.getItemAt(j).toString())) {
                     isInCB = true;
                 }
             }
@@ -266,7 +266,7 @@ public class Common {
                     }
                 }
             } else {
-                String sql = "SELECT Color FROM Tags WHERE Tag='" + cb.getSelectedItem().toString() + "'";
+                String sql = "SELECT Color FROM Tags WHERE Tag='" + cb.getSelectedItem().toString().toLowerCase() + "'";
                 try (Connection connection = connect()){
                     Statement statement = connection.createStatement();
                     ResultSet tagsQry = statement.executeQuery(sql);
@@ -293,7 +293,7 @@ public class Common {
         boolean tagFind = false;
         int i = 0;
         while(!tagFind && i<tags.getSizeTags()){
-            if(Objects.equals(txt.getText(), tags.getTag(i).getTextTag())){
+            if(Objects.equals(txt.getText().toLowerCase(), tags.getTag(i).getTextTag().toLowerCase())){
                 JFrame jFrame = new JFrame();
                 JOptionPane.showMessageDialog(jFrame, "Vous avez déjà sélectionné ce tag !");
                 tagFind =true;

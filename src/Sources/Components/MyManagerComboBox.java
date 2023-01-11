@@ -9,11 +9,11 @@ public class MyManagerComboBox extends JComboBox {
 
     public void searchItemCB() {
         this.showPopup();
-        String editorText = this.getEditor().getItem().toString();
+        String editorText = this.getEditor().getItem().toString().toLowerCase();
         int i = 1;
         boolean itemIsFind = false;
         while (i < this.getItemCount() && !itemIsFind) {
-            String itemText = this.getItemAt(i).toString();
+            String itemText = this.getItemAt(i).toString().toLowerCase();
             StringBuilder testItemText = new StringBuilder();
 
             if (editorText.length() < itemText.length()) {
