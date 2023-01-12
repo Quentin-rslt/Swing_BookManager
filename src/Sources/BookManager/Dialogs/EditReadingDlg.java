@@ -39,16 +39,6 @@ public class EditReadingDlg extends JDialog {
         initComponent();
         ResetBtn.addActionListener((ActionEvent e)-> {
             initComponent();
-            if (isDateReadingUnknown()){
-                BookNotDoneReadChecbox.setSelected(false);
-                BookNewEndReadingSpin.setEnabled(false);
-                BookNewStartReadingSpin.setEnabled(false);
-            }
-            if (isNotDone()){
-                BookUnknownDateReadingCheckBox.setSelected(false);
-                BookNewStartReadingSpin.setEnabled(true);
-                BookNewEndReadingSpin.setEnabled(false);
-            }
             contentPane.updateUI();
         });
         OkBtn.addActionListener((ActionEvent evt) ->{
@@ -205,14 +195,20 @@ public class EditReadingDlg extends JDialog {
             Date endDate = new Date();
             SpinnerDateModel NewBookEndReadingSpinModel = new SpinnerDateModel();
             if(!getEndReading().equals("Pas fini") && !getEndReading().equals("Inconnu")){//if the end reading is not inconnu or pas fini, init the spinner end date with de old date
-                 NewBookEndReadingSpinModel = new SpinnerDateModel(new SimpleDateFormat("yyyy-MM-dd").parse(getEndReading()) ,null,endDate, Calendar.YEAR);
+                NewBookEndReadingSpinModel = new SpinnerDateModel(new SimpleDateFormat("yyyy-MM-dd").parse(getEndReading()) ,null,endDate, Calendar.YEAR);
+                BookNotDoneReadChecbox.setSelected(false);
+                BookUnknownDateReadingCheckBox.setSelected(false);
+                BookNewEndReadingSpin.setEnabled(true);
+                BookNewStartReadingSpin.setEnabled(true);
             } else if(getEndReading().equals("Pas fini")){
                 BookNotDoneReadChecbox.setSelected(true);
                 BookNewEndReadingSpin.setEnabled(false);
+                BookUnknownDateReadingCheckBox.setSelected(false);
                 NewBookEndReadingSpinModel = new SpinnerDateModel(endDate ,null,endDate, Calendar.YEAR);//Create a spinner date, to correctly select a date
             } else if(getEndReading().equals("Inconnu")){
                 BookNewEndReadingSpin.setEnabled(false);
                 BookNewStartReadingSpin.setEnabled(false);
+                BookNotDoneReadChecbox.setSelected(false);
                 BookUnknownDateReadingCheckBox.setSelected(true);
                 NewBookEndReadingSpinModel = new SpinnerDateModel(endDate ,null,endDate, Calendar.YEAR);//Create a spinner date, to correctly select a date
             }
