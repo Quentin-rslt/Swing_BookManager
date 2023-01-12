@@ -21,7 +21,6 @@ public class MyManagerComboBox extends JComboBox {
                     testItemText.append(itemText.charAt(y));
                 }
                 if (editorText.equals(testItemText.toString())) {
-                    ((JTextField) this.getEditor().getEditorComponent()).setCaretPosition(testItemText.length());
                     this.setSelectedItem(this.getItemAt(i));
                     this.getEditor().setItem(this.getItemAt(i));
                     ((JTextField) this.getEditor().getEditorComponent()).moveCaretPosition(editorText.length());

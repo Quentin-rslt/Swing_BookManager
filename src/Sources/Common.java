@@ -105,6 +105,7 @@ public class Common {
         try {
             for (File file: Objects.requireNonNull(directory.listFiles())) {
                 if (!file.isDirectory()) {
+                    //noinspection ResultOfMethodCallIgnored
                     file.delete();
                 }
             }
@@ -417,11 +418,11 @@ public class Common {
     }
     public static void searchItemCB(JComboBox cb){
         cb.showPopup();
-        String editorText = cb.getEditor().getItem().toString();
+        String editorText = cb.getEditor().getItem().toString().toLowerCase();
         int i = 1;
         boolean itemIsFind = false;
         while (i < cb.getItemCount() && !itemIsFind) {
-            String itemText = cb.getItemAt(i).toString();
+            String itemText = cb.getItemAt(i).toString().toLowerCase();
             StringBuilder testItemText = new StringBuilder();
 
             if (editorText.length()<itemText.length()) {
@@ -429,7 +430,6 @@ public class Common {
                     testItemText.append(itemText.charAt(y));
                 }
                 if (editorText.equals(testItemText.toString())) {
-                    ((JTextField) cb.getEditor().getEditorComponent()).setCaretPosition(testItemText.length());
                     cb.setSelectedItem(cb.getItemAt(i));
                     cb.getEditor().setItem(cb.getItemAt(i));
                     ((JTextField) cb.getEditor().getEditorComponent()).moveCaretPosition(editorText.length());
