@@ -1,5 +1,6 @@
 package Sources.BookManager.Dialogs;
 
+import Sources.Components.MyManagerComboBox;
 import Sources.Dialogs.EditTagDlg;
 import Sources.Components.RoundBorderCp;
 import Sources.Components.Tag;
@@ -34,10 +35,12 @@ public class EditBookDlg extends JDialog {
     private JButton BookOkBtn;
     private JPanel BookPhotoPanel;
     private JScrollPane JsPane;
-    private JComboBox BookTagsCB;
+    private final MyManagerComboBox BookTagsCB = new MyManagerComboBox(true);
     private JPanel BookTagsPanel;
-    private JComboBox BookAuthorCB;
+    private final MyManagerComboBox BookAuthorCB = new MyManagerComboBox(true);
     private JButton ResetBtn;
+    private JPanel BookTagsCbPanel;
+    private JPanel BookAuthorCbPanel;
     private boolean m_isUpdate;
     private String m_oldTitle;
     private String m_oldAuthor;
@@ -102,29 +105,48 @@ public class EditBookDlg extends JDialog {
 
             @Override
             public void keyReleased(java.awt.event.KeyEvent evt) {
-            if (!Objects.equals(BookTagsCB.getSelectedItem(), "")) {
-                if (evt.getKeyCode()== KeyEvent.VK_ENTER){
-                    fillPaneTags(getTags(), BookTagsPanel, BookTagsCB, true);
+                if (!Objects.equals(BookTagsCB.getEditor().getItem().toString(), "")) {
+                    if (evt.getKeyCode() != KeyEvent.VK_DELETE && evt.getKeyCode() != KeyEvent.VK_BACK_SPACE) {
+                        if (evt.getKeyCode()== KeyEvent.VK_ENTER){
+                            fillPaneTags(getTags(), BookTagsPanel, BookTagsCB, true);
+                        }
+                        else{
+                            BookTagsCB.searchItemCB();
+                        }
+                    }
+                }
+                else{
+                    BookTagsCB.setSelectedIndex(0);
+                }
+                initListenerTag(getTags(), m_popup, BookTagsPanel);
+                BookTagsPanel.updateUI();
+            }
+        });
+        BookAuthorCB.getEditor().getEditorComponent().addKeyListener(new java.awt.event.KeyAdapter() {
+            @Override
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+            if (!Objects.equals(BookAuthorCB.getEditor().getItem().toString(), "")) {
+                if (evt.getKeyCode() != KeyEvent.VK_DELETE && evt.getKeyCode() != KeyEvent.VK_BACK_SPACE) {
+                    BookAuthorCB.searchItemCB();
                 }
             }
-                initListenerTag(getTags(), m_popup, BookTagsPanel);
-            BookTagsPanel.updateUI();
+            else{
+                BookAuthorCB.setSelectedIndex(0);
+            }
             }
         });
         BookTagsCB.getEditor().getEditorComponent().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-            super.mouseClicked(e);
-            BookTagsCB.showPopup();
-            BookTagsCB.setSelectedIndex(0);
+                super.mouseClicked(e);
+                BookTagsCB.showPopup();
             }
         });
         BookAuthorCB.getEditor().getEditorComponent().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-            super.mouseClicked(e);
-            BookAuthorCB.showPopup();
-            BookAuthorCB.setSelectedIndex(getRowAuthorCB(getOldAuthor()));
+                super.mouseClicked(e);
+                BookAuthorCB.showPopup();
             }
         });
 
@@ -209,19 +231,6 @@ public class EditBookDlg extends JDialog {
     public boolean getTagIsUpdate() {
         return m_isUpdate;
     }
-    public int getRowAuthorCB(String author){
-        int row = 0;
-
-        while(row<BookAuthorCB.getItemCount()){
-            if(author.equals(BookAuthorCB.getItemAt(row))) {
-                break;
-            }
-            else{
-                row++;
-            }
-        }
-        return row;
-    }
 
     public void setTags(Tags tags){
         this.m_tags = tags;
@@ -241,41 +250,33 @@ public class EditBookDlg extends JDialog {
     public void loadDB(String title, String author){
         fillAuthorCB(BookAuthorCB);
         try(Connection conn = connect()) {
-            Statement statement = conn.createStatement();
+            Statement bookStatement = conn.createStatement();
+            Statement tagsStatement = conn.createStatement();
+            ResultSet bookQry = bookStatement.executeQuery("SELECT * FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
+
             //Title
-            if(title.contains("'")){
-                title= title.replace("'", "''");
-            }
-            if(title.contains("''''")){
-                String newTitle = title.replace("''''", "'");
-                BookTitleTextField.setText(newTitle);
-            }
-            else{
-                BookTitleTextField.setText(title);
-            }
+            BookTitleTextField.setText(title);
+
             //Author
-            ResultSet authorQry = statement.executeQuery("SELECT Author FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
-            BookAuthorCB.setSelectedItem(authorQry.getString(1));
+            BookAuthorCB.setSelectedItem(author);
+
             //Release year
-            ResultSet NumberOPQry = statement.executeQuery("SELECT ReleaseYear FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
             Date dateRelease = new Date();
-            SpinnerDateModel BookReleaseDateSpinModel = new SpinnerDateModel(new SimpleDateFormat("yyyy").parse(NumberOPQry.getString(1)),null,dateRelease,Calendar.YEAR);//Create a spinner date, to correctly select a date
+            SpinnerDateModel BookReleaseDateSpinModel = new SpinnerDateModel(new SimpleDateFormat("yyyy").parse(bookQry.getString(8)),null,dateRelease,Calendar.YEAR);//Create a spinner date, to correctly select a date
             BookReleaseYearSpin.setModel(BookReleaseDateSpinModel);
             JSpinner.DateEditor Year = new JSpinner.DateEditor(BookReleaseYearSpin,"yyyy");//set the display of the JSpinner of release date
             BookReleaseYearSpin.setEditor(Year);
 
             //Number of page
-            ResultSet ReleaseYearQry = statement.executeQuery("SELECT NumberOP FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
-            SpinnerModel BookNumberSM = new SpinnerNumberModel(ReleaseYearQry.getInt(1), 0, 3248, 1);
+            SpinnerModel BookNumberSM = new SpinnerNumberModel(bookQry.getInt(5), 0, 3248, 1);
             BookNumberOPSpin.setModel(BookNumberSM);
 
             //Note on babelio
-            ResultSet NoteBBQry = statement.executeQuery("SELECT NoteBabelio FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
-            SpinnerModel BookNoteBbblSM = new SpinnerNumberModel(NoteBBQry.getDouble(1), 0, 5, 0.01);
+            SpinnerModel BookNoteBbblSM = new SpinnerNumberModel(bookQry.getDouble(7), 0, 5, 0.01);
             BookNoteBblSpin.setModel(BookNoteBbblSM);
 
             //Tags
-            ResultSet tagsQry = statement.executeQuery("SELECT Tag,Color FROM Tags JOIN Tagging on Tags.ID=Tagging.IdTag " +
+            ResultSet tagsQry = tagsStatement.executeQuery("SELECT Tag,Color FROM Tags JOIN Tagging on Tags.ID=Tagging.IdTag " +
                     "WHERE Tagging.IdBook='"+getIdBook(title, author)+"'");
             BookTagsPanel.removeAll();
             while (tagsQry.next()){
@@ -288,22 +289,24 @@ public class EditBookDlg extends JDialog {
             BookTagsPanel.updateUI();
 
             //Personal note
-            ResultSet NotePersoQry = statement.executeQuery("SELECT NotePerso FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
-            SpinnerModel BookPersonalNotelSM = new SpinnerNumberModel(NotePersoQry.getDouble(1), 0, 5, 0.5);//Set a default and max value for spinner Note
+            SpinnerModel BookPersonalNotelSM = new SpinnerNumberModel(bookQry.getDouble(6), 0, 5, 0.5);//Set a default and max value for spinner Note
             BookPersonalNoteSpin.setModel(BookPersonalNotelSM);
 
             //Summary
-            ResultSet SummaryQry = statement.executeQuery("SELECT Summary FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
-            BookSummaryTextPane.setText(SummaryQry.getString(1));
+            BookSummaryTextPane.setText(bookQry.getString(11));
 
             //Image
-            ResultSet ImageQry = statement.executeQuery("SELECT Image FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
-            addImageToPanel(ImageQry.getString(1),BookPhotoPanel);
-            setNameOfImage(ImageQry.getString(1));
+            addImageToPanel(bookQry.getString(4),BookPhotoPanel);
+            setNameOfImage(bookQry.getString(4));
+
+            BookAuthorCbPanel.add(BookAuthorCB);
+            BookTagsCbPanel.add(BookTagsCB);
             fillTagsCB(BookTagsCB);
+
             conn.close();
-            statement.close();
-        } catch (SQLException | ParseException e ) {
+            bookStatement.close();
+            tagsStatement.close();
+        } catch (Exception e ) {
             JFrame jf = new JFrame();
             JOptionPane.showMessageDialog(jf, e.getMessage(), "Chargement du livre impossible", JOptionPane.ERROR_MESSAGE);
             throw new RuntimeException(e.getMessage());

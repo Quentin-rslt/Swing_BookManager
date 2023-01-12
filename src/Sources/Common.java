@@ -267,7 +267,7 @@ public class Common {
                     }
                 }
             } else {
-                String sql = "SELECT Color FROM Tags WHERE Tag='" + cb.getSelectedItem().toString().toLowerCase() + "'";
+                String sql = "SELECT Color FROM Tags WHERE Tag='" + cb.getSelectedItem().toString() + "'";
                 try (Connection connection = connect()){
                     Statement statement = connection.createStatement();
                     ResultSet tagsQry = statement.executeQuery(sql);

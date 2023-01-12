@@ -1,5 +1,6 @@
 package Sources.BookManager.Dialogs;
 
+import Sources.Components.MyManagerComboBox;
 import Sources.Dialogs.EditTagDlg;
 import Sources.Components.RoundBorderCp;
 import Sources.Components.Tag;
@@ -36,10 +37,12 @@ public class AddBookDlg extends JDialog {
     private JSpinner BookNumberOPSpin;
     private JCheckBox BookNotDoneReadChecbox;
     private JSpinner BookStartReadingSpin;
-    private JComboBox BookTagsCB;
+    private final MyManagerComboBox BookTagsCB = new MyManagerComboBox(true);
     private JPanel BookTagsPanel;
     private JScrollPane JsPane;
-    private JComboBox BookAuthorCB;
+    private final MyManagerComboBox BookAuthorCB = new MyManagerComboBox(true);
+    private JPanel BooksCbTagsPanel;
+    private JPanel BookAuthorCbPanel;
     private boolean m_isValide = false;//Useful for determinate if the input are good
     private boolean m_tagIsUpdate = false;
     private Statement m_statement;
@@ -135,13 +138,34 @@ public class AddBookDlg extends JDialog {
         BookTagsCB.getEditor().getEditorComponent().addKeyListener(new java.awt.event.KeyAdapter() {
             @Override
             public void keyReleased(java.awt.event.KeyEvent evt) {
-            if (!Objects.equals(BookTagsCB.getSelectedItem(), "")) {
-                if (evt.getKeyCode()==KeyEvent.VK_ENTER){
-                    fillPaneTags(getTags(), BookTagsPanel, BookTagsCB, true);
+            if (!Objects.equals(BookTagsCB.getEditor().getItem().toString(), "")) {
+                if (evt.getKeyCode() != KeyEvent.VK_DELETE && evt.getKeyCode() != KeyEvent.VK_BACK_SPACE) {
+                    if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+                        fillPaneTags(getTags(), BookTagsPanel, BookTagsCB, true);
+                    }
+                    else{
+                        BookTagsCB.searchItemCB();
+                    }
                 }
+            }
+            else{
+                BookTagsCB.setSelectedIndex(0);
             }
             initListenerTag(getTags(), m_popup, BookTagsPanel);
             BookTagsPanel.updateUI();
+            }
+        });
+        BookAuthorCB.getEditor().getEditorComponent().addKeyListener(new java.awt.event.KeyAdapter() {
+            @Override
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+            if (!Objects.equals(BookAuthorCB.getEditor().getItem().toString(), "")) {
+                if (evt.getKeyCode() != KeyEvent.VK_DELETE && evt.getKeyCode() != KeyEvent.VK_BACK_SPACE) {
+                    BookAuthorCB.searchItemCB();
+                }
+            }
+            else{
+                BookAuthorCB.setSelectedIndex(0);
+            }
             }
         });
         BookTagsCB.getEditor().getEditorComponent().addMouseListener(new MouseAdapter() {
@@ -149,7 +173,6 @@ public class AddBookDlg extends JDialog {
             public void mouseClicked(MouseEvent e) {
             super.mouseClicked(e);
             BookTagsCB.showPopup();
-            BookTagsCB.setSelectedIndex(0);
             }
         });
         BookAuthorCB.getEditor().getEditorComponent().addMouseListener(new MouseAdapter() {
@@ -157,7 +180,6 @@ public class AddBookDlg extends JDialog {
             public void mouseClicked(MouseEvent e) {
             super.mouseClicked(e);
             BookAuthorCB.showPopup();
-            BookAuthorCB.setSelectedIndex(0);
             }
         });
         BookTagsPanel.addMouseListener(new MouseAdapter() {
@@ -317,6 +339,9 @@ public class AddBookDlg extends JDialog {
         AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),3,25,18,0,20);
         BookSummaryTextPane.setBorder(roundBrd);
         JsPane.setBorder(null);
+
+        BooksCbTagsPanel.add(BookTagsCB);
+        BookAuthorCbPanel.add(BookAuthorCB);
 
         fillTagsCB(BookTagsCB);
         fillAuthorCB(BookAuthorCB);

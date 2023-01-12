@@ -3,8 +3,9 @@ package Sources.Components;
 import javax.swing.*;
 
 public class MyManagerComboBox extends JComboBox {
-    public MyManagerComboBox(){
+    public MyManagerComboBox(boolean isEditable){
         super();
+        this.setEditable(isEditable);
     }
 
     public void searchItemCB() {

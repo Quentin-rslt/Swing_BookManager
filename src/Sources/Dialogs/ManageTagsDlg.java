@@ -19,7 +19,7 @@ public class ManageTagsDlg extends JDialog {
     private JButton TagCancelBtn;
     private JPanel TagsPanel;
     private JPanel AddTagPanel;
-    private final MyManagerComboBox AddTagCb = new MyManagerComboBox();
+    private final MyManagerComboBox AddTagCb = new MyManagerComboBox(true);
     private final JTextField AddTagTxtF = new JTextField();
     private Tags m_tags;
     final JPopupMenu m_popup;
@@ -132,7 +132,6 @@ public class ManageTagsDlg extends JDialog {
         this.m_tags = new Tags();
         fillTagsList(title, author);
 
-        AddTagCb.setEditable(true);
         AddTagPanel.add(AddTagCb);
         fillThemeCB();
 
