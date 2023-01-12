@@ -11,7 +11,6 @@ import javax.swing.border.AbstractBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -59,6 +58,8 @@ public class EditBookDlg extends JDialog {
         JMenuItem edit = new JMenuItem("Modifier", new ImageIcon(getLogo("edit.png")));
         m_popup.add(cut);
         m_popup.add(edit);
+
+        addMyManagerCB();
 
         loadDB(getOldTitle(), getOldAuthor());
         AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),2,25,18,0,20);
@@ -248,11 +249,14 @@ public class EditBookDlg extends JDialog {
         isValid = valid;
     }
     public void loadDB(String title, String author){
+        loadBook(title, author);
+        loadTags(title, author);
+    }
+    public void loadBook(String title, String author){
         fillAuthorCB(BookAuthorCB);
         try(Connection conn = connect()) {
-            Statement bookStatement = conn.createStatement();
-            Statement tagsStatement = conn.createStatement();
-            ResultSet bookQry = bookStatement.executeQuery("SELECT * FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
+            Statement statement = conn.createStatement();
+            ResultSet bookQry = statement.executeQuery("SELECT * FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
 
             //Title
             BookTitleTextField.setText(title);
@@ -275,19 +279,6 @@ public class EditBookDlg extends JDialog {
             SpinnerModel BookNoteBbblSM = new SpinnerNumberModel(bookQry.getDouble(7), 0, 5, 0.01);
             BookNoteBblSpin.setModel(BookNoteBbblSM);
 
-            //Tags
-            ResultSet tagsQry = tagsStatement.executeQuery("SELECT Tag,Color FROM Tags JOIN Tagging on Tags.ID=Tagging.IdTag " +
-                    "WHERE Tagging.IdBook='"+getIdBook(title, author)+"'");
-            BookTagsPanel.removeAll();
-            while (tagsQry.next()){
-                getTags().createTag(tagsQry.getString(1));
-                getTags().getTag(tagsQry.getRow()-1).setColor(tagsQry.getInt(2));
-                for(int i=0; i<getTags().getSizeTags();i++) {
-                    BookTagsPanel.add(getTags().getTag(i));
-                }
-            }
-            BookTagsPanel.updateUI();
-
             //Personal note
             SpinnerModel BookPersonalNotelSM = new SpinnerNumberModel(bookQry.getDouble(6), 0, 5, 0.5);//Set a default and max value for spinner Note
             BookPersonalNoteSpin.setModel(BookPersonalNotelSM);
@@ -299,17 +290,42 @@ public class EditBookDlg extends JDialog {
             addImageToPanel(bookQry.getString(4),BookPhotoPanel);
             setNameOfImage(bookQry.getString(4));
 
-            BookAuthorCbPanel.add(BookAuthorCB);
-            BookTagsCbPanel.add(BookTagsCB);
-            fillTagsCB(BookTagsCB);
-
             conn.close();
-            bookStatement.close();
-            tagsStatement.close();
+            statement.close();
         } catch (Exception e ) {
             JFrame jf = new JFrame();
             JOptionPane.showMessageDialog(jf, e.getMessage(), "Chargement du livre impossible", JOptionPane.ERROR_MESSAGE);
             throw new RuntimeException(e.getMessage());
         }
+    }
+    public void loadTags(String title, String author){
+        try(Connection conn = connect()) {
+            Statement statement = conn.createStatement();
+
+            //Tags
+            ResultSet tagsQry = statement.executeQuery("SELECT Tag,Color FROM Tags JOIN Tagging on Tags.ID=Tagging.IdTag " +
+                    "WHERE Tagging.IdBook='"+getIdBook(title, author)+"'");
+            BookTagsPanel.removeAll();
+            while (tagsQry.next()){
+                getTags().createTag(tagsQry.getString(1));
+                getTags().getTag(tagsQry.getRow()-1).setColor(tagsQry.getInt(2));
+                for(int i=0; i<getTags().getSizeTags();i++) {
+                    BookTagsPanel.add(getTags().getTag(i));
+                }
+            }
+            BookTagsPanel.updateUI();
+            fillTagsCB(BookTagsCB);
+
+            conn.close();
+            statement.close();
+        } catch (Exception e ) {
+            JFrame jf = new JFrame();
+            JOptionPane.showMessageDialog(jf, e.getMessage(), "Chargement du livre impossible", JOptionPane.ERROR_MESSAGE);
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+    public void addMyManagerCB(){
+        BookAuthorCbPanel.add(BookAuthorCB);
+        BookTagsCbPanel.add(BookTagsCB);
     }
 }

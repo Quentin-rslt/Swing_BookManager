@@ -64,7 +64,6 @@ public class BookManager extends JDialog{
             return false; //Disallow the editing of any cell
         }
     };
-    private Statement m_statement = null;
     private static String m_title;
     private static String m_author;
     private int m_rowSelected = 0;
@@ -461,7 +460,7 @@ public class BookManager extends JDialog{
         CancelFiltersBtn.setEnabled(isFiltered);
         m_mainWindow.getJMenuBar().getMenu(1).getItem(7).setEnabled(isFiltered);
         try(Connection conn = connect()){
-            m_statement = conn.createStatement();
+            Statement statement = conn.createStatement();
             ResultSet rs;
             if(isFiltered){
                 StringBuilder qry = new StringBuilder("SELECT Book.Title, Book.Author FROM Book " +
@@ -500,9 +499,9 @@ public class BookManager extends JDialog{
                     }
                 }
 
-                rs = m_statement.executeQuery(qry.toString());
+                rs = statement.executeQuery(qry.toString());
             } else{
-                rs = m_statement.executeQuery("SELECT * FROM Book;");//Execute a Query to retrieve all the values from the database by grouping the duplicates
+                rs = statement.executeQuery("SELECT * FROM Book;");//Execute a Query to retrieve all the values from the database by grouping the duplicates
             }
             // (with their name and author)
             while (rs.next()) {//Fill in the table of the list of Book
@@ -524,7 +523,7 @@ public class BookManager extends JDialog{
 
             rs.close();
             conn.close();
-            m_statement.close();
+            statement.close();
         } catch ( Exception e ) {
             JFrame jf = new JFrame();
             JOptionPane.showMessageDialog(jf, e.getMessage(), "Chargement tableau livre impossible", JOptionPane.ERROR_MESSAGE);
@@ -581,8 +580,6 @@ public class BookManager extends JDialog{
         }
     }
     public void loadComponents(String title, String author){
-        Tags tags = new Tags();
-
         fillReadingTable(title,author);
         m_manageReading = new ManageReading(this, ReadingsTable);
         ReadingsTable.setRowSelectionInterval(getRowReading(),getRowReading());
@@ -593,62 +590,66 @@ public class BookManager extends JDialog{
 
         FiltersBookBtn.setEnabled(true);
         BookManageTagsBtn.setEnabled(true);
+
+        loadBook(title, author);
+        loadReading(title, author);
+        loadTags(title, author);
+    }
+    public void loadBook(String title, String author){
         try(Connection conn = connect()) {
-            Class.forName("org.sqlite.JDBC");
-            m_statement = conn.createStatement();
+            Statement statement = conn.createStatement();
+            ResultSet bookQry = statement.executeQuery("SELECT * FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
+
+            //Number of book
+            CountBookLbl.setText("Livres : " + getBooksTable().getRowCount());
 
             TitleLabel.setText(title);
 
-            //Tags Label
-            ResultSet tagsQry = m_statement.executeQuery("SELECT Tag,Color FROM Tags JOIN Tagging on Tags.ID=Tagging.IdTag " +
-                    "WHERE Tagging.IdBook='"+getIdBook(title, author)+"' ORDER BY Tag ASC");
-            BookTagsPanel.removeAll();
-            while (tagsQry.next()){
-                tags.createTag(tagsQry.getString(1));
-                tags.getTag(tagsQry.getRow()-1).setColor(tagsQry.getInt(2));
-                setTags(tags);
-                for(int i=0; i<tags.getSizeTags();i++) {
-                    BookTagsPanel.add(tags.getTag(i));
-                }
-            }
-            BookTagsPanel.updateUI();
-
             //Release year label
-            ResultSet ReleaseYearQry = m_statement.executeQuery("SELECT ReleaseYear FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
-            ReleaseYearLAbel.setText("Année de sortie : "+ReleaseYearQry.getString(1));
+            ReleaseYearLAbel.setText("Année de sortie : "+bookQry.getString(8));
 
             //Number of page label
-            ResultSet NumberOPQry = m_statement.executeQuery("SELECT NumberOP FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
-            NumberPageLabel.setText("Nombre de page : "+NumberOPQry.getString(1));
+            NumberPageLabel.setText("Nombre de page : "+bookQry.getString(5));
+
+            //Note on babelio
+            NoteLabel.setText("Note Babelio : "+bookQry.getString(7));
+
+            //Summary
+            BookSummary.setText(bookQry.getString(11));
+
+            //Personal note
+            PersonalNoteLabel.setText("Ma note : "+bookQry.getString(6));
+
+            //Image
+            addImageToPanel(bookQry.getString(4),BookPhotoPanel);
 
             //Number of reading label
-            ResultSet NumberReadingQry = m_statement.executeQuery("SELECT NumberReading FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
-            CountReadingLabel.setText("Nombre de lecture : "+NumberReadingQry.getInt(1));
+            CountReadingLabel.setText("Nombre de lecture : "+bookQry.getInt(10));
 
             //Average time label
-            ResultSet AvReadingTimeQry = m_statement.executeQuery("SELECT AvReadingTime FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
-            int average = AvReadingTimeQry.getInt(1);
+            int average = bookQry.getInt(9);
             if(average>0){
                 BookTimeAverageLabel.setText("Temps moyen de lecture : "+average+" jours");
             }
-            if (average==0)
+            if (average==0) {
                 BookTimeAverageLabel.setText("Temps moyen de lecture : Pas de moyenne possible");
+            }
 
-
-            //Note on babelio
-            ResultSet NoteBBQry = m_statement.executeQuery("SELECT NoteBabelio FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
-            NoteLabel.setText("Note Babelio : "+NoteBBQry.getString(1));
-
-            //Summary
-            ResultSet SummaryQry = m_statement.executeQuery("SELECT Summary FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
-            BookSummary.setText(SummaryQry.getString(1));
-
-            //Personal note
-            ResultSet NotePersoQry = m_statement.executeQuery("SELECT NotePerso FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
-            PersonalNoteLabel.setText("Ma note : "+NotePersoQry.getString(1));
+            conn.close();
+            statement.close();
+        }
+        catch ( Exception e ) {
+            JFrame jf = new JFrame();
+            JOptionPane.showMessageDialog(jf, e.getMessage(), "Chargement composants impossible", JOptionPane.ERROR_MESSAGE);
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+    public void loadReading(String title, String author){
+        try(Connection conn = connect()) {
+            Statement statement = conn.createStatement();
 
             //First reading
-            ResultSet FirstReadQry = m_statement.executeQuery("SELECT EndReading FROM Reading WHERE Title='"+title+"' AND Author='"+author+ "'ORDER BY EndReading ASC");
+            ResultSet FirstReadQry = statement.executeQuery("SELECT EndReading FROM Reading WHERE Title='"+title+"' AND Author='"+author+ "'ORDER BY EndReading ASC");
             boolean findFirst = false;
             while (FirstReadQry.next() && !findFirst){
                 if(FirstReadQry.getString(1).equals("Inconnu") || FirstReadQry.getString(1).equals("Pas fini")){
@@ -661,7 +662,7 @@ public class BookManager extends JDialog{
             }
 
             //Last reading
-            ResultSet LastReadQry = m_statement.executeQuery("SELECT EndReading FROM Reading WHERE Title='"+title+"' AND Author='"+author+ "'ORDER BY EndReading DESC");
+            ResultSet LastReadQry = statement.executeQuery("SELECT EndReading FROM Reading WHERE Title='"+title+"' AND Author='"+author+ "'ORDER BY EndReading DESC");
             boolean findLast = false;
             while (LastReadQry.next() && !findLast){
                 if(LastReadQry.getString(1).equals("Inconnu") || LastReadQry.getString(1).equals("Pas fini")){
@@ -672,14 +673,37 @@ public class BookManager extends JDialog{
                     findLast =true;
                 }
             }
-            CountBookLbl.setText("Livres : " + getBooksTable().getRowCount());
-
-            //Image
-            ResultSet ImageQry = m_statement.executeQuery("SELECT Image FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
-            addImageToPanel(ImageQry.getString(1),BookPhotoPanel);
 
             conn.close();
-            m_statement.close();
+            statement.close();
+        }
+        catch ( Exception e ) {
+            JFrame jf = new JFrame();
+            JOptionPane.showMessageDialog(jf, e.getMessage(), "Chargement composants impossible", JOptionPane.ERROR_MESSAGE);
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+    public void loadTags(String title, String author){
+        Tags tags = new Tags();
+        try(Connection conn = connect()) {
+            Statement statement = conn.createStatement();
+
+            //Tags Label
+            ResultSet tagsQry = statement.executeQuery("SELECT Tag,Color FROM Tags JOIN Tagging on Tags.ID=Tagging.IdTag " +
+                    "WHERE Tagging.IdBook='"+getIdBook(title, author)+"' ORDER BY Tag ASC");
+            BookTagsPanel.removeAll();
+            while (tagsQry.next()){
+                tags.createTag(tagsQry.getString(1));
+                tags.getTag(tagsQry.getRow()-1).setColor(tagsQry.getInt(2));
+                setTags(tags);
+                for(int i=0; i<tags.getSizeTags();i++) {
+                    BookTagsPanel.add(tags.getTag(i));
+                }
+            }
+            BookTagsPanel.updateUI();
+
+            conn.close();
+            statement.close();
         } catch ( Exception e ) {
             JFrame jf = new JFrame();
             JOptionPane.showMessageDialog(jf, e.getMessage(), "Chargement composants impossible", JOptionPane.ERROR_MESSAGE);
