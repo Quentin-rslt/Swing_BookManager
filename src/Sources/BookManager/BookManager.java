@@ -64,8 +64,8 @@ public class BookManager extends JDialog{
             return false; //Disallow the editing of any cell
         }
     };
-    private static String m_title;
-    private static String m_author;
+    private String m_title;
+    private String m_author;
     private int m_rowSelected = 0;
     final JPopupMenu m_popup;
     private FiltersDlg m_filtersDiag;
@@ -192,7 +192,7 @@ public class BookManager extends JDialog{
                     m_popup.show(BooksTable, evt.getX(), evt.getY());
                 }
                 if(evt.getClickCount() == 2 && evt.getButton() == MouseEvent.BUTTON1){
-                    EditBookDlg diag = openEditBookDlg();
+                    EditBookDlg diag = openEditBookDlg(getMTitle(), getAuthor());
                     editBook(diag,BookManager.this);
                 }
             }
@@ -204,11 +204,11 @@ public class BookManager extends JDialog{
         });
         cut.addActionListener((ActionEvent evt) -> deleteBook(this));
         edit.addActionListener((ActionEvent evt) -> {
-            EditBookDlg diag = openEditBookDlg();
+            EditBookDlg diag = openEditBookDlg(getMTitle(), getAuthor());
             editBook(diag,this);
         });
         add.addActionListener((ActionEvent evt) -> {
-            AddReading diag = openAddReadingDlg();
+            AddReading diag = openAddReadingDlg(getMTitle(), getAuthor());
             addReading(diag, this);
         });
         openManageTags.addActionListener((ActionEvent evt)->{
@@ -266,10 +266,10 @@ public class BookManager extends JDialog{
     public Tags getTags(){
         return this.m_tags;
     }
-    public static String getMTitle(){
+    public String getMTitle(){
         return m_title;
     }
-    public static String getAuthor(){
+    public String getAuthor(){
         return m_author;
     }
     public int getRowSelected() {
@@ -739,8 +739,8 @@ public class BookManager extends JDialog{
         fillBookTable(isFiltered());
         setFastSearch(!editorText.isBlank());
 
-        int row = 0;
-        while(row < getBooksTable().getRowCount()){
+
+        for(int row = 0; row < getBooksTable().getRowCount(); row++){
             boolean bookFind = false;
             int column = 0;
             while( column < getBooksTable().getColumnCount() && !bookFind) {
@@ -762,7 +762,6 @@ public class BookManager extends JDialog{
                 BooksTable.getTableModel().removeRow(row);
                 row--;
             }
-            row++;
         }
 
         AbstractBorder roundBrdMax = new RoundBorderCp(contentPane.getBackground(),1,30, 0,0,0);

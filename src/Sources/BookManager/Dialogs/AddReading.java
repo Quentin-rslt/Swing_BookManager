@@ -8,7 +8,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 
-import static Sources.BookManager.BookManager.*;
 import static Sources.CommonSQL.connect;
 
 public class AddReading extends JDialog {
@@ -26,11 +25,11 @@ public class AddReading extends JDialog {
     private final String m_author;
     private boolean m_isValid = false;
 
-    public AddReading() {
+    public AddReading(String title, String author) {
         setContentPane(contentPane);
         setModal(true);
-        this.m_title = getMTitle();
-        this.m_author = getAuthor();
+        this.m_title = title;
+        this.m_author = author;
         initComponents();
         ReadingUnknownCheckBox.addActionListener((ActionEvent e) ->{
                 if (isDateUnknown()){

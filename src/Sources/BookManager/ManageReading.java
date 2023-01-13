@@ -7,7 +7,6 @@ import java.awt.event.*;
 import java.sql.*;
 import static Sources.BookManager.CommonBookManagerSQL.*;
 import static Sources.BookManager.Dialogs.OpenBookManagerDialog.openEditReadingDlg;
-import static Sources.BookManager.BookManager.*;
 import static Sources.Common.getLogo;
 import static Sources.CommonSQL.connect;
 
@@ -21,8 +20,8 @@ public class ManageReading {
 
     public ManageReading(BookManager parent, JTable ReadingsTable) {
         this.m_readingsTable = ReadingsTable;
-        this.m_title = getMTitle();
-        this.m_author= getAuthor();
+        this.m_title = parent.getMTitle();
+        this.m_author= parent.getAuthor();
 
         for(int i=0; i<m_readingsTable.getRowCount();i++){
             MouseListener[] mouseListeners =  m_readingsTable.getMouseListeners();
@@ -79,14 +78,14 @@ public class ManageReading {
                 m_popup.show(m_readingsTable, evt.getX(), evt.getY());//show a popup to edit the reading
             }
             if(evt.getClickCount() == 2 && evt.getButton() == MouseEvent.BUTTON1){
-                EditReadingDlg diag = openEditReadingDlg(getStartReading(), getEndReading());//Open a dialog where we can edit the date reading
+                EditReadingDlg diag = openEditReadingDlg(getStartReading(), getEndReading(), parent.getMTitle(), parent.getAuthor());//Open a dialog where we can edit the date reading
                 editReading(diag, parent);
                 }
             }
         });
         cut.addActionListener((ActionEvent evt) ->deleteReading(parent));
         edit.addActionListener((ActionEvent evt) ->{
-            EditReadingDlg diag = openEditReadingDlg(getStartReading(), getEndReading());//Open a dialog where we can edit the date reading
+            EditReadingDlg diag = openEditReadingDlg(getStartReading(), getEndReading(), parent.getMTitle(), parent.getAuthor());//Open a dialog where we can edit the date reading
             editReading(diag, parent);
         });
     }

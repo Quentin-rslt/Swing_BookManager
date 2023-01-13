@@ -18,7 +18,6 @@ import java.util.Objects;
 
 import static Sources.BookManager.CommonBookManagerSQL.*;
 import static Sources.Dialogs.OpenDialogs.*;
-import static Sources.BookManager.BookManager.*;
 import static Sources.Common.*;
 import static Sources.CommonSQL.*;
 
@@ -47,11 +46,11 @@ public class EditBookDlg extends JDialog {
     final JPopupMenu m_popup;
     Tags m_tags = new Tags();
 
-    public EditBookDlg() {
+    public EditBookDlg(String title, String author) {
         setContentPane(contentPane);
         setModal(true);
-        setOldTitle(getMTitle());
-        setOldAuthor(getAuthor());
+        setOldTitle(title);
+        setOldAuthor(author);
 
         m_popup = new JPopupMenu();//Create a popup menu to delete a reading an edit this reading
         JMenuItem cut = new JMenuItem("Supprimer", new ImageIcon(getLogo("remove.png")));

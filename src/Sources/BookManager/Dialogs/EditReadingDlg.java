@@ -11,7 +11,6 @@ import java.util.Date;
 import java.util.Objects;
 
 import static Sources.CommonSQL.connect;
-import static Sources.BookManager.BookManager.*;
 
 public class EditReadingDlg extends JDialog {
     private JPanel contentPane;
@@ -29,11 +28,11 @@ public class EditReadingDlg extends JDialog {
     private String m_endReading;
     private boolean m_isValid = false;
 
-    public EditReadingDlg(String startReading, String endReading) {
+    public EditReadingDlg(String startReading, String endReading, String title, String author) {
         setContentPane(contentPane);
         setModal(true);
-        this.m_title = getMTitle();
-        this.m_author = getAuthor();
+        this.m_title = title;
+        this.m_author = author;
         setStartReading(startReading);
         setEndReading(endReading);
         initComponent();

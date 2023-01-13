@@ -8,7 +8,6 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
 import static Sources.BookManager.CommonBookManager.*;
-import static Sources.BookManager.BookManager.*;
 import static Sources.Common.*;
 import static Sources.CommonSQL.*;
 
@@ -21,11 +20,11 @@ public class CommonBookManagerSQL {
                 "An Inane Question",
                 JOptionPane.YES_NO_OPTION);
         if(n == 0){
-            String boolQry = "DELETE FROM Book WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";
-            String ReadingQry = "DELETE FROM Reading WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";
-            String TaggingQry = "DELETE FROM Tagging WHERE IdBook='"+getIdBook(getMTitle(),getAuthor())+"'";
+            String boolQry = "DELETE FROM Book WHERE Title='"+bookManager.getMTitle()+"' AND Author='"+bookManager.getAuthor()+"'";
+            String ReadingQry = "DELETE FROM Reading WHERE Title='"+bookManager.getMTitle()+"' AND Author='"+bookManager.getAuthor()+"'";
+            String TaggingQry = "DELETE FROM Tagging WHERE IdBook='"+getIdBook(bookManager.getMTitle(),bookManager.getAuthor())+"'";
 
-            deleteImageMainResource(getMTitle(), getAuthor());
+            deleteImageMainResource(bookManager.getMTitle(), bookManager.getAuthor());
             try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(boolQry); PreparedStatement pstmt2 = conn.prepareStatement(ReadingQry);
                  PreparedStatement taggingPstmt = conn.prepareStatement(TaggingQry)) {
                 // execute the delete statement
@@ -116,8 +115,8 @@ public class CommonBookManagerSQL {
                         bookManager.setMTitle(diag.getNewBookTitle());
                         bookManager.setAuthor(diag.getNewBookAuthor());
                         bookManager.setRowReading(0);
-                        bookManager.setRowSelected(bookManager.getRowSelectedByBook(getMTitle(), getAuthor()));
-                        bookManager.loadComponents(diag.getNewBookTitle(), getAuthor());//reload changes made to the book
+                        bookManager.setRowSelected(bookManager.getRowSelectedByBook(bookManager.getMTitle(), bookManager.getAuthor()));
+                        bookManager.loadComponents(diag.getNewBookTitle(), bookManager.getAuthor());//reload changes made to the book
                     } else {
                         JFrame jFrame = new JFrame();
                         JOptionPane.showMessageDialog(jFrame, "Le livre créé ne correspond pas aux critères appliqué", "WARNING", JOptionPane.WARNING_MESSAGE);
@@ -127,8 +126,8 @@ public class CommonBookManagerSQL {
                     bookManager.setMTitle(diag.getNewBookTitle());
                     bookManager.setAuthor(diag.getNewBookAuthor());
                     bookManager.setRowReading(0);
-                    bookManager.setRowSelected(bookManager.getRowSelectedByBook(getMTitle(), getAuthor()));
-                    bookManager.loadComponents(getMTitle(), getAuthor());//reload changes made to the book
+                    bookManager.setRowSelected(bookManager.getRowSelectedByBook(bookManager.getMTitle(), bookManager.getAuthor()));
+                    bookManager.loadComponents(bookManager.getMTitle(), bookManager.getAuthor());//reload changes made to the book
                 }
                 resetBookManager(bookManager, true);
             } catch (SQLException e) {
@@ -205,12 +204,12 @@ public class CommonBookManagerSQL {
             String ReadingQry = "INSERT INTO Reading (ID,Title,Author,StartReading, EndReading) " +
                     "VALUES (?,?,?,?,?);";
             String AvNumQry = "UPDATE Book SET AvReadingTime=?, NumberReading=?"+
-                    "WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";
+                    "WHERE Title='"+bookManager.getMTitle()+"' AND Author='"+bookManager.getAuthor()+"'";
             bookManager.getContentPanel().updateUI();
             try(Connection conn = connect(); PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry); PreparedStatement AvNumPstmt = conn.prepareStatement(AvNumQry)){
-                ReadingPstmt.setInt(1, getIdReading(getMTitle(), getAuthor()));
-                ReadingPstmt.setString(2, getMTitle());
-                ReadingPstmt.setString(3, getAuthor());
+                ReadingPstmt.setInt(1, getIdReading(bookManager.getMTitle(), bookManager.getAuthor()));
+                ReadingPstmt.setString(2, bookManager.getMTitle());
+                ReadingPstmt.setString(3, bookManager.getAuthor());
 
                 if(!diag.isDateUnknown()&& !diag.isNotDone()){
                     ReadingPstmt.setString(4, diag.getNewStartReading());
@@ -225,15 +224,15 @@ public class CommonBookManagerSQL {
                 }
                 ReadingPstmt.executeUpdate();//Insert the new reading
 
-                AvNumPstmt.setInt(1, averageTime(getMTitle(), getAuthor()));
-                AvNumPstmt.setInt(2, getNumberOfReading(getMTitle(), getAuthor()));
+                AvNumPstmt.setInt(1, averageTime(bookManager.getMTitle(), bookManager.getAuthor()));
+                AvNumPstmt.setInt(2, getNumberOfReading(bookManager.getMTitle(), bookManager.getAuthor()));
                 AvNumPstmt.executeUpdate();
 
-                bookManager.setMTitle(getMTitle());
-                bookManager.setAuthor(getAuthor());
+                bookManager.setMTitle(bookManager.getMTitle());
+                bookManager.setAuthor(bookManager.getAuthor());
                 bookManager.fillBookTable(bookManager.isFiltered());
                 bookManager.setRowReading(bookManager.getManageReading().getRowCount());
-                bookManager.loadComponents(getMTitle(), getAuthor());
+                bookManager.loadComponents(bookManager.getMTitle(), bookManager.getAuthor());
                 if(bookManager.isFastSearch()){
                     bookManager.fastSearchBook(bookManager.getBookFastSearch().getText());
                 }
@@ -247,16 +246,16 @@ public class CommonBookManagerSQL {
     public static void editReading(EditReadingDlg diag, BookManager bookManager){
         if(diag.isValid()){
             String sql = "UPDATE Reading SET StartReading=?, EndReading=?" +
-                    "WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"' AND ID='"+bookManager.getRowReading()+"'";//Edit in bdd the item that we want to change the reading date
-            String AvNumQry = "UPDATE Book SET AvReadingTime=?, NumberReading=? WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";
+                    "WHERE Title='"+bookManager.getMTitle()+"' AND Author='"+bookManager.getAuthor()+"' AND ID='"+bookManager.getRowReading()+"'";//Edit in bdd the item that we want to change the reading date
+            String AvNumQry = "UPDATE Book SET AvReadingTime=?, NumberReading=? WHERE Title='"+bookManager.getMTitle()+"' AND Author='"+bookManager.getAuthor()+"'";
             try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql); PreparedStatement AvNumPstmt = conn.prepareStatement(AvNumQry)) {
                 // execute the uptdate statement
                 pstmt.setString(1, diag.getNewStartReading());
                 pstmt.setString(2, diag.getNewEndReading());
                 pstmt.executeUpdate();
 
-                AvNumPstmt.setInt(1, averageTime(getMTitle(), getAuthor()));
-                AvNumPstmt.setInt(2, getNumberOfReading(getMTitle(), getAuthor()));
+                AvNumPstmt.setInt(1, averageTime(bookManager.getMTitle(), bookManager.getAuthor()));
+                AvNumPstmt.setInt(2, getNumberOfReading(bookManager.getMTitle(), bookManager.getAuthor()));
                 AvNumPstmt.executeUpdate();
 
                 //if the book is no longer in the filters then load on the first line
@@ -273,13 +272,13 @@ public class CommonBookManagerSQL {
         }
     }
     public static void deleteReading(BookManager bookManager){
-        String ReadingQry = "DELETE FROM Reading WHERE Title='"+ getMTitle()+"' AND Author='"+getAuthor()+"' AND ID='"+bookManager.getRowReading()+"'";//Delete in bdd the item that we want delete
-        String AvNumQry = "UPDATE Book SET AvReadingTime=?, NumberReading=? WHERE Title='"+getMTitle()+"' AND Author='"+getAuthor()+"'";
+        String ReadingQry = "DELETE FROM Reading WHERE Title='"+ bookManager.getMTitle()+"' AND Author='"+bookManager.getAuthor()+"' AND ID='"+bookManager.getRowReading()+"'";//Delete in bdd the item that we want delete
+        String AvNumQry = "UPDATE Book SET AvReadingTime=?, NumberReading=? WHERE Title='"+bookManager.getMTitle()+"' AND Author='"+bookManager.getAuthor()+"'";
         if(bookManager.getReadingsTable().getRowCount()>1){//If there is more than one reading you don't need to know if the person really wants to delete the book
             try (Connection conn = connect(); PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry); PreparedStatement AvNumPstmt = conn.prepareStatement(AvNumQry)) {
                 ReadingPstmt.executeUpdate();
-                AvNumPstmt.setInt(1, averageTime(getMTitle(), getAuthor()));
-                AvNumPstmt.setInt(2, getNumberOfReading(getMTitle(), getAuthor()));
+                AvNumPstmt.setInt(1, averageTime(bookManager.getMTitle(), bookManager.getAuthor()));
+                AvNumPstmt.setInt(2, getNumberOfReading(bookManager.getMTitle(), bookManager.getAuthor()));
                 AvNumPstmt.executeUpdate();
 
                 bookManager.getContentPanel().updateUI();
@@ -316,8 +315,8 @@ public class CommonBookManagerSQL {
             isItInFilteredBookList(bookManager,false);
         }else{
             if (bookManager.getBooksTable().getRowCount() > 0) {
-                bookManager.loadComponents(getMTitle(), getAuthor());
-                bookManager.getBooksTable().setRowSelectionInterval(bookManager.getRowSelectedByBook(getMTitle(), getAuthor()), bookManager.getRowSelectedByBook(getMTitle(), getAuthor()));
+                bookManager.loadComponents(bookManager.getMTitle(), bookManager.getAuthor());
+                bookManager.getBooksTable().setRowSelectionInterval(bookManager.getRowSelectedByBook(bookManager.getMTitle(), bookManager.getAuthor()), bookManager.getRowSelectedByBook(bookManager.getMTitle(), bookManager.getAuthor()));
                 bookManager.getReadingsTable().setRowSelectionInterval(bookManager.getRowReading(),bookManager.getRowReading());
             } else
                 bookManager.initComponents();
@@ -343,7 +342,7 @@ public class CommonBookManagerSQL {
         }
     }
     @SuppressWarnings("unchecked")
-    public static void fillAuthorCB(JComboBox authorCB){
+    public static void fillAuthorCB(@SuppressWarnings("rawtypes") JComboBox authorCB){
         authorCB.removeAllItems();
         try (Connection conn = connect()) {
             Statement statement = conn.createStatement();
@@ -364,7 +363,7 @@ public class CommonBookManagerSQL {
 
 
     public static int getIdReading(String title, String author) {
-        int i =0;
+        int i;
         try (Connection conn = connect()) {
             Statement statement = conn.createStatement();
             ResultSet rs = statement.executeQuery("SELECT COUNT(*) FROM Reading WHERE Title='"+title+"' AND Author='"+author+ "'");
@@ -380,7 +379,7 @@ public class CommonBookManagerSQL {
         return i;
     }
     public static int getIdBook(String title, String author) {
-        int i =0;
+        int i;
         try (Connection conn = connect()) {
             Statement statement = conn.createStatement();
             ResultSet idBook = statement.executeQuery("SELECT ID FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
@@ -397,7 +396,7 @@ public class CommonBookManagerSQL {
     }
 
     public static String getImageBDD(String title, String author) {
-        String name ="";
+        String name;
         try (Connection conn = connect()) {
             Statement statement = conn.createStatement();
             ResultSet ImageQry = statement.executeQuery("SELECT Image FROM Book WHERE Title='"+title+"' AND Author='"+author+ "'");
@@ -448,7 +447,7 @@ public class CommonBookManagerSQL {
         return average;
     }
     public static int getNumberOfReading(String title, String author){
-        int i = 0;
+        int i;
         try (Connection conn = connect()) {
             Statement statement = conn.createStatement();
             ResultSet CountReadingQry = statement.executeQuery("SELECT COUNT(*) FROM Reading WHERE Title='"+title+"' AND Author='"+author+ "'");
@@ -461,7 +460,7 @@ public class CommonBookManagerSQL {
         return i;
     }
     public static int getNumberOfBook(){
-        int i = 0;
+        int i;
         try (Connection conn = connect()) {
             Statement statement = conn.createStatement();
             ResultSet CountReadingQry = statement.executeQuery("SELECT COUNT(*) FROM Book");

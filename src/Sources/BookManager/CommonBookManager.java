@@ -1,5 +1,4 @@
 package Sources.BookManager;
-import static Sources.BookManager.BookManager.*;
 import static Sources.BookManager.MenuBarBookManager.*;
 import static Sources.Common.isInFilteredList;
 
@@ -14,7 +13,7 @@ public class CommonBookManager {
                 bookManager.setRowSelected(bookManager.getRowSelected());
                 bookManager.setMTitle(bookManager.getBooksTable().getValueAt(bookManager.getRowSelected(), 0).toString());
                 bookManager.setAuthor(bookManager.getBooksTable().getValueAt(bookManager.getRowSelected(), 1).toString());
-                bookManager.loadComponents(getMTitle(), getAuthor());//reload changes made to the book
+                bookManager.loadComponents(bookManager.getMTitle(), bookManager.getAuthor());//reload changes made to the book
             } else {
                 bookManager.initComponents();
             }
@@ -24,16 +23,16 @@ public class CommonBookManager {
                 bookManager.setAuthor(bookManager.getBooksTable().getValueAt(0, 1).toString());
                 bookManager.setRowSelected(0);
                 bookManager.setRowReading(0);
-                bookManager.loadComponents( getMTitle(), getAuthor());//reload changes made to the book
+                bookManager.loadComponents(bookManager.getMTitle(), bookManager.getAuthor());//reload changes made to the book
             } else {
                 bookManager.initComponents();
             }
         }
     }
     public static void isItInFilteredBookList(BookManager bookManager, boolean bookDelete){
-        if(isInFilteredList(getMTitle(),getAuthor(), bookManager.getBooksTable())){
-            bookManager.setRowSelected(bookManager.getRowSelectedByBook(getMTitle(), getAuthor()));
-            bookManager.loadComponents(getMTitle(), getAuthor());//reload changes made to the book
+        if(isInFilteredList(bookManager.getMTitle(),bookManager.getAuthor(), bookManager.getBooksTable())){
+            bookManager.setRowSelected(bookManager.getRowSelectedByBook(bookManager.getMTitle(), bookManager.getAuthor()));
+            bookManager.loadComponents(bookManager.getMTitle(), bookManager.getAuthor());//reload changes made to the book
         }
         else{
             isNotInFilteredBookList(bookManager, bookDelete);
