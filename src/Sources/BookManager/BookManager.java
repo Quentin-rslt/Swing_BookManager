@@ -735,31 +735,34 @@ public class BookManager extends JDialog{
     public void setIsFiltered(Boolean filtered) {
         isFiltered = filtered;
     }
-    public void fastSearchBook(String text){
+    public void fastSearchBook(String editorText){
         fillBookTable(isFiltered());
-        setFastSearch(!text.isBlank());
-        for(int row = 0 ; row < getBooksTable().getRowCount() ; row++) {
-            int cellsNotCorrespondingToFilter = 0;
-            for(int column = 0 ; column < getBooksTable().getColumnCount() ; column++) {
+        setFastSearch(!editorText.isBlank());
+
+        int row = 0;
+        while(row < getBooksTable().getRowCount()){
+            boolean bookFind = false;
+            int column = 0;
+            while( column < getBooksTable().getColumnCount() && !bookFind) {
                 String cellText = getBooksTable().getModel().getValueAt(row,column).toString();
-                for(int filterIndex = 0; filterIndex < text.length() ; filterIndex++) {
-                    if(filterIndex<cellText.length()) {
-                        if (cellText.charAt(filterIndex) != text.charAt(filterIndex)) {
-                            cellsNotCorrespondingToFilter++;
-                            break;
-                        }
-                    }else{
-                        cellsNotCorrespondingToFilter++;
-                        break;
+                StringBuilder testCellText = new StringBuilder();
+
+                if (editorText.length() < cellText.length()) {
+                    for (int filterIndex = 0; filterIndex < editorText.length(); filterIndex++) {
+                        testCellText.append(cellText.charAt(filterIndex));
+                    }
+                    if(editorText.equalsIgnoreCase(testCellText.toString())){
+                        bookFind = true;
                     }
                 }
+                column++;
             }
-            //If no cell in the line corresponds to the search
-            if(cellsNotCorrespondingToFilter == getBooksTable().getColumnCount()) {
+
+            if(!bookFind){
                 BooksTable.getTableModel().removeRow(row);
-                BooksTable.updateUI();
                 row--;
             }
+            row++;
         }
 
         AbstractBorder roundBrdMax = new RoundBorderCp(contentPane.getBackground(),1,30, 0,0,0);
