@@ -1,5 +1,6 @@
 package Sources.BookManager.Dialogs;
 
+import Sources.Components.MyManagerComboBox;
 import Sources.Components.Tags;
 
 import javax.swing.*;
@@ -25,7 +26,7 @@ public class FiltersDlg extends JDialog {
     private JSpinner FiltersLastNoteSpin;
     private JRadioButton FiltersorderCrossingRB;
     private JComboBox FiltersSortCB;
-    private JComboBox FiltersTagCB;
+    private final MyManagerComboBox FiltersTagCB = new MyManagerComboBox(true);
     private JSpinner FiltersFirstNumberOPSpin;
     private JSpinner FiltersSecNumberOPSpin;
     private JSpinner FiltersFirstNumberORSpin;
@@ -43,6 +44,7 @@ public class FiltersDlg extends JDialog {
     private JCheckBox IsFilteredCheckBox;
     private JLabel ReadDateLabel;
     private JPanel FiltersTagsPanel;
+    private JPanel FiltersTagCbPanel;
 
     private boolean m_isValid;
     private Tags m_tags;
@@ -52,6 +54,9 @@ public class FiltersDlg extends JDialog {
         this.m_tags = new Tags();
         setContentPane(contentPane);
         setModal(true);
+
+        FiltersTagCbPanel.add(FiltersTagCB);
+
         initComponents();
 
         m_popup = new JPopupMenu();//Create a popup menu to delete a reading an edit this reading
@@ -125,7 +130,7 @@ public class FiltersDlg extends JDialog {
                         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
                             fillPaneTags(getTags(), FiltersTagsPanel, FiltersTagCB, false);
                         } else {
-                            searchItemCB(FiltersTagCB);
+                            FiltersTagCB.searchItemCB();
                         }
                     }
                 }

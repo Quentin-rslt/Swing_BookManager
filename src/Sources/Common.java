@@ -416,27 +416,4 @@ public class Common {
             jComboBox.addItem(loadTags().getTag(i).getTextTag());
         }
     }
-    public static void searchItemCB(JComboBox cb){
-        cb.showPopup();
-        String editorText = cb.getEditor().getItem().toString().toLowerCase();
-        int i = 1;
-        boolean itemIsFind = false;
-        while (i < cb.getItemCount() && !itemIsFind) {
-            String itemText = cb.getItemAt(i).toString().toLowerCase();
-            StringBuilder testItemText = new StringBuilder();
-
-            if (editorText.length()<itemText.length()) {
-                for(int y = 0; y<editorText.length();y++) {
-                    testItemText.append(itemText.charAt(y));
-                }
-                if (editorText.equals(testItemText.toString())) {
-                    cb.setSelectedItem(cb.getItemAt(i));
-                    cb.getEditor().setItem(cb.getItemAt(i));
-                    ((JTextField) cb.getEditor().getEditorComponent()).moveCaretPosition(editorText.length());
-                    itemIsFind = true;
-                }
-            }
-            i++;
-        }
-    }
 }
