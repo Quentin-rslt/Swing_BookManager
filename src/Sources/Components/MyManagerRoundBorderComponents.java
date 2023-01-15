@@ -32,7 +32,7 @@ public class MyManagerRoundBorderComponents extends AbstractBorder {
                 RenderingHints.VALUE_ANTIALIAS_ON);
 
         int bottomPad = pad + strokePad;
-        insets = new Insets(pad, pad, bottomPad+1, pad+1);
+        insets = new Insets(pad, pad, bottomPad-1, pad+1);
     }
 
     @Override
