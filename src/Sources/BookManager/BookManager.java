@@ -6,7 +6,7 @@ import Sources.BookManager.Dialogs.EditBookDlg;
 import Sources.BookManager.Dialogs.FiltersDlg;
 import Sources.MainWindow;
 import Sources.Components.MyManagerTable;
-import Sources.Components.RoundBorderCp;
+import Sources.Components.MyManagerRoundBorderComponents;
 import Sources.Components.Tags;
 
 import javax.swing.*;
@@ -110,7 +110,7 @@ public class BookManager extends JDialog{
         initBinding();
         fillBookTable(isFiltered());
 
-        AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),3,30,0,0,20);
+        AbstractBorder roundBrd = new MyManagerRoundBorderComponents(contentPane.getBackground(),3,30,0,0,20);
         BookSummary.setBorder(roundBrd);
         BookSummary.setFont(new Font("Arial", Font.BOLD, 13));
         contentPane.getRootPane().setDefaultButton(CancelFiltersBtn);
@@ -562,8 +562,8 @@ public class BookManager extends JDialog{
                 m_tableReadingModel.addRow(data);//add to tablemodel the data
             }
             ReadingsTable.setModel(m_tableReadingModel);
-            AbstractBorder roundBrdMax = new RoundBorderCp(contentPane.getBackground(), 1, 30, 0, 0, 0);
-            AbstractBorder roundBrdMin = new RoundBorderCp(contentPane.getBackground(), 1, 30, ReadingsTable.getPreferredScrollableViewportSize().height - (ReadingsTable.getRowCount() * ReadingsTable.getRowHeight()), 0, 0);
+            AbstractBorder roundBrdMax = new MyManagerRoundBorderComponents(contentPane.getBackground(), 1, 30, 0, 0, 0);
+            AbstractBorder roundBrdMin = new MyManagerRoundBorderComponents(contentPane.getBackground(), 1, 30, ReadingsTable.getPreferredScrollableViewportSize().height - (ReadingsTable.getRowCount() * ReadingsTable.getRowHeight()), 0, 0);
             if (ReadingsTable.getRowCount() > 3)
                 ReadingsTable.setBorder(roundBrdMax);
             else
@@ -764,8 +764,8 @@ public class BookManager extends JDialog{
             }
         }
 
-        AbstractBorder roundBrdMax = new RoundBorderCp(contentPane.getBackground(),1,30, 0,0,0);
-        AbstractBorder roundBrdMin = new RoundBorderCp(contentPane.getBackground(),1,30, BooksTable.getPreferredScrollableViewportSize().height-(BooksTable.getRowCount()*BooksTable.getRowHeight()),0,0);
+        AbstractBorder roundBrdMax = new MyManagerRoundBorderComponents(contentPane.getBackground(),1,30, 0,0,0);
+        AbstractBorder roundBrdMin = new MyManagerRoundBorderComponents(contentPane.getBackground(),1,30, BooksTable.getPreferredScrollableViewportSize().height-(BooksTable.getRowCount()*BooksTable.getRowHeight()),0,0);
         if(BooksTable.getRowCount()>13)
             BooksTable.setBorder(roundBrdMax);
         else

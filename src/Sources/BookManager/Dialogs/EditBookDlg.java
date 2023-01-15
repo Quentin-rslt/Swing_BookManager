@@ -2,7 +2,7 @@ package Sources.BookManager.Dialogs;
 
 import Sources.Components.MyManagerComboBox;
 import Sources.Dialogs.EditTagDlg;
-import Sources.Components.RoundBorderCp;
+import Sources.Components.MyManagerRoundBorderComponents;
 import Sources.Components.Tag;
 import Sources.Components.Tags;
 
@@ -61,7 +61,7 @@ public class EditBookDlg extends JDialog {
         addMyManagerCB();
 
         loadDB(getOldTitle(), getOldAuthor());
-        AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),2,25,18,0,20);
+        AbstractBorder roundBrd = new MyManagerRoundBorderComponents(contentPane.getBackground(),2,25,0,0,20);
         BookSummaryTextPane.setBorder(roundBrd);
         JsPane.setBorder(null);
 
@@ -90,13 +90,13 @@ public class EditBookDlg extends JDialog {
             @Override
             public void focusGained(FocusEvent e) {
                 super.focusGained(e);
-                RoundBorderCp roundBrd = new RoundBorderCp(new Color(197,62,62),2,25,18,0,20);
+                MyManagerRoundBorderComponents roundBrd = new MyManagerRoundBorderComponents(new Color(197,62,62),2,25,0,0,20);
                 BookSummaryTextPane.setBorder(roundBrd);
             }
             @Override
             public void focusLost(FocusEvent e) {
                 super.focusLost(e);
-                RoundBorderCp roundBrd = new RoundBorderCp(contentPane.getBackground(),2,25,18,0,20);
+                MyManagerRoundBorderComponents roundBrd = new MyManagerRoundBorderComponents(contentPane.getBackground(),2,25,0,0,20);
                 BookSummaryTextPane.setBorder(roundBrd);
             }
         });

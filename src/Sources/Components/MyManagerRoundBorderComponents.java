@@ -5,7 +5,7 @@ import java.awt.*;
 import java.awt.geom.Area;
 import java.awt.geom.RoundRectangle2D;
 
-public class RoundBorderCp extends AbstractBorder {
+public class MyManagerRoundBorderComponents extends AbstractBorder {
     final Color color;
     final int thickness;
     final int radii;
@@ -17,7 +17,7 @@ public class RoundBorderCp extends AbstractBorder {
     final int pad;
     RenderingHints hints;
 
-    public RoundBorderCp(Color color, int thickness, int radii, int height, int gap,int pad) {
+    public MyManagerRoundBorderComponents(Color color, int thickness, int radii, int height, int gap, int pad) {
         this.thickness = thickness;
         this.radii = radii;
         this.color = color;
@@ -32,7 +32,7 @@ public class RoundBorderCp extends AbstractBorder {
                 RenderingHints.VALUE_ANTIALIAS_ON);
 
         int bottomPad = pad + strokePad;
-        insets = new Insets(pad, pad, bottomPad-1, pad+1);
+        insets = new Insets(pad, pad, bottomPad+1, pad+1);
     }
 
     @Override
@@ -50,9 +50,9 @@ public class RoundBorderCp extends AbstractBorder {
 
         Graphics2D g2 = (Graphics2D) g;
 
-        int bottomLineY = height - thickness-pad;
+        int bottomLineY = height - thickness;
 
-        RoundRectangle2D.Double bubble = new RoundRectangle2D.Double(strokePad+gap, strokePad, width - (thickness+(gap*2))-pad, bottomLineY+h, radii, radii);
+        RoundRectangle2D.Double bubble = new RoundRectangle2D.Double(strokePad+gap, strokePad, width - (thickness+(gap*2)), bottomLineY+h, radii, radii);
 
         Area area = new Area(bubble);
         g2.setRenderingHints(hints);

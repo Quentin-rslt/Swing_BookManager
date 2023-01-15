@@ -1,6 +1,6 @@
 package Sources;
 
-import Sources.Components.RoundBorderCp;
+import Sources.Components.MyManagerRoundBorderComponents;
 import Sources.Components.Tag;
 import Sources.Components.Tags;
 import Sources.Dialogs.EditTagDlg;
@@ -48,7 +48,7 @@ public class Common {
         ImageIcon icon = new ImageIcon(img);
         JLabel imgLabel = new JLabel();
         imgLabel.setIcon(icon);
-        AbstractBorder roundBrdMax = new RoundBorderCp(panel.getBackground(),3,30, 0,0,0);
+        AbstractBorder roundBrdMax = new MyManagerRoundBorderComponents(panel.getBackground(),3,30, 0,0,0);
         imgLabel.setBorder(roundBrdMax);
 
         panel.updateUI();//reload the panel
@@ -145,7 +145,7 @@ public class Common {
                     ImageIcon icon = new ImageIcon(img);
                     JLabel imgLabel = new JLabel();
                     imgLabel.setIcon(icon);
-                    AbstractBorder roundBrdMax = new RoundBorderCp(panel.getBackground(),3,30, 0,0,0);
+                    AbstractBorder roundBrdMax = new MyManagerRoundBorderComponents(panel.getBackground(),3,30, 0,0,0);
                     imgLabel.setBorder(roundBrdMax);
 
                     panel.updateUI();//reload the panel

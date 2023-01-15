@@ -37,7 +37,7 @@ public class Tag extends JLabel {
         setBorderColor(new Color(38,34,34));
     }
     public void setBorderColor(Color color){
-        AbstractBorder roundBrd = new RoundBorderCp(color,3,29,0,0,0);
+        AbstractBorder roundBrd = new MyManagerRoundBorderComponents(color,3,29,0,0,0);
         setBorder(roundBrd);
     }
     public void initComponent(JLabel lbl){

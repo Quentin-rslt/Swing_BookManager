@@ -180,8 +180,8 @@
           <scrollpane id="b3e69" binding="JsPane">
             <constraints>
               <grid row="9" column="1" row-span="1" col-span="2" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false">
-                <minimum-size width="350" height="150"/>
-                <preferred-size width="350" height="150"/>
+                <minimum-size width="350" height="100"/>
+                <preferred-size width="350" height="100"/>
               </grid>
             </constraints>
             <properties>

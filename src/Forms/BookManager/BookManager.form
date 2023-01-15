@@ -280,7 +280,7 @@
                 </children>
               </grid>
               <grid id="42e13" layout-manager="GridLayoutManager" row-count="2" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="0">
-                <margin top="0" left="20" bottom="0" right="0"/>
+                <margin top="0" left="20" bottom="18" right="20"/>
                 <constraints border-constraint="Center"/>
                 <properties/>
                 <border type="none"/>
@@ -487,6 +487,7 @@
                               <enabled value="true"/>
                               <focusable value="false"/>
                               <opaque value="true"/>
+                              <text value=""/>
                             </properties>
                           </component>
                         </children>

@@ -1,7 +1,7 @@
 package Sources.BuySellManager;
 
 import Sources.Components.MyManagerTable;
-import Sources.Components.RoundBorderCp;
+import Sources.Components.MyManagerRoundBorderComponents;
 
 import javax.swing.*;
 import javax.swing.border.AbstractBorder;
@@ -75,7 +75,7 @@ public class Transaction extends JDialog {
         //Init transaction table
         initTransactionTable();
         //init transaction description
-        AbstractBorder roundBrd = new RoundBorderCp(contentPane.getBackground(),3,30,0,0,20);
+        AbstractBorder roundBrd = new MyManagerRoundBorderComponents(contentPane.getBackground(),3,30,0,0,20);
         this.TransacDescriptionTxtP.setBorder(roundBrd);
         this.TransacDescriptionTxtP.setFont(new Font("Arial", Font.BOLD, 13));
         this.TransacDescriptionJSP.setBorder(null);

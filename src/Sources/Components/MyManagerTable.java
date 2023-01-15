@@ -32,8 +32,8 @@ public class MyManagerTable extends JTable {
     }
 
     public void initTable(){
-        AbstractBorder roundBrdMax = new RoundBorderCp(this.m_borderColor,this.m_thickness,this.m_borderRadius, 0,0,0);
-        AbstractBorder roundBrdMin = new RoundBorderCp(this.m_borderColor,this.m_thickness,this.m_borderRadius, this.m_height-(this.getRowCount()*this.getRowHeight()),0,0);
+        AbstractBorder roundBrdMax = new MyManagerRoundBorderComponents(this.m_borderColor,this.m_thickness,this.m_borderRadius, 0,0,0);
+        AbstractBorder roundBrdMin = new MyManagerRoundBorderComponents(this.m_borderColor,this.m_thickness,this.m_borderRadius, this.m_height-(this.getRowCount()*this.getRowHeight()),0,0);
         if(this.getRowCount()>this.m_numberOfVisibleLines) {
             this.setBorder(roundBrdMax);
         }
