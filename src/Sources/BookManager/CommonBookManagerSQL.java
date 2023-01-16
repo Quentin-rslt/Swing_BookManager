@@ -319,7 +319,7 @@ public class CommonBookManagerSQL {
                 bookManager.getBooksTable().setRowSelectionInterval(bookManager.getRowSelectedByBook(bookManager.getMTitle(), bookManager.getAuthor()), bookManager.getRowSelectedByBook(bookManager.getMTitle(), bookManager.getAuthor()));
                 bookManager.getReadingsTable().setRowSelectionInterval(bookManager.getRowReading(),bookManager.getRowReading());
             } else
-                bookManager.initComponents();
+                bookManager.resetBookComponents();
         }
         if(bookManager.isFastSearch()){
             bookManager.fastSearchBook(bookManager.getBookFastSearch().getText());

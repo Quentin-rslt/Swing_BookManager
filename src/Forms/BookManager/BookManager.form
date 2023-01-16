@@ -119,7 +119,7 @@
             <properties/>
             <border type="none"/>
             <children>
-              <scrollpane id="396ef">
+              <scrollpane id="396ef" binding="ReadingsJSPane">
                 <constraints>
                   <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="3" anchor="2" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -131,17 +131,7 @@
                   <verticalScrollBarPolicy value="22"/>
                 </properties>
                 <border type="empty"/>
-                <children>
-                  <component id="8d173" class="javax.swing.JTable" binding="ReadingsTable">
-                    <constraints/>
-                    <properties>
-                      <editingRow value="0"/>
-                      <focusable value="true"/>
-                      <preferredScrollableViewportSize width="470" height="130"/>
-                      <requestFocusEnabled value="false"/>
-                    </properties>
-                  </component>
-                </children>
+                <children/>
               </scrollpane>
             </children>
           </grid>

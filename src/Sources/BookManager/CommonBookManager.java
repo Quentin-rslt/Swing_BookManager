@@ -15,7 +15,7 @@ public class CommonBookManager {
                 bookManager.setAuthor(bookManager.getBooksTable().getValueAt(bookManager.getRowSelected(), 1).toString());
                 bookManager.loadComponents(bookManager.getMTitle(), bookManager.getAuthor());//reload changes made to the book
             } else {
-                bookManager.initComponents();
+                bookManager.resetBookComponents();
             }
         }else {
             if (bookManager.getBooksTable().getRowCount() > 0) {
@@ -25,7 +25,7 @@ public class CommonBookManager {
                 bookManager.setRowReading(0);
                 bookManager.loadComponents(bookManager.getMTitle(), bookManager.getAuthor());//reload changes made to the book
             } else {
-                bookManager.initComponents();
+                bookManager.resetBookComponents();
             }
         }
     }

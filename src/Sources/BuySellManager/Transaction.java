@@ -162,6 +162,10 @@ public class Transaction extends JDialog {
             //Ratio Sell/Buy
             TransacSellBuyLbl.setText("Vente/Achat : "+ratioSellBuy);
 
+            conn.close();
+            statement.close();
+            sumBuyStatement.close();
+            sumBuyStatement.close();
         }catch (Exception e ){
             JFrame jf = new JFrame();
             JOptionPane.showMessageDialog(jf, e.getMessage(), "Chargement composants impossible", JOptionPane.ERROR_MESSAGE);

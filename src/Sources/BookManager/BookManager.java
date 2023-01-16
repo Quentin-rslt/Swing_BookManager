@@ -12,7 +12,6 @@ import Sources.Components.Tags;
 import javax.swing.*;
 import javax.swing.border.AbstractBorder;
 import javax.swing.filechooser.FileSystemView;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
@@ -55,21 +54,16 @@ public class BookManager extends JDialog{
     private JScrollPane JSpane;
     private JButton BookManageTagsBtn;
     private JTextField BookFastSearch;
-    private JTable ReadingsTable;
+    private MyManagerTable ReadingsTable;
     private JLabel CountBookLbl;
     private JScrollPane BooksJSPane;
     private JPanel contentPane;
-    private final DefaultTableModel m_tableReadingModel = new DefaultTableModel(){//Create a Jtable with the tablemodel not editable
-        public boolean isCellEditable(int rowIndex, int colIndex) {
-            return false; //Disallow the editing of any cell
-        }
-    };
+    private JScrollPane ReadingsJSPane;
     private String m_title;
     private String m_author;
     private int m_rowSelected = 0;
-    final JPopupMenu m_popup;
+    JPopupMenu m_popup;
     private FiltersDlg m_filtersDiag;
-    private Tags m_tags = new Tags();
     private Boolean isFiltered;
     private boolean m_isFastSearch;
     private ManageReading m_manageReading;
@@ -96,176 +90,23 @@ public class BookManager extends JDialog{
     private int m_manageAllTagsModif;
     private int m_resetModif;
     private final MainWindow m_mainWindow;
-    private final MyManagerTable BooksTable;
+    private MyManagerTable BooksTable;
+    JMenuItem m_add;
+    JMenuItem m_cut;
+    JMenuItem m_edit;
+    JMenuItem m_openManageTags;
 
     public BookManager(MainWindow parent){
         setContentPane(contentPane);
         m_mainWindow = parent;
 
-        BooksTable = new MyManagerTable(500,455,30, 13,1, contentPane.getBackground());
-        BooksJSPane.getViewport().add(BooksTable);
-
         setIsFiltered(false);
         loadParameters();
-        initBinding();
-        fillBookTable(isFiltered());
-
-        AbstractBorder roundBrd = new MyManagerRoundBorderComponents(contentPane.getBackground(),3,30,0,0,20);
-        BookSummary.setBorder(roundBrd);
-        BookSummary.setFont(new Font("Arial", Font.BOLD, 13));
-        contentPane.getRootPane().setDefaultButton(CancelFiltersBtn);
-        JSpane.setBorder(null);
-
-        ReadingsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
-        m_popup = new JPopupMenu();//Create a popup menu to delete a reading an edit this reading
-        JMenuItem add = new JMenuItem("Ajouter une lecture", new ImageIcon(getLogo("add.png")));
-        JMenuItem cut = new JMenuItem("Supprimer", new ImageIcon(getLogo("remove.png")));
-        JMenuItem edit = new JMenuItem("Modifier", new ImageIcon(getLogo("edit.png")));
-        JMenuItem openManageTags = new JMenuItem("Gérer ses tags", new ImageIcon(getLogo("tag.png")));
-
-        m_popup.add(add);
-        m_popup.add(cut);
-        m_popup.add(edit);
-        m_popup.add(openManageTags);
-
-        if(BooksTable.getRowCount() != 0) {//Vérif if the table is not empty; when starting the app, load and focus on the first book of the table
-            setMTitle(BooksTable.getValueAt(0, 0).toString());
-            setAuthor(BooksTable.getValueAt(0, 1).toString());
-            setRowReading(0);
-            setRowSelected(0);
-            loadComponents(getMTitle(), getAuthor());
-
-            BooksTable.getActionMap().put("tab", new AbstractAction(){
-                public void actionPerformed(ActionEvent e){
-                    if(BooksTable.getRowCount()>0) {
-                        ReadingsTable.requestFocusInWindow();
-                        m_manageReading.setStartReading(ReadingsTable.getValueAt(getRowReading(), 0).toString());
-                        m_manageReading.setEndReading(ReadingsTable.getValueAt(getRowReading(), 1).toString());
-                    }
-                }
-            });
-            BooksTable.getActionMap().put("up", new AbstractAction(){
-                public void actionPerformed(ActionEvent e){
-                    if(getRowSelected()>0) {
-                        setRowSelected(getRowSelected() - 1);
-                        setRowReading(0);
-                        setMTitle(BooksTable.getValueAt(getRowSelected(), 0).toString());
-                        setAuthor(BooksTable.getValueAt(getRowSelected(), 1).toString());
-                        loadComponents(getMTitle(), getAuthor());
-                    }
-                }
-            });
-            BooksTable.getActionMap().put("dow", new AbstractAction(){
-                public void actionPerformed(ActionEvent e){
-                    if(getRowSelected()<BooksTable.getRowCount()-1) {
-                        setRowSelected(getRowSelected() + 1);
-                        setRowReading(0);
-                        setMTitle(BooksTable.getValueAt(getRowSelected(), 0).toString());
-                        setAuthor(BooksTable.getValueAt(getRowSelected(), 1).toString());
-                        loadComponents(getMTitle(), getAuthor());
-                    }
-                }
-            });
-
-            FiltersBookBtn.setEnabled(true);
-        }else{
-            FiltersBookBtn.setEnabled(false);
-            resetBookManager(this, false);
-        }
-
-        BooksTable.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseReleased(MouseEvent evt) {//set main UI when we clicked on an element of the array, retrieved from the db
-                super.mouseReleased(evt);
-                BooksTable.requestFocusInWindow();
-                int newLine= BooksTable.rowAtPoint(evt.getPoint());
-
-                if(newLine != getRowSelected()) {
-                    setRowSelected(BooksTable.rowAtPoint(evt.getPoint()));
-                    setRowReading(0);
-                    setMTitle(BooksTable.getValueAt(getRowSelected(), 0).toString());
-                    setAuthor(BooksTable.getValueAt(getRowSelected(), 1).toString());
-                    loadComponents(getMTitle(), getAuthor());
-                }
-                if(evt.getButton() == MouseEvent.BUTTON3) {//if we right-click show a popup to edit the book
-                    m_popup.show(BooksTable, evt.getX(), evt.getY());
-                }
-                if(evt.getClickCount() == 2 && evt.getButton() == MouseEvent.BUTTON1){
-                    EditBookDlg diag = openEditBookDlg(getMTitle(), getAuthor());
-                    editBook(diag,BookManager.this);
-                }
-            }
-        });
-        AddBookBtn.addActionListener((ActionEvent evt) -> {
-            setNameOfImage("");
-            AddBookDlg diag = openAddBookDlg();
-            addBook(diag,this);
-        });
-        cut.addActionListener((ActionEvent evt) -> deleteBook(this));
-        edit.addActionListener((ActionEvent evt) -> {
-            EditBookDlg diag = openEditBookDlg(getMTitle(), getAuthor());
-            editBook(diag,this);
-        });
-        add.addActionListener((ActionEvent evt) -> {
-            AddReading diag = openAddReadingDlg(getMTitle(), getAuthor());
-            addReading(diag, this);
-        });
-        openManageTags.addActionListener((ActionEvent evt)->{
-            openManageTagsDlg(getMTitle(), getAuthor());
-            contentPane.updateUI();
-            fillBookTable(isFiltered());
-            isItInFilteredBookList(this,false);
-            if(isFastSearch()){
-                fastSearchBook(BookFastSearch.getText());
-            }
-        });
-        FiltersBookBtn.addActionListener((ActionEvent e)-> {
-            m_filtersDiag = openFilterDlg();
-            filtersBook(m_filtersDiag, this);
-        });
-        CancelFiltersBtn.addActionListener((ActionEvent e) -> {
-            contentPane.updateUI();
-            setIsFiltered(false);
-            fillBookTable(isFiltered());
-            isItInFilteredBookList(this,false);
-            if(isFastSearch()){
-                fastSearchBook(getBookFastSearch().getText());
-            }
-        });
-        BookManageTagsBtn.addActionListener((ActionEvent e) -> {
-            openManageTagsDlg();
-            contentPane.updateUI();
-            fillBookTable(isFiltered());
-            isItInFilteredBookList(this, false);
-            if(isFastSearch()){
-                fastSearchBook(BookFastSearch.getText());
-            }
-        });
-        BookFastSearch.addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                super.focusGained(e);
-                m_mainWindow.getJMenuBar().setEnabled(false);
-            }
-            @Override
-            public void focusLost(FocusEvent e) {
-                super.focusLost(e);
-                m_mainWindow.getJMenuBar().setEnabled(true);
-            }
-        });
-        BookFastSearch.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyReleased(KeyEvent e) {
-                super.keyReleased(e);
-                fastSearchBook(BookFastSearch.getText());
-            }
-        });
+        initComponents();
+        initLoadComponents();
+        initListeners();
     }
-
-    public Tags getTags(){
-        return this.m_tags;
-    }
+    /****************************** Getters ***********************************/
     public String getMTitle(){
         return m_title;
     }
@@ -379,9 +220,6 @@ public class BookManager extends JDialog{
     public void setFastSearch(boolean fast){
         this.m_isFastSearch=fast;
     }
-    public void setTags(Tags tags){
-        this.m_tags=tags;
-    }
     public void setRowSelected(int m_rowSelected) {
         this.m_rowSelected = m_rowSelected;
     }
@@ -454,7 +292,6 @@ public class BookManager extends JDialog{
     public void setResetModif(int m_resetModif) {
         this.m_resetModif = m_resetModif;
     }
-
     public void fillBookTable(boolean isFiltered){
         BooksTable.getTableModel().setRowCount(0);
         CancelFiltersBtn.setEnabled(isFiltered);
@@ -531,7 +368,7 @@ public class BookManager extends JDialog{
         }
     }
     public void fillReadingTable(String title, String author) {
-        m_tableReadingModel.setRowCount(0);
+        ReadingsTable.getTableModel().setRowCount(0);
         try (Connection conn = connect()) {
             Statement m_statement = conn.createStatement();
             ResultSet qry = m_statement.executeQuery("SELECT StartReading, EndReading FROM Reading WHERE Title='" + title + "' AND Author='" + author + "'");
@@ -558,16 +395,10 @@ public class BookManager extends JDialog{
                 String[] header = {"Début de lecture", "Fin de lecture", "Temps de lecture"};
                 Object[] data = {startReading, endReading, StdDays};
 
-                m_tableReadingModel.setColumnIdentifiers(header);//Create the header
-                m_tableReadingModel.addRow(data);//add to tablemodel the data
+                ReadingsTable.getTableModel().setColumnIdentifiers(header);//Create the header
+                ReadingsTable.getTableModel().addRow(data);//add to tablemodel the data
             }
-            ReadingsTable.setModel(m_tableReadingModel);
-            AbstractBorder roundBrdMax = new MyManagerRoundBorderComponents(contentPane.getBackground(), 1, 30, 0, 0, 0);
-            AbstractBorder roundBrdMin = new MyManagerRoundBorderComponents(contentPane.getBackground(), 1, 30, ReadingsTable.getPreferredScrollableViewportSize().height - (ReadingsTable.getRowCount() * ReadingsTable.getRowHeight()), 0, 0);
-            if (ReadingsTable.getRowCount() > 3)
-                ReadingsTable.setBorder(roundBrdMax);
-            else
-                ReadingsTable.setBorder(roundBrdMin);
+            ReadingsTable.initTable();
 
             contentPane.updateUI();
             qry.close();
@@ -577,6 +408,52 @@ public class BookManager extends JDialog{
             System.out.println(e.getMessage());
             JFrame jf = new JFrame();
             JOptionPane.showMessageDialog(jf, e.getMessage(), "Chargement tableau lecture impossible", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    public void initLoadComponents(){
+        if(BooksTable.getRowCount() != 0) {//Vérif if the table is not empty; when starting the app, load and focus on the first book of the table
+            setMTitle(BooksTable.getValueAt(0, 0).toString());
+            setAuthor(BooksTable.getValueAt(0, 1).toString());
+            setRowReading(0);
+            setRowSelected(0);
+            loadComponents(getMTitle(), getAuthor());
+
+            BooksTable.getActionMap().put("tab", new AbstractAction(){
+                public void actionPerformed(ActionEvent e){
+                    if(BooksTable.getRowCount()>0) {
+                        ReadingsTable.requestFocusInWindow();
+                        m_manageReading.setStartReading(ReadingsTable.getValueAt(getRowReading(), 0).toString());
+                        m_manageReading.setEndReading(ReadingsTable.getValueAt(getRowReading(), 1).toString());
+                    }
+                }
+            });
+            BooksTable.getActionMap().put("up", new AbstractAction(){
+                public void actionPerformed(ActionEvent e){
+                    if(getRowSelected()>0) {
+                        setRowSelected(getRowSelected() - 1);
+                        setRowReading(0);
+                        setMTitle(BooksTable.getValueAt(getRowSelected(), 0).toString());
+                        setAuthor(BooksTable.getValueAt(getRowSelected(), 1).toString());
+                        loadComponents(getMTitle(), getAuthor());
+                    }
+                }
+            });
+            BooksTable.getActionMap().put("dow", new AbstractAction(){
+                public void actionPerformed(ActionEvent e){
+                    if(getRowSelected()<BooksTable.getRowCount()-1) {
+                        setRowSelected(getRowSelected() + 1);
+                        setRowReading(0);
+                        setMTitle(BooksTable.getValueAt(getRowSelected(), 0).toString());
+                        setAuthor(BooksTable.getValueAt(getRowSelected(), 1).toString());
+                        loadComponents(getMTitle(), getAuthor());
+                    }
+                }
+            });
+
+            FiltersBookBtn.setEnabled(true);
+        }else{
+            FiltersBookBtn.setEnabled(false);
+            resetBookManager(this, false);
         }
     }
     public void loadComponents(String title, String author){
@@ -695,7 +572,6 @@ public class BookManager extends JDialog{
             while (tagsQry.next()){
                 tags.createTag(tagsQry.getString(1));
                 tags.getTag(tagsQry.getRow()-1).setColor(tagsQry.getInt(2));
-                setTags(tags);
                 for(int i=0; i<tags.getSizeTags();i++) {
                     BookTagsPanel.add(tags.getTag(i));
                 }
@@ -710,8 +586,8 @@ public class BookManager extends JDialog{
             throw new RuntimeException(e.getMessage());
         }
     }
-    public void initComponents(){
-        m_tableReadingModel.setRowCount(0);
+    public void resetBookComponents(){
+        ReadingsTable.getTableModel().setRowCount(0);
         TitleLabel.setText("Titre livre");
         ReleaseYearLAbel.setText("Année de sortie :");
         NumberPageLabel.setText("Nombre de page :");
@@ -851,5 +727,130 @@ public class BookManager extends JDialog{
             JFrame jf = new JFrame();
             JOptionPane.showMessageDialog(jf, e.getMessage(), "Rechargement shortcut impossible", JOptionPane.ERROR_MESSAGE);
         }
+    }
+    public void initListeners(){
+        BooksTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent evt) {//set main UI when we clicked on an element of the array, retrieved from the db
+                super.mouseReleased(evt);
+                BooksTable.requestFocusInWindow();
+                int newLine= BooksTable.rowAtPoint(evt.getPoint());
+
+                if(newLine != getRowSelected()) {
+                    setRowSelected(BooksTable.rowAtPoint(evt.getPoint()));
+                    setRowReading(0);
+                    setMTitle(BooksTable.getValueAt(getRowSelected(), 0).toString());
+                    setAuthor(BooksTable.getValueAt(getRowSelected(), 1).toString());
+                    loadComponents(getMTitle(), getAuthor());
+                }
+                if(evt.getButton() == MouseEvent.BUTTON3) {//if we right-click show a popup to edit the book
+                    m_popup.show(BooksTable, evt.getX(), evt.getY());
+                }
+                if(evt.getClickCount() == 2 && evt.getButton() == MouseEvent.BUTTON1){
+                    EditBookDlg diag = openEditBookDlg(getMTitle(), getAuthor());
+                    editBook(diag,BookManager.this);
+                }
+            }
+        });
+        AddBookBtn.addActionListener((ActionEvent evt) -> {
+            setNameOfImage("");
+            AddBookDlg diag = openAddBookDlg();
+            addBook(diag,this);
+        });
+        m_cut.addActionListener((ActionEvent evt) -> deleteBook(this));
+        m_edit.addActionListener((ActionEvent evt) -> {
+            EditBookDlg diag = openEditBookDlg(getMTitle(), getAuthor());
+            editBook(diag,this);
+        });
+        m_add.addActionListener((ActionEvent evt) -> {
+            AddReading diag = openAddReadingDlg(getMTitle(), getAuthor());
+            addReading(diag, this);
+        });
+        m_openManageTags.addActionListener((ActionEvent evt)->{
+            openManageTagsDlg(getMTitle(), getAuthor());
+            contentPane.updateUI();
+            fillBookTable(isFiltered());
+            isItInFilteredBookList(this,false);
+            if(isFastSearch()){
+                fastSearchBook(BookFastSearch.getText());
+            }
+        });
+        FiltersBookBtn.addActionListener((ActionEvent e)-> {
+            m_filtersDiag = openFilterDlg();
+            filtersBook(m_filtersDiag, this);
+        });
+        CancelFiltersBtn.addActionListener((ActionEvent e) -> {
+            contentPane.updateUI();
+            setIsFiltered(false);
+            fillBookTable(isFiltered());
+            isItInFilteredBookList(this,false);
+            if(isFastSearch()){
+                fastSearchBook(getBookFastSearch().getText());
+            }
+        });
+        BookManageTagsBtn.addActionListener((ActionEvent e) -> {
+            openManageTagsDlg();
+            contentPane.updateUI();
+            fillBookTable(isFiltered());
+            isItInFilteredBookList(this, false);
+            if(isFastSearch()){
+                fastSearchBook(BookFastSearch.getText());
+            }
+        });
+        BookFastSearch.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                super.focusGained(e);
+                m_mainWindow.getJMenuBar().setEnabled(false);
+            }
+            @Override
+            public void focusLost(FocusEvent e) {
+                super.focusLost(e);
+                m_mainWindow.getJMenuBar().setEnabled(true);
+            }
+        });
+        BookFastSearch.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                super.keyReleased(e);
+                fastSearchBook(BookFastSearch.getText());
+            }
+        });
+    }
+    public void initPopupMenu(){
+        m_openManageTags = new JMenuItem("Gérer ses tags", new ImageIcon(getLogo("tag.png")));
+        m_edit = new JMenuItem("Modifier", new ImageIcon(getLogo("edit.png")));
+        m_cut = new JMenuItem("Supprimer", new ImageIcon(getLogo("remove.png")));
+        m_add = new JMenuItem("Ajouter une lecture", new ImageIcon(getLogo("add.png")));
+
+        m_popup = new JPopupMenu();//Create a popup menu to delete a reading an edit this reading
+        m_popup.add(m_add);
+        m_popup.add(m_cut);
+        m_popup.add(m_edit);
+        m_popup.add(m_openManageTags);
+    }
+    public void initComponents(){
+        //init all tables
+        initTables();
+        //init Popup menu
+        initPopupMenu();
+        //Init summuray components
+        AbstractBorder roundBrd = new MyManagerRoundBorderComponents(contentPane.getBackground(),3,30,0,0,20);
+        BookSummary.setBorder(roundBrd);
+        BookSummary.setFont(new Font("Arial", Font.BOLD, 13));
+        JSpane.setBorder(null);
+
+        contentPane.getRootPane().setDefaultButton(CancelFiltersBtn);
+    }
+    public void initTables(){
+        //init book table and fill it
+        BooksTable = new MyManagerTable(500,455,30, 13,1, contentPane.getBackground());
+        BooksJSPane.getViewport().add(BooksTable);
+        //init reading table
+        ReadingsTable = new MyManagerTable(500,130,30, 3,1, contentPane.getBackground());
+        ReadingsJSPane.getViewport().add(ReadingsTable);
+        //init bind of reading table and book table => to navigate with cross
+        initBinding();
+        fillBookTable(isFiltered());
     }
 }
