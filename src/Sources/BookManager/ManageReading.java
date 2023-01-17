@@ -1,6 +1,7 @@
 package Sources.BookManager;
 
 import Sources.BookManager.Dialogs.EditReadingDlg;
+import Sources.Components.MyManagerTable;
 
 import javax.swing.*;
 import java.awt.event.*;
@@ -11,14 +12,14 @@ import static Sources.Common.getLogo;
 import static Sources.CommonSQL.connect;
 
 public class ManageReading {
-    JTable m_readingsTable;
+    MyManagerTable m_readingsTable;
     private final String m_title;
     private final String m_author;
     private String m_startReading = "";
     private String m_endReading = "";
     final JPopupMenu m_popup;
 
-    public ManageReading(BookManager parent, JTable ReadingsTable) {
+    public ManageReading(BookManager parent, MyManagerTable ReadingsTable) {
         this.m_readingsTable = ReadingsTable;
         this.m_title = parent.getMTitle();
         this.m_author= parent.getAuthor();
@@ -41,6 +42,7 @@ public class ManageReading {
                 if(parent.getRowReading()>0) {
                     parent.setRowReading(parent.getRowReading()-1);
                     m_readingsTable.setRowSelectionInterval(parent.getRowReading(), parent.getRowReading());
+                    m_readingsTable.scrollFolowRow(parent.getRowReading());
                     setStartReading(m_readingsTable.getValueAt(parent.getRowReading(), 0).toString());
                     setEndReading(m_readingsTable.getValueAt(parent.getRowReading(), 1).toString());
                 }
@@ -50,6 +52,7 @@ public class ManageReading {
             public void actionPerformed(ActionEvent e){
                 if(parent.getRowReading()<m_readingsTable.getRowCount()-1) {
                     parent.setRowReading(parent.getRowReading()+1);
+                    m_readingsTable.scrollFolowRow(parent.getRowReading());
                     m_readingsTable.setRowSelectionInterval(parent.getRowReading(), parent.getRowReading());
                     setStartReading(m_readingsTable.getValueAt(parent.getRowReading(), 0).toString());
                     setEndReading(m_readingsTable.getValueAt(parent.getRowReading(), 1).toString());

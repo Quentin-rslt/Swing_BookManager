@@ -460,10 +460,12 @@ public class BookManager extends JDialog{
         fillReadingTable(title,author);
         m_manageReading = new ManageReading(this, ReadingsTable);
         ReadingsTable.setRowSelectionInterval(getRowReading(),getRowReading());
+        ReadingsTable.scrollFolowRow(getRowReading());
         m_manageReading.setStartReading(ReadingsTable.getValueAt(getRowReading(), 0).toString());
         m_manageReading.setEndReading(ReadingsTable.getValueAt(getRowReading(), 1).toString());
 
         BooksTable.setRowSelectionInterval(getRowSelected(), getRowSelected());
+        BooksTable.scrollFolowRow(getRowSelected());
 
         FiltersBookBtn.setEnabled(true);
         BookManageTagsBtn.setEnabled(true);

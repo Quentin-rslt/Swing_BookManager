@@ -10,14 +10,13 @@ import java.sql.*;
 import static Sources.Common.getLogo;
 import static Sources.CommonSQL.connect;
 
-public class MainWindow extends JDialog {
+public class MainWindow extends JFrame {
     private JPanel contentPane;
     private JPanel TransactionsPanel;
     private JPanel BooksPanel;
 
     public MainWindow() {
         setContentPane(contentPane);
-        setModal(true);
         connectionDB();
         //Book panel
         BookManager booksManager = new BookManager(this);
@@ -105,6 +104,5 @@ public class MainWindow extends JDialog {
         parent.setSize(1520,855);
         parent.setLocationRelativeTo(null);
         parent.setVisible(true);
-        System.exit(0);
     }
 }

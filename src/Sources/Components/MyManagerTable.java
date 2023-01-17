@@ -41,6 +41,10 @@ public class MyManagerTable extends JTable {
             this.setBorder(roundBrdMin);
         }
     }
+    public void scrollFolowRow(int row){
+        Rectangle cellRect = this.getCellRect(row, 0, false);
+        this.scrollRectToVisible(cellRect);
+    }
 
     public DefaultTableModel getTableModel(){
         return this.m_tableModel;
