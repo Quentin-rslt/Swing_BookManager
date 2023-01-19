@@ -7,7 +7,6 @@ import Sources.BookManager.Dialogs.FiltersDlg;
 import Sources.MainWindow;
 import Sources.Components.MyManagerTable;
 import Sources.Components.MyManagerRoundBorderComponents;
-import Sources.Components.Tags;
 
 import javax.swing.*;
 import javax.swing.border.AbstractBorder;
@@ -33,6 +32,7 @@ import static Sources.BookManager.Dialogs.OpenBookManagerDialog.*;
 import static Sources.BookManager.MenuBarBookManager.createMenuBar;
 import static Sources.Common.*;
 import static Sources.CommonSQL.connect;
+import static Sources.CommonSQL.loadTags;
 import static Sources.Dialogs.OpenDialogs.*;
 
 public class BookManager extends JDialog{
@@ -472,7 +472,7 @@ public class BookManager extends JDialog{
 
         loadBook(title, author);
         loadReading(title, author);
-        loadTags(title, author);
+        loadTags(title, author, BookTagsPanel);
     }
     public void loadBook(String title, String author){
         try(Connection conn = connect()) {
@@ -557,32 +557,6 @@ public class BookManager extends JDialog{
             statement.close();
         }
         catch ( Exception e ) {
-            JFrame jf = new JFrame();
-            JOptionPane.showMessageDialog(jf, e.getMessage(), "Chargement composants impossible", JOptionPane.ERROR_MESSAGE);
-            throw new RuntimeException(e.getMessage());
-        }
-    }
-    public void loadTags(String title, String author){
-        Tags tags = new Tags();
-        try(Connection conn = connect()) {
-            Statement statement = conn.createStatement();
-
-            //Tags Label
-            ResultSet tagsQry = statement.executeQuery("SELECT Tag,Color FROM Tags JOIN Tagging on Tags.ID=Tagging.IdTag " +
-                    "WHERE Tagging.IdBook='"+getIdBook(title, author)+"' ORDER BY Tag ASC");
-            BookTagsPanel.removeAll();
-            while (tagsQry.next()){
-                tags.createTag(tagsQry.getString(1));
-                tags.getTag(tagsQry.getRow()-1).setColor(tagsQry.getInt(2));
-                for(int i=0; i<tags.getSizeTags();i++) {
-                    BookTagsPanel.add(tags.getTag(i));
-                }
-            }
-            BookTagsPanel.updateUI();
-
-            conn.close();
-            statement.close();
-        } catch ( Exception e ) {
             JFrame jf = new JFrame();
             JOptionPane.showMessageDialog(jf, e.getMessage(), "Chargement composants impossible", JOptionPane.ERROR_MESSAGE);
             throw new RuntimeException(e.getMessage());

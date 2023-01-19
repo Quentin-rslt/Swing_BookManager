@@ -10,6 +10,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.*;
 
+import static Sources.BookManager.CommonBookManagerSQL.getIdBook;
+
 public class CommonSQL {
     public static Connection connect() {
         Connection connection;
@@ -43,7 +45,7 @@ public class CommonSQL {
     }
     public static Tags loadTags(){
         Tags tags = new Tags();
-        String sql = "SELECT Tag,Color FROM Tags";
+        String sql = "SELECT Tag,Color FROM Tags ORDER BY Tag ASC";
         try(Connection conn = connect()) {
             Class.forName("org.sqlite.JDBC");
             Statement statement = conn.createStatement();
@@ -60,6 +62,56 @@ public class CommonSQL {
             throw new RuntimeException(e.getMessage());
         }
 
+        return tags;
+    }
+    public static Tags loadTags(String title, String author, JPanel panel){
+        Tags tags = new Tags();
+        try(Connection conn = connect()) {
+            Statement statement = conn.createStatement();
+
+            //Tags
+            ResultSet tagsQry = statement.executeQuery("SELECT Tag,Color FROM Tags JOIN Tagging on Tags.ID=Tagging.IdTag " +
+                    "WHERE Tagging.IdBook='"+getIdBook(title, author)+"' ORDER BY Tag ASC");
+            panel.removeAll();
+            while (tagsQry.next()){
+                tags.createTag(tagsQry.getString(1));
+                tags.getTag(tagsQry.getRow()-1).setColor(tagsQry.getInt(2));
+                panel.add(tags.getTag(tags.getSizeTags()-1));
+            }
+            panel.updateUI();
+
+            conn.close();
+            statement.close();
+        } catch (Exception e ) {
+            JFrame jf = new JFrame();
+            JOptionPane.showMessageDialog(jf, e.getMessage(), "Chargement du livre impossible", JOptionPane.ERROR_MESSAGE);
+            throw new RuntimeException(e.getMessage());
+        }
+        return tags;
+    }
+    public static Tags loadTags(JPanel panel){
+        Tags tags = new Tags();
+        try(Connection conn = connect()) {
+            Statement statement = conn.createStatement();
+
+            //Tags
+            ResultSet tagsQry = statement.executeQuery("SELECT Tag, Color FROM Tags " +
+                    "ORDER BY Tag ASC");
+            panel.removeAll();
+            while (tagsQry.next()){
+                tags.createTag(tagsQry.getString(1));
+                tags.getTag(tagsQry.getRow()-1).setColor(tagsQry.getInt(2));
+                panel.add(tags.getTag(tags.getSizeTags()-1));
+            }
+            panel.updateUI();
+
+            conn.close();
+            statement.close();
+        } catch (Exception e ) {
+            JFrame jf = new JFrame();
+            JOptionPane.showMessageDialog(jf, e.getMessage(), "Chargement du livre impossible", JOptionPane.ERROR_MESSAGE);
+            throw new RuntimeException(e.getMessage());
+        }
         return tags;
     }
 }

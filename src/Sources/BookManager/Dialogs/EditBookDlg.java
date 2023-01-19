@@ -249,7 +249,8 @@ public class EditBookDlg extends JDialog {
     }
     public void loadDB(String title, String author){
         loadBook(title, author);
-        loadTags(title, author);
+        setTags(loadTags(title, author, BookTagsPanel));
+        fillTagsCB(BookTagsCB);
     }
     public void loadBook(String title, String author){
         fillAuthorCB(BookAuthorCB);
@@ -288,32 +289,6 @@ public class EditBookDlg extends JDialog {
             //Image
             addImageToPanel(bookQry.getString(4),BookPhotoPanel);
             setNameOfImage(bookQry.getString(4));
-
-            conn.close();
-            statement.close();
-        } catch (Exception e ) {
-            JFrame jf = new JFrame();
-            JOptionPane.showMessageDialog(jf, e.getMessage(), "Chargement du livre impossible", JOptionPane.ERROR_MESSAGE);
-            throw new RuntimeException(e.getMessage());
-        }
-    }
-    public void loadTags(String title, String author){
-        try(Connection conn = connect()) {
-            Statement statement = conn.createStatement();
-
-            //Tags
-            ResultSet tagsQry = statement.executeQuery("SELECT Tag,Color FROM Tags JOIN Tagging on Tags.ID=Tagging.IdTag " +
-                    "WHERE Tagging.IdBook='"+getIdBook(title, author)+"'");
-            BookTagsPanel.removeAll();
-            while (tagsQry.next()){
-                getTags().createTag(tagsQry.getString(1));
-                getTags().getTag(tagsQry.getRow()-1).setColor(tagsQry.getInt(2));
-                for(int i=0; i<getTags().getSizeTags();i++) {
-                    BookTagsPanel.add(getTags().getTag(i));
-                }
-            }
-            BookTagsPanel.updateUI();
-            fillTagsCB(BookTagsCB);
 
             conn.close();
             statement.close();

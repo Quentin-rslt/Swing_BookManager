@@ -24,13 +24,12 @@ public class ManageTagsDlg extends JDialog {
     private Tags m_tags;
     final JPopupMenu m_popup;
     private int m_row;
-    private int m_TagsNumber;
 
     public ManageTagsDlg() {
         setContentPane(contentPane);
         setModal(true);
         this.m_tags = new Tags();
-        fillTagsList();
+        setTags(loadTags(TagsPanel));
 
         m_popup = new JPopupMenu();//Create a popup menu to delete a reading an edit this reading
         JMenuItem cut = new JMenuItem("Supprimer", new ImageIcon(getLogo("remove.png")));
@@ -55,7 +54,7 @@ public class ManageTagsDlg extends JDialog {
                     try (Connection conn = connect(); PreparedStatement TaggingPstmt = conn.prepareStatement(Tags); PreparedStatement TagsPstmt = conn.prepareStatement(TaggingQry)) {
                         TagsPstmt.executeUpdate();
                         TaggingPstmt.executeUpdate();
-                        fillTagsList();
+                        setTags(loadTags(TagsPanel));
                         contentPane.updateUI();
                         break;
                     } catch (SQLException e) {
@@ -83,7 +82,7 @@ public class ManageTagsDlg extends JDialog {
                             TagsUpdatePstmt.setString(1, diag.getNewTextTag());
                             TagsUpdatePstmt.setInt(2, diag.getNewColorTag().getRGB());
                             TagsUpdatePstmt.executeUpdate();
-                            fillTagsList();
+                            setTags(loadTags(TagsPanel));
                             contentPane.updateUI();
                             break;
                         }catch (SQLException e) {
@@ -112,7 +111,6 @@ public class ManageTagsDlg extends JDialog {
                                     " WHERE NOT EXISTS(SELECT * FROM Tags WHERE Tag='" + getTags().getTag(getTags().getSizeTags() - 1).getTextTag() + "' AND Color='" + getTags().getTag(getTags().getSizeTags() - 1).getColor() + "')";
                             PreparedStatement TagsInsertPstmt = conn.prepareStatement(TagsInsertQry);
                             TagsInsertPstmt.executeUpdate();
-                            //TagsPanel.setPreferredSize(new Dimension(400, (m_TagsNumber+1)*11));
                         } catch (SQLException e) {
                             System.out.println(e.getMessage());
                             JFrame jf = new JFrame();
@@ -130,7 +128,7 @@ public class ManageTagsDlg extends JDialog {
         setContentPane(contentPane);
         setModal(true);
         this.m_tags = new Tags();
-        fillTagsList(title, author);
+        setTags(loadTags(title, author, TagsPanel));
 
         AddTagPanel.add(AddTagCb);
         fillThemeCB();
@@ -157,7 +155,7 @@ public class ManageTagsDlg extends JDialog {
                             "AND idBook='"+getIdBook(title,author)+"'";
                     try (Connection conn = connect(); PreparedStatement TaggingSuppPstmt = conn.prepareStatement(TaggingQry)) {
                         TaggingSuppPstmt.executeUpdate();
-                        fillTagsList(title, author);
+                        setTags(loadTags(title, author, TagsPanel));
                         contentPane.updateUI();
                         break;
                     } catch (SQLException e) {
@@ -214,7 +212,7 @@ public class ManageTagsDlg extends JDialog {
                                 JOptionPane.showMessageDialog(jf, e.getMessage(), "Edition tag impossible", JOptionPane.ERROR_MESSAGE);
                             }
                         }
-                        fillTagsList(title, author);
+                        setTags(loadTags(title, author, TagsPanel));
                         contentPane.updateUI();
                         break;
                     }
@@ -248,7 +246,6 @@ public class ManageTagsDlg extends JDialog {
                                     TaggingPstmt.setInt(1, getIdBook(title, author));
                                     TaggingPstmt.setInt(2, getIdTag(getTags().getTag(getTags().getSizeTags() - 1).getTextTag(), getTags().getTag(getTags().getSizeTags() - 1).getColor()));
                                     TaggingPstmt.executeUpdate();
-                                    m_TagsNumber = m_TagsNumber + 1;
                                 } catch (SQLException e) {
                                     System.out.println(e.getMessage());
                                     JFrame jf = new JFrame();
@@ -290,73 +287,6 @@ public class ManageTagsDlg extends JDialog {
     }
     public void setRow(int m_row) {
         this.m_row = m_row;
-    }
-    public void fillTagsList(){
-        TagsPanel.removeAll();
-        Tags tags = new Tags();
-
-        try(Connection conn = connect()){
-            Statement statement = conn.createStatement();
-            ResultSet qry = statement.executeQuery("SELECT Tag, Color FROM Tags ORDER BY Tag ASC");
-
-            while (qry.next()){
-                m_TagsNumber = qry.getRow();
-                String textTag = qry.getString(1);
-                int colorTag = qry.getInt(2);
-
-                tags.createTag(textTag);
-                tags.getTag(tags.getSizeTags()-1).setColor(colorTag);
-                tags.getTag(tags.getSizeTags()-1).setBorderColor(contentPane.getBackground());
-
-                TagsPanel.add(tags.getTag(tags.getSizeTags()-1));
-            }
-            //TagsPanel.setPreferredSize(new Dimension(400, m_TagsNumber*11));
-            setTags(tags);
-
-            qry.close();
-            conn.close();
-            statement.close();
-        } catch ( Exception e ) {
-            System.out.println(e.getMessage());
-            JFrame jf = new JFrame();
-            JOptionPane.showMessageDialog(jf, e.getMessage(), "Chargement des tags impossible", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-    public void fillTagsList(String title, String author){
-        TagsPanel.removeAll();
-        Tags tags = new Tags();
-        try(Connection conn = connect()){
-            Statement statement = conn.createStatement();
-            String strQry = "SELECT Tag, Color FROM Tags ";
-            strQry = strQry+
-                    "INNER JOIN Tagging ON Tags.ID=Tagging.IdTag " +
-                    "INNER JOIN Book ON Tagging.idBook=Book.ID " +
-                    "WHERE Book.ID='" + getIdBook(title, author) + "' ";
-            strQry = strQry +"ORDER BY Tag ASC";
-
-            ResultSet qry = statement.executeQuery(strQry);
-            while (qry.next()){
-                m_TagsNumber = qry.getRow();
-                String textTag = qry.getString(1);
-                int colorTag = qry.getInt(2);
-
-                tags.createTag(textTag);
-                tags.getTag(tags.getSizeTags()-1).setColor(colorTag);
-                tags.getTag(tags.getSizeTags()-1).setBorderColor(contentPane.getBackground());
-
-                TagsPanel.add(tags.getTag(tags.getSizeTags()-1));
-            }
-            //TagsPanel.setPreferredSize(new Dimension(400, m_TagsNumber*15));
-            setTags(tags);
-
-            qry.close();
-            conn.close();
-            statement.close();
-        } catch ( Exception e ) {
-            System.out.println(e.getMessage());
-            JFrame jf = new JFrame();
-            JOptionPane.showMessageDialog(jf, e.getMessage(), "Chargement des tags impossible", JOptionPane.ERROR_MESSAGE);
-        }
     }
     @SuppressWarnings("unchecked")
     public void fillThemeCB(){
