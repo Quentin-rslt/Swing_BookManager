@@ -401,7 +401,7 @@ public class ParametersDlg extends JDialog {
         fillListOfShortcut();
     }
     public void save(){
-        Path folder = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(),"BookManager/");
+        Path folder = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(),"MyManager/");
         Path file = folder.resolve("save.dat");
         try(BufferedWriter writer = Files.newBufferedWriter(file)){
             writeData(writer, String.valueOf(getParamAddBookKey()));
@@ -434,9 +434,9 @@ public class ParametersDlg extends JDialog {
             writeData(writer, String.valueOf(getParamResetKey()));
             writeData(writer, String.valueOf(getParamResetModif()));
         }catch (IOException e){
-            System.err.println("Sauvergarde impossible");
             JFrame jFrame = new JFrame();
             JOptionPane.showMessageDialog(jFrame, "Sauvergarde impossible", "Sauvegarde", JOptionPane.ERROR_MESSAGE);
+            throw new RuntimeException(e.getMessage());
         }
     }
     private void writeData(BufferedWriter writer, String value) throws IOException {
