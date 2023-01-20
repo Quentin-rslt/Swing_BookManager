@@ -89,6 +89,8 @@ public class ParametersDlg extends JDialog {
             initCBSelection(parent);
         });
     }
+
+    /****************************** Getters ***********************************/
     public int getParamAddBookModif(){
         return valueModif(ParamAddBookModif);
     }
@@ -141,6 +143,8 @@ public class ParametersDlg extends JDialog {
                 }
             }
         } catch (IllegalAccessException e) {
+            JFrame jFrame = new JFrame();
+            JOptionPane.showMessageDialog(jFrame, "Erreur valeur raccourcie", "Sauvegarde", JOptionPane.ERROR_MESSAGE);
             throw new RuntimeException(e);
         }
         return value;
@@ -189,6 +193,8 @@ public class ParametersDlg extends JDialog {
                 }
             }
         } catch (IllegalAccessException e) {
+            JFrame jFrame = new JFrame();
+            JOptionPane.showMessageDialog(jFrame, "Erreur valeur raccourcie", "Sauvegarde", JOptionPane.ERROR_MESSAGE);
             throw new RuntimeException(e);
         }
         return value;
@@ -222,6 +228,8 @@ public class ParametersDlg extends JDialog {
 
         return valid;
     }
+
+    /****************************** Void ***********************************/
     public void messageError(int j,int i, boolean param, boolean quit){
         String text;
         Component[] components = LabelPanel.getComponents();
@@ -339,6 +347,8 @@ public class ParametersDlg extends JDialog {
                 }
             }
         } catch (IllegalAccessException e) {
+            JFrame jFrame = new JFrame();
+            JOptionPane.showMessageDialog(jFrame, "Initialisation raccourcie", "Sauvegarde", JOptionPane.ERROR_MESSAGE);
             throw new RuntimeException(e);
         }
     }
@@ -357,6 +367,8 @@ public class ParametersDlg extends JDialog {
                 }
             }
         } catch (IllegalAccessException e) {
+            JFrame jFrame = new JFrame();
+            JOptionPane.showMessageDialog(jFrame, "Initialisation raccourcie", "Sauvegarde", JOptionPane.ERROR_MESSAGE);
             throw new RuntimeException(e);
         }
     }

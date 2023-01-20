@@ -699,9 +699,9 @@ public class BookManager extends JDialog{
                 setResetModif(KeyEvent.KEY_LOCATION_STANDARD);
             }
         } catch (IOException e) {
-            System.out.println(e.getMessage());
             JFrame jf = new JFrame();
             JOptionPane.showMessageDialog(jf, e.getMessage(), "Rechargement shortcut impossible", JOptionPane.ERROR_MESSAGE);
+            throw new RuntimeException(e);
         }
     }
     public void initListeners(){
