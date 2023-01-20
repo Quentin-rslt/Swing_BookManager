@@ -329,7 +329,7 @@
             <properties/>
             <border type="none"/>
             <children>
-              <component id="53ce8" class="javax.swing.JCheckBox" binding="IsFilteredCheckBox">
+              <component id="53ce8" class="javax.swing.JCheckBox" binding="IsDateFilteredCheckBox">
                 <constraints/>
                 <properties>
                   <selected value="false"/>

@@ -41,7 +41,7 @@ public class FiltersDlg extends JDialog {
     private JSpinner FiltersSecEndRSpin;
     private JCheckBox UnknownReadDateChecbox;
     private JCheckBox NotDoneReadChecbox;
-    private JCheckBox IsFilteredCheckBox;
+    private JCheckBox IsDateFilteredCheckBox;
     private JLabel ReadDateLabel;
     private JPanel FiltersTagsPanel;
     private JPanel FiltersTagCbPanel;
@@ -153,8 +153,8 @@ public class FiltersDlg extends JDialog {
         }
         return str;
     }
-    public boolean isFiltered(){
-        return this.IsFilteredCheckBox.isSelected();
+    public boolean isDateFiltered(){
+        return this.IsDateFilteredCheckBox.isSelected();
     }
 
     public boolean getIsValid() {
@@ -266,7 +266,7 @@ public class FiltersDlg extends JDialog {
             SpinnerModel FirstAvTime = new SpinnerNumberModel(0, 0, 9999999, 1);
             FiltersFirstAvTSpin.setModel(FirstAvTime);
 
-            IsFilteredCheckBox.setSelected(false);
+            IsDateFilteredCheckBox.setSelected(false);
             FiltersFirstStartRSpin.setEnabled(false);
             FiltersSecStartRSpin.setEnabled(false);
             FiltersFirstEndRSpin.setEnabled(false);
@@ -341,8 +341,8 @@ public class FiltersDlg extends JDialog {
                 FiltersSecEndRSpin.setEnabled(true);
             }
         });
-        IsFilteredCheckBox.addActionListener(e -> {
-            if(isFiltered()){
+        IsDateFilteredCheckBox.addActionListener(e -> {
+            if(isDateFiltered()){
                 FiltersFirstStartRSpin.setEnabled(true);
                 FiltersSecStartRSpin.setEnabled(true);
                 FiltersFirstEndRSpin.setEnabled(true);
