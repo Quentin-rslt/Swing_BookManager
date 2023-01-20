@@ -599,7 +599,7 @@ public class BookManager extends JDialog{
                 String cellText = getBooksTable().getModel().getValueAt(row,column).toString();
                 StringBuilder testCellText = new StringBuilder();
 
-                if (editorText.length() < cellText.length()) {
+                if (editorText.length() <= cellText.length()) {
                     for (int filterIndex = 0; filterIndex < editorText.length(); filterIndex++) {
                         testCellText.append(cellText.charAt(filterIndex));
                     }
@@ -616,12 +616,7 @@ public class BookManager extends JDialog{
             }
         }
 
-        AbstractBorder roundBrdMax = new MyManagerRoundBorderComponents(contentPane.getBackground(),1,30, 0,0,0);
-        AbstractBorder roundBrdMin = new MyManagerRoundBorderComponents(contentPane.getBackground(),1,30, BooksTable.getPreferredScrollableViewportSize().height-(BooksTable.getRowCount()*BooksTable.getRowHeight()),0,0);
-        if(BooksTable.getRowCount()>13)
-            BooksTable.setBorder(roundBrdMax);
-        else
-            BooksTable.setBorder(roundBrdMin);
+        BooksTable.initTable();
 
         if(getRowReading()+1>getReadingsTable().getRowCount()){
             setRowReading(0);

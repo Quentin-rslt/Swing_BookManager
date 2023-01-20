@@ -150,6 +150,7 @@ public class ManageBookTagsDlg extends JDialog {
                 }
                 i++;
             }
+            fillTagsCB(AddTagCb);
             initListenerTag(getTags(), m_popup, TagsPanel);
             TagsPanel.updateUI();
         });
@@ -177,6 +178,8 @@ public class ManageBookTagsDlg extends JDialog {
                                         TaggingPstmt.setInt(1, getIdBook(m_title, m_author));
                                         TaggingPstmt.setInt(2, getIdTag(getTags().getTag(getTags().getSizeTags() - 1).getTextTag(), getTags().getTag(getTags().getSizeTags() - 1).getColor()));
                                         TaggingPstmt.executeUpdate();
+
+                                        fillTagsCB(AddTagCb);
                                     } catch (SQLException e) {
                                         JFrame jf = new JFrame();
                                         JOptionPane.showMessageDialog(jf, e.getMessage(), "Ajout tag impossible", JOptionPane.ERROR_MESSAGE);
