@@ -18,13 +18,8 @@ public class MainWindow extends JFrame {
     public MainWindow() {
         setContentPane(contentPane);
         connectionDB();
-        //Book panel
-        BookManager booksManager = new BookManager(this);
-        BooksPanel.add(booksManager.getContentPane());
-        //Transaction panel
-        Transaction transaction = new Transaction();
-        TransactionsPanel.add(transaction.getContentPane());
 
+        initComponents();
     }
     public void connectionDB(){
         try (Connection conn = connect()) {
@@ -89,6 +84,14 @@ public class MainWindow extends JFrame {
             JFrame jf = new JFrame();
             JOptionPane.showMessageDialog(jf, e.getMessage(), "Ouverture BDD impossible", JOptionPane.ERROR_MESSAGE);
         }
+    }
+    public void initComponents(){
+        //Book panel
+        BookManager booksManager = new BookManager(this);
+        BooksPanel.add(booksManager.getContentPane());
+        //Transaction panel
+        Transaction transaction = new Transaction();
+        TransactionsPanel.add(transaction.getContentPane());
     }
 
     public static void main(String[] args) {

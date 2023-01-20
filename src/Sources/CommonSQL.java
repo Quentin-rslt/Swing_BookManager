@@ -114,4 +114,24 @@ public class CommonSQL {
         }
         return tags;
     }
+    public static boolean textTagFind(String textTag){
+        boolean tagFind = false;
+        String sql = "SELECT Tag FROM Tags";
+        try (Connection conn = connect()){
+            Statement statement = conn.createStatement();
+            ResultSet tagsQry = statement.executeQuery(sql);
+            while (tagsQry.next()){
+                if(textTag.equalsIgnoreCase(tagsQry.getString(1))){
+                    tagFind=true;
+                }
+            }
+            conn.close();
+            statement.close();
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            JFrame jf = new JFrame();
+            JOptionPane.showMessageDialog(jf, e.getMessage(), "Recherche tag impossible", JOptionPane.ERROR_MESSAGE);
+        }
+        return tagFind;
+    }
 }

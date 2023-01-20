@@ -20,7 +20,6 @@ public class AddReading extends JDialog {
     private JSpinner ReadingNewEndDateSpin;
     private JCheckBox ReadingUnknownCheckBox;
     private JCheckBox ReadingNotDoneCheckBox;
-
     private final String m_title;
     private final String m_author;
     private boolean m_isValid = false;
@@ -30,86 +29,9 @@ public class AddReading extends JDialog {
         setModal(true);
         this.m_title = title;
         this.m_author = author;
-        initComponents();
-        ReadingUnknownCheckBox.addActionListener((ActionEvent e) ->{
-                if (isDateUnknown()){
-                    ReadingNotDoneCheckBox.setSelected(false);
-                    ReadingNewStartDateSpin.setEnabled(false);
-                    ReadingNewEndDateSpin.setEnabled(false);
-                }
-                else {
-                    ReadingNewStartDateSpin.setEnabled(true);
-                    ReadingNewEndDateSpin.setEnabled(true);
-                }
-            });
-        ReadingNotDoneCheckBox.addActionListener((ActionEvent e)-> {
-                if (isNotDone()) {
-                    ReadingUnknownCheckBox.setSelected(false);
-                    ReadingNewStartDateSpin.setEnabled(true);
-                    ReadingNewEndDateSpin.setEnabled(false);
-                }
-                else{
-                    ReadingNewEndDateSpin.setEnabled(true);
-                }
-            });
-        ResetBtn.addActionListener((ActionEvent e)-> {
-            initComponents();
-            ReadingNewStartDateSpin.setEnabled(true);
-            ReadingNewEndDateSpin.setEnabled(true);
-            ReadingUnknownCheckBox.setSelected(false);
-            ReadingNotDoneCheckBox.setSelected(false);
-            contentPane.updateUI();
-        });
-        ReadingOkBtn.addActionListener((ActionEvent evt)-> {
-            String sql = "SELECT Title, Author, StartReading, EndReading FROM Reading WHERE Title='"+this.m_title+"' AND Author='"+this.m_author+"'";
-            try (Connection conn = connect()){
-                Statement statement = conn.createStatement();
-                ResultSet qry = statement.executeQuery(sql);
 
-                Date enDate =new Date();
-                Date startDate = new Date();
-                if(!isNotDone() && !isDateUnknown()){
-                    enDate =new SimpleDateFormat("yyyy-MM-dd").parse(getNewEndReading());
-                    startDate = new SimpleDateFormat("yyyy-MM-dd").parse(getNewStartReading());
-                }
-                boolean readingFound =false;
-                while (qry.next() && !readingFound){
-                    if (!isDateUnknown() && !isNotDone() && Objects.equals(qry.getString(3), getNewStartReading())
-                            && Objects.equals(qry.getString(4), getNewEndReading())){
-                        JFrame jFrame = new JFrame();
-                        JOptionPane.showMessageDialog(jFrame, "Les dates de lecture existent déjà !", "Date saisie invalide", JOptionPane.ERROR_MESSAGE);
-                        readingFound = true;//
-                    } else if (!isDateUnknown() && isNotDone() && Objects.equals(qry.getString(3), getNewStartReading()) && !Objects.equals(getNewStartReading(), getNewEndReading())) {
-                        JFrame jFrame = new JFrame();
-                        JOptionPane.showMessageDialog(jFrame, "La date de début de lecture existe déjà !", "Date saisie invalide", JOptionPane.ERROR_MESSAGE);
-                        readingFound = true;//
-                    } else if (!isDateUnknown() && !isNotDone() && Objects.equals(qry.getString(3), getNewStartReading()) && !Objects.equals(getNewStartReading(), getNewEndReading())) {
-                        JFrame jFrame = new JFrame();
-                        JOptionPane.showMessageDialog(jFrame, "La date de début de lecture existe déjà !", "Date saisie invalide", JOptionPane.ERROR_MESSAGE);
-                        readingFound = true;//
-                    } else if (!isDateUnknown() && !isNotDone() && Objects.equals(qry.getString(4), getNewEndReading()) && !Objects.equals(getNewStartReading(), getNewEndReading())) {
-                        JFrame jFrame = new JFrame();
-                        JOptionPane.showMessageDialog(jFrame, "La date de fin de lecture existe déjà !", "Date saisie invalide", JOptionPane.ERROR_MESSAGE);
-                        readingFound = true;//
-                    }
-                }
-                if (!readingFound && !isDateUnknown() && !isNotDone() && startDate.compareTo(enDate)>0) {
-                    setIsValid(false);
-                    JFrame jFrame = new JFrame();
-                    JOptionPane.showMessageDialog(jFrame, "La date de début de lecture ne peut pas être après à la fin de lecture !", "Date saisie invalide", JOptionPane.ERROR_MESSAGE);
-                }else if(!readingFound ){
-                    setIsValid(true);
-                    setVisible(false);
-                    dispose();
-                }
-                conn.close();
-                statement.close();
-            }catch (Exception e){
-                JFrame jf = new JFrame();
-                JOptionPane.showMessageDialog(jf, e.getMessage(), "Validation lecture impossible", JOptionPane.ERROR_MESSAGE);
-                throw new RuntimeException(e.getMessage());
-            }
-        });
+        initComponents();
+        initListener();
     }
     public String getNewEndReading() {
         String end = "";
@@ -165,5 +87,82 @@ public class AddReading extends JDialog {
         ReadingNewEndDateSpin.setModel(NewBookEndReadingSpinModel);
         JSpinner.DateEditor endEditor = new JSpinner.DateEditor(ReadingNewEndDateSpin,"yyyy-MM-dd");//set the display of the JSpinner of release date
         ReadingNewEndDateSpin.setEditor(endEditor);
+    }
+    public void initListener(){
+        ReadingUnknownCheckBox.addActionListener((ActionEvent e) ->{
+            if (isDateUnknown()){
+                ReadingNotDoneCheckBox.setSelected(false);
+                ReadingNewStartDateSpin.setEnabled(false);
+                ReadingNewEndDateSpin.setEnabled(false);
+            }
+            else {
+                ReadingNewStartDateSpin.setEnabled(true);
+                ReadingNewEndDateSpin.setEnabled(true);
+            }
+        });
+        ReadingNotDoneCheckBox.addActionListener((ActionEvent e)-> {
+            if (isNotDone()) {
+                ReadingUnknownCheckBox.setSelected(false);
+                ReadingNewStartDateSpin.setEnabled(true);
+                ReadingNewEndDateSpin.setEnabled(false);
+            }
+            else{
+                ReadingNewEndDateSpin.setEnabled(true);
+            }
+        });
+        ResetBtn.addActionListener((ActionEvent e)-> {
+            initComponents();
+            ReadingNewStartDateSpin.setEnabled(true);
+            ReadingNewEndDateSpin.setEnabled(true);
+            ReadingUnknownCheckBox.setSelected(false);
+            ReadingNotDoneCheckBox.setSelected(false);
+            contentPane.updateUI();
+        });
+        ReadingOkBtn.addActionListener((ActionEvent evt)-> {
+            String sql = "SELECT Title, Author, StartReading, EndReading FROM Reading WHERE Title='"+this.m_title+"' AND Author='"+this.m_author+"'";
+            try (Connection conn = connect()){
+                Statement statement = conn.createStatement();
+                ResultSet qry = statement.executeQuery(sql);
+
+                Date enDate =new Date();
+                Date startDate = new Date();
+                if(!isNotDone() && !isDateUnknown()){
+                    enDate =new SimpleDateFormat("yyyy-MM-dd").parse(getNewEndReading());
+                    startDate = new SimpleDateFormat("yyyy-MM-dd").parse(getNewStartReading());
+                }
+                boolean readingFound =false;
+                while (qry.next() && !readingFound){
+                    if (!isDateUnknown() && !isNotDone() && Objects.equals(qry.getString(3), getNewStartReading())
+                            && Objects.equals(qry.getString(4), getNewEndReading())){
+                        JFrame jFrame = new JFrame();
+                        JOptionPane.showMessageDialog(jFrame, "Les dates de lecture existent déjà !", "Date saisie invalide", JOptionPane.ERROR_MESSAGE);
+                        readingFound = true;//
+                    } else if (!isDateUnknown() && Objects.equals(qry.getString(3), getNewStartReading()) && !Objects.equals(getNewStartReading(), getNewEndReading())) {
+                        JFrame jFrame = new JFrame();
+                        JOptionPane.showMessageDialog(jFrame, "La date de début de lecture existe déjà !", "Date saisie invalide", JOptionPane.ERROR_MESSAGE);
+                        readingFound = true;//
+                    } else if (!isDateUnknown() && !isNotDone() && Objects.equals(qry.getString(4), getNewEndReading()) && !Objects.equals(getNewStartReading(), getNewEndReading())) {
+                        JFrame jFrame = new JFrame();
+                        JOptionPane.showMessageDialog(jFrame, "La date de fin de lecture existe déjà !", "Date saisie invalide", JOptionPane.ERROR_MESSAGE);
+                        readingFound = true;//
+                    }
+                }
+                if (!readingFound && !isDateUnknown() && !isNotDone() && startDate.compareTo(enDate)>0) {
+                    setIsValid(false);
+                    JFrame jFrame = new JFrame();
+                    JOptionPane.showMessageDialog(jFrame, "La date de début de lecture ne peut pas être après à la fin de lecture !", "Date saisie invalide", JOptionPane.ERROR_MESSAGE);
+                }else if(!readingFound ){
+                    setIsValid(true);
+                    setVisible(false);
+                    dispose();
+                }
+                conn.close();
+                statement.close();
+            }catch (Exception e){
+                JFrame jf = new JFrame();
+                JOptionPane.showMessageDialog(jf, e.getMessage(), "Validation lecture impossible", JOptionPane.ERROR_MESSAGE);
+                throw new RuntimeException(e.getMessage());
+            }
+        });
     }
 }

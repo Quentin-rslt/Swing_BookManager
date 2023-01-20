@@ -19,29 +19,44 @@ public class ManageTagsDlg extends JDialog {
     private JPanel AddTagPanel;
     private final JTextField AddTagTxtF = new JTextField();
     private Tags m_tags;
-    final JPopupMenu m_popup;
+    private JPopupMenu m_popup;
     private int m_row;
+    private JMenuItem m_cut;
+    private JMenuItem m_edit;
 
     public ManageTagsDlg() {
         setContentPane(contentPane);
         setModal(true);
+
         this.m_tags = new Tags();
         setTags(loadTags(TagsPanel));
 
-        m_popup = new JPopupMenu();//Create a popup menu to delete a reading an edit this reading
-        JMenuItem cut = new JMenuItem("Supprimer", new ImageIcon(getLogo("remove.png")));
-        JMenuItem edit = new JMenuItem("Modifier", new ImageIcon(getLogo("edit.png")));
-        m_popup.add(cut);
-        m_popup.add(edit);
+        initPopupMenu();
+        initListener();
 
+        AddTagPanel.add(AddTagTxtF);
+    }
+
+    public int getRow() {
+        return m_row;
+    }
+    public Tags getTags(){
+        return this.m_tags;
+    }
+
+    public void setTags(Tags tags){
+        this.m_tags = tags;
+    }
+    public void setRow(int m_row) {
+        this.m_row = m_row;
+    }
+    public void initListener(){
+        initListenerTag(getTags(), m_popup, TagsPanel);
         TagCancelBtn.addActionListener((ActionEvent e)-> {
             setVisible(false);
             dispose();
         });
-        AddTagPanel.add(AddTagTxtF);
-        initListenerTag(getTags(), m_popup, TagsPanel);
-
-        cut.addActionListener((ActionEvent evt)-> {
+        this.m_cut.addActionListener((ActionEvent evt)-> {
             Component[] componentList = TagsPanel.getComponents();
             int i = 0;
             while (i<getTags().getSizeTags()) {
@@ -65,7 +80,7 @@ public class ManageTagsDlg extends JDialog {
             initListenerTag(getTags(), m_popup, TagsPanel);
             TagsPanel.updateUI();
         });
-        edit.addActionListener((ActionEvent evt) ->{
+        this.m_edit.addActionListener((ActionEvent evt) ->{
             Component[] componentList = TagsPanel.getComponents();
             int i = 0;
             while (i<getTags().getSizeTags()) {
@@ -97,43 +112,35 @@ public class ManageTagsDlg extends JDialog {
         AddTagTxtF.addKeyListener(new java.awt.event.KeyAdapter() {
             @Override
             public void keyReleased(java.awt.event.KeyEvent evt) {
-            if (!Objects.equals(AddTagTxtF.getText(), "")) {
-                if (evt.getKeyCode()== KeyEvent.VK_ENTER){
-                    boolean tagFind = fillPaneTags(getTags(), TagsPanel, AddTagTxtF);
-                    if(!tagFind) {
-                        getTags().getTag(getTags().getSizeTags()-1).setBorderColor(contentPane.getBackground());
-                        try (Connection conn = connect()) {
-                            String TagsInsertQry = "INSERT INTO Tags (Tag,Color)" +
-                                    " SELECT '" + getTags().getTag(getTags().getSizeTags() - 1).getTextTag() + "', '" + getTags().getTag(getTags().getSizeTags() - 1).getColor() + "'" +
-                                    " WHERE NOT EXISTS(SELECT * FROM Tags WHERE Tag='" + getTags().getTag(getTags().getSizeTags() - 1).getTextTag() + "' AND Color='" + getTags().getTag(getTags().getSizeTags() - 1).getColor() + "')";
-                            PreparedStatement TagsInsertPstmt = conn.prepareStatement(TagsInsertQry);
-                            TagsInsertPstmt.executeUpdate();
-                        } catch (SQLException e) {
-                            JFrame jf = new JFrame();
-                            JOptionPane.showMessageDialog(jf, e.getMessage(), "Ajout tag impossible", JOptionPane.ERROR_MESSAGE);
-                            throw new RuntimeException(e.getMessage());
+                if (!Objects.equals(AddTagTxtF.getText(), "")) {
+                    if (evt.getKeyCode()== KeyEvent.VK_ENTER){
+                        boolean tagFind = fillPaneTags(getTags(), TagsPanel, AddTagTxtF);
+                        if(!tagFind) {
+                            getTags().getTag(getTags().getSizeTags()-1).setBorderColor(contentPane.getBackground());
+                            try (Connection conn = connect()) {
+                                String TagsInsertQry = "INSERT INTO Tags (Tag,Color)" +
+                                        " SELECT '" + getTags().getTag(getTags().getSizeTags() - 1).getTextTag() + "', '" + getTags().getTag(getTags().getSizeTags() - 1).getColor() + "'" +
+                                        " WHERE NOT EXISTS(SELECT * FROM Tags WHERE Tag='" + getTags().getTag(getTags().getSizeTags() - 1).getTextTag() + "' AND Color='" + getTags().getTag(getTags().getSizeTags() - 1).getColor() + "')";
+                                PreparedStatement TagsInsertPstmt = conn.prepareStatement(TagsInsertQry);
+                                TagsInsertPstmt.executeUpdate();
+                            } catch (SQLException e) {
+                                JFrame jf = new JFrame();
+                                JOptionPane.showMessageDialog(jf, e.getMessage(), "Ajout tag impossible", JOptionPane.ERROR_MESSAGE);
+                                throw new RuntimeException(e.getMessage());
+                            }
                         }
                     }
                 }
-            }
-            initListenerTag(getTags(), m_popup, TagsPanel);
-            TagsPanel.updateUI();
+                initListenerTag(getTags(), m_popup, TagsPanel);
+                TagsPanel.updateUI();
             }
         });
     }
-
-    public int getRow() {
-        return m_row;
-    }
-
-    public Tags getTags(){
-        return this.m_tags;
-    }
-
-    public void setTags(Tags tags){
-        this.m_tags = tags;
-    }
-    public void setRow(int m_row) {
-        this.m_row = m_row;
+    public void initPopupMenu(){
+        m_popup = new JPopupMenu();//Create a popup menu to delete a reading an edit this reading
+        m_cut = new JMenuItem("Supprimer", new ImageIcon(getLogo("remove.png")));
+        m_edit = new JMenuItem("Modifier", new ImageIcon(getLogo("edit.png")));
+        m_popup.add(m_cut);
+        m_popup.add(m_edit);
     }
 }

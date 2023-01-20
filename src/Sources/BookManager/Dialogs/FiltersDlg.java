@@ -48,7 +48,8 @@ public class FiltersDlg extends JDialog {
 
     private boolean m_isValid;
     private Tags m_tags;
-    final JPopupMenu m_popup;
+    private JPopupMenu m_popup;
+    private JMenuItem m_cut;
 
     public FiltersDlg() {
         this.m_tags = new Tags();
@@ -58,127 +59,8 @@ public class FiltersDlg extends JDialog {
         FiltersTagCbPanel.add(FiltersTagCB);
 
         initComponents();
-
-        m_popup = new JPopupMenu();//Create a popup menu to delete a reading an edit this reading
-        JMenuItem cut = new JMenuItem("Supprimer", new ImageIcon(getLogo("remove.png")));
-        m_popup.add(cut);
-
-        FiltersOkBtn.addActionListener((ActionEvent e)-> {
-            setIsValid(true);
-            setVisible(false);
-            dispose();
-        });
-        FiltersResetBtn.addActionListener((ActionEvent e)-> resetFilters());
-        UnknownReadDateChecbox.addActionListener((ActionEvent e) -> {
-            if (UnknownReadDateChecbox.isSelected()){
-                NotDoneReadChecbox.setSelected(false);
-                FiltersFirstStartRSpin.setEnabled(false);
-                FiltersSecStartRSpin.setEnabled(false);
-
-                FiltersFirstEndRSpin.setEnabled(false);
-                FiltersSecEndRSpin.setEnabled(false);
-            }
-            else{
-                FiltersFirstStartRSpin.setEnabled(true);
-                FiltersSecStartRSpin.setEnabled(true);
-
-                FiltersFirstEndRSpin.setEnabled(true);
-                FiltersSecEndRSpin.setEnabled(true);
-            }
-        });
-        NotDoneReadChecbox.addActionListener((ActionEvent e) -> {
-            if (NotDoneReadChecbox.isSelected()){
-                UnknownReadDateChecbox.setSelected(false);
-                FiltersFirstStartRSpin.setEnabled(true);
-                FiltersSecStartRSpin.setEnabled(true);
-
-                FiltersFirstEndRSpin.setEnabled(false);
-                FiltersSecEndRSpin.setEnabled(false);
-            }
-            else{
-                FiltersFirstEndRSpin.setEnabled(true);
-                FiltersSecEndRSpin.setEnabled(true);
-            }
-        });
-        IsFilteredCheckBox.addActionListener(e -> {
-            if(isFiltered()){
-                FiltersFirstStartRSpin.setEnabled(true);
-                FiltersSecStartRSpin.setEnabled(true);
-                FiltersFirstEndRSpin.setEnabled(true);
-                FiltersSecEndRSpin.setEnabled(true);
-                NotDoneReadChecbox.setEnabled(true);
-                UnknownReadDateChecbox.setEnabled(true);
-                ReadDateLabel.setEnabled(true);
-            }
-            else{
-                FiltersFirstStartRSpin.setEnabled(false);
-                FiltersSecStartRSpin.setEnabled(false);
-                FiltersFirstEndRSpin.setEnabled(false);
-                FiltersSecEndRSpin.setEnabled(false);
-                NotDoneReadChecbox.setEnabled(false);
-                UnknownReadDateChecbox.setEnabled(false);
-                ReadDateLabel.setEnabled(false);
-            }
-            UnknownReadDateChecbox.setSelected(false);
-            NotDoneReadChecbox.setSelected(false);
-        });
-        FiltersTagCB.getEditor().getEditorComponent().addKeyListener(new java.awt.event.KeyAdapter() {
-            @Override
-            public void keyReleased(KeyEvent evt) {
-                if (!Objects.equals(FiltersTagCB.getEditor().getItem().toString(), "")) {
-                    if (evt.getKeyCode() != KeyEvent.VK_DELETE && evt.getKeyCode() != KeyEvent.VK_BACK_SPACE) {
-                        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-                            fillPaneTags(getTags(), FiltersTagsPanel, FiltersTagCB, false);
-                        } else {
-                            FiltersTagCB.searchItemCB();
-                        }
-                    }
-                }
-                else{
-                    FiltersTagCB.setSelectedIndex(0);
-                }
-                initListenerTag(getTags(), m_popup, FiltersTagsPanel);
-                FiltersTagsPanel.updateUI();
-            }
-        });
-        FiltersTagCB.getEditor().getEditorComponent().addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-            super.mouseClicked(e);
-            FiltersTagCB.showPopup();
-            }
-        });
-        FiltersTagsPanel.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent e) {
-            super.mouseClicked(e);
-            if (!e.getComponent().getComponentAt(e.getX(), e.getY()).equals(FiltersTagsPanel)) {
-                if (e.getButton() == MouseEvent.BUTTON3) {
-                    m_popup.show(FiltersTagsPanel, e.getX(), e.getY());//show a popup to edit the reading
-                    m_popup.setInvoker(e.getComponent().getComponentAt(e.getX(), e.getY()));
-                }
-                initListenerTag(getTags(), m_popup, FiltersTagsPanel);
-                FiltersTagsPanel.updateUI();
-            }
-            }
-        });
-        cut.addActionListener((ActionEvent evt)-> {
-            Component[] componentList = FiltersTagsPanel.getComponents();
-            int i = 0;
-            while (i<getTags().getSizeTags()) {
-                if(componentList[i]==m_popup.getInvoker()){
-                    FiltersTagsPanel.remove(componentList[i]);
-                    getTags().removeTag(i);
-
-                    for(int j=0; j<getTags().getSizeTags();j++){
-                        FiltersTagsPanel.add(getTags().getTag(j));
-                    }
-                    break;
-                }
-                i++;
-            }
-            initListenerTag(getTags(), m_popup, FiltersTagsPanel);
-            FiltersTagsPanel.updateUI();
-        });
+        initPopuMenu();
+        initListener();
     }
     public Tags getTags(){
         return this.m_tags;
@@ -420,5 +302,128 @@ public class FiltersDlg extends JDialog {
         for (String s : Arrays.asList("Titre", "Auteur", "Année de sortie", "Nombre de page","Nombre de lecture","Temps moyen de lecture", "Note Babelio", "Note personelle", "Date de début de lecture", "Date de fin de lecture")) {
             FiltersSortCB.addItem(s);
         }
+    }
+    public void initListener(){
+        FiltersOkBtn.addActionListener((ActionEvent e)-> {
+            setIsValid(true);
+            setVisible(false);
+            dispose();
+        });
+        FiltersResetBtn.addActionListener((ActionEvent e)-> resetFilters());
+        UnknownReadDateChecbox.addActionListener((ActionEvent e) -> {
+            if (UnknownReadDateChecbox.isSelected()){
+                NotDoneReadChecbox.setSelected(false);
+                FiltersFirstStartRSpin.setEnabled(false);
+                FiltersSecStartRSpin.setEnabled(false);
+
+                FiltersFirstEndRSpin.setEnabled(false);
+                FiltersSecEndRSpin.setEnabled(false);
+            }
+            else{
+                FiltersFirstStartRSpin.setEnabled(true);
+                FiltersSecStartRSpin.setEnabled(true);
+
+                FiltersFirstEndRSpin.setEnabled(true);
+                FiltersSecEndRSpin.setEnabled(true);
+            }
+        });
+        NotDoneReadChecbox.addActionListener((ActionEvent e) -> {
+            if (NotDoneReadChecbox.isSelected()){
+                UnknownReadDateChecbox.setSelected(false);
+                FiltersFirstStartRSpin.setEnabled(true);
+                FiltersSecStartRSpin.setEnabled(true);
+
+                FiltersFirstEndRSpin.setEnabled(false);
+                FiltersSecEndRSpin.setEnabled(false);
+            }
+            else{
+                FiltersFirstEndRSpin.setEnabled(true);
+                FiltersSecEndRSpin.setEnabled(true);
+            }
+        });
+        IsFilteredCheckBox.addActionListener(e -> {
+            if(isFiltered()){
+                FiltersFirstStartRSpin.setEnabled(true);
+                FiltersSecStartRSpin.setEnabled(true);
+                FiltersFirstEndRSpin.setEnabled(true);
+                FiltersSecEndRSpin.setEnabled(true);
+                NotDoneReadChecbox.setEnabled(true);
+                UnknownReadDateChecbox.setEnabled(true);
+                ReadDateLabel.setEnabled(true);
+            }
+            else{
+                FiltersFirstStartRSpin.setEnabled(false);
+                FiltersSecStartRSpin.setEnabled(false);
+                FiltersFirstEndRSpin.setEnabled(false);
+                FiltersSecEndRSpin.setEnabled(false);
+                NotDoneReadChecbox.setEnabled(false);
+                UnknownReadDateChecbox.setEnabled(false);
+                ReadDateLabel.setEnabled(false);
+            }
+            UnknownReadDateChecbox.setSelected(false);
+            NotDoneReadChecbox.setSelected(false);
+        });
+        FiltersTagCB.getEditor().getEditorComponent().addKeyListener(new java.awt.event.KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent evt) {
+                if (!Objects.equals(FiltersTagCB.getEditor().getItem().toString(), "")) {
+                    if (evt.getKeyCode() != KeyEvent.VK_DELETE && evt.getKeyCode() != KeyEvent.VK_BACK_SPACE) {
+                        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+                            fillPaneTags(getTags(), FiltersTagsPanel, FiltersTagCB, false);
+                        } else {
+                            FiltersTagCB.searchItemCB();
+                        }
+                    }
+                }
+                else{
+                    FiltersTagCB.setSelectedIndex(0);
+                }
+                initListenerTag(getTags(), m_popup, FiltersTagsPanel);
+                FiltersTagsPanel.updateUI();
+            }
+        });
+        FiltersTagCB.getEditor().getEditorComponent().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                FiltersTagCB.showPopup();
+            }
+        });
+        FiltersTagsPanel.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                if (!e.getComponent().getComponentAt(e.getX(), e.getY()).equals(FiltersTagsPanel)) {
+                    if (e.getButton() == MouseEvent.BUTTON3) {
+                        m_popup.show(FiltersTagsPanel, e.getX(), e.getY());//show a popup to edit the reading
+                        m_popup.setInvoker(e.getComponent().getComponentAt(e.getX(), e.getY()));
+                    }
+                    initListenerTag(getTags(), m_popup, FiltersTagsPanel);
+                    FiltersTagsPanel.updateUI();
+                }
+            }
+        });
+        this.m_cut.addActionListener((ActionEvent evt)-> {
+            Component[] componentList = FiltersTagsPanel.getComponents();
+            int i = 0;
+            while (i<getTags().getSizeTags()) {
+                if(componentList[i]==m_popup.getInvoker()){
+                    FiltersTagsPanel.remove(componentList[i]);
+                    getTags().removeTag(i);
+
+                    for(int j=0; j<getTags().getSizeTags();j++){
+                        FiltersTagsPanel.add(getTags().getTag(j));
+                    }
+                    break;
+                }
+                i++;
+            }
+            initListenerTag(getTags(), m_popup, FiltersTagsPanel);
+            FiltersTagsPanel.updateUI();
+        });
+    }
+    public void initPopuMenu(){
+        m_popup = new JPopupMenu();//Create a popup menu to delete a reading an edit this reading
+        m_cut = new JMenuItem("Supprimer", new ImageIcon(getLogo("remove.png")));
+        m_popup.add(m_cut);
     }
 }

@@ -91,10 +91,10 @@ public class BookManager extends JDialog{
     private int m_resetModif;
     private final MainWindow m_mainWindow;
     private MyManagerTable BooksTable;
-    JMenuItem m_add;
-    JMenuItem m_cut;
-    JMenuItem m_edit;
-    JMenuItem m_openManageTags;
+    private JMenuItem m_add;
+    private JMenuItem m_cut;
+    private JMenuItem m_edit;
+    private JMenuItem m_openManageTags;
 
     public BookManager(MainWindow parent){
         setContentPane(contentPane);

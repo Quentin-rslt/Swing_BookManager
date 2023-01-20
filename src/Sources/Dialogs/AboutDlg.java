@@ -24,6 +24,25 @@ public class AboutDlg extends JDialog {
     public AboutDlg() {
         setContentPane(contentPane);
         setModal(true);
+
+        initComponents();
+        initListener();
+    }
+    public void infosApp(){
+        String textIntelIJ = "";
+        textIntelIJ = textIntelIJ+"" +
+                "\nPowered by : IntelliJ IDEA 2022.2 (Community Edition)\n" +
+                "Copyright © 2000–2022 JetBrains s.r.o.";
+        String textFlatLaf = "";
+        textFlatLaf = textFlatLaf+"" +
+                "\n" +
+                "Edits theme with FlatLaf Theme Editor\n" +
+                "Copyright © 2019-2022 FormDev Software GmbH";
+
+        InfosIntelIJTextPane.setText(textIntelIJ);
+        InfosFlatLafTextPane.setText(textFlatLaf);
+    }
+    public void initComponents(){
         String strFlatLafLink = "www.formdev.com";
         LinkFlatLaf.setText(strFlatLafLink);
         String strIntelIJLink = "www.jetbrains.com";
@@ -43,6 +62,8 @@ public class AboutDlg extends JDialog {
         nameAppLabel.setFont(new Font("Arial", Font.BOLD, 20));
 
         LinkFlatLaf.setForeground(GitBtn.getBackground());
+    }
+    public void initListener(){
         LinkFlatLaf.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -91,19 +112,5 @@ public class AboutDlg extends JDialog {
                 e1.printStackTrace();
             }
         });
-    }
-    public void infosApp(){
-        String textIntelIJ = "";
-        textIntelIJ = textIntelIJ+"" +
-                "\nPowered by : IntelliJ IDEA 2022.2 (Community Edition)\n" +
-                "Copyright © 2000–2022 JetBrains s.r.o.";
-        String textFlatLaf = "";
-        textFlatLaf = textFlatLaf+"" +
-                "\n" +
-                "Edits theme with FlatLaf Theme Editor\n" +
-                "Copyright © 2019-2022 FormDev Software GmbH";
-
-        InfosIntelIJTextPane.setText(textIntelIJ);
-        InfosFlatLafTextPane.setText(textFlatLaf);
     }
 }
