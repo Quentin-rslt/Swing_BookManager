@@ -7,7 +7,7 @@ import java.awt.event.KeyEvent;
 
 import static Sources.BookManager.CommonBookManager.*;
 import static Sources.BookManager.CommonBookManagerSQL.*;
-import static Sources.BookManager.Dialogs.OpenBookManagerDialog.*;
+import static Sources.BookManager.Dialogs.BookManagerOpenDialog.*;
 import static Sources.Common.setNameOfImage;
 import static Sources.Dialogs.OpenDialogs.*;
 import static Sources.ImportExportData.*;
@@ -160,7 +160,7 @@ public class MenuBarBookManager {
         //Only tags of one book
         manageTagsMenuItem = new JMenuItem("Ses tags");
         manageTagsMenuItem.addActionListener((e->{
-            openManageTagsDlg(parent.getMTitle(),parent.getAuthor());
+            openManageBookTagsDlg(parent.getMTitle(),parent.getAuthor());
             parent.getContentPanel().updateUI();
             parent.fillBookTable(parent.isFiltered());
             isItInFilteredBookList(parent, false);

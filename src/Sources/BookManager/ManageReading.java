@@ -7,7 +7,7 @@ import javax.swing.*;
 import java.awt.event.*;
 import java.sql.*;
 import static Sources.BookManager.CommonBookManagerSQL.*;
-import static Sources.BookManager.Dialogs.OpenBookManagerDialog.openEditReadingDlg;
+import static Sources.BookManager.Dialogs.BookManagerOpenDialog.openEditReadingDlg;
 import static Sources.Common.getLogo;
 import static Sources.CommonSQL.connect;
 

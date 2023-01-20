@@ -28,7 +28,7 @@ import static Sources.BookManager.CommonBookManager.*;
 import static Sources.BookManager.CommonBookManager.isItInFilteredBookList;
 import static Sources.BookManager.CommonBookManagerSQL.*;
 import static Sources.BookManager.CommonBookManagerSQL.filtersBook;
-import static Sources.BookManager.Dialogs.OpenBookManagerDialog.*;
+import static Sources.BookManager.Dialogs.BookManagerOpenDialog.*;
 import static Sources.BookManager.MenuBarBookManager.createMenuBar;
 import static Sources.Common.*;
 import static Sources.CommonSQL.connect;
@@ -743,7 +743,7 @@ public class BookManager extends JDialog{
             addReading(diag, this);
         });
         m_openManageTags.addActionListener((ActionEvent evt)->{
-            openManageTagsDlg(getMTitle(), getAuthor());
+            openManageBookTagsDlg(getMTitle(), getAuthor());
             contentPane.updateUI();
             fillBookTable(isFiltered());
             isItInFilteredBookList(this,false);

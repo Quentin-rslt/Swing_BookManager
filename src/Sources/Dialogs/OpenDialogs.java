@@ -31,14 +31,7 @@ public class OpenDialogs {
         diag.setLocationRelativeTo(null);
         diag.setVisible(true);
     }
-    public static void openManageTagsDlg(String title, String author){
-        ManageTagsDlg diag = new ManageTagsDlg(title,author);
-        diag.setTitle("Gérer les tags du livre : " +title);
-        diag.setIconImage(getLogo("tag.png"));
-        diag.setSize(550,230);
-        diag.setLocationRelativeTo(null);
-        diag.setVisible(true);
-    }
+
     public static EditTagDlg openEditTagDlg(Tag tag){
         EditTagDlg diag = new EditTagDlg(tag);
         diag.setSize(780,490);

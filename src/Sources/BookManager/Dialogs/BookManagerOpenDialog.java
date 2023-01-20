@@ -2,7 +2,7 @@ package Sources.BookManager.Dialogs;
 
 import static Sources.Common.getLogo;
 
-public class OpenBookManagerDialog {
+public class BookManagerOpenDialog {
     public static AddBookDlg openAddBookDlg(){
         AddBookDlg diag = new AddBookDlg();
         diag.setTitle("Ajout d'un livre");
@@ -57,5 +57,14 @@ public class OpenBookManagerDialog {
         diag.setVisible(true);
 
         return diag;
+    }
+
+    public static void openManageBookTagsDlg(String title, String author){
+        ManageBookTagsDlg diag = new ManageBookTagsDlg(title,author);
+        diag.setTitle("Gérer les tags du livre : " +title);
+        diag.setIconImage(getLogo("tag.png"));
+        diag.setSize(550,230);
+        diag.setLocationRelativeTo(null);
+        diag.setVisible(true);
     }
 }
