@@ -89,7 +89,7 @@ public class EditReadingDlg extends JDialog {
         try {
             //Retrieves the data entered as a parameter from the constructor, and therefore from the DB
             BookTitleLable.setText("Nom du livre : "+this.m_title);
-            BookAuthorLabel.setText("Auteur : "+this.m_author);
+            BookAuthorLabel.setText("Nom de l'auteur : "+this.m_author);
 
             Date endDate = new Date();
             SpinnerDateModel NewBookEndReadingSpinModel = new SpinnerDateModel();

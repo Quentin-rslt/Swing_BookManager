@@ -10,7 +10,7 @@ import java.util.Objects;
 
 import static Sources.CommonSQL.connect;
 
-public class AddReading extends JDialog {
+public class AddReadingDlg extends JDialog {
     private JPanel contentPane;
     private JButton ReadingOkBtn;
     private JButton ResetBtn;
@@ -24,7 +24,7 @@ public class AddReading extends JDialog {
     private final String m_author;
     private boolean m_isValid = false;
 
-    public AddReading(String title, String author) {
+    public AddReadingDlg(String title, String author) {
         setContentPane(contentPane);
         setModal(true);
         this.m_title = title;

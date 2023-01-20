@@ -1,7 +1,7 @@
 package Sources.BookManager;
 
 import Sources.BookManager.Dialogs.AddBookDlg;
-import Sources.BookManager.Dialogs.AddReading;
+import Sources.BookManager.Dialogs.AddReadingDlg;
 import Sources.BookManager.Dialogs.EditBookDlg;
 import Sources.BookManager.Dialogs.FiltersDlg;
 import Sources.MainWindow;
@@ -636,7 +636,7 @@ public class BookManager extends JDialog{
     }
     public void loadParameters(){
         try {
-            Path file = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(),"BookManager/save.dat");
+            Path file = Paths.get(FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath(),"MyManager/save.dat");
             if ( Files.exists(file) ) {
                 for(String line : Files.readAllLines(file)) {
                     String[] data = line.split(";");
@@ -734,7 +734,7 @@ public class BookManager extends JDialog{
             editBook(diag,this);
         });
         m_add.addActionListener((ActionEvent evt) -> {
-            AddReading diag = openAddReadingDlg(getMTitle(), getAuthor());
+            AddReadingDlg diag = openAddReadingDlg(getMTitle(), getAuthor());
             addReading(diag, this);
         });
         m_openManageTags.addActionListener((ActionEvent evt)->{

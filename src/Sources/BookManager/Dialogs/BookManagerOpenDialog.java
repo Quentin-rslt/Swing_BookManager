@@ -25,10 +25,10 @@ public class BookManagerOpenDialog {
 
         return diag;
     }
-    public static AddReading openAddReadingDlg(String title, String author){
-        AddReading diag = new AddReading(title, author);
+    public static AddReadingDlg openAddReadingDlg(String title, String author){
+        AddReadingDlg diag = new AddReadingDlg(title, author);
         diag.setTitle("Ajout d'une lecture pour le livre : "+title);
-        diag.setSize(550,265);
+        diag.setSize(550,250);
         diag.setResizable(false);
         diag.setIconImage(getLogo("add.png"));
         diag.setLocationRelativeTo(null);
@@ -40,7 +40,7 @@ public class BookManagerOpenDialog {
         EditReadingDlg diag = new EditReadingDlg(startDate,endDate, title, author);
         diag.setIconImage(getLogo("edit.png"));
         diag.setTitle("Modification d'une lecture");
-        diag.setSize(500,220);
+        diag.setSize(550,250);
         diag.setResizable(false);
         diag.setLocationRelativeTo(null);
         diag.setVisible(true);

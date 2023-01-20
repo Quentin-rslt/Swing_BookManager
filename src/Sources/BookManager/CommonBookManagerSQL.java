@@ -199,7 +199,7 @@ public class CommonBookManagerSQL {
             }
         }
     }
-    public static void addReading(AddReading diag, BookManager bookManager){
+    public static void addReading(AddReadingDlg diag, BookManager bookManager){
         if (diag.getIsValid()){
             String ReadingQry = "INSERT INTO Reading (ID,Title,Author,StartReading, EndReading) " +
                     "VALUES (?,?,?,?,?);";

@@ -136,7 +136,7 @@ public class MenuBarBookManager {
 
         addReadingMenuItem = new JMenuItem("Une lecture");
         addReadingMenuItem.addActionListener((e->{
-            AddReading diag = openAddReadingDlg(parent.getMTitle(), parent.getAuthor());
+            AddReadingDlg diag = openAddReadingDlg(parent.getMTitle(), parent.getAuthor());
             addReading(diag, parent);
         }));
         addReadingMenuItem.setAccelerator(KeyStroke.getKeyStroke(parent.getAddReadingKey(), parent.getAddReadingModif()));
