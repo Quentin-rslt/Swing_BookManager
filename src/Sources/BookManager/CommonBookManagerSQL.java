@@ -275,23 +275,31 @@ public class CommonBookManagerSQL {
         String ReadingQry = "DELETE FROM Reading WHERE Title='"+ bookManager.getMTitle()+"' AND Author='"+bookManager.getAuthor()+"' AND ID='"+bookManager.getRowReading()+"'";//Delete in bdd the item that we want delete
         String AvNumQry = "UPDATE Book SET AvReadingTime=?, NumberReading=? WHERE Title='"+bookManager.getMTitle()+"' AND Author='"+bookManager.getAuthor()+"'";
         if(bookManager.getReadingsTable().getRowCount()>1){//If there is more than one reading you don't need to know if the person really wants to delete the book
+            JFrame jFrame = new JFrame();
+            int n = JOptionPane.showConfirmDialog(//Open a optionPane to verify if the user really want to delete the book return 0 il they want and 1 if they refuse
+                    jFrame,
+                    "Etes-vous sûr de vouloir supprimer la lecture ?\n"+"Cette acion sera irréversible !",
+                    "An Inane Question",
+                    JOptionPane.YES_NO_OPTION);
             try (Connection conn = connect(); PreparedStatement ReadingPstmt = conn.prepareStatement(ReadingQry); PreparedStatement AvNumPstmt = conn.prepareStatement(AvNumQry)) {
-                ReadingPstmt.executeUpdate();
-                AvNumPstmt.setInt(1, averageTime(bookManager.getMTitle(), bookManager.getAuthor()));
-                AvNumPstmt.setInt(2, getNumberOfReading(bookManager.getMTitle(), bookManager.getAuthor()));
-                AvNumPstmt.executeUpdate();
+                if(n ==0) {
+                    ReadingPstmt.executeUpdate();
+                    AvNumPstmt.setInt(1, averageTime(bookManager.getMTitle(), bookManager.getAuthor()));
+                    AvNumPstmt.setInt(2, getNumberOfReading(bookManager.getMTitle(), bookManager.getAuthor()));
+                    AvNumPstmt.executeUpdate();
 
-                bookManager.getContentPanel().updateUI();
-                if(bookManager.getRowReading()>0) {
-                    bookManager.setRowReading(bookManager.getRowReading() - 1);
-                }
-                bookManager.getReadingsTable().setRowSelectionInterval(bookManager.getRowReading(), bookManager.getRowReading());
-                //load bdd in MainWindow
-                bookManager.fillBookTable(bookManager.isFiltered());
-                isItInFilteredBookList(bookManager, true);
-                bookManager.getManageReading().resetIdReading(bookManager.getManageReading().getRowCount());//refresh all ID in the table ReadingDate
-                if(bookManager.isFastSearch()){
-                    bookManager.fastSearchBook(bookManager.getBookFastSearch().getText());
+                    bookManager.getContentPanel().updateUI();
+                    if (bookManager.getRowReading() > 0) {
+                        bookManager.setRowReading(bookManager.getRowReading() - 1);
+                    }
+                    bookManager.getReadingsTable().setRowSelectionInterval(bookManager.getRowReading(), bookManager.getRowReading());
+                    //load bdd in MainWindow
+                    bookManager.fillBookTable(bookManager.isFiltered());
+                    isItInFilteredBookList(bookManager, true);
+                    bookManager.getManageReading().resetIdReading(bookManager.getManageReading().getRowCount());//refresh all ID in the table ReadingDate
+                    if (bookManager.isFastSearch()) {
+                        bookManager.fastSearchBook(bookManager.getBookFastSearch().getText());
+                    }
                 }
             } catch (SQLException e) {
                 JFrame jf = new JFrame();
