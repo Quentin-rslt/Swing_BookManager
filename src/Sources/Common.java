@@ -224,10 +224,12 @@ public class Common {
     }
     public static boolean isInFilteredList(String col1, String col2, JTable table){
         boolean isFiltered=false;
-        for(int i=0; i<table.getRowCount();i++){
+        int i=0;
+        while(i<table.getRowCount() && !isFiltered){
             if(table.getModel().getValueAt(i,0).equals(col1) && table.getModel().getValueAt(i,1).equals(col2)){
                 isFiltered=true;
             }
+            i++;
         }
         return isFiltered;
     }
@@ -240,42 +242,42 @@ public class Common {
                 JOptionPane.showMessageDialog(jFrame, "Vous avez déjà sélectionné ce tag !");
                 tagFind =true;
             }
-            else i++;
+            i++;
         }
         if(!tagFind){
             boolean isInCB = false;
-            for (int j = 0; j < cb.getItemCount(); j++) {
+            int j = 0;
+            while (j < cb.getItemCount() && !isInCB) {
                 if (Objects.requireNonNull(cb.getSelectedItem()).toString().equalsIgnoreCase(cb.getItemAt(j).toString())) {
                     isInCB = true;
                 }
+                j++;
             }
             //if the tag don't exist open editTagTagWindow to configure the color or the text
-            if (!isInCB) {
-                if(canCreate) {
-                    EditTagDlg diag = openEditTagDlg(new Tag(Objects.requireNonNull(cb.getSelectedItem()).toString()));
-                    if (diag.isValide()) {
-                        Tag tag = new Tag(diag.getNewTextTag());
-                        tag.setColor(diag.getNewColorTag().getRGB());
-                        tags.addTag(tag);
+            if (!isInCB && canCreate) {
+                EditTagDlg diag = openEditTagDlg(new Tag(Objects.requireNonNull(cb.getSelectedItem()).toString()));
+                if (diag.isValide()) {
+                    Tag tag = new Tag(diag.getNewTextTag());
+                    tag.setColor(diag.getNewColorTag().getRGB());
+                    tags.addTag(tag);
 
-                        for (int j = 0; j < tags.getSizeTags(); j++) {
-                            panel.add(tags.getTag(j));
-                            if (cb.getItemCount() > 0)
-                                cb.setSelectedIndex(0);
-                        }
-                        panel.updateUI();
+                    panel.add(tags.getTag(tags.getSizeTags()-1));
+                    if (cb.getItemCount() > 0) {
+                        cb.setSelectedIndex(0);
                     }
+                    panel.updateUI();
                 }
             } else {
-                String sql = "SELECT Color FROM Tags WHERE Tag='" + cb.getSelectedItem().toString() + "'";
+                String sql = "SELECT Color FROM Tags WHERE Tag='" + Objects.requireNonNull(cb.getSelectedItem()) + "'";
                 try (Connection connection = connect()){
                     Statement statement = connection.createStatement();
                     ResultSet tagsQry = statement.executeQuery(sql);
 
                     tags.createTag(Objects.requireNonNull(cb.getSelectedItem()).toString());
                     tags.getTag(tags.getSizeTags() - 1).setColor(tagsQry.getInt(1));
-                    for (int j = 0; j < tags.getSizeTags(); j++) {
-                        panel.add(tags.getTag(j));
+
+                    panel.add(tags.getTag(tags.getSizeTags()-1));
+                    if (cb.getItemCount() > 0) {
                         cb.setSelectedIndex(0);
                     }
                     connection.close();
@@ -299,7 +301,7 @@ public class Common {
                 JOptionPane.showMessageDialog(jFrame, "Vous avez déjà sélectionné ce tag !");
                 tagFind =true;
             }
-            else i++;
+            i++;
         }
         if(!tagFind){
             EditTagDlg diag = openEditTagDlg(new Tag(Objects.requireNonNull(txt.getText())));
@@ -308,10 +310,8 @@ public class Common {
                 tag.setColor(diag.getNewColorTag().getRGB());
                 tags.addTag(tag);
 
-                for(int j=0; j<tags.getSizeTags();j++){
-                    panel.add(tags.getTag(j));
-                    txt.setText("");
-                }
+                panel.add(tags.getTag(tags.getSizeTags()-1));
+                txt.setText("");
                 panel.updateUI();
             }
         }
