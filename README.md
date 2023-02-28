@@ -5,6 +5,6 @@ A book manager that will help you find a book you have, in a simple and intuitiv
 And also because it's cool! 
 
 
-<b>INFO :</b>
+<b>INFO :</b></br>
 Heavy client application in swing, it has become obsolete, and no more development will be done on this project.</br>
 The repo remains available to all.
